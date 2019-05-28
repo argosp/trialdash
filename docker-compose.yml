@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  dashboard:
+    image: 'node:10.15'
+    container_name: 'argos_dashboard'
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      FCC_URL: "http://localhost:8888"
+    command: yarn start
