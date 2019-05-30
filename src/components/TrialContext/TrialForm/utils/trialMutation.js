@@ -1,17 +1,18 @@
 import gql from 'graphql-tag';
 
 export default (trial) => {   
+    const devices = trial.devices.map(d => `"${d}"`).join(',');
     return gql`mutation {
-        InsertTrial(
+        addUpdateTrial(
             uid:"${localStorage.getItem('uid')}"
-            trialCustomId:"${trial.trialCustomId}"
             experimentId:"${trial.experimentId}"
-            parent:"${trial.collection}"
+            id:"${trial.id}"
+            name:"${trial.name}"
+            begin:"${trial.begin}"
+            end:"${trial.end}"
+            devices: [${devices}]
           ){
             id
-            status
-            title
-            error
         }
       }`
 }

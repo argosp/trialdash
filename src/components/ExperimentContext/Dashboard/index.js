@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { styles } from './styles';
-import gql from 'graphql-tag'
 import Graph from '../../../apolloGraphql';
 import MainView from '../MainView';
+import config from '../../../config';
 
 //MATERIAL UI DEPENDENCIES
 import { withStyles } from '@material-ui/core/styles';
@@ -20,15 +20,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExploreIcon from '@material-ui/icons/Explore';
 import Button from '@material-ui/core/Button';
+import experimentsQuery from '../utils/experiments-query';
 
 const graphql = new Graph();
-const experiments = gql`
-{
-    experiments{
-        name
-        id
-    }
-}`
+
 class ListOfExperiments extends React.Component {
   constructor(props) {
     super(props);
@@ -42,7 +37,7 @@ class ListOfExperiments extends React.Component {
   }
 
   componentDidMount() {
-    graphql.sendQuery(experiments)
+    graphql.sendQuery(experimentsQuery)
       .then(data => {
         this.setState(() => ({
           experiments: data.experiments
@@ -130,6 +125,11 @@ class ListOfExperiments extends React.Component {
               ))}
             </List>
             <Divider />
+            <div class="footer" 
+            //style={{'background-color':'#dddddd'}}
+            >
+            <a href={`${config.url}/graphql`} target="_blank">GraphQL Playground</a>
+          </div>
           </Drawer>
           <main
             className={classNames(classes.content, {

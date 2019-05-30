@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ApolloProvider } from "react-apollo";
 import { BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 import Graph from './apolloGraphql';
+import config from './config';
 
 //COMPONENTS
 import Login from './components/Login'
@@ -22,9 +23,9 @@ class App extends Component {
               <Route path="/trial/manual" component={TrialForm}/>
             </Switch>
           </Router> 
-          <div class="footer">
-            <a href="http://argos-graph-ingress.argos.192.116.82.73.xip.io/graphql">GraphQL Playground</a>
-          </div>
+          {/* <div class="footer" style={{'background-color':'#dddddd'}}>
+            <a href={`${config.url}/graphql`} target="_blank">GraphQL Playground</a>
+          </div> */}
         </div>
       </ApolloProvider>
     );

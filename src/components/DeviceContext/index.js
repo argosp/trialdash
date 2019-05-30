@@ -78,8 +78,7 @@ render() {
                     </TabContainer>}
                     {value === 1 && 
                     <TabContainer>
-                        {/* <DeviceForm
-                            collection={data.devices.length === 1? data.devices[0].id : ""}/> */}
+                        <DeviceForm/>
                     </TabContainer>}
 
                   </div>

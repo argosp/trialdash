@@ -27,8 +27,12 @@
   position: fixed;
   left: 0;
   bottom: 0;
-  margin-bottom: 30px;
+  padding-bottom: 35px;
+  padding-top: 15px;
   width: 100%;
+  text-align: left;
+  padding-left: 45px;
+  max-width: 240px;
 }
 
 

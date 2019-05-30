@@ -13,7 +13,7 @@ export const styles = theme => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    paddingLeft:10
+    paddingLeft: 10
   },
   menuButton: {
     marginLeft: 12,
@@ -37,10 +37,10 @@ export const styles = theme => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
     justifyContent: 'flex-start',
-    fontWieght:900
+    fontWieght: 900
   },
   content: {
-    marginTop:-80,
+    marginTop: -80,
     flexGrow: 1,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
@@ -56,8 +56,8 @@ export const styles = theme => ({
     marginLeft: 0,
   },
   subtitle: {
-    padding:0,
-    margin:0,
+    padding: 0,
+    margin: 0,
     fontSize: 14,
     color: 'lightgreay'
   }
