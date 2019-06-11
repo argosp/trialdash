@@ -83,8 +83,8 @@ class TrialForm extends React.Component {
             devicesSelected: [],
             id: '',
             name: '',
-            begin: '',
-            end: '',
+            begin: null,
+            end: null,
         };
     }
 
@@ -147,17 +147,25 @@ class TrialForm extends React.Component {
                 <TextField style={{ width: '300px', 'margin-top': '30px' }}
                     id="begin"
                     label="Begin"
+                    type="date"
                     className={classes.textField}
                     value={this.state.begin}
                     onChange={this.handleChange('begin')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                 />
                 <br />
                 <TextField style={{ width: '300px', 'margin-top': '30px' }}
                     id="end"
                     label="End"
+                    type="date"
                     className={classes.textField}
                     value={this.state.end}
                     onChange={this.handleChange('end')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                 />
                 <br />
                 <FormControl className={classes.formControl} style={{ width: '300px', 'margin-top': '30px' }}>
