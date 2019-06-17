@@ -5,6 +5,7 @@ import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
 import config from '../../../config';
 import trialMutation from './utils/trialMutation';
 import Graph from '../../../apolloGraphql';
+import LeafLetMap from '../LeafLetMap';
 
 import classes from './styles';
 //MATERIAL UI DEPENDENCIES
@@ -78,13 +79,13 @@ class TrialForm extends React.Component {
             expanded: null,
             experiments: [],
             experimentId: props.experimentId,
-            devicesList: props.devices,
-            devices: [],
-            devicesSelected: [],
-            id: '',
-            name: '',
-            begin: null,
-            end: null,
+            devicesList: props.devices || [],
+            device: props.device,
+            id: props.id || '',
+            name: props.name || '',
+            begin: props.begin || null,
+            end: props.end || null,
+            errors: {}
         };
     }
 
@@ -106,18 +107,26 @@ class TrialForm extends React.Component {
 
 
     submitTrial = () => {
+        this.setState({errors: {}});
+        if (!this.state.id || this.state.id.trim() === '') {
+            this.setState({errors: {id: true}});
+            return;
+        }
         const newTrial = {
             id: this.state.id,
             name: this.state.name,
             begin: this.state.begin,
             end: this.state.end,
-            devices: this.state.devices,
+            device: this.state.device ? this.state.device.id : null,
             experimentId: this.state.experimentId
         };
+
+        let _this = this;
 
         graphql.sendMutation(trialMutation(newTrial))
             .then(data => {
                 window.alert(`saved trial ${data.addUpdateTrial.id}`);
+                _this.props.showAll();
             })
             .catch(err => {
                 window.alert(`error: ${err}`);
@@ -127,77 +136,81 @@ class TrialForm extends React.Component {
     render() {
 
         return (
-            <form className={classes.container}  noValidate autoComplete="off" style={{ textAlign: 'left' }}>
-                <TextField style={{ width: '300px' }}
-                    id="id"
-                    label="ID"
-                    className={classes.textField}
-                    value={this.state.id}
-                    onChange={this.handleChange('id')}
-                />
-                <br />
-                <TextField style={{ width: '300px', 'margin-top': '30px' }}
-                    id="name"
-                    label="Name"
-                    className={classes.textField}
-                    value={this.state.name}
-                    onChange={this.handleChange('name')}
-                />
-                <br />
-                <TextField style={{ width: '300px', 'margin-top': '30px' }}
-                    id="begin"
-                    label="Begin"
-                    type="date"
-                    className={classes.textField}
-                    value={this.state.begin}
-                    onChange={this.handleChange('begin')}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-                <br />
-                <TextField style={{ width: '300px', 'margin-top': '30px' }}
-                    id="end"
-                    label="End"
-                    type="date"
-                    className={classes.textField}
-                    value={this.state.end}
-                    onChange={this.handleChange('end')}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-                <br />
-                <FormControl className={classes.formControl} style={{ width: '300px', 'margin-top': '30px' }}>
-                    <InputLabel htmlFor="select-multiple-chip">Devices</InputLabel>
-                    <Select
-                        multiple
-                        value={this.state.devices}
-                        onChange={this.handleChangeMultiple('devices')}
-                        input={<Input id="select-multiple-chip" />}
-                        renderValue={selected => (
-                            <div className={classes.chips}>
-                                {selected.map(value => (
-                                    <Chip key={value} label={value} className={classes.chip} />
-                                ))}
-                            </div>
-                        )}
-                        MenuProps={MenuProps}
-                    >
-                        {this.state.devicesList.map(device => (
-                            <MenuItem key={device} value={device} style={getStyles(device, this.state.devices, this.props.theme)}>
-                                {device}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                    <div style={{ 'margin-top': '50px', textAlign: 'center' }}>
-                        <Button variant="contained" className={classes.button} style={{ width: '180px' }}
-                            onClick={this.submitTrial}
+            <form className={classes.container}  noValidate autoComplete="off" style={{ display: 'flex', textAlign: 'left' }}>
+                <div>
+                    <TextField style={{ width: '300px' }}
+                        error={this.state.errors.id}
+                        id="id"
+                        label="ID"
+                        className={classes.textField}
+                        value={this.state.id}
+                        onChange={this.handleChange('id')}
+                    />
+                    <br />
+                    <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                        id="name"
+                        label="Name"
+                        className={classes.textField}
+                        value={this.state.name}
+                        onChange={this.handleChange('name')}
+                    />
+                    <br />
+                    <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                        id="begin"
+                        label="Begin"
+                        type="date"
+                        className={classes.textField}
+                        value={this.state.begin}
+                        onChange={this.handleChange('begin')}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <br />
+                    <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                        id="end"
+                        label="End"
+                        type="date"
+                        className={classes.textField}
+                        value={this.state.end}
+                        onChange={this.handleChange('end')}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <br />
+                    <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
+                        <InputLabel htmlFor="select-multiple-chip">Device</InputLabel>
+                        <Select
+                            // multiple
+                            value={this.state.device}
+                            onChange={this.handleChangeMultiple('device')}
+                            input={<Input id="select-multiple-chip" />}
+                            renderValue={selected => (<Chip label={selected.name} className={classes.chip} />)}
+                            MenuProps={MenuProps}
                         >
-                            Submit
-                    </Button>
-                    </div>
-                </FormControl>
+                            {this.state.devicesList.map(device => (
+                                <MenuItem key={device.id} value={device}>
+                                    {device.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <div style={{ 'marginTop': '50px', textAlign: 'center', display: 'flex' }}>
+                            <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                                onClick={this.submitTrial}
+                            >
+                                Submit
+                            </Button>
+                            {this.props.cancel && <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                                onClick={this.props.showAll}
+                            >
+                                Cancel
+                            </Button>}
+                        </div>
+                    </FormControl>
+
+                </div>
+                {this.state.device && this.state.device.position && <LeafLetMap position={this.state.device.position.split(',')}/>}
             </form>
         );
     }

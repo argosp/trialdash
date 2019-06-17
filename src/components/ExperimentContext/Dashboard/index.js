@@ -125,7 +125,7 @@ class ListOfExperiments extends React.Component {
               ))}
             </List>
             <Divider />
-            <div class="footer" 
+            <div className="footer"
             //style={{'background-color':'#dddddd'}}
             >
             <a href={`${config.url}/graphql`} target="_blank">GraphQL Playground</a>

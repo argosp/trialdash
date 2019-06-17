@@ -8,6 +8,7 @@ export default (device) => {
         id: "${device.id}",
         name: "${device.name}",
         type: "${device.type}",
+        position:"${device.position}"
         properties: [{key: "heat degrees", val: "12"}]
         ) {
             id

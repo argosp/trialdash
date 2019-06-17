@@ -70,10 +70,10 @@ class TrialMainView extends React.PureComponent {
           {
             ({ loading, error, data, refetch }) => {
               let loadingTxt = this.state.value === 0 ? 'loading...' : '';
-              if (loading) return <p style={{'text-align': 'left'}}>{loadingTxt}</p>;
+              if (loading) return <p style={{'textAlign': 'left'}}>{loadingTxt}</p>;
               if (error) {
                 if(this.state.value === 0)
-                  return <p style={{ 'text-align': 'left' }}> No trials to show</p>;
+                  return <p style={{ 'textAlign': 'left' }}> No trials to show</p>;
                 return <p/>;
               }
               queryRefecth = refetch;
@@ -82,7 +82,9 @@ class TrialMainView extends React.PureComponent {
                   {value === 0 &&
                     <TabContainer>
                       <ListOfTrials
-                        trials={data.trials} />
+                        experimentId={this.props.experimentId}
+                        trials={data.trials}
+                        devices={data.devices} />
                     </TabContainer>}
                 </div>
               )
@@ -103,7 +105,7 @@ class TrialMainView extends React.PureComponent {
           {
             ({ loading, error, data, refetch }) => {
               if (this.state.value === 1 && (this.props.experimentId == null || this.props.experimentId === ''))
-                return <p style={{color: 'red', 'text-align': 'left'}}>Please select an experiment first</p>;
+                return <p style={{color: 'red', 'textAlign': 'left'}}>Please select an experiment first</p>;
               if (loading) return <p></p>;
               if (error) return;
               return (
@@ -113,7 +115,8 @@ class TrialMainView extends React.PureComponent {
                       { this.props.experimentId != null && this.props.experimentId !== '' ?
                       <TrialForm
                         experimentId={this.props.experimentId}
-                        devices={data.devices.map(d => d.id)} 
+                        devices={data.devices}
+                        showAll={() => this.setState({ value: 1 })}
                         /> : null }
                     </TabContainer>}
 

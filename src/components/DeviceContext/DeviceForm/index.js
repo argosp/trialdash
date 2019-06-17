@@ -78,7 +78,8 @@ class DeviceForm extends React.Component {
             id: '',
             name: '',
             type: '',
-            properties: [],
+            properties: []                    ,
+            position: props.position || '',
         };
     }
 
@@ -99,6 +100,7 @@ class DeviceForm extends React.Component {
             name: this.state.name,
             type: this.state.type,
             properties: this.state.properties,
+            position: this.state.position
         };
 
         graphql.sendMutation(deviceMutation(newDevice))
@@ -122,7 +124,7 @@ class DeviceForm extends React.Component {
                     onChange={this.handleChange('id')}
                 />
                 <br />
-                <TextField style={{ width: '300px', 'margin-top': '30px' }}
+                <TextField style={{ width: '300px', 'marginTop': '30px' }}
                     id="name"
                     label="Name"
                     className={classes.textField}
@@ -130,7 +132,7 @@ class DeviceForm extends React.Component {
                     onChange={this.handleChange('name')}
                 />
                 <br />
-                <TextField style={{ width: '300px', 'margin-top': '30px' }}
+                <TextField style={{ width: '300px', 'marginTop': '30px' }}
                     id="type"
                     label="Type"
                     className={classes.textField}
@@ -138,7 +140,15 @@ class DeviceForm extends React.Component {
                     onChange={this.handleChange('type')}
                 />
                 <br />
-                {/* <TextField style={{ width: '300px', 'margin-top': '30px' }}
+                <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                    id="position"
+                    label="Position"
+                    className={classes.textField}
+                    value={this.state.position}
+                    onChange={this.handleChange('position')}
+                />
+                <br />
+                {/* <TextField style={{ width: '300px', 'marginTop': '30px' }}
                     id="properties"
                     label="Properties"
                     className={classes.textField}
@@ -146,7 +156,7 @@ class DeviceForm extends React.Component {
                     onChange={this.handleChange('properties')}
                 /> */}
                 <br />
-                <div style={{ 'margin-top': '50px', textAlign: 'center' }}>
+                <div style={{ 'marginTop': '50px', textAlign: 'center' }}>
                     <Button variant="contained" className={classes.button} style={{ width: '180px' }}
                         onClick={this.submitDevice}
                     >

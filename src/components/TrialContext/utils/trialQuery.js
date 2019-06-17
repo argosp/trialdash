@@ -8,7 +8,7 @@ const trials = experimentId => {
         name
         begin
         end
-        devices {
+        device {
           id
           name
           type
@@ -16,6 +16,7 @@ const trials = experimentId => {
               key
               val
            }
+          position
       }
     }
   }`

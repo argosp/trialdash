@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 
 export default (trial) => {   
-    const devices = trial.devices.map(d => `"${d}"`).join(',');
     return gql`mutation {
         addUpdateTrial(
             uid:"${localStorage.getItem('uid')}"
@@ -10,7 +9,7 @@ export default (trial) => {
             name:"${trial.name}"
             begin:"${trial.begin}"
             end:"${trial.end}"
-            devices: [${devices}]
+            device: "${trial.device}"
           ){
             id
         }
