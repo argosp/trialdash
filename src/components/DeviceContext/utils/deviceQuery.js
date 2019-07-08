@@ -7,7 +7,6 @@ const devices = () => {
        id
        name
        type
-       position
        properties{
            key
            val

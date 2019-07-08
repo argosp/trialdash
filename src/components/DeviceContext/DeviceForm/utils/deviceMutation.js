@@ -5,10 +5,10 @@ export default (device) => {
   mutation {
     addUpdateDevice(
         uid: "${localStorage.getItem('uid')}",
+        experimentId:"${device.experimentId}"
         id: "${device.id}",
         name: "${device.name}",
         type: "${device.type}",
-        position:"${device.position}"
         properties: [{key: "heat degrees", val: "12"}]
         ) {
             id

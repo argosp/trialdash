@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { styles } from './styles';
 import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
 import config from '../../../config';
-import deviceMutation from './utils/deviceMutation';
+import assetMutation from './utils/assetMutation';
 import Graph from '../../../apolloGraphql';
 
 import classes from './styles';
@@ -62,23 +62,22 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function getStyles(device, devices, theme) {
+function getStyles(asset, assets, theme) {
     return {
         fontWeight:
-            devices.indexOf(device) === -1
+            assets.indexOf(asset) === -1
                 ? theme.typography.fontWeightRegular
                 : theme.typography.fontWeightMedium,
     };
 }
 
-class DeviceForm extends React.Component {
+class AssetForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             id: '',
             name: '',
-            type: '',
-            properties: []
+            type: ''
         };
     }
 
@@ -93,18 +92,17 @@ class DeviceForm extends React.Component {
     };
 
 
-    submitDevice = () => {
-        const newDevice = {
+    submitAsset = () => {
+        const newAsset = {
             id: this.state.id,
             experimentId: this.props.experimentId,
             name: this.state.name,
-            type: this.state.type,
-            properties: this.state.properties
+            type: this.state.type
         };
 
-        graphql.sendMutation(deviceMutation(newDevice))
+        graphql.sendMutation(assetMutation(newAsset))
             .then(data => {
-                window.alert(`saved device ${data.addUpdateDevice.id}`);
+                window.alert(`saved asset ${data.addUpdateAsset.id}`);
             })
             .catch(err => {
                 window.alert(`error: ${err}`);
@@ -139,17 +137,9 @@ class DeviceForm extends React.Component {
                     onChange={this.handleChange('type')}
                 />
                 <br />
-                {/* <TextField style={{ width: '300px', 'marginTop': '30px' }}
-                    id="properties"
-                    label="Properties"
-                    className={classes.textField}
-                    value={this.state.properties}
-                    onChange={this.handleChange('properties')}
-                /> */}
-                <br />
                 <div style={{ 'marginTop': '50px', textAlign: 'center' }}>
                     <Button variant="contained" className={classes.button} style={{ width: '180px' }}
-                        onClick={this.submitDevice}
+                        onClick={this.submitAsset}
                     >
                         Submit
                     </Button>
@@ -159,9 +149,9 @@ class DeviceForm extends React.Component {
     }
 }
 
-DeviceForm.propTypes = {
+AssetForm.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
-export default withTheme(DeviceForm);
+export default withTheme(AssetForm);

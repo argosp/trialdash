@@ -16,7 +16,6 @@ const trials = experimentId => {
               key
               val
            }
-          position
       }
     }
   }`

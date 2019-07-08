@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Graph from '../../../apolloGraphql';
-import devicesQuery from '../utils/deviceQuery';
-import DeviceForm from '../DeviceForm';
+import AssetForm from '../AssetForm';
 
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -17,11 +16,11 @@ import { styles } from './styles';
 const graphql = new Graph();
 
 
-class ListOfDevices extends React.Component {
+class ListOfAssets extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      devices: props.devices || [],
+      assets: props.assets || [],
       timeout: false
     }
   }
@@ -35,31 +34,30 @@ class ListOfDevices extends React.Component {
     const classes = this.props;
     return (
       <div>
-        {!this.state.editTrial ? <Paper className={classes.root}>
+        {!this.state.editAsset ? <Paper className={classes.root}>
           <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell align="left">Devices ID</TableCell>
-              <TableCell align="left">Devices Name</TableCell>
-              <TableCell align="left">Devices Type</TableCell>
-              <TableCell align="left">Devices Properties</TableCell>
+              <TableCell align="left">Assets ID</TableCell>
+              <TableCell align="left">Assets Name</TableCell>
+              <TableCell align="left">Assets Type</TableCell>
+              <TableCell align="left">Assets Properties</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.props.devices.map((device, index) => (
-              <TableRow key={index} style={{cursor: 'pointer'}} onClick={() => this.setState({ editDevice: device })}>
-                <TableCell align="left">{device.id}</TableCell>
-                <TableCell align="left">{device.name}</TableCell>
-                <TableCell align="left">{device.type}</TableCell>
-                <TableCell align="left">{device.properties.map(prop => `key: ${prop.key}, val: ${prop.val}`).toString()}</TableCell>
+            {this.props.assets.map((asset, index) => (
+              <TableRow key={index} style={{cursor: 'pointer'}} onClick={() => this.setState({ editAsset: asset })}>
+                <TableCell align="left">{asset.id}</TableCell>
+                <TableCell align="left">{asset.name}</TableCell>
+                <TableCell align="left">{asset.type}</TableCell>
                 <TableCell align="left">Edit</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </Paper> :
-      <DeviceForm
+      <AssetForm
         experimentId={this.props.experimentId}  
       />}
       </div>
@@ -68,8 +66,8 @@ class ListOfDevices extends React.Component {
 
 }
 
-ListOfDevices.propTypes = {
+ListOfAssets.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ListOfDevices);
+export default withStyles(styles)(ListOfAssets);

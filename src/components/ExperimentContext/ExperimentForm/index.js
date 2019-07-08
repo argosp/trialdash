@@ -1,11 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { styles } from './styles';
-import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
 import config from '../../../config';
-import trialMutation from './utils/trialMutation';
+import experimentMutation from './utils/experimentMutation';
 import Graph from '../../../apolloGraphql';
-import LeafLetMap from '../LeafLetMap';
 
 import classes from './styles';
 //MATERIAL UI DEPENDENCIES
@@ -14,13 +11,7 @@ import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 // import { withTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Chip from '@material-ui/core/Chip';
 
 const graphql = new Graph();
 
@@ -72,19 +63,13 @@ function getStyles(device, devices, theme) {
     };
 }
 
-class TrialForm extends React.Component {
+class ExperimentForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             expanded: null,
-            experiments: [],
-            experimentId: props.experimentId,
-            devicesList: props.devices || [],
-            device: props.device,
             id: props.id || '',
             name: props.name || '',
-            begin: props.begin || null,
-            end: props.end || null,
             errors: {}
         };
     }
@@ -106,27 +91,25 @@ class TrialForm extends React.Component {
     };
 
 
-    submitTrial = () => {
+    submitExperiment = () => {
         this.setState({errors: {}});
         if (!this.state.id || this.state.id.trim() === '') {
             this.setState({errors: {id: true}});
             return;
         }
-        const newTrial = {
+        const newExperiment = {
             id: this.state.id,
             name: this.state.name,
             begin: this.state.begin,
-            end: this.state.end,
-            device: this.state.device ? this.state.device.id : null,
-            experimentId: this.state.experimentId
+            end: this.state.end
         };
 
         let _this = this;
 
-        graphql.sendMutation(trialMutation(newTrial))
+        graphql.sendMutation(experimentMutation(newExperiment))
             .then(data => {
-                window.alert(`saved trial ${data.addUpdateTrial.id}`);
-                _this.props.showAll();
+                window.alert(`saved experiment ${data.addUpdateExperiment.id}`);
+                _this.props.close();
             })
             .catch(err => {
                 window.alert(`error: ${err}`);
@@ -136,7 +119,15 @@ class TrialForm extends React.Component {
     render() {
 
         return (
-            <form className={classes.container}  noValidate autoComplete="off" style={{ display: 'flex', textAlign: 'left' }}>
+            <form className={classes.container}  noValidate autoComplete="off" style={{
+                textAlign: 'left',
+                position: 'absolute',
+                padding: '70px',
+                marginLeft: '240px',
+                zIndex: 999,
+                background: '#FFFFFF',
+                height: '100%',
+                width: 'calc(100% - 240px)' }}>
                 <div>
                     <TextField style={{ width: '300px' }}
                         error={this.state.errors.id}
@@ -178,47 +169,29 @@ class TrialForm extends React.Component {
                             shrink: true,
                         }}
                     />
-                    <br />
-                    <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
-                        <InputLabel htmlFor="select-multiple-chip">Device</InputLabel>
-                        <Select
-                            // multiple
-                            value={this.state.device}
-                            onChange={this.handleChangeMultiple('device')}
-                            input={<Input id="select-multiple-chip" />}
-                            renderValue={selected => (<Chip label={selected.name} className={classes.chip} />)}
-                            MenuProps={MenuProps}
-                        >
-                            {this.state.devicesList.map(device => (
-                                <MenuItem key={device.id} value={device}>
-                                    {device.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                </div>  
+                <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
                         <div style={{ 'marginTop': '50px', textAlign: 'center', display: 'flex' }}>
                             <Button variant="contained" className={classes.button} style={{ width: '180px' }}
-                                onClick={this.submitTrial}
+                                onClick={this.submitExperiment}
                             >
                                 Submit
                             </Button>
-                            {this.props.cancel && <Button variant="contained" className={classes.button} style={{ width: '180px' }}
-                                onClick={this.props.showAll}
+                            <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                                onClick={this.props.close}
                             >
                                 Cancel
-                            </Button>}
+                            </Button>
                         </div>
-                    </FormControl>
-
-                </div>
-                {/* {this.state.device && this.state.device.position && <LeafLetMap position={this.state.device.position.split(',')}/>} */}
+                    </FormControl>               
             </form>
         );
     }
 }
 
-TrialForm.propTypes = {
+ExperimentForm.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
-export default withTheme(TrialForm);
+export default withTheme(ExperimentForm);

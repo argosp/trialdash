@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { styles } from './styles';
 import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
 import config from '../../../config';
-import deviceMutation from './utils/deviceMutation';
+import trialSetMutation from './utils/trialSetMutation';
 import Graph from '../../../apolloGraphql';
 
 import classes from './styles';
@@ -62,23 +62,24 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function getStyles(device, devices, theme) {
+function getStyles(trialSet, trialSets, theme) {
     return {
         fontWeight:
-            devices.indexOf(device) === -1
+            trialSets.indexOf(trialSet) === -1
                 ? theme.typography.fontWeightRegular
                 : theme.typography.fontWeightMedium,
     };
 }
 
-class DeviceForm extends React.Component {
+class TrialSetForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: '',
-            name: '',
+            id: props.id || '',
+            begin: props.begin || '',
+            end: props.end || '',
             type: '',
-            properties: []
+            properties: props.properties || []
         };
     }
 
@@ -92,27 +93,37 @@ class DeviceForm extends React.Component {
         });
     };
 
+    handleChangeProprty = (index, key) => event => {
+        this.state.properties[index][key] = event.target.value;
+        this.setState({ });
+    };
 
-    submitDevice = () => {
-        const newDevice = {
+    submitTrialSet = () => {
+        const newTrialSet = {
             id: this.state.id,
             experimentId: this.props.experimentId,
-            name: this.state.name,
+            begin: this.state.begin,
+            end: this.state.end,
             type: this.state.type,
-            properties: this.state.properties
+            properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })})
         };
 
-        graphql.sendMutation(deviceMutation(newDevice))
+        graphql.sendMutation(trialSetMutation(newTrialSet))
             .then(data => {
-                window.alert(`saved device ${data.addUpdateDevice.id}`);
+                window.alert(`saved trialSet ${data.addUpdateTrialSet.id}`);
+                this.props.showAll();
             })
             .catch(err => {
                 window.alert(`error: ${err}`);
             });
     }
 
-    render() {
+    addProperty = () => {
+        this.state.properties.push({key: '', val: ''});
+        this.setState({});
+    }
 
+    render() {
         return (
             <form className={classes.container} noValidate autoComplete="off" style={{ textAlign: 'left' }}>
                 <TextField style={{ width: '300px' }}
@@ -124,44 +135,73 @@ class DeviceForm extends React.Component {
                 />
                 <br />
                 <TextField style={{ width: '300px', 'marginTop': '30px' }}
-                    id="name"
-                    label="Name"
+                    id="begin"
+                    label="Begin"
+                    type="date"
                     className={classes.textField}
-                    value={this.state.name}
-                    onChange={this.handleChange('name')}
+                    value={this.state.begin}
+                    onChange={this.handleChange('begin')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                 />
                 <br />
                 <TextField style={{ width: '300px', 'marginTop': '30px' }}
-                    id="type"
-                    label="Type"
+                    id="end"
+                    label="End"
+                    type="date"
                     className={classes.textField}
-                    value={this.state.type}
-                    onChange={this.handleChange('type')}
+                    value={this.state.end}
+                    onChange={this.handleChange('end')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                 />
                 <br />
-                {/* <TextField style={{ width: '300px', 'marginTop': '30px' }}
-                    id="properties"
-                    label="Properties"
-                    className={classes.textField}
-                    value={this.state.properties}
-                    onChange={this.handleChange('properties')}
-                /> */}
-                <br />
+                <h3>properties:</h3>
+                {this.state.properties.map((p, i) => {
+                    return <div key={i} style={{display: 'flex'}}>
+                        <TextField style={{ width: '300px' }}
+                            label="name"
+                            className={classes.textField}
+                            value={p.key}
+                            onChange={this.handleChangeProprty(i, 'key')}
+                        />
+                        <br />
+                        <TextField style={{ width: '300px' }}
+                            label="type"
+                            className={classes.textField}
+                            value={p.val}
+                            onChange={this.handleChangeProprty(i, 'val')}
+                        />
+                        <br />
+                    </div>
+                })}
+                <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                    onClick={this.addProperty}
+                >
+                    + Add Property
+                </Button>
                 <div style={{ 'marginTop': '50px', textAlign: 'center' }}>
                     <Button variant="contained" className={classes.button} style={{ width: '180px' }}
-                        onClick={this.submitDevice}
+                        onClick={this.submitTrialSet}
                     >
                         Submit
                     </Button>
+                    {this.props.cancel && <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                        onClick={this.props.showAll}
+                    >
+                        Cancel
+                    </Button>}
                 </div>
             </form>
         );
     }
 }
 
-DeviceForm.propTypes = {
+TrialSetForm.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
-export default withTheme(DeviceForm);
+export default withTheme(TrialSetForm);

@@ -21,6 +21,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExploreIcon from '@material-ui/icons/Explore';
 import Button from '@material-ui/core/Button';
 import experimentsQuery from '../utils/experiments-query';
+import ExperimentForm from '../ExperimentForm';
 
 const graphql = new Graph();
 
@@ -77,6 +78,7 @@ class ListOfExperiments extends React.Component {
     if (this.state.render)
       return (
         <div className={classes.root}>
+          {this.state.add && <ExperimentForm close={() => {this.setState({ add: false })}}/>}
           <CssBaseline />
           <AppBar
             position="fixed"
@@ -124,6 +126,7 @@ class ListOfExperiments extends React.Component {
                 </ListItem>
               ))}
             </List>
+            <div onClick={() => this.setState({ add: true })} style={{cursor: 'pointer'}}> + Add Experiment</div>
             <Divider />
             <div className="footer"
             //style={{'background-color':'#dddddd'}}

@@ -9,10 +9,10 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import { styles } from './styles';
 
-import devicesQuery from './utils/deviceQuery';
-import DeviceForm from './DeviceForm';
-import ListOfDevices from './ListOfDevices';
-import devicesSubscription from './utils/devicesSubscription';
+import trialSetsQuery from './utils/trialSetQuery';
+import TrialSetForm from './TrialSetForm';
+import ListOfTrialSets from './ListOfTrialSets';
+import trialSetsSubscription from './utils/trialSetsSubscription';
 //MATERIAL UI DEPENDENCIES
 
 const TabContainer = (props) => {
@@ -23,22 +23,23 @@ const TabContainer = (props) => {
     );
   }
 
-class DeviceMainView extends React.PureComponent {
+class TrialSetMainView extends React.PureComponent {
 constructor(props){
     super(props);
     this.state = {
         value: 0,
         collection:"",
-        devices:[],
+        trialSets:[],
         query: true
       };
 }
 componentWillMount(){
-  //this.deviceUpdatedSubscription()
+  //this.trialSetUpdatedSubscription()
 }
 componentDidMount(){
-  console.log(this.state)
+
 }
+
 executeQuery = () => this.setState((prevState)=>({query: !prevState.query}));
 
 handleChangeTab = (event, value) => {
@@ -57,28 +58,30 @@ render() {
             indicatorColor="primary"
             textColor="primary"
             >
-            <Tab label="Devices list" />
+            <Tab label="TrialSets list" />
             <Tab label="+"/>
           </Tabs>
         </Paper>
         <Query
-            query={devicesQuery()}
+            query={trialSetsQuery(this.props.experimentId)}
             >
             {
               ({ loading, error, data, refetch }) => {
                 if (loading) return <p>Loading...</p>;
-                if (error) return <p> No devices to show</p>;
+                if (error) return <p> No trialSets to show</p>;
                 queryRefecth = refetch;
                 return (
                   <div>
                   {value === 0 && 
                     <TabContainer>
-                        <ListOfDevices
-                            devices={data.devices}/>
+                        <ListOfTrialSets
+                          trialSets={data.trialSets}
+                          experimentId={this.props.experimentId}
+                        />
                     </TabContainer>}
                     {value === 1 && 
                     <TabContainer>
-                        <DeviceForm
+                        <TrialSetForm
                           experimentId={this.props.experimentId}
                         />
                     </TabContainer>}
@@ -89,9 +92,9 @@ render() {
             }
         </Query>
         <Subscription
-            subscription={devicesSubscription}>
+            subscription={trialSetsSubscription}>
             {({ data, loading }) => {
-              if (data && data.devicesUpdated) 
+              if (data && data.trialSetsUpdated) 
               queryRefecth !== null && queryRefecth();
               return null
             }}
@@ -101,7 +104,7 @@ render() {
   }
 }
 
-DeviceMainView.propTypes = {
+TrialSetMainView.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
@@ -110,5 +113,5 @@ TabContainer.propTypes = {
 };
   
 
-export default withStyles(styles)(DeviceMainView);
+export default withStyles(styles)(TrialSetMainView);
 

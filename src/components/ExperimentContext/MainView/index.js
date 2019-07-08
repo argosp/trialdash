@@ -7,9 +7,10 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import { styles } from './styles';
 
-import Devices from '../../DeviceContext'
+import Devices from '../../DeviceContext';
 import Trials from '../../TrialContext';
-//MATERIAL UI DEPENDENCIES
+import Assets from '../../AssetContext';
+import TrialSets from '../../TrialSetContext';
 
 const TabContainer = (props) => {
     return (
@@ -48,11 +49,15 @@ render() {
             >
             <Tab label="Trials" disabled={this.props.id === null} />
             <Tab label="Devices" disabled={this.props.id === null}/>
+            <Tab label="Assets" disabled={this.props.id === null}/>
+            <Tab label="TrialSets" disabled={this.props.id === null}/>
           </Tabs>
           
         </Paper>
         {value === 0 && <TabContainer><Trials experimentId={this.props.id}/></TabContainer>}
-        {value === 1 && <TabContainer><Devices/></TabContainer>}
+        {value === 1 && <TabContainer><Devices experimentId={this.props.id}/></TabContainer>}
+        {value === 2 && <TabContainer><Assets experimentId={this.props.id}/></TabContainer>}
+        {value === 3 && <TabContainer><TrialSets experimentId={this.props.id}/></TabContainer>}
       </div>
     );
   }
