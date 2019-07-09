@@ -9,11 +9,13 @@ export default (device) => {
         id: "${device.id}",
         name: "${device.name}",
         type: "${device.type}",
-        properties: [{key: "heat degrees", val: "12"}]
+        number: "${device.number}",
+        properties: ${JSON.stringify(device.properties).replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:')}
         ) {
             id
             name
             type
+            number
             properties{
                 key
                 val

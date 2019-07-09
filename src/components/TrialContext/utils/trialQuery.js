@@ -8,6 +8,18 @@ const trials = experimentId => {
         name
         begin
         end
+        trialSet {
+          id
+          type
+          properties {
+              key
+              val
+           }
+        }
+        properties {
+          key
+          val
+       }
         device {
           id
           name

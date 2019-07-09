@@ -22,6 +22,8 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import Button from '@material-ui/core/Button';
 import experimentsQuery from '../utils/experiments-query';
 import ExperimentForm from '../ExperimentForm';
+import { Subscription } from 'react-apollo';
+import experimentsSubscription from '../utils/experimentsSubscription';
 
 const graphql = new Graph();
 
@@ -42,7 +44,7 @@ class ListOfExperiments extends React.Component {
       .then(data => {
         this.setState(() => ({
           experiments: data.experiments
-        }))
+        }));
       })
       .then(() => {
         setTimeout(() => {
@@ -50,6 +52,7 @@ class ListOfExperiments extends React.Component {
         }, 5000)
       })
   }
+  
   componentDidUpdate() {
     if (this.state.experiments && this.state.experiments.length > 0 && this.state.render === false) {
       this.setState(() => ({ render: true }))
@@ -126,7 +129,7 @@ class ListOfExperiments extends React.Component {
                 </ListItem>
               ))}
             </List>
-            <div onClick={() => this.setState({ add: true })} style={{cursor: 'pointer'}}> + Add Experiment</div>
+            <div onClick={() => this.setState({ add: true })} style={{cursor: 'pointer'}}> + Add An Experiment</div>
             <Divider />
             <div className="footer"
             //style={{'background-color':'#dddddd'}}
@@ -141,6 +144,14 @@ class ListOfExperiments extends React.Component {
             <div className={classes.drawerHeader} />
             <MainView id={this.state.currentExperiment.id} />
           </main>
+          {/* <Subscription
+            subscription={experimentsSubscription}>
+            {({ data, loading }) => {
+              if (data && data.experimentsUpdated)
+                this.queryRefecth !== null && this.queryRefecth();
+              return null
+            }}
+          </Subscription> */}
         </div>
       );
     else return this.state.timeout ?

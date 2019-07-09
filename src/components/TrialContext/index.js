@@ -100,7 +100,7 @@ class TrialMainView extends React.PureComponent {
             }}
         </Subscription>
         <Query
-          query={devicesQuery()}
+          query={devicesQuery(this.props.experimentId)}
         >
           {
             ({ loading, error, data, refetch }) => {
@@ -125,14 +125,6 @@ class TrialMainView extends React.PureComponent {
             }
           }
         </Query>
-        <Subscription
-          subscription={trialsSubscription}>
-          {({ data, loading }) => {
-            if (data && data.trialsUpdated)
-              queryRefecth !== null && queryRefecth();
-            return null
-          }}
-        </Subscription>
       </div>
     );
   }

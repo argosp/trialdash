@@ -71,30 +71,13 @@ class ListOfTrials extends React.Component {
             </TableBody>
           </Table>
         </Paper> :
-        <Query
-          query={devicesQuery()}
-        >
-          {
-            ({ loading, error, data, refetch }) => {
-              if (this.state.value === 1 && (this.props.experimentId == null || this.props.experimentId === ''))
-                return <p style={{color: 'red', 'textAlign': 'left'}}>Please select an experiment first</p>;
-              if (loading) return <p></p>;
-              if (error) return;
-              return (
-                <div>
-                  <TrialForm
-                    {...this.state.editTrial}
-                    experimentId={this.state.experimentId}
-                    cancel
-                    showAll={() => this.setState({ editTrial: null })}
-                    devices={data.devices} 
-                  />
-
-                </div>
-              )
-            }
-          }
-        </Query>}
+          <TrialForm
+            {...this.state.editTrial}
+            experimentId={this.state.experimentId}
+            cancel
+            showAll={() => this.setState({ editTrial: null })}
+          />            
+        }
       </div>
     );
   }

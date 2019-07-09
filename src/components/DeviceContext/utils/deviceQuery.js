@@ -1,12 +1,13 @@
 import gql from 'graphql-tag'
 
-const devices = () => {
+const devices = experimentId => {
   return gql`
  	{
-     devices {
+     devices(experimentId:"${experimentId}"){
        id
        name
        type
+       number
        properties{
            key
            val

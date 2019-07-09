@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { styles } from './styles';
 import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
+import trialsSetsQuery from '../../TrialSetContext/utils/trialSetQuery';
 import config from '../../../config';
 import trialMutation from './utils/trialMutation';
 import Graph from '../../../apolloGraphql';
@@ -85,17 +86,35 @@ class TrialForm extends React.Component {
             name: props.name || '',
             begin: props.begin || null,
             end: props.end || null,
+            trialSet: props.trialSet,
+            properties: props.properties || [],
             errors: {}
         };
     }
 
     handleChangeMultiple = key => event => {
+        let properties = this.state.properties;
+        if (key === 'trialSet' && event && event.target.value.properties) {
+            properties = event.target.value.properties.map(p => { return({ key: p.key, val: '', type: p.val })})
+        }
         this.setState({
-            [key]: event.target.value
+            [key]: event.target.value,
+            properties
         });
     }
 
     componentDidMount() {
+        graphql.sendQuery(trialsSetsQuery(this.props.experimentId))
+          .then(data => {
+            this.setState(() => ({
+              trialSetsList: data.trialSets
+            }));
+          })
+          .then(() => {
+            setTimeout(() => {
+              this.setState(() => ({ timeout: true }))
+            }, 5000)
+          })
     }
 
 
@@ -105,11 +124,25 @@ class TrialForm extends React.Component {
         });
     };
 
+    handleChangeProprty = (index, key) => event => {
+        this.state.properties[index][key] = event.target.value;
+        this.setState({ });
+    };
 
     submitTrial = () => {
         this.setState({errors: {}});
+        const errors = {};
+        let e = false;
         if (!this.state.id || this.state.id.trim() === '') {
-            this.setState({errors: {id: true}});
+            errors.id = true;
+            e = true;
+        }
+        if (!this.state.trialSet || !this.state.trialSet.id) {
+            errors.trialSet = true;
+            e = true;
+        }
+        if (e) {
+            this.setState({ errors: errors });
             return;
         }
         const newTrial = {
@@ -117,6 +150,8 @@ class TrialForm extends React.Component {
             name: this.state.name,
             begin: this.state.begin,
             end: this.state.end,
+            trialSet: this.state.trialSet.id,
+            properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })}),
             device: this.state.device ? this.state.device.id : null,
             experimentId: this.state.experimentId
         };
@@ -179,6 +214,40 @@ class TrialForm extends React.Component {
                         }}
                     />
                     <br />
+                    <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
+                        <InputLabel htmlFor="select-multiple-chip">Trial Set</InputLabel>
+                        <Select
+                            error={this.state.errors.trialSet}
+                            value={this.state.trialSet}
+                            onChange={this.handleChangeMultiple('trialSet')}
+                            input={<Input id="select-multiple-chip" />}
+                            renderValue={selected => (<Chip label={selected.id} className={classes.chip} />)}
+                            MenuProps={MenuProps}
+                        >
+                            {this.state.trialSetsList && this.state.trialSetsList.map(ts => (
+                                <MenuItem key={ts.id} value={ts}>
+                                    {ts.id}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <br />
+                    <h3>properties:</h3>
+                    {this.state.properties.map((p, i) => {
+                        return <div key={i} style={{display: 'flex'}}>
+                            <TextField style={{ width: '300px' }}
+                                type={p.type}
+                                label={p.key}
+                                className={classes.textField}
+                                value={p.val}
+                                onChange={this.handleChangeProprty(i, 'val')}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <br />
+                        </div>
+                    })}
                     <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
                         <InputLabel htmlFor="select-multiple-chip">Device</InputLabel>
                         <Select

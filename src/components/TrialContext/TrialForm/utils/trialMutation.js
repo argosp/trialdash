@@ -10,7 +10,9 @@ export default (trial) => {
             begin:"${trial.begin}"
             end:"${trial.end}"
             device: "${trial.device}"
-          ){
+            trialSet: "${trial.trialSet}"
+            properties: ${JSON.stringify(trial.properties).replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:')}
+            ){
             id
         }
       }`

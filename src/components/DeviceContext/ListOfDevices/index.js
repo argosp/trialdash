@@ -35,7 +35,7 @@ class ListOfDevices extends React.Component {
     const classes = this.props;
     return (
       <div>
-        {!this.state.editTrial ? <Paper className={classes.root}>
+        {!this.state.editDevice ? <Paper className={classes.root}>
           <Table className={classes.table}>
           <TableHead>
             <TableRow>
@@ -52,7 +52,7 @@ class ListOfDevices extends React.Component {
                 <TableCell align="left">{device.id}</TableCell>
                 <TableCell align="left">{device.name}</TableCell>
                 <TableCell align="left">{device.type}</TableCell>
-                <TableCell align="left">{device.properties.map(prop => `key: ${prop.key}, val: ${prop.val}`).toString()}</TableCell>
+                <TableCell align="left">{device.properties && device.properties.map(prop => `key: ${prop.key}, val: ${prop.val}`).toString()}</TableCell>
                 <TableCell align="left">Edit</TableCell>
               </TableRow>
             ))}
@@ -60,7 +60,10 @@ class ListOfDevices extends React.Component {
         </Table>
       </Paper> :
       <DeviceForm
-        experimentId={this.props.experimentId}  
+        experimentId={this.props.experimentId}
+        {...this.state.editDevice}
+        cancel
+        showAll={() => this.setState({ editDevice: null })}
       />}
       </div>
     );

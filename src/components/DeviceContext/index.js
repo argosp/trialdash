@@ -62,7 +62,7 @@ render() {
           </Tabs>
         </Paper>
         <Query
-            query={devicesQuery()}
+            query={devicesQuery(this.props.experimentId)}
             >
             {
               ({ loading, error, data, refetch }) => {
@@ -74,7 +74,9 @@ render() {
                   {value === 0 && 
                     <TabContainer>
                         <ListOfDevices
-                            devices={data.devices}/>
+                          devices={data.devices}
+                          experimentId={this.props.experimentId}
+                        />
                     </TabContainer>}
                     {value === 1 && 
                     <TabContainer>

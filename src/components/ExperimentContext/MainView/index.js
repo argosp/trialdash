@@ -38,28 +38,34 @@ handleChangeTab = (event, value) => {
 render() {
     const { classes } = this.props;
     const { value } = this.state;
-    return (
+    if (this.props.id) {
+      return (
         <div className={classes.root}>
-        <Paper square>
-          <Tabs 
-            value={value} 
-            onChange={this.handleChangeTab}
-            indicatorColor="primary"
-            textColor="primary"
-            >
-            <Tab label="Trials" disabled={this.props.id === null} />
-            <Tab label="Devices" disabled={this.props.id === null}/>
-            <Tab label="Assets" disabled={this.props.id === null}/>
-            <Tab label="TrialSets" disabled={this.props.id === null}/>
-          </Tabs>
-          
-        </Paper>
-        {value === 0 && <TabContainer><Trials experimentId={this.props.id}/></TabContainer>}
-        {value === 1 && <TabContainer><Devices experimentId={this.props.id}/></TabContainer>}
-        {value === 2 && <TabContainer><Assets experimentId={this.props.id}/></TabContainer>}
-        {value === 3 && <TabContainer><TrialSets experimentId={this.props.id}/></TabContainer>}
-      </div>
-    );
+          <Paper square>
+            <Tabs 
+              value={value} 
+              onChange={this.handleChangeTab}
+              indicatorColor="primary"
+              textColor="primary"
+              >
+              <Tab label="Trials" disabled={this.props.id === null} />
+              <Tab label="Devices" disabled={this.props.id === null}/>
+              <Tab label="Assets" disabled={this.props.id === null}/>
+              <Tab label="TrialSets" disabled={this.props.id === null}/>
+            </Tabs>
+            
+          </Paper>
+          {value === 0 && <TabContainer><Trials experimentId={this.props.id}/></TabContainer>}
+          {value === 1 && <TabContainer><Devices experimentId={this.props.id}/></TabContainer>}
+          {value === 2 && <TabContainer><Assets experimentId={this.props.id}/></TabContainer>}
+          {value === 3 && <TabContainer><TrialSets experimentId={this.props.id}/></TabContainer>}
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.root}><Paper square>Select an Experiment Or add a new Experiment</Paper></div>
+      );
+    }
   }
 }
 
