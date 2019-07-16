@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Graph from '../../../apolloGraphql';
+import assetsQuery from '../utils/assetQuery';
 import AssetForm from '../AssetForm';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -38,10 +39,10 @@ class ListOfAssets extends React.Component {
           <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell align="left">Assets ID</TableCell>
-              <TableCell align="left">Assets Name</TableCell>
-              <TableCell align="left">Assets Type</TableCell>
-              <TableCell align="left">Assets Properties</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s ID</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Name</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Type</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Properties</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
@@ -51,6 +52,7 @@ class ListOfAssets extends React.Component {
                 <TableCell align="left">{asset.id}</TableCell>
                 <TableCell align="left">{asset.name}</TableCell>
                 <TableCell align="left">{asset.type}</TableCell>
+                <TableCell align="left">{asset.properties && asset.properties.map(prop => `key: ${prop.key}, val: ${prop.val}`).toString()}</TableCell>
                 <TableCell align="left">Edit</TableCell>
               </TableRow>
             ))}
@@ -58,7 +60,11 @@ class ListOfAssets extends React.Component {
         </Table>
       </Paper> :
       <AssetForm
-        experimentId={this.props.experimentId}  
+        experimentId={this.props.experimentId}
+        entityType={this.props.entityType}
+        {...this.state.editAsset}
+        cancel
+        showAll={() => this.setState({ editAsset: null })}
       />}
       </div>
     );

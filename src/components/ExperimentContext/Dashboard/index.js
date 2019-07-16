@@ -43,7 +43,8 @@ class ListOfExperiments extends React.Component {
     graphql.sendQuery(experimentsQuery)
       .then(data => {
         this.setState(() => ({
-          experiments: data.experiments
+          experiments: data.experiments,
+          render: true
         }));
       })
       .then(() => {
@@ -52,7 +53,7 @@ class ListOfExperiments extends React.Component {
         }, 5000)
       })
   }
-  
+
   componentDidUpdate() {
     if (this.state.experiments && this.state.experiments.length > 0 && this.state.render === false) {
       this.setState(() => ({ render: true }))

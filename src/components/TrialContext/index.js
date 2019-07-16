@@ -100,7 +100,7 @@ class TrialMainView extends React.PureComponent {
             }}
         </Subscription>
         <Query
-          query={devicesQuery(this.props.experimentId)}
+          query={devicesQuery(this.props.experimentId, 'device')}
         >
           {
             ({ loading, error, data, refetch }) => {

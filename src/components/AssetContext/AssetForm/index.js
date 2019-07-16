@@ -75,9 +75,11 @@ class AssetForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: '',
-            name: '',
-            type: ''
+            id: this.props.id || '',
+            name: this.props.name || '',
+            type: this.props.type || '',
+            properties: this.props.properties || [],
+            number: this.props.number || 1
         };
     }
 
@@ -97,17 +99,31 @@ class AssetForm extends React.Component {
             id: this.state.id,
             experimentId: this.props.experimentId,
             name: this.state.name,
-            type: this.state.type
+            type: this.state.type,
+            number: this.state.number,
+            entityType: this.props.entityType,
+            properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })})
         };
 
         graphql.sendMutation(assetMutation(newAsset))
             .then(data => {
-                window.alert(`saved asset ${data.addUpdateAsset.id}`);
+                window.alert(`saved ${this.props.entityType} ${data.addUpdateAsset.id}`);
+                this.props.showAll();
             })
             .catch(err => {
                 window.alert(`error: ${err}`);
             });
     }
+
+    addProperty = () => {
+        this.state.properties.push({key: '', val: ''});
+        this.setState({});
+    }
+
+    handleChangeProprty = (index, key) => event => {
+        this.state.properties[index][key] = event.target.value;
+        this.setState({ });
+    };
 
     render() {
 
@@ -123,7 +139,7 @@ class AssetForm extends React.Component {
                 <br />
                 <TextField style={{ width: '300px', 'marginTop': '30px' }}
                     id="name"
-                    label="Name"
+                    label="Name Format"
                     className={classes.textField}
                     value={this.state.name}
                     onChange={this.handleChange('name')}
@@ -137,12 +153,61 @@ class AssetForm extends React.Component {
                     onChange={this.handleChange('type')}
                 />
                 <br />
+                <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                    id="number"
+                    type="number"
+                    label={`Number of ${this.props.entityType}s`}
+                    className={classes.textField}
+                    value={this.state.number}
+                    onChange={this.handleChange('number')}
+                    inputProps={{ min: "1" }}
+                />
+                <br />
+                {/* <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                    id="properties"
+                    label="Properties"
+                    className={classes.textField}
+                    value={this.state.properties}
+                    onChange={this.handleChange('properties')}
+                /> */}
+                <br />
+                <h3>properties:</h3>
+                {this.state.properties.map((p, i) => {
+                    return <div key={i} style={{display: 'flex'}}>
+                        <TextField style={{ width: '300px' }}
+                            label="name"
+                            className={classes.textField}
+                            value={p.key}
+                            onChange={this.handleChangeProprty(i, 'key')}
+                        />
+                        <br />
+                        <TextField style={{ width: '300px' }}
+                            label="type"
+                            className={classes.textField}
+                            value={p.val}
+                            onChange={this.handleChangeProprty(i, 'val')}
+                        />
+                        <br />
+                    </div>
+                })}
+                <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                    onClick={this.addProperty}
+                >
+                    + Add Property
+                </Button>
                 <div style={{ 'marginTop': '50px', textAlign: 'center' }}>
-                    <Button variant="contained" className={classes.button} style={{ width: '180px' }}
-                        onClick={this.submitAsset}
+                    <div style={{ 'marginTop': '50px', textAlign: 'center' }}>
+                        <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                            onClick={this.submitAsset}
+                        >
+                            Submit
+                        </Button>
+                    </div>
+                    {this.props.cancel && <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                        onClick={this.props.showAll}
                     >
-                        Submit
-                    </Button>
+                        Cancel
+                    </Button>}
                 </div>
             </form>
         );

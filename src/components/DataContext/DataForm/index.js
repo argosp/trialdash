@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { styles } from './styles';
+import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
 import config from '../../../config';
-import experimentMutation from './utils/experimentMutation';
+import dataMutation from './utils/dataMutation';
 import Graph from '../../../apolloGraphql';
 
 import classes from './styles';
@@ -11,7 +13,13 @@ import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 // import { withTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Chip from '@material-ui/core/Chip';
 
 const graphql = new Graph();
 
@@ -54,32 +62,21 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function getStyles(device, devices, theme) {
+function getStyles(data, theme) {
     return {
-        fontWeight:
-            devices.indexOf(device) === -1
-                ? theme.typography.fontWeightRegular
-                : theme.typography.fontWeightMedium,
     };
 }
 
-class ExperimentForm extends React.Component {
+class DataForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            expanded: null,
-            id: props.id || '',
-            name: props.name || '',
-            begin: props.begin,
-            end: props.end,
-            errors: {}
+            id: this.props.id || '',
+            name: this.props.name || '',
+            type: this.props.type || '',
+            properties: this.props.properties || [],
+            number: this.props.number || 1
         };
-    }
-
-    handleChangeMultiple = key => event => {
-        this.setState({
-            [key]: event.target.value
-        });
     }
 
     componentDidMount() {
@@ -93,37 +90,38 @@ class ExperimentForm extends React.Component {
     };
 
 
-    submitExperiment = () => {
-        this.setState({errors: {}});
-        if (!this.state.name || this.state.name.trim() === '') {
-            this.setState({errors: {name: true}});
-            return;
-        }
-        const newExperiment = {
-            // id: this.state.id,
+    submitData = () => {
+        const newData = {
+            id: this.state.id,
+            experimentId: this.props.experimentId,
             name: this.state.name,
-            begin: this.state.begin,
-            end: this.state.end
         };
 
-        let _this = this;
-
-        graphql.sendMutation(experimentMutation(newExperiment))
+        graphql.sendMutation(dataMutation(newData))
             .then(data => {
-                window.alert(`saved experiment ${data.addUpdateExperiment.id}`);
-                if (_this.props.close) _this.props.close();
+                window.alert(`saved ${this.props.entityType} ${data.addUpdateData.id}`);
+                this.props.showAll();
             })
             .catch(err => {
                 window.alert(`error: ${err}`);
             });
     }
 
+    addProperty = () => {
+        this.state.properties.push({key: '', val: ''});
+        this.setState({});
+    }
+
+    handleChangeProprty = (index, key) => event => {
+        this.state.properties[index][key] = event.target.value;
+        this.setState({ });
+    };
+
     render() {
 
         return (
             <form className={classes.container}  noValidate autoComplete="off" style={{
                 textAlign: 'left',
-                position: 'absolute',
                 padding: '70px',
                 marginLeft: '240px',
                 zIndex: 999,
@@ -143,7 +141,6 @@ class ExperimentForm extends React.Component {
                     <TextField style={{ width: '300px', 'marginTop': '30px' }}
                         id="name"
                         label="Name"
-                        error={this.state.errors.name}
                         className={classes.textField}
                         value={this.state.name}
                         onChange={this.handleChange('name')}
@@ -176,7 +173,7 @@ class ExperimentForm extends React.Component {
                 <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
                         <div style={{ 'marginTop': '50px', textAlign: 'center', display: 'flex' }}>
                             <Button variant="contained" className={classes.button} style={{ width: '180px' }}
-                                onClick={this.submitExperiment}
+                                onClick={this.submitData}
                             >
                                 Submit
                             </Button>
@@ -192,9 +189,9 @@ class ExperimentForm extends React.Component {
     }
 }
 
-ExperimentForm.propTypes = {
+DataForm.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
-export default withTheme(ExperimentForm);
+export default withTheme(DataForm);

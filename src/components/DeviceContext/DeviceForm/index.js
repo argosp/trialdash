@@ -101,12 +101,14 @@ class DeviceForm extends React.Component {
             name: this.state.name,
             type: this.state.type,
             number: this.state.number,
+            entityType: this.props.entityType,
             properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })})
         };
 
         graphql.sendMutation(deviceMutation(newDevice))
             .then(data => {
-                window.alert(`saved device ${data.addUpdateDevice.id}`);
+                window.alert(`saved ${this.props.entityType} ${data.addUpdateDevice.id}`);
+                this.props.showAll();
             })
             .catch(err => {
                 window.alert(`error: ${err}`);
@@ -154,7 +156,7 @@ class DeviceForm extends React.Component {
                 <TextField style={{ width: '300px', 'marginTop': '30px' }}
                     id="number"
                     type="number"
-                    label="Number of devices"
+                    label={`Number of ${this.props.entityType}s`}
                     className={classes.textField}
                     value={this.state.number}
                     onChange={this.handleChange('number')}

@@ -9,10 +9,9 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import { styles } from './styles';
 
-import assetsQuery from './utils/assetQuery';
-import AssetForm from './AssetForm';
-import ListOfAssets from './ListOfAssets';
-import assetsSubscription from './utils/assetsSubscription';
+import dataQuery from './utils/dataQuery';
+import DataForm from './DataForm';
+import dataSubscription from './utils/dataSubscription';
 //MATERIAL UI DEPENDENCIES
 
 const TabContainer = (props) => {
@@ -23,18 +22,18 @@ const TabContainer = (props) => {
     );
   }
 
-class AssetMainView extends React.PureComponent {
+class DataMainView extends React.PureComponent {
 constructor(props){
     super(props);
     this.state = {
         value: 0,
         collection:"",
-        assets:[],
+        data:[],
         query: true
       };
 }
 componentWillMount(){
-  //this.assetUpdatedSubscription()
+  //this.dataUpdatedSubscription()
 }
 componentDidMount(){
   console.log(this.state)
@@ -50,42 +49,20 @@ render() {
     let queryRefecth = null;
     return (
         <div className={classes.root}>
-        <Paper square>
-          <Tabs 
-            value={value} 
-            onChange={this.handleChangeTab}
-            indicatorColor="primary"
-            textColor="primary"
-            >
-            <Tab label={`${this.props.entityType}s list`} />
-            <Tab label="+"/>
-          </Tabs>
-        </Paper>
         <Query
-            query={assetsQuery(this.props.experimentId, this.props.entityType)}
+            query={dataQuery(this.props.experimentId)}
             >
             {
               ({ loading, error, data, refetch }) => {
                 if (loading) return <p>Loading...</p>;
-                if (error) return <p> No {this.props.entityType}s to show</p>;
+                if (error) return <p> No data to show</p>;
                 queryRefecth = refetch;
                 return (
                   <div>
-                  {value === 0 && 
-                    <TabContainer>
-                        <ListOfAssets
-                          assets={data.assets}
+                        <DataForm
                           experimentId={this.props.experimentId}
-                          entityType={this.props.entityType}
+                          {...data.experimentData}
                         />
-                    </TabContainer>}
-                    {value === 1 && 
-                    <TabContainer>
-                        <AssetForm
-                          experimentId={this.props.experimentId}
-                          entityType={this.props.entityType}
-                        />
-                    </TabContainer>}
 
                   </div>
                 )
@@ -93,9 +70,9 @@ render() {
             }
         </Query>
         <Subscription
-            subscription={assetsSubscription}>
+            subscription={dataSubscription}>
             {({ data, loading }) => {
-              if (data && data.assetsUpdated) 
+              if (data && data.experimentDataUpdated) 
               queryRefecth !== null && queryRefecth();
               return null
             }}
@@ -105,7 +82,7 @@ render() {
   }
 }
 
-AssetMainView.propTypes = {
+DataMainView.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
@@ -114,5 +91,5 @@ TabContainer.propTypes = {
 };
   
 
-export default withStyles(styles)(AssetMainView);
+export default withStyles(styles)(DataMainView);
 

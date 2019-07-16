@@ -57,17 +57,17 @@ render() {
             indicatorColor="primary"
             textColor="primary"
             >
-            <Tab label="Devices list" />
+            <Tab label={`${this.props.entityType}s list`} />
             <Tab label="+"/>
           </Tabs>
         </Paper>
         <Query
-            query={devicesQuery(this.props.experimentId)}
+            query={devicesQuery(this.props.experimentId, this.props.entityType)}
             >
             {
               ({ loading, error, data, refetch }) => {
                 if (loading) return <p>Loading...</p>;
-                if (error) return <p> No devices to show</p>;
+                if (error) return <p> No {this.props.entityType}s to show</p>;
                 queryRefecth = refetch;
                 return (
                   <div>
@@ -76,12 +76,14 @@ render() {
                         <ListOfDevices
                           devices={data.devices}
                           experimentId={this.props.experimentId}
+                          entityType={this.props.entityType}
                         />
                     </TabContainer>}
                     {value === 1 && 
                     <TabContainer>
                         <DeviceForm
                           experimentId={this.props.experimentId}
+                          entityType={this.props.entityType}
                         />
                     </TabContainer>}
 

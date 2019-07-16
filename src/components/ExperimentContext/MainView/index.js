@@ -10,6 +10,7 @@ import { styles } from './styles';
 import Devices from '../../DeviceContext';
 import Trials from '../../TrialContext';
 import Assets from '../../AssetContext';
+import Data from '../../DataContext';
 import TrialSets from '../../TrialSetContext';
 
 const TabContainer = (props) => {
@@ -48,6 +49,7 @@ render() {
               indicatorColor="primary"
               textColor="primary"
               >
+              {/* <Tab label="Data" disabled={this.props.id === null} /> */}
               <Tab label="Trials" disabled={this.props.id === null} />
               <Tab label="Devices" disabled={this.props.id === null}/>
               <Tab label="Assets" disabled={this.props.id === null}/>
@@ -55,9 +57,10 @@ render() {
             </Tabs>
             
           </Paper>
+          {/* {value === 0 && <TabContainer><Data experimentId={this.props.id}/></TabContainer>} */}
           {value === 0 && <TabContainer><Trials experimentId={this.props.id}/></TabContainer>}
-          {value === 1 && <TabContainer><Devices experimentId={this.props.id}/></TabContainer>}
-          {value === 2 && <TabContainer><Assets experimentId={this.props.id}/></TabContainer>}
+          {value === 1 && <TabContainer><Devices experimentId={this.props.id} entityType="device"/></TabContainer>}
+          {value === 2 && <TabContainer><Assets experimentId={this.props.id} entityType="asset"/></TabContainer>}
           {value === 3 && <TabContainer><TrialSets experimentId={this.props.id}/></TabContainer>}
         </div>
       );

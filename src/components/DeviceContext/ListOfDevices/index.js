@@ -39,10 +39,10 @@ class ListOfDevices extends React.Component {
           <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell align="left">Devices ID</TableCell>
-              <TableCell align="left">Devices Name</TableCell>
-              <TableCell align="left">Devices Type</TableCell>
-              <TableCell align="left">Devices Properties</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s ID</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Name</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Type</TableCell>
+              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Properties</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
@@ -61,6 +61,7 @@ class ListOfDevices extends React.Component {
       </Paper> :
       <DeviceForm
         experimentId={this.props.experimentId}
+        entityType={this.props.entityType}
         {...this.state.editDevice}
         cancel
         showAll={() => this.setState({ editDevice: null })}

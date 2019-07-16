@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { styles } from './styles';
 import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
 import trialsSetsQuery from '../../TrialSetContext/utils/trialSetQuery';
+import devicesQuery from '../../DeviceContext/utils/deviceQuery';
 import config from '../../../config';
 import trialMutation from './utils/trialMutation';
 import Graph from '../../../apolloGraphql';
@@ -76,6 +77,14 @@ function getStyles(device, devices, theme) {
 class TrialForm extends React.Component {
     constructor(props) {
         super(props);
+        let properties = props.properties || [];
+        if (props.trialSet && props.trialSet.properties) {
+            props.trialSet.properties.forEach(p => {
+                let property = properties.find(pr => pr.key === p.key);
+                if (property) property.type = p.val;
+                else properties.push({ key: p.key, val: '', type: p.val });
+            });
+        }
         this.state = {
             expanded: null,
             experiments: [],
@@ -87,7 +96,7 @@ class TrialForm extends React.Component {
             begin: props.begin || null,
             end: props.end || null,
             trialSet: props.trialSet,
-            properties: props.properties || [],
+            properties: properties,
             errors: {}
         };
     }
@@ -108,6 +117,18 @@ class TrialForm extends React.Component {
           .then(data => {
             this.setState(() => ({
               trialSetsList: data.trialSets
+            }));
+          })
+          .then(() => {
+            setTimeout(() => {
+              this.setState(() => ({ timeout: true }))
+            }, 5000)
+          })
+
+        graphql.sendQuery(devicesQuery(this.props.experimentId, 'device'))
+          .then(data => {
+            this.setState(() => ({
+              devicesList: data.devices
             }));
           })
           .then(() => {
