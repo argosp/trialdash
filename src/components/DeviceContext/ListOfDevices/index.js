@@ -39,7 +39,6 @@ class ListOfDevices extends React.Component {
           <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s ID</TableCell>
               <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Name</TableCell>
               <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Type</TableCell>
               <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Properties</TableCell>
@@ -49,7 +48,6 @@ class ListOfDevices extends React.Component {
           <TableBody>
             {this.props.devices.map((device, index) => (
               <TableRow key={index} style={{cursor: 'pointer'}} onClick={() => this.setState({ editDevice: device })}>
-                <TableCell align="left">{device.id}</TableCell>
                 <TableCell align="left">{device.name}</TableCell>
                 <TableCell align="left">{device.type}</TableCell>
                 <TableCell align="left">{device.properties && device.properties.map(prop => `key: ${prop.key}, val: ${prop.val}`).toString()}</TableCell>

@@ -39,7 +39,6 @@ class ListOfAssets extends React.Component {
           <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s ID</TableCell>
               <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Name</TableCell>
               <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Type</TableCell>
               <TableCell align="left">{this.props.entityType.charAt(0).toUpperCase() + this.props.entityType.slice(1)}s Properties</TableCell>
@@ -49,7 +48,6 @@ class ListOfAssets extends React.Component {
           <TableBody>
             {this.props.assets.map((asset, index) => (
               <TableRow key={index} style={{cursor: 'pointer'}} onClick={() => this.setState({ editAsset: asset })}>
-                <TableCell align="left">{asset.id}</TableCell>
                 <TableCell align="left">{asset.name}</TableCell>
                 <TableCell align="left">{asset.type}</TableCell>
                 <TableCell align="left">{asset.properties && asset.properties.map(prop => `key: ${prop.key}, val: ${prop.val}`).toString()}</TableCell>

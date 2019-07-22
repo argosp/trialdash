@@ -49,7 +49,6 @@ class ListOfTrials extends React.Component {
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell align="left">Trial ID</TableCell>
                 <TableCell align="left">Trial Name</TableCell>
                 <TableCell align="left">Trial Begin</TableCell>
                 <TableCell align="left">Trial End</TableCell>
@@ -60,7 +59,6 @@ class ListOfTrials extends React.Component {
             <TableBody>
               {this.props.trials.map((trial, index) => (
                 <TableRow key={index} style={{cursor: 'pointer'}} onClick={() => this.setState({ editTrial: trial })}>
-                  <TableCell align="left">{trial.id}</TableCell>
                   <TableCell align="left">{trial.name}</TableCell>
                   <TableCell align="left">{trial.begin}</TableCell>
                   <TableCell align="left">{trial.end}</TableCell>

@@ -14,13 +14,6 @@ import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Chip from '@material-ui/core/Chip';
-
 const graphql = new Graph();
 
 const ITEM_HEIGHT = 48;
@@ -75,7 +68,7 @@ class DeviceForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.id || '',
+            id: this.props.id || null,
             name: this.props.name || '',
             type: this.props.type || '',
             properties: this.props.properties || [],
@@ -129,14 +122,6 @@ class DeviceForm extends React.Component {
 
         return (
             <form className={classes.container} noValidate autoComplete="off" style={{ textAlign: 'left' }}>
-                <TextField style={{ width: '300px' }}
-                    id="id"
-                    label="ID"
-                    className={classes.textField}
-                    value={this.state.id}
-                    onChange={this.handleChange('id')}
-                />
-                <br />
                 <TextField style={{ width: '300px', 'marginTop': '30px' }}
                     id="name"
                     label="Name Format"

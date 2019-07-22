@@ -75,7 +75,7 @@ class AssetForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.id || '',
+            id: this.props.id || null,
             name: this.props.name || '',
             type: this.props.type || '',
             properties: this.props.properties || [],
@@ -129,14 +129,6 @@ class AssetForm extends React.Component {
 
         return (
             <form className={classes.container} noValidate autoComplete="off" style={{ textAlign: 'left' }}>
-                <TextField style={{ width: '300px' }}
-                    id="id"
-                    label="ID"
-                    className={classes.textField}
-                    value={this.state.id}
-                    onChange={this.handleChange('id')}
-                />
-                <br />
                 <TextField style={{ width: '300px', 'marginTop': '30px' }}
                     id="name"
                     label="Name Format"
