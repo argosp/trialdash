@@ -102,7 +102,7 @@ class DeviceForm extends React.Component {
             type: this.state.type,
             number: this.state.number,
             entityType: this.props.entityType,
-            properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })})
+            properties: this.state.properties.map(p => {return({ key: p.key, val: p.val, type: p.type })})
         };
 
         graphql.sendMutation(deviceMutation(newDevice))
@@ -183,6 +183,14 @@ class DeviceForm extends React.Component {
                         <br />
                         <TextField style={{ width: '300px' }}
                             label="type"
+                            className={classes.textField}
+                            value={p.type}
+                            onChange={this.handleChangeProprty(i, 'type')}
+                        />
+                        <br />
+                        <TextField style={{ width: '300px' }}
+                            type={p.type}
+                            label="value"
                             className={classes.textField}
                             value={p.val}
                             onChange={this.handleChangeProprty(i, 'val')}

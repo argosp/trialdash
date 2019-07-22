@@ -11,6 +11,7 @@ const devices = (experimentId, entityType) => {
        properties{
            key
            val
+           type
         }
      }
   }`

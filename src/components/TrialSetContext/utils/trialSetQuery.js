@@ -5,8 +5,7 @@ const trialSets = experimentId => {
   {
       trialSets(experimentId:"${experimentId}"){
        id
-       begin
-       end
+       name
        type
        properties{
         key

@@ -61,7 +61,7 @@ class TrialMainView extends React.PureComponent {
             textColor="primary"
           >
             <Tab label="Trials list" disabled={this.props.experimentId === null} />
-            <Tab label="+" disabled={this.props.experimentId === null} />
+            {/* <Tab label="+" disabled={this.props.experimentId === null} /> */}
           </Tabs>
         </Paper>
         <Query
@@ -99,7 +99,7 @@ class TrialMainView extends React.PureComponent {
               return null
             }}
         </Subscription>
-        <Query
+        {/* <Query
           query={devicesQuery(this.props.experimentId, 'device')}
         >
           {
@@ -124,7 +124,7 @@ class TrialMainView extends React.PureComponent {
               )
             }
           }
-        </Query>
+        </Query> */}
       </div>
     );
   }

@@ -11,7 +11,7 @@ export default (device) => {
         type: "${device.type}",
         number: "${device.number}",
         entityType: "${device.entityType}",
-        properties: ${JSON.stringify(device.properties).replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:')}
+        properties: ${JSON.stringify(device.properties).replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:').replace(/\"type\":/g, 'type:')}
         ) {
             id
             name
@@ -20,6 +20,7 @@ export default (device) => {
             properties{
                 key
                 val
+                type
              }
         }
     }

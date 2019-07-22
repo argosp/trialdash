@@ -11,6 +11,7 @@ const trials = experimentId => {
         trialSet {
           id
           type
+          name
           properties {
               key
               val

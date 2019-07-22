@@ -75,11 +75,13 @@ class TrialSetForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: props.id || '',
-            begin: props.begin || '',
-            end: props.end || '',
+            id: props.id || null,
+            name: props.name || '',
             type: '',
-            properties: props.properties || []
+            properties: props.properties || [],
+            devicesList: props.devicesList || [],
+            devices: props.devices || [],
+            options: ['text', 'number', 'date', 'color', 'position']
         };
     }
 
@@ -102,15 +104,14 @@ class TrialSetForm extends React.Component {
         const newTrialSet = {
             id: this.state.id,
             experimentId: this.props.experimentId,
-            begin: this.state.begin,
-            end: this.state.end,
+            name: this.state.name,
             type: this.state.type,
             properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })})
         };
 
         graphql.sendMutation(trialSetMutation(newTrialSet))
             .then(data => {
-                window.alert(`saved trialSet ${data.addUpdateTrialSet.id}`);
+                window.alert(`saved trialSet ${data.addUpdateTrialSet.name}`);
                 this.props.showAll();
             })
             .catch(err => {
@@ -123,39 +124,16 @@ class TrialSetForm extends React.Component {
         this.setState({});
     }
 
-    render() {
+    render = () => {
         return (
             <form className={classes.container} noValidate autoComplete="off" style={{ textAlign: 'left' }}>
-                <TextField style={{ width: '300px' }}
-                    id="id"
-                    label="ID"
-                    className={classes.textField}
-                    value={this.state.id}
-                    onChange={this.handleChange('id')}
-                />
-                <br />
                 <TextField style={{ width: '300px', 'marginTop': '30px' }}
-                    id="begin"
-                    label="Begin"
-                    type="date"
+                    id="name"
+                    label="Name"
+                    type="text"
                     className={classes.textField}
-                    value={this.state.begin}
-                    onChange={this.handleChange('begin')}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-                <br />
-                <TextField style={{ width: '300px', 'marginTop': '30px' }}
-                    id="end"
-                    label="End"
-                    type="date"
-                    className={classes.textField}
-                    value={this.state.end}
-                    onChange={this.handleChange('end')}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
+                    value={this.state.name}
+                    onChange={this.handleChange('name')}
                 />
                 <br />
                 <h3>properties:</h3>
@@ -168,15 +146,24 @@ class TrialSetForm extends React.Component {
                             onChange={this.handleChangeProprty(i, 'key')}
                         />
                         <br />
-                        <TextField style={{ width: '300px' }}
-                            label="type"
-                            className={classes.textField}
+                        <InputLabel htmlFor="select-multiple-chip">Type</InputLabel>
+                        <Select
                             value={p.val}
                             onChange={this.handleChangeProprty(i, 'val')}
-                        />
+                            // input={<Input id="select-multiple-chip" />}
+                            // renderValue={selected => (<Chip label={selected.id} className={classes.chip} />)}
+                            MenuProps={MenuProps}
+                        >
+                            {this.state.options && this.state.options.map(o => (
+                                <MenuItem key={o} value={o}>
+                                    {o}
+                                </MenuItem>
+                            ))}
+                        </Select>
                         <br />
                     </div>
                 })}
+                
                 <Button variant="contained" className={classes.button} style={{ width: '180px' }}
                     onClick={this.addProperty}
                 >

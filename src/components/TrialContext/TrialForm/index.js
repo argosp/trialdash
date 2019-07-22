@@ -90,8 +90,8 @@ class TrialForm extends React.Component {
             experiments: [],
             experimentId: props.experimentId,
             devicesList: props.devices || [],
-            device: props.device,
-            id: props.id || '',
+            device:  [] || props.device,
+            id: props.id || null,
             name: props.name || '',
             begin: props.begin || null,
             end: props.end || null,
@@ -146,6 +146,7 @@ class TrialForm extends React.Component {
     };
 
     handleChangeProprty = (index, key) => event => {
+        console.log(index, key, event)
         this.state.properties[index][key] = event.target.value;
         this.setState({ });
     };
@@ -154,10 +155,6 @@ class TrialForm extends React.Component {
         this.setState({errors: {}});
         const errors = {};
         let e = false;
-        if (!this.state.id || this.state.id.trim() === '') {
-            errors.id = true;
-            e = true;
-        }
         if (!this.state.trialSet || !this.state.trialSet.id) {
             errors.trialSet = true;
             e = true;
@@ -194,15 +191,7 @@ class TrialForm extends React.Component {
         return (
             <form className={classes.container}  noValidate autoComplete="off" style={{ display: 'flex', textAlign: 'left' }}>
                 <div>
-                    <TextField style={{ width: '300px' }}
-                        error={this.state.errors.id}
-                        id="id"
-                        label="ID"
-                        className={classes.textField}
-                        value={this.state.id}
-                        onChange={this.handleChange('id')}
-                    />
-                    <br />
+                    <div>{this.state.id ? `Edit trial of trialSet ${this.state.trialSet.name}` : `Add trial to trialSet ${this.state.trialSet.name}`}</div>
                     <TextField style={{ width: '300px', 'marginTop': '30px' }}
                         id="name"
                         label="Name"
@@ -235,48 +224,42 @@ class TrialForm extends React.Component {
                         }}
                     />
                     <br />
-                    <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
-                        <InputLabel htmlFor="select-multiple-chip">Trial Set</InputLabel>
-                        <Select
-                            error={this.state.errors.trialSet}
-                            value={this.state.trialSet}
-                            onChange={this.handleChangeMultiple('trialSet')}
-                            input={<Input id="select-multiple-chip" />}
-                            renderValue={selected => (<Chip label={selected.id} className={classes.chip} />)}
-                            MenuProps={MenuProps}
-                        >
-                            {this.state.trialSetsList && this.state.trialSetsList.map(ts => (
-                                <MenuItem key={ts.id} value={ts}>
-                                    {ts.id}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                        id="trialSet"
+                        label="Tial Set"
+                        type="text"
+                        readonly
+                        className={classes.textField}
+                        value={this.state.trialSet.name}
+                    />                    
                     <br />
                     <h3>properties:</h3>
                     {this.state.properties.map((p, i) => {
-                        return <div key={i} style={{display: 'flex'}}>
-                            <TextField style={{ width: '300px' }}
-                                type={p.type}
-                                label={p.key}
-                                className={classes.textField}
-                                value={p.val}
-                                onChange={this.handleChangeProprty(i, 'val')}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                            <br />
-                        </div>
+                        if(p.type === 'position') return <LeafLetMap onChange={this.handleChangeProprty(i, 'val')} position={p.val && p.val !== '' ? p.val.split(',') : [0, 0]}/>
+                        else
+                            return <div key={i} style={{display: 'flex'}}>
+                                <TextField style={{ width: '300px' }}
+                                    type={p.type}
+                                    label={p.key}
+                                    className={classes.textField}
+                                    value={p.val}
+                                    onChange={this.handleChangeProprty(i, 'val')}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                                <br />
+                            </div>
+                        
                     })}
                     <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
                         <InputLabel htmlFor="select-multiple-chip">Device</InputLabel>
                         <Select
-                            // multiple
+                            multiple
                             value={this.state.device}
                             onChange={this.handleChangeMultiple('device')}
                             input={<Input id="select-multiple-chip" />}
-                            renderValue={selected => (<Chip label={selected.name} className={classes.chip} />)}
+                            renderValue={selected => selected.map(s => <Chip label={s.name} className={s.chip} />)}
                             MenuProps={MenuProps}
                         >
                             {this.state.devicesList.map(device => (
@@ -300,7 +283,6 @@ class TrialForm extends React.Component {
                     </FormControl>
 
                 </div>
-                {/* {this.state.device && this.state.device.position && <LeafLetMap position={this.state.device.position.split(',')}/>} */}
             </form>
         );
     }

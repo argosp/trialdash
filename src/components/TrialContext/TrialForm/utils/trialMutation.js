@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
 
-export default (trial) => {   
+export default (trial) => {
+    var id = trial.id ? trial.id : `${trial.experimentId}_${Date.now()}`; 
     return gql`mutation {
         addUpdateTrial(
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${trial.experimentId}"
-            id:"${trial.id}"
+            id:"${id}"
             name:"${trial.name}"
             begin:"${trial.begin}"
             end:"${trial.end}"

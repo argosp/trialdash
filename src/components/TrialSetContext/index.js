@@ -83,6 +83,7 @@ render() {
                     <TabContainer>
                         <TrialSetForm
                           experimentId={this.props.experimentId}
+                          showAll={() => this.setState({ value: 1 })}
                         />
                     </TabContainer>}
 
