@@ -79,7 +79,8 @@ class AssetForm extends React.Component {
             name: this.props.name || '',
             type: this.props.type || '',
             properties: this.props.properties || [],
-            number: this.props.number || 1
+            number: this.props.number || 1,
+            options: ['text', 'number', 'date', 'location']
         };
     }
 
@@ -173,8 +174,21 @@ class AssetForm extends React.Component {
                             onChange={this.handleChangeProprty(i, 'key')}
                         />
                         <br />
+                        <InputLabel htmlFor="select-multiple-chip">Type</InputLabel>
+                        <Select
+                            value={p.type}
+                            onChange={this.handleChangeProprty(i, 'type')}
+                            MenuProps={MenuProps}
+                        >
+                            {this.state.options && this.state.options.map(o => (
+                                <MenuItem key={o} value={o}>
+                                    {o}
+                                </MenuItem>
+                            ))}
+                        </Select>
                         <TextField style={{ width: '300px' }}
-                            label="type"
+                            type={p.type}
+                            label="value"
                             className={classes.textField}
                             value={p.val}
                             onChange={this.handleChangeProprty(i, 'val')}

@@ -81,7 +81,7 @@ class TrialSetForm extends React.Component {
             properties: props.properties || [],
             devicesList: props.devicesList || [],
             devices: props.devices || [],
-            options: ['text', 'number', 'date', 'color', 'position']
+            options: ['text', 'number', 'date', 'location']
         };
     }
 

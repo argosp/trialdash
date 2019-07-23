@@ -2,7 +2,6 @@ import gql from 'graphql-tag';
 import { resultKeyNameFromField } from 'apollo-utilities';
 
 export default (trialSet) => {
-    console.log(trialSet.id);
     var id = trialSet.id ? trialSet.id : `${trialSet.experimentId}_${Date.now()}`;
     return gql`
   mutation {

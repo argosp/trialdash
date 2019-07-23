@@ -47,7 +47,7 @@ export default {
   },
   menu: {
     width: 200,
-  }
+  },
   // ,
   // menuItem: {
   //   fontWeight:
@@ -55,4 +55,12 @@ export default {
   //       ? theme.typography.fontWeightRegular
   //       : theme.typography.fontWeightMedium
   // }
+  entity: {
+    border: '1px solid',
+    padding: 2,
+    marginBottom: 10
+  },
+  properties: {
+    display: 'flex'
+  }
 };

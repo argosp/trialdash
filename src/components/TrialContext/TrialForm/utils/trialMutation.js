@@ -10,7 +10,8 @@ export default (trial) => {
             name:"${trial.name}"
             begin:"${trial.begin}"
             end:"${trial.end}"
-            device: "${trial.device}"
+            devices: ${JSON.stringify(trial.devices).replace(/\"entity\":/g, 'entity:').replace(/\"properties\":/g, 'properties:').replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:').replace(/\"type\":/g, 'type:')},
+            assets: ${JSON.stringify(trial.assets).replace(/\"entity\":/g, 'entity:').replace(/\"properties\":/g, 'properties:').replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:').replace(/\"type\":/g, 'type:')},
             trialSet: "${trial.trialSet}"
             properties: ${JSON.stringify(trial.properties).replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:')}
             ){

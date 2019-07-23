@@ -13,6 +13,9 @@ import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 // import { withTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 const graphql = new Graph();
 
@@ -72,7 +75,8 @@ class DeviceForm extends React.Component {
             name: this.props.name || '',
             type: this.props.type || '',
             properties: this.props.properties || [],
-            number: this.props.number || 1
+            number: this.props.number || 1,
+            options: ['text', 'number', 'date', 'location']
         };
     }
 
@@ -166,13 +170,18 @@ class DeviceForm extends React.Component {
                             onChange={this.handleChangeProprty(i, 'key')}
                         />
                         <br />
-                        <TextField style={{ width: '300px' }}
-                            label="type"
-                            className={classes.textField}
+                        <InputLabel htmlFor="select-multiple-chip">Type</InputLabel>
+                        <Select
                             value={p.type}
                             onChange={this.handleChangeProprty(i, 'type')}
-                        />
-                        <br />
+                            MenuProps={MenuProps}
+                        >
+                            {this.state.options && this.state.options.map(o => (
+                                <MenuItem key={o} value={o}>
+                                    {o}
+                                </MenuItem>
+                            ))}
+                        </Select>
                         <TextField style={{ width: '300px' }}
                             type={p.type}
                             label="value"

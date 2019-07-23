@@ -33,7 +33,6 @@ class ListOfTrialSets extends React.Component {
   }
 
   addTrial = (trialSet) => {
-    console.log('----------------');
     this.setState({addTrial: true, selected: trialSet });
   }
 

@@ -21,14 +21,29 @@ const trials = experimentId => {
           key
           val
        }
-        device {
-          id
-          name
-          type
+        devices {
+          entity {
+            id
+            name
+            type
+          }
           properties {
               key
               val
-           }
+          }
+          type
+      }
+      assets {
+        entity {
+          id
+          name
+          type
+        }
+        properties {
+            key
+            val
+        }
+        type
       }
     }
   }`

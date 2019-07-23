@@ -11,6 +11,7 @@ const assets = (experimentId, entityType) => {
        properties{
            key
            val
+           type
         }
      }
   }`

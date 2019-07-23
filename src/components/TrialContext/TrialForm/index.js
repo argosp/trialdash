@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { styles } from './styles';
-import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
-import trialsSetsQuery from '../../TrialSetContext/utils/trialSetQuery';
 import devicesQuery from '../../DeviceContext/utils/deviceQuery';
-import config from '../../../config';
+import assetsQuery from '../../AssetContext/utils/assetQuery';
 import trialMutation from './utils/trialMutation';
 import Graph from '../../../apolloGraphql';
 import LeafLetMap from '../LeafLetMap';
+import Entity from './entity';
 
 import classes from './styles';
 //MATERIAL UI DEPENDENCIES
@@ -17,12 +16,7 @@ import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Chip from '@material-ui/core/Chip';
 
 const graphql = new Graph();
 
@@ -89,8 +83,10 @@ class TrialForm extends React.Component {
             expanded: null,
             experiments: [],
             experimentId: props.experimentId,
-            devicesList: props.devices || [],
-            device:  [] || props.device,
+            devicesList: [],
+            devices: props.devices || [],
+            assetsList: [],
+            assets: props.assets || [],
             id: props.id || null,
             name: props.name || '',
             begin: props.begin || null,
@@ -101,22 +97,42 @@ class TrialForm extends React.Component {
         };
     }
 
-    handleChangeMultiple = key => event => {
-        let properties = this.state.properties;
-        if (key === 'trialSet' && event && event.target.value.properties) {
-            properties = event.target.value.properties.map(p => { return({ key: p.key, val: '', type: p.val })})
+    handleChangeMultiple = key => event => {        
+        let properties = event.target.value.properties.map(p => { return({ key: p.key, val: p.val, type: p.type })})
+        let obj = this.state[key] || [];
+        obj.push({ entity: event.target.value, properties });
+
+        this.setObj(key, obj);
+    }
+
+    removeEntity = (key, id) => {
+        let obj = this.state[key].filter(e => e.entity.id !== id)
+        this.setObj(key, obj);
+    }
+
+    setObj(key, obj) {
+        if (key === 'devices') {
+            let existingDevices = obj.map(d => d.entity.id);
+            this.state.devicesList = this.state.allDevices.filter(d => existingDevices.indexOf(d.id) === -1);
         }
+
+        if (key === 'assets') {
+            let existingAssets = obj.map(d => d.entity.id);
+            this.state.assetsList = this.state.allAssets.filter(d => existingAssets.indexOf(d.id) === -1);
+        }
+
         this.setState({
-            [key]: event.target.value,
-            properties
+            [key]: obj
         });
     }
 
     componentDidMount() {
-        graphql.sendQuery(trialsSetsQuery(this.props.experimentId))
+        graphql.sendQuery(devicesQuery(this.props.experimentId, 'device'))
           .then(data => {
+            let existingDevices = this.state.devices.map(d => d.entity.id);
             this.setState(() => ({
-              trialSetsList: data.trialSets
+              allDevices: data.devices,
+              devicesList: data.devices.filter(d => existingDevices.indexOf(d.id) === -1)
             }));
           })
           .then(() => {
@@ -125,10 +141,12 @@ class TrialForm extends React.Component {
             }, 5000)
           })
 
-        graphql.sendQuery(devicesQuery(this.props.experimentId, 'device'))
+        graphql.sendQuery(assetsQuery(this.props.experimentId, 'asset'))
           .then(data => {
+            let existingAssets = this.state.assets.map(d => d.entity.id);
             this.setState(() => ({
-              devicesList: data.devices
+              allAssets: data.assets,
+              assetsList: data.assets.filter(d => existingAssets.indexOf(d.id) === -1)
             }));
           })
           .then(() => {
@@ -145,9 +163,9 @@ class TrialForm extends React.Component {
         });
     };
 
-    handleChangeProprty = (index, key) => event => {
-        console.log(index, key, event)
-        this.state.properties[index][key] = event.target.value;
+    handleChangeProprty = (index, key, entityType, entityIndex) => event => {
+        if (entityType) this.state[entityType][entityIndex].properties[index][key] = event.target.value;
+        else this.state.properties[index][key] = event.target.value;
         this.setState({ });
     };
 
@@ -170,7 +188,8 @@ class TrialForm extends React.Component {
             end: this.state.end,
             trialSet: this.state.trialSet.id,
             properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })}),
-            device: this.state.device ? this.state.device.id : null,
+            devices: this.state.devices.map(d => {return({ entity: d.entity.id, properties: d.properties.map(p => {return({ key: p.key, val: p.val })}), type: 'device' })}),
+            assets: this.state.assets.map(d => {return({ entity: d.entity.id, properties: d.properties.map(p => {return({ key: p.key, val: p.val })}), type: 'asset' })}),
             experimentId: this.state.experimentId
         };
 
@@ -189,7 +208,7 @@ class TrialForm extends React.Component {
     render() {
 
         return (
-            <form className={classes.container}  noValidate autoComplete="off" style={{ display: 'flex', textAlign: 'left' }}>
+            <form style={classes.container} noValidate autoComplete="off" style={{ display: 'flex', textAlign: 'left' }}>
                 <div>
                     <div>{this.state.id ? `Edit trial of trialSet ${this.state.trialSet.name}` : `Add trial to trialSet ${this.state.trialSet.name}`}</div>
                     <TextField style={{ width: '300px', 'marginTop': '30px' }}
@@ -235,7 +254,7 @@ class TrialForm extends React.Component {
                     <br />
                     <h3>properties:</h3>
                     {this.state.properties.map((p, i) => {
-                        if(p.type === 'position') return <LeafLetMap onChange={this.handleChangeProprty(i, 'val')} position={p.val && p.val !== '' ? p.val.split(',') : [0, 0]}/>
+                        if(p.type === 'location') return <LeafLetMap onChange={this.handleChangeProprty(i, 'val')} location={p.val && p.val !== '' ? p.val.split(',') : [0, 0]}/>
                         else
                             return <div key={i} style={{display: 'flex'}}>
                                 <TextField style={{ width: '300px' }}
@@ -252,22 +271,9 @@ class TrialForm extends React.Component {
                             </div>
                         
                     })}
+                    <Entity entities={this.state.devices} entityName={'devices'} removeEntity={this.removeEntity} handleChangeMultiple={this.handleChangeMultiple} handleChangeProprty={this.handleChangeProprty} entitiesList={this.state.devicesList}/>
+                    <Entity entities={this.state.assets} entityName={'assets'} removeEntity={this.removeEntity} handleChangeMultiple={this.handleChangeMultiple} handleChangeProprty={this.handleChangeProprty} entitiesList={this.state.assetsList}/>
                     <FormControl className={classes.formControl} style={{ width: '300px', 'marginTop': '30px' }}>
-                        <InputLabel htmlFor="select-multiple-chip">Device</InputLabel>
-                        <Select
-                            multiple
-                            value={this.state.device}
-                            onChange={this.handleChangeMultiple('device')}
-                            input={<Input id="select-multiple-chip" />}
-                            renderValue={selected => selected.map(s => <Chip label={s.name} className={s.chip} />)}
-                            MenuProps={MenuProps}
-                        >
-                            {this.state.devicesList.map(device => (
-                                <MenuItem key={device.id} value={device}>
-                                    {device.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
                         <div style={{ 'marginTop': '50px', textAlign: 'center', display: 'flex' }}>
                             <Button variant="contained" className={classes.button} style={{ width: '180px' }}
                                 onClick={this.submitTrial}

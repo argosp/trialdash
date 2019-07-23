@@ -21,6 +21,7 @@ export default (asset) => {
             properties{
                 key
                 val
+                type
              }
         }
     }
