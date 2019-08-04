@@ -6,6 +6,7 @@ const trialSets = experimentId => {
       trialSets(experimentId:"${experimentId}"){
        id
        name
+       notes
        type
        properties{
         key

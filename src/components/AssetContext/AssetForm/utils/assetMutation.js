@@ -9,6 +9,7 @@ export default (asset) => {
         experimentId:"${asset.experimentId}"
         id: "${id}",
         name: "${asset.name}",
+        notes: "${asset.notes}",
         type: "${asset.type}",
         number: "${asset.number}",
         entityType: "${asset.entityType}",

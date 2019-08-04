@@ -77,6 +77,7 @@ class TrialSetForm extends React.Component {
         this.state = {
             id: props.id || null,
             name: props.name || '',
+            notes: props.notes || '',
             type: '',
             properties: props.properties || [],
             devicesList: props.devicesList || [],
@@ -105,6 +106,7 @@ class TrialSetForm extends React.Component {
             id: this.state.id,
             experimentId: this.props.experimentId,
             name: this.state.name,
+            notes: this.state.notes,
             type: this.state.type,
             properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })})
         };
@@ -134,6 +136,15 @@ class TrialSetForm extends React.Component {
                     className={classes.textField}
                     value={this.state.name}
                     onChange={this.handleChange('name')}
+                />
+                <br />
+                <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                    id="notes"
+                    label="Notes"
+                    type="text"
+                    className={classes.textField}
+                    value={this.state.notes}
+                    onChange={this.handleChange('notes')}
                 />
                 <br />
                 <h3>properties:</h3>

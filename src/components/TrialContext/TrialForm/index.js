@@ -89,6 +89,7 @@ class TrialForm extends React.Component {
             assets: props.assets || [],
             id: props.id || null,
             name: props.name || '',
+            notes: props.notes || '',
             begin: props.begin || null,
             end: props.end || null,
             trialSet: props.trialSet,
@@ -126,13 +127,29 @@ class TrialForm extends React.Component {
         });
     }
 
+    buildEntities(entities) {
+        const list = [];
+        let a;
+        entities.forEach(e => {
+            for (let i = 0; i < parseInt(e.number); i++) {
+                a = JSON.parse(JSON.stringify(e));
+                a.name = e.name.replace(/{id:(\d*)d}/, "$1"+i);
+                list.push(a);
+            }
+        });
+        return list;
+    }
+
     componentDidMount() {
         graphql.sendQuery(devicesQuery(this.props.experimentId, 'device'))
           .then(data => {
             let existingDevices = this.state.devices.map(d => d.entity.id);
+        //     - "nameFormat": The format of the name. {id} will be replaced by the running number of the device. (start at 1)
+        //  (For example, if Number=3 and namFormat="name_{id:02d}", you will get 3 devices with names: "name_01", "name_02", "name_03")
+            let allDevices = this.buildEntities(data.devices);
             this.setState(() => ({
-              allDevices: data.devices,
-              devicesList: data.devices.filter(d => existingDevices.indexOf(d.id) === -1)
+              allDevices: allDevices,
+              devicesList: allDevices.filter(d => existingDevices.indexOf(d.id) === -1)
             }));
           })
           .then(() => {
@@ -184,6 +201,7 @@ class TrialForm extends React.Component {
         const newTrial = {
             id: this.state.id,
             name: this.state.name,
+            notes: this.state.notes,
             begin: this.state.begin,
             end: this.state.end,
             trialSet: this.state.trialSet.id,
@@ -251,6 +269,16 @@ class TrialForm extends React.Component {
                         className={classes.textField}
                         value={this.state.trialSet.name}
                     />                    
+                    <br />
+                    <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                        id="notes"
+                        label="Notes"
+                        multiline
+                        rows={5}
+                        className={classes.textField}
+                        value={this.state.notes}
+                        onChange={this.handleChange('notes')}
+                    />
                     <br />
                     <h3>properties:</h3>
                     {this.state.properties.map((p, i) => {

@@ -73,6 +73,7 @@ class DeviceForm extends React.Component {
         this.state = {
             id: this.props.id || null,
             name: this.props.name || '',
+            notes: this.props.notes || '',
             type: this.props.type || '',
             properties: this.props.properties || [],
             number: this.props.number || 1,
@@ -96,6 +97,7 @@ class DeviceForm extends React.Component {
             id: this.state.id,
             experimentId: this.props.experimentId,
             name: this.state.name,
+            notes: this.state.notes,
             type: this.state.type,
             number: this.state.number,
             entityType: this.props.entityType,
@@ -152,13 +154,15 @@ class DeviceForm extends React.Component {
                     inputProps={{ min: "1" }}
                 />
                 <br />
-                {/* <TextField style={{ width: '300px', 'marginTop': '30px' }}
-                    id="properties"
-                    label="Properties"
+                <TextField style={{ width: '300px', 'marginTop': '30px' }}
+                    id="notes"
+                    label="Notes"
+                    multiline
+                    rows={5}
                     className={classes.textField}
-                    value={this.state.properties}
-                    onChange={this.handleChange('properties')}
-                /> */}
+                    value={this.state.notes}
+                    onChange={this.handleChange('notes')}
+                />
                 <br />
                 <h3>properties:</h3>
                 {this.state.properties.map((p, i) => {

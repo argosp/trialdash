@@ -6,6 +6,7 @@ const devices = (experimentId, entityType) => {
      devices(experimentId:"${experimentId}", entityType:"${entityType}"){
        id
        name
+       notes
        type
        number
        properties{

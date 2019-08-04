@@ -6,6 +6,7 @@ const trials = experimentId => {
       trials(experimentId:"${experimentId}"){
         id
         name
+        notes
         begin
         end
         trialSet {

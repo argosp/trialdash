@@ -6,6 +6,7 @@ const assets = (experimentId, entityType) => {
      assets(experimentId:"${experimentId}", entityType:"${entityType}"){
        id
        name
+       notes
        type
        number
        properties{

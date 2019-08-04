@@ -52,6 +52,7 @@ class ListOfTrials extends React.Component {
     const newTrial = {
       id: null,
       name: trial.name,
+      notes: trial.notes,
       begin: trial.begin,
       end: trial.end,
       trialSet: trial.trialSet.id,

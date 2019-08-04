@@ -9,6 +9,7 @@ export default (device) => {
         experimentId:"${device.experimentId}"
         id: "${id}",
         name: "${device.name}",
+        notes: "${device.notes}",
         type: "${device.type}",
         number: "${device.number}",
         entityType: "${device.entityType}",
