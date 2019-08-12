@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Graph from '../../../apolloGraphql';
 import trialsQuery from '../utils/trialQuery';
+import buildData from '../utils/build-data';
 import TrialForm from '../TrialForm';
 import devicesQuery from '../../DeviceContext/utils/deviceQuery';
 import trialMutation from '../TrialForm/utils/trialMutation';
@@ -56,9 +57,9 @@ class ListOfTrials extends React.Component {
       begin: trial.begin,
       end: trial.end,
       trialSet: trial.trialSet.id,
-      properties: trial.properties.map(p => {return({ key: p.key, val: p.val })}),
-      devices: trial.devices.map(d => {return({ entity: d.entity.id, properties: d.properties.map(p => {return({ key: p.key, val: p.val })}), type: 'device' })}),
-      assets: trial.assets.map(d => {return({ entity: d.entity.id, properties: d.properties.map(p => {return({ key: p.key, val: p.val })}), type: 'asset' })}),
+      properties: trial.properties ? trial.properties.map(p => {return({ key: p.key, val: p.val })}) : [],
+      devices: trial.devices ? trial.devices.map(d => {return({ entity: d.entity.id, properties: d.properties ? d.properties.map(p => {return({ key: p.key, val: p.val })}) : [], type: 'device' })}) : [],
+      assets: trial.assets ? trial.assets.map(d => {return({ entity: d.entity.id, properties: d.properties ? d.properties.map(p => {return({ key: p.key, val: p.val })}) : [], type: 'asset' })}) : [],
       experimentId: this.state.experimentId
     };
 
@@ -66,6 +67,16 @@ class ListOfTrials extends React.Component {
         .then(data => {
             window.alert(`saved trial ${data.addUpdateTrial.id}`);
             // _this.props.showAll();
+        })
+        .catch(err => {
+            window.alert(`error: ${err}`);
+        });
+  }
+
+  buildData = (trial) => {
+    graphql.sendMutation(buildData(trial))
+        .then(data => {
+            window.alert(data.buildExperimentData);
         })
         .catch(err => {
             window.alert(`error: ${err}`);
@@ -86,6 +97,7 @@ class ListOfTrials extends React.Component {
                 <TableCell align="left">Trial Devices</TableCell>
                 <TableCell align="left"></TableCell>
                 <TableCell align="left"></TableCell>
+                <TableCell align="left"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -101,6 +113,13 @@ class ListOfTrials extends React.Component {
                       onClick={() => this.cloneTrial(trial)}
                     >
                     Clone
+                    </Button>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Button variant="contained" className={classes.button} style={{ width: '180px' }}
+                      onClick={() => this.buildData(trial)}
+                    >
+                    Build
                     </Button>
                   </TableCell>
                 </TableRow>

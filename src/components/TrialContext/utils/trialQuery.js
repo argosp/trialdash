@@ -32,6 +32,7 @@ const trials = experimentId => {
               key
               val
           }
+          name
           type
       }
       assets {
@@ -44,6 +45,7 @@ const trials = experimentId => {
             key
             val
         }
+        name
         type
       }
     }

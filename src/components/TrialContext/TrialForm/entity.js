@@ -44,17 +44,17 @@ class Entity extends React.Component {
                             onChange={this.props.handleChangeMultiple(this.props.entityName)}
                             MenuProps={MenuProps}
                         >
-                            {this.props.entitiesList.map(entity => (
-                                <MenuItem key={entity.id} value={entity}>
+                            {this.props.entitiesList.map((entity, index) => (
+                                <MenuItem key={index} value={entity}>
                                     {entity.name}
                                 </MenuItem>
                             ))}
                         </Select>
                         {this.props.entities.map((d, index) => {
                             return <div key={index} style={classes.entity} >
-                                <div>{d.entity.name}</div>
+                                <div>{d.name}</div>
                                 <div style={classes.properties}>
-                                    {d.properties.map((p, i) => {
+                                    {d.properties && d.properties.map((p, i) => {
                                         if(p.type === 'location') return <LeafLetMap onChange={this.props.handleChangeProprty(i, 'val')} location={p.val && p.val !== '' ? p.val.split(',') : [0, 0]}/>
                                         else
                                             return <div key={i} style={{display: 'flex'}}>
@@ -72,7 +72,7 @@ class Entity extends React.Component {
                                             </div>
                                     })}
                                 </div>
-                                <div onClick={() => this.props.removeEntity(this.props.entityName, d.entity.id)}>X</div>
+                                <div onClick={() => this.props.removeEntity(this.props.entityName, d.entity.id, d.name)}>X</div>
                             </div>
                         })}
                     

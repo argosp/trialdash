@@ -10,9 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import { styles } from './styles';
 
 import trialsQuery from './utils/trialQuery';
-import trialSubscription from './utils/trialsSubscription';
-import devicesQuery from '../DeviceContext/utils/deviceQuery';
-import TrialForm from './TrialForm';
 import ListOfTrials from './ListOfTrials';
 import trialsSubscription from './utils/trialsSubscription';
 //MATERIAL UI DEPENDENCIES

@@ -98,28 +98,28 @@ class TrialForm extends React.Component {
         };
     }
 
-    handleChangeMultiple = key => event => {        
-        let properties = event.target.value.properties.map(p => { return({ key: p.key, val: p.val, type: p.type })})
+    handleChangeMultiple = key => event => {
+        let properties = event.target.value.properties && event.target.value.properties.map(p => { return({ key: p.key, val: p.val, type: p.type })})
         let obj = this.state[key] || [];
-        obj.push({ entity: event.target.value, properties });
+        obj.push({ entity: event.target.value, properties, name: event.target.value.name });
 
         this.setObj(key, obj);
     }
 
-    removeEntity = (key, id) => {
-        let obj = this.state[key].filter(e => e.entity.id !== id)
+    removeEntity = (key, id, name) => {
+        let obj = this.state[key].filter(e => e.entity.id !== id || e.name !== name);
         this.setObj(key, obj);
     }
 
     setObj(key, obj) {
         if (key === 'devices') {
-            let existingDevices = obj.map(d => d.entity.id);
-            this.state.devicesList = this.state.allDevices.filter(d => existingDevices.indexOf(d.id) === -1);
+            let existingDevices = obj.map(d => d.name);
+            this.state.devicesList = this.state.allDevices.filter(d => existingDevices.indexOf(d.name) === -1);
         }
 
         if (key === 'assets') {
-            let existingAssets = obj.map(d => d.entity.id);
-            this.state.assetsList = this.state.allAssets.filter(d => existingAssets.indexOf(d.id) === -1);
+            let existingAssets = obj.map(d => d.name);
+            this.state.assetsList = this.state.allAssets.filter(d => existingAssets.indexOf(d.name) === -1);
         }
 
         this.setState({
@@ -133,7 +133,9 @@ class TrialForm extends React.Component {
         entities.forEach(e => {
             for (let i = 0; i < parseInt(e.number); i++) {
                 a = JSON.parse(JSON.stringify(e));
-                a.name = e.name.replace(/{id:(\d*)d}/, "$1"+i);
+                a.name = e.name.replace(/{id:(\d*)d}/, function(match, number) {
+                    return ("0".repeat(parseInt(number))+(i+1)).slice(-parseInt(number))
+                });
                 list.push(a);
             }
         });
@@ -143,13 +145,13 @@ class TrialForm extends React.Component {
     componentDidMount() {
         graphql.sendQuery(devicesQuery(this.props.experimentId, 'device'))
           .then(data => {
-            let existingDevices = this.state.devices.map(d => d.entity.id);
+            let existingDevices = this.state.devices.map(d => d.name);
         //     - "nameFormat": The format of the name. {id} will be replaced by the running number of the device. (start at 1)
         //  (For example, if Number=3 and namFormat="name_{id:02d}", you will get 3 devices with names: "name_01", "name_02", "name_03")
             let allDevices = this.buildEntities(data.devices);
             this.setState(() => ({
               allDevices: allDevices,
-              devicesList: allDevices.filter(d => existingDevices.indexOf(d.id) === -1)
+              devicesList: allDevices.filter(d => existingDevices.indexOf(d.name) === -1)
             }));
           })
           .then(() => {
@@ -160,10 +162,11 @@ class TrialForm extends React.Component {
 
         graphql.sendQuery(assetsQuery(this.props.experimentId, 'asset'))
           .then(data => {
-            let existingAssets = this.state.assets.map(d => d.entity.id);
+            let existingAssets = this.state.assets.map(d => d.name);
+            let allAssets = this.buildEntities(data.assets);
             this.setState(() => ({
-              allAssets: data.assets,
-              assetsList: data.assets.filter(d => existingAssets.indexOf(d.id) === -1)
+              allAssets: allAssets,
+              assetsList: allAssets.filter(d => existingAssets.indexOf(d.name) === -1)
             }));
           })
           .then(() => {
@@ -206,8 +209,8 @@ class TrialForm extends React.Component {
             end: this.state.end,
             trialSet: this.state.trialSet.id,
             properties: this.state.properties.map(p => {return({ key: p.key, val: p.val })}),
-            devices: this.state.devices.map(d => {return({ entity: d.entity.id, properties: d.properties.map(p => {return({ key: p.key, val: p.val })}), type: 'device' })}),
-            assets: this.state.assets.map(d => {return({ entity: d.entity.id, properties: d.properties.map(p => {return({ key: p.key, val: p.val })}), type: 'asset' })}),
+            devices: this.state.devices.map(d => {return({ entity: d.entity.id, name: d.name, properties: d.properties.map(p => {return({ key: p.key, val: p.val })}), type: 'device' })}),
+            assets: this.state.assets.map(d => {return({ entity: d.entity.id, name: d.name, properties: d.properties ? d.properties.map(p => {return({ key: p.key, val: p.val })}) : [], type: 'asset' })}),
             experimentId: this.state.experimentId
         };
 
@@ -265,7 +268,7 @@ class TrialForm extends React.Component {
                         id="trialSet"
                         label="Tial Set"
                         type="text"
-                        readonly
+                        readOnly
                         className={classes.textField}
                         value={this.state.trialSet.name}
                     />                    
