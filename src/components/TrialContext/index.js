@@ -1,26 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Query, Subscription } from 'react-apollo';
+import React from "react";
+import PropTypes from "prop-types";
+import { Query, Subscription } from "react-apollo";
 
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import { styles } from './styles';
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import SearchIcon from "@material-ui/icons/Search";
+import InputBase from "@material-ui/core/InputBase";
+import Button from "@material-ui/core/Button";
+import { styles } from "./styles";
 
-import trialsQuery from './utils/trialQuery';
-import ListOfTrials from './ListOfTrials';
-import trialsSubscription from './utils/trialsSubscription';
+import trialsQuery from "./utils/trialQuery";
+import ListOfTrials from "./ListOfTrials";
+import trialsSubscription from "./utils/trialsSubscription";
 //MATERIAL UI DEPENDENCIES
-
-const TabContainer = (props) => {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
 
 class TrialMainView extends React.PureComponent {
   constructor(props) {
@@ -37,64 +29,70 @@ class TrialMainView extends React.PureComponent {
     //this.trialUpdatedSubscription()
   }
   componentDidMount() {
-    console.log(this.state)
+    console.log(this.state);
   }
-  executeQuery = () => this.setState((prevState) => ({ query: !prevState.query }));
+  executeQuery = () =>
+    this.setState(prevState => ({ query: !prevState.query }));
 
-  handleChangeTab = (event, value) => {
-    this.setState({ value });
-  };
   render() {
     const { classes } = this.props;
     const { value } = this.state;
-    let queryRefecth = null;
+    let queryRefetch = null;
     return (
-      <div className={classes.root}>
-        <Paper square>
-          <Tabs
-            value={value}
-            onChange={this.handleChangeTab}
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            <Tab label="Trials list" disabled={this.props.experimentId === null} />
-            {/* <Tab label="+" disabled={this.props.experimentId === null} /> */}
-          </Tabs>
-        </Paper>
-        <Query
-          query={trialsQuery(this.props.experimentId)}
-        >
-          {
-            ({ loading, error, data, refetch }) => {
-              let loadingTxt = this.state.value === 0 ? 'loading...' : '';
-              if (loading) return <p style={{'textAlign': 'left'}}>{loadingTxt}</p>;
-              if (error) {
-                if(this.state.value === 0)
-                  return <p style={{ 'textAlign': 'left' }}> No trials to show</p>;
-                return <p/>;
-              }
-              queryRefecth = refetch;
-              return (
-                <div>
-                  {value === 0 &&
-                    <TabContainer>
-                      <ListOfTrials
-                        experimentId={this.props.experimentId}
-                        trials={data.trials}
-                        devices={data.devices} />
-                    </TabContainer>}
-                </div>
-              )
+      <div>
+        <Grid container justify="space-between" className={classes.header}>
+          <h1 className={classes.title}>Trials</h1>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search Trials"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput
+              }}
+              inputProps={{ "aria-label": "search" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.searchButton}
+            >
+              Add trial
+            </Button>
+          </div>
+        </Grid>
+        <Query query={trialsQuery(this.props.experimentId)}>
+          {({ loading, error, data, refetch }) => {
+            let loadingTxt = this.state.value === 0 ? "loading..." : "";
+            if (loading)
+              return <p style={{ textAlign: "left" }}>{loadingTxt}</p>;
+            if (error) {
+              if (this.state.value === 0)
+                return <p style={{ textAlign: "left" }}> No trials to show</p>;
+              return <p />;
             }
-          }
+            queryRefetch = refetch;
+            return (
+              <div>
+                {value === 0 && (
+                  <ListOfTrials
+                    experimentId={this.props.experimentId}
+                    trials={data.trials}
+                    devices={data.devices}
+                  />
+                )}
+              </div>
+            );
+          }}
         </Query>
-        <Subscription
-            subscription={trialsSubscription}>
-            {({ data, loading }) => {
-              if (data && data.trialsUpdated) 
-              queryRefecth !== null && queryRefecth();
-              return null
-            }}
+        <Subscription subscription={trialsSubscription}>
+          {({ data, loading }) => {
+            if (data && data.trialsUpdated)
+              queryRefetch !== null && queryRefetch();
+            return null;
+          }}
         </Subscription>
         {/* <Query
           query={devicesQuery(this.props.experimentId, 'device')}
@@ -128,13 +126,7 @@ class TrialMainView extends React.PureComponent {
 }
 
 TrialMainView.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
 
 export default withStyles(styles)(TrialMainView);
-
