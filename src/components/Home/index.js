@@ -1,31 +1,34 @@
 import React, { Component } from 'react';
-import { withRouter} from 'react-router-dom';
-// import TrialForm from './../TrialForm';
 import ListOfExperiments from '../ExperimentContext/Dashboard';
-//COMPONENTS
 
 class Home extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            authorized: !!localStorage.getItem('jwt')
-        }
-    }
-    componentDidMount(){
-    !this.state.authorized && this.props.history.push('/login')
-    }
-    logout = () => {
-        localStorage.clear();
-        this.props.history.push('/login');
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      authorized: !!localStorage.getItem('jwt'),
+    };
+  }
+
+  componentDidMount() {
+    const { authorized } = this.state;
+    const { history } = this.props;
+    !authorized && history.push('/login');
+  }
+
+  /*    logout = () => {
+      const { history } = this.props;
+
+      localStorage.clear();
+      history.push('/login');
+    }; */
+
   render() {
+    const { history } = this.props;
+
     return (
-        <div>
-            <div style={{display:'flex', justifyContent: 'flex-end', padding:30}}>
-                
-            </div>
-            <ListOfExperiments history={this.props.history}/>
-        </div>
+      <div>
+        <ListOfExperiments history={history} />
+      </div>
     );
   }
 }

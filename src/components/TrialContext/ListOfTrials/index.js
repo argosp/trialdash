@@ -1,70 +1,50 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Graph from "../../../apolloGraphql";
-import trialsQuery from "../utils/trialQuery";
-import buildData from "../utils/build-data";
-import TrialForm from "../TrialForm";
-import devicesQuery from "../../DeviceContext/utils/deviceQuery";
-import trialMutation from "../TrialForm/utils/trialMutation";
-
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import IconButton from "@material-ui/core/IconButton";
-import QueueOutlinedIcon from "@material-ui/icons/QueueOutlined";
-import Tooltip from "@material-ui/core/Tooltip";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-
-import { Query, Subscription } from "react-apollo";
-import { styles } from "./styles";
+import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import IconButton from '@material-ui/core/IconButton';
+import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import trialMutation from '../TrialForm/utils/trialMutation';
+import TrialForm from '../TrialForm';
+import buildData from '../utils/build-data';
+import trialsQuery from '../utils/trialQuery';
+import Graph from '../../../apolloGraphql';
+import { styles, tableCellStyles } from './styles';
 
 const graphql = new Graph();
 
-const StyledTableCell = withStyles(() => ({
-  head: {
-    backgroundColor: "#F5F5F5",
-    fontSize: 12,
-    textTransform: "uppercase",
-    color: "#4F4F4F",
-    fontWeight: "bold",
-    border: 0
-  },
-  body: {
-    backgroundColor: "#fff",
-    padding: "15px 0 15px 20px",
-    border: 0
-  }
-}))(TableCell);
+const StyledTableCell = withStyles(tableCellStyles)(TableCell);
 
 class ListOfTrials extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       trials: props.trials || [],
-      timeout: false,
-      experimentId: props.experimentId || ""
+      experimentId: props.experimentId || '',
     };
   }
 
-  componentDidMount() {}
   componentDidUpdate() {
     if (this.state.experimentId !== this.props.experimentId) {
-      const experimentId = this.props.experimentId;
+      const { experimentId } = this.props;
       this.setState(() => ({ experimentId, editTrial: null }));
       this.fetchTrials(experimentId);
     }
   }
-  fetchTrials = experimentId => {
+
+  fetchTrials = (experimentId) => {
     graphql
       .sendQuery(trialsQuery(experimentId))
       .then(data => this.setState(() => ({ trials: data.trials })));
   };
 
-  cloneTrial = trial => {
+  cloneTrial = (trial) => {
     // let newTrial = JSON.parse(JSON.stringify(trial));
     // newTrial.id = null;
     // let _this = this;
@@ -77,57 +57,47 @@ class ListOfTrials extends React.Component {
       end: trial.end,
       trialSet: trial.trialSet.id,
       properties: trial.properties
-        ? trial.properties.map(p => {
-            return { key: p.key, val: p.val };
-          })
+        ? trial.properties.map(p => ({ key: p.key, val: p.val }))
         : [],
       devices: trial.devices
-        ? trial.devices.map(d => {
-            return {
-              entity: d.entity.id,
-              properties: d.properties
-                ? d.properties.map(p => {
-                    return { key: p.key, val: p.val };
-                  })
-                : [],
-              type: "device"
-            };
-          })
+        ? trial.devices.map(d => ({
+          entity: d.entity.id,
+          properties: d.properties
+            ? d.properties.map(p => ({ key: p.key, val: p.val }))
+            : [],
+          type: 'device',
+        }))
         : [],
       assets: trial.assets
-        ? trial.assets.map(d => {
-            return {
-              entity: d.entity.id,
-              properties: d.properties
-                ? d.properties.map(p => {
-                    return { key: p.key, val: p.val };
-                  })
-                : [],
-              type: "asset"
-            };
-          })
+        ? trial.assets.map(d => ({
+          entity: d.entity.id,
+          properties: d.properties
+            ? d.properties.map(p => ({ key: p.key, val: p.val }))
+            : [],
+          type: 'asset',
+        }))
         : [],
-      experimentId: this.state.experimentId
+      experimentId: this.state.experimentId,
     };
 
     graphql
       .sendMutation(trialMutation(newTrial))
-      .then(data => {
+      .then((data) => {
         window.alert(`saved trial ${data.addUpdateTrial.id}`);
         // _this.props.showAll();
       })
-      .catch(err => {
+      .catch((err) => {
         window.alert(`error: ${err}`);
       });
   };
 
-  buildData = trial => {
+  buildData = (trial) => {
     graphql
       .sendMutation(buildData(trial))
-      .then(data => {
+      .then((data) => {
         window.alert(data.buildExperimentData);
       })
-      .catch(err => {
+      .catch((err) => {
         window.alert(`error: ${err}`);
       });
   };
@@ -141,18 +111,18 @@ class ListOfTrials extends React.Component {
             <Table className={classes.table}>
               <TableHead>
                 <TableRow>
-                  <StyledTableCell align="left"></StyledTableCell>
+                  <StyledTableCell align="left" />
                   <StyledTableCell align="left">Trial Begin</StyledTableCell>
                   <StyledTableCell align="left">Trial End</StyledTableCell>
                   <StyledTableCell align="left">Trial Devices</StyledTableCell>
-                  <StyledTableCell align="left"></StyledTableCell>
-                  <StyledTableCell align="left"></StyledTableCell>
-                  <StyledTableCell align="left"></StyledTableCell>
+                  <StyledTableCell align="left" />
+                  <StyledTableCell align="left" />
+                  <StyledTableCell align="left" />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.props.trials.map((trial, index) => (
-                  <TableRow key={index} className={classes.tableBodyRow}>
+                {this.props.trials.map(trial => (
+                  <TableRow key={trial.id} className={classes.tableBodyRow}>
                     <StyledTableCell
                       align="left"
                       className={classes.firstColumn}
@@ -166,9 +136,8 @@ class ListOfTrials extends React.Component {
                     <StyledTableCell align="left">
                       {trial.device && trial.device.name}
                     </StyledTableCell>
-                    <StyledTableCell align="left"></StyledTableCell>
-                    <StyledTableCell align="left"></StyledTableCell>
-
+                    <StyledTableCell align="left" />
+                    <StyledTableCell align="left" />
                     <StyledTableCell align="right">
                       <Tooltip title="Clone the trial">
                         <IconButton
@@ -215,9 +184,5 @@ class ListOfTrials extends React.Component {
     );
   }
 }
-
-ListOfTrials.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(ListOfTrials);
