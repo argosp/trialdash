@@ -1,14 +1,16 @@
 import React from 'react';
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 // import { Subscription } from 'react-apollo';
 import experimentsQuery from '../utils/experiments-query';
 import ExperimentForm from '../ExperimentForm';
 // import experimentsSubscription from '../utils/experimentsSubscription';
 import { styles } from './styles';
-import MainView from '../MainView';
 import Header from '../../Header';
 import Graph from '../../../apolloGraphql';
+import TrialSetMainView from '../../TrialSetContext';
+import TrialMainView from '../../TrialContext';
+import AssetMainView from '../../AssetContext';
+import DeviceMainView from '../../DeviceContext';
 
 const graphql = new Graph();
 
@@ -20,11 +22,13 @@ class ListOfExperiments extends React.Component {
       render: false,
       timeout: false,
       currentExperiment: { name: '', id: '' },
+      headerTabValue: 0,
     };
   }
 
   componentDidMount() {
-    graphql.sendQuery(experimentsQuery)
+    graphql
+      .sendQuery(experimentsQuery)
       .then((data) => {
         this.setState(() => ({
           experiments: data.experiments,
@@ -46,9 +50,40 @@ class ListOfExperiments extends React.Component {
     }
   }
 
+  handleHeaderTabChange = (newValue) => {
+    this.setState({ headerTabValue: newValue });
+  };
+
   selectActiveExperiment = (id, name) => {
     const currentExperiment = { name, id };
     this.setState({ currentExperiment });
+  };
+
+  renderContent = (tabValue) => {
+    const { currentExperiment } = this.state;
+
+    switch (tabValue) {
+      case 0:
+        return <TrialSetMainView experimentId={currentExperiment.id} />;
+      case 1:
+        return <TrialMainView experimentId={currentExperiment.id} />;
+      case 2:
+        return (
+          <AssetMainView
+            experimentId={currentExperiment.id}
+            entityType="asset"
+          />
+        );
+      case 3:
+        return (
+          <DeviceMainView
+            experimentId={currentExperiment.id}
+            entityType="device"
+          />
+        );
+      default:
+        return <TrialSetMainView experimentId={currentExperiment.id} />;
+    }
   };
 
   /*  logout = () => {
@@ -60,16 +95,24 @@ class ListOfExperiments extends React.Component {
   render() {
     const { classes } = this.props;
     const {
-      currentExperiment, experiments, render, add, timeout,
+      currentExperiment,
+      experiments,
+      render,
+      add,
+      timeout,
+      headerTabValue,
     } = this.state;
+
     if (render) {
       return (
         <>
-          {add && <ExperimentForm close={() => { this.setState({ add: false }); }} />}
+          {add && (<ExperimentForm close={() => { this.setState({ add: false }); }} />)}
           <Header
             selectActiveExperiment={this.selectActiveExperiment}
             currentExperiment={currentExperiment}
             experiments={experiments}
+            handleTabChange={this.handleHeaderTabChange}
+            tabValue={headerTabValue}
           />
           {/*
               <Button
@@ -79,13 +122,14 @@ class ListOfExperiments extends React.Component {
             </Button>
             <div onClick={() => this.setState({ add: true })}> + Add An Experiment</div>
           */}
-          <main
-            className={classNames(classes.content, {
-              [classes.contentShift]: true,
-            })}
-          >
-            <MainView id={currentExperiment.id} />
-          </main>
+
+          <div className={classes.contentWrapper}>
+            {
+              currentExperiment.id ? (this.renderContent(headerTabValue))
+                : (<div>Select an Experiment Or add a new Experiment</div>)
+            }
+          </div>
+
           {/* <Subscription
             subscription={experimentsSubscription}>
             {({ data, loading }) => {
@@ -97,9 +141,7 @@ class ListOfExperiments extends React.Component {
         </>
       );
     }
-    return timeout
-      ? (<p>Something went wrong... </p>)
-      : (<p>Please wait... </p>);
+    return timeout ? <p>Something went wrong... </p> : <p>Please wait... </p>;
   }
 }
 

@@ -10,7 +10,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Graph from './apolloGraphql';
 import Login from './components/Login';
 import Home from './components/Home';
-import ExperimentContext from './components/ExperimentContext/MainView';
 import TrialForm from './components/TrialContext/TrialForm';
 import './App.css';
 import theme from './theme';
@@ -24,7 +23,7 @@ const App = () => (
           <Switch>
             <Route path="/" component={Home} exact />
             <Route path="/login" component={Login} />
-            <Route path="/experiment/:id" component={ExperimentContext} />
+            {/* <Route path="/experiment/:id" component={} /> */}
             <Route path="/trial/manual" component={TrialForm} />
           </Switch>
         </Router>

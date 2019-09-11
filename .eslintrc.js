@@ -25,5 +25,6 @@ module.exports = {
     "import/prefer-default-export": 0,
     'react/prop-types': 0,
     'react/destructuring-assignment': 0,
+    'object-curly-newline': 0,
   },
 };

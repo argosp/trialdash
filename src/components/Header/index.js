@@ -18,7 +18,6 @@ const StyledTabs = withStyles(tabsStyles)(props => (
 class Header extends React.Component {
   state = {
     anchorElement: null,
-    tabValue: 0,
   };
 
   handleMenuClick = (event) => {
@@ -32,7 +31,7 @@ class Header extends React.Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue });
+    this.props.handleTabChange(newValue);
   };
 
   selectExperiment = (id, name) => {
@@ -42,8 +41,8 @@ class Header extends React.Component {
   };
 
   render() {
-    const { classes, currentExperiment, experiments } = this.props;
-    const { anchorElement, tabValue } = this.state;
+    const { classes, currentExperiment, experiments, tabValue } = this.props;
+    const { anchorElement } = this.state;
 
     return (
       <Grid container className={classes.root}>
@@ -98,36 +97,30 @@ class Header extends React.Component {
           >
             <Tab
               disableRipple
-              label="Trials"
+              label="Trialsets"
               id="header-tab-0"
-              aria-controls="header-tabpanel-0"
+              className={classes.tab}
+            />
+            <Tab
+              disableRipple
+              label="Trials"
+              id="header-tab-1"
               className={classes.tab}
             />
             <Tab
               disableRipple
               label="Assets"
-              id="header-tab-1"
-              aria-controls="header-tabpanel-1"
+              id="header-tab-2"
               className={classes.tab}
             />
             <Tab
               disableRipple
               label="Devices"
-              id="header-tab-2"
-              aria-controls="header-tabpanel-2"
+              id="header-tab-3"
               className={classes.tab}
             />
           </StyledTabs>
         </Grid>
-        {/*  <TabPanel value={value} index={0}>
-                Item One
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Item Two
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Item Three
-            </TabPanel> */}
       </Grid>
     );
   }
