@@ -1,12 +1,8 @@
 import { Query, Subscription } from 'react-apollo';
 import React from 'react';
 import ContentTable from '../ContentTable';
-import ContentHeader from '../ContentHeader';
 
 const TableContentContainer = ({
-  headerTitle,
-  searchPlaceholder,
-  addButtonText,
   query,
   experimentId,
   tableHeadColumns,
@@ -19,11 +15,6 @@ const TableContentContainer = ({
 
   return (
     <>
-      <ContentHeader
-        title={headerTitle}
-        searchPlaceholder={searchPlaceholder}
-        addButtonText={addButtonText}
-      />
       <Query query={query(experimentId)}>
         {({ loading, error, data, refetch }) => {
           if (loading) return <p>Loading...</p>;

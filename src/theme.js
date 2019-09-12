@@ -37,6 +37,7 @@ export default createMuiTheme({
     },
     gray: {
       main: '#828282',
+      dark: '#4F4F4F',
     },
   },
 });

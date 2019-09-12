@@ -11,6 +11,7 @@ import trialSetsSubscription from '../utils/trialSetsSubscription';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import { TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import ContentHeader from '../../ContentHeader';
 
 class TrialSets extends React.Component {
     openTrials = () => {
@@ -66,20 +67,22 @@ class TrialSets extends React.Component {
       ];
 
       return (
-        <div>
+        <>
+          <ContentHeader
+            title="Trial sets"
+            searchPlaceholder="Search trial sets"
+            addButtonText="Add trial set"
+          />
           <TableContentContainer
             subscriptionUpdateField="trialSetsUpdated"
             dataType={TRIAL_SETS_CONTENT_TYPE}
-            headerTitle="Trial sets"
-            searchPlaceholder="Search trial sets"
-            addButtonText="Add trial set"
             query={trialSetsQuery}
             experimentId={this.props.experimentId}
             tableHeadColumns={tableHeadColumns}
             subscription={trialSetsSubscription}
             renderRow={this.renderTableRow}
           />
-        </div>
+        </>
       );
     }
 }

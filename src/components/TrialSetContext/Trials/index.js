@@ -12,9 +12,14 @@ import trialsQuery from '../../TrialContext/utils/trialQuery';
 import { styles } from './styles';
 import trialsSubscription from '../../TrialContext/utils/trialsSubscription';
 import StyledTableCell from '../../StyledTableCell';
-import { TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import { TRIALS_CONTENT_TYPE, TRIAL_SETS_CONTENT_TYPE } from '../../../constants/base';
+import ContentHeader from '../../ContentHeader';
 
 class TrialSets extends React.Component {
+    backToTrialSets = () => {
+      this.props.backToTrialSets(TRIAL_SETS_CONTENT_TYPE);
+    };
+
     renderTableRow = trial => (
       <React.Fragment key={trial.id}>
         <StyledTableCell align="left">Trial</StyledTableCell>
@@ -86,20 +91,25 @@ class TrialSets extends React.Component {
       ];
 
       return (
-        <div>
+        <>
+          <ContentHeader
+            title="Trials set"
+            searchPlaceholder="Search Trials"
+            addButtonText="Add trial"
+            withBackButton
+            backButtonHandler={this.backToTrialSets}
+            rightDescription="Short description"
+          />
           <TableContentContainer
             subscriptionUpdateField="trialsUpdated"
             dataType={TRIALS_CONTENT_TYPE}
-            headerTitle="Trials set"
-            searchPlaceholder="Search Trials"
-            addButtonText="Add trial"
             query={trialsQuery}
             experimentId={this.props.experimentId}
             tableHeadColumns={tableHeadColumns}
             subscription={trialsSubscription}
             renderRow={this.renderTableRow}
           />
-        </div>
+        </>
       );
     }
 }

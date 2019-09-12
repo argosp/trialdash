@@ -1,7 +1,10 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from './styles';
-import { TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE } from '../../constants/base';
+import {
+  TRIAL_SETS_CONTENT_TYPE,
+  TRIALS_CONTENT_TYPE,
+} from '../../constants/base';
 import TrialSets from './TrialSets';
 import Trials from './Trials';
 
@@ -26,7 +29,12 @@ class TrialSetMainView extends React.Component {
           />
         );
       case TRIALS_CONTENT_TYPE:
-        return <Trials experimentId={experimentId} />;
+        return (
+          <Trials
+            experimentId={experimentId}
+            backToTrialSets={this.switchCurrentContentType}
+          />
+        );
       default:
         return (
           <TrialSets

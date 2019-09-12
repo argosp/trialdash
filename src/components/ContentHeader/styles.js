@@ -2,6 +2,15 @@ export const styles = theme => ({
   header: {
     marginBottom: 25,
   },
+  backIcon: {
+    verticalAlign: 'middle',
+    marginRight: 10,
+    cursor: 'pointer',
+
+    '&:hover': {
+      color: theme.palette.gray.main,
+    },
+  },
   title: {
     fontSize: 24,
     textTransform: 'uppercase',
@@ -9,6 +18,14 @@ export const styles = theme => ({
     fontWeight: 'normal',
     margin: 0,
     color: theme.palette.black.main,
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  },
+  rightDescription: {
+    color: theme.palette.gray.dark,
+    marginLeft: 15,
+    fontSize: 16,
+    verticalAlign: 'bottom',
   },
   search: {
     position: 'relative',
