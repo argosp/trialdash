@@ -1,6 +1,6 @@
 export const styles = theme => ({
   header: {
-    marginBottom: 25,
+    marginBottom: 10,
   },
   backIcon: {
     verticalAlign: 'middle',
