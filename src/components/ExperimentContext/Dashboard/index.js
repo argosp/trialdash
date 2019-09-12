@@ -8,7 +8,6 @@ import { styles } from './styles';
 import Header from '../../Header';
 import Graph from '../../../apolloGraphql';
 import TrialSetMainView from '../../TrialSetContext';
-import TrialMainView from '../../TrialContext';
 import AssetMainView from '../../AssetContext';
 import DeviceMainView from '../../DeviceContext';
 
@@ -66,15 +65,13 @@ class ListOfExperiments extends React.Component {
       case 0:
         return <TrialSetMainView experimentId={currentExperiment.id} />;
       case 1:
-        return <TrialMainView experimentId={currentExperiment.id} />;
-      case 2:
         return (
           <AssetMainView
             experimentId={currentExperiment.id}
             entityType="asset"
           />
         );
-      case 3:
+      case 2:
         return (
           <DeviceMainView
             experimentId={currentExperiment.id}

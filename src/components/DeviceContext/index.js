@@ -1,118 +1,54 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Query, Subscription } from 'react-apollo';
-
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import { styles } from './styles';
-
 import devicesQuery from './utils/deviceQuery';
 import DeviceForm from './DeviceForm';
 import ListOfDevices from './ListOfDevices';
 import devicesSubscription from './utils/devicesSubscription';
-//MATERIAL UI DEPENDENCIES
-
-const TabContainer = (props) => {
-    return (
-      <Typography component="div" style={{ padding: 8 * 3 }}>
-        {props.children}
-      </Typography>
-    );
-  }
 
 class DeviceMainView extends React.PureComponent {
-constructor(props){
-    super(props);
-    this.state = {
-        value: 0,
-        collection:"",
-        devices:[],
-        query: true
-      };
-}
-componentWillMount(){
-  //this.deviceUpdatedSubscription()
-}
-componentDidMount(){
-  console.log(this.state)
-}
-executeQuery = () => this.setState((prevState)=>({query: !prevState.query}));
-
-handleChangeTab = (event, value) => {
-    this.setState({ value });
- };
-render() {
+  render() {
     const { classes } = this.props;
-    const { value } = this.state;
-    let queryRefecth = null;
-    return (
-        <div className={classes.root}>
-        <Paper square>
-          <Tabs 
-            value={value} 
-            onChange={this.handleChangeTab}
-            indicatorColor="primary"
-            textColor="primary"
-            >
-            <Tab label={`${this.props.entityType}s list`} />
-            <Tab label="+"/>
-          </Tabs>
-        </Paper>
-        <Query
-            query={devicesQuery(this.props.experimentId, this.props.entityType)}
-            >
-            {
-              ({ loading, error, data, refetch }) => {
-                if (loading) return <p>Loading...</p>;
-                if (error) return <p> No {this.props.entityType}s to show</p>;
-                queryRefecth = refetch;
-                return (
-                  <div>
-                  {value === 0 && 
-                    <TabContainer>
-                        <ListOfDevices
-                          devices={data.devices}
-                          experimentId={this.props.experimentId}
-                          entityType={this.props.entityType}
-                        />
-                    </TabContainer>}
-                    {value === 1 && 
-                    <TabContainer>
-                        <DeviceForm
-                          experimentId={this.props.experimentId}
-                          entityType={this.props.entityType}
-                        />
-                    </TabContainer>}
+    let queryRefetch = null;
 
-                  </div>
-                )
-                }
+    return (
+      <div className={classes.root}>
+        <Query
+          query={devicesQuery(this.props.experimentId, this.props.entityType)}
+        >
+          {({ loading, error, data, refetch }) => {
+            if (loading) return <p>Loading...</p>;
+            if (error) {
+              return <p> No {this.props.entityType}s to show</p>;
             }
+            queryRefetch = refetch;
+            return (
+              <div>
+                <ListOfDevices
+                  devices={data.devices}
+                  experimentId={this.props.experimentId}
+                  entityType={this.props.entityType}
+                />
+                <DeviceForm
+                  experimentId={this.props.experimentId}
+                  entityType={this.props.entityType}
+                />
+              </div>
+            );
+          }}
         </Query>
-        <Subscription
-            subscription={devicesSubscription}>
-            {({ data, loading }) => {
-              if (data && data.devicesUpdated) 
-              queryRefecth !== null && queryRefecth();
-              return null
-            }}
+        <Subscription subscription={devicesSubscription}>
+          {({ data, loading }) => {
+            if (data && data.devicesUpdated) {
+              queryRefetch !== null && queryRefetch();
+            }
+            return null;
+          }}
         </Subscription>
       </div>
     );
   }
 }
 
-DeviceMainView.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-TabContainer.propTypes = {
-    children: PropTypes.node.isRequired,
-};
-  
-
 export default withStyles(styles)(DeviceMainView);
-

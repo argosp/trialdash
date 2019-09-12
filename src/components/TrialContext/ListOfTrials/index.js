@@ -1,25 +1,14 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
-import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
-import Tooltip from '@material-ui/core/Tooltip';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import TrialForm from '../TrialForm';
 import buildData from '../utils/build-data';
 import trialsQuery from '../utils/trialQuery';
 import Graph from '../../../apolloGraphql';
-import { styles, tableCellStyles } from './styles';
+import { styles } from './styles';
+import ContentTable from '../../ContentTable';
 
 const graphql = new Graph();
-
-const StyledTableCell = withStyles(tableCellStyles)(TableCell);
 
 class ListOfTrials extends React.Component {
   constructor(props) {
@@ -108,69 +97,11 @@ class ListOfTrials extends React.Component {
       <div>
         {!this.state.editTrial ? (
           <div className={classes.root}>
-            <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell align="left" />
-                  <StyledTableCell align="left">Trial Begin</StyledTableCell>
-                  <StyledTableCell align="left">Trial End</StyledTableCell>
-                  <StyledTableCell align="left">Trial Devices</StyledTableCell>
-                  <StyledTableCell align="left" />
-                  <StyledTableCell align="left" />
-                  <StyledTableCell align="left" />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.props.trials.map(trial => (
-                  <TableRow key={trial.id} className={classes.tableBodyRow}>
-                    <StyledTableCell
-                      align="left"
-                      className={classes.firstColumn}
-                    >
-                      {trial.name}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {trial.begin}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">{trial.end}</StyledTableCell>
-                    <StyledTableCell align="left">
-                      {trial.device && trial.device.name}
-                    </StyledTableCell>
-                    <StyledTableCell align="left" />
-                    <StyledTableCell align="left" />
-                    <StyledTableCell align="right">
-                      <Tooltip title="Clone the trial">
-                        <IconButton
-                          aria-label="clone the trial"
-                          onClick={() => this.cloneTrial(trial)}
-                        >
-                          <QueueOutlinedIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Edit the trial">
-                        <IconButton
-                          aria-label="edit the trial"
-                          onClick={() => this.setState({ editTrial: trial })}
-                        >
-                          <EditOutlinedIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip
-                        title="Build the trial"
-                        className={classes.arrowButton}
-                      >
-                        <IconButton
-                          aria-label="build the trial"
-                          onClick={() => this.buildData(trial)}
-                        >
-                          <ArrowForwardIosIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </StyledTableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <ContentTable
+              headerColumns={[
+                '',
+              ]}
+            />
           </div>
         ) : (
           <TrialForm

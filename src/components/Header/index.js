@@ -97,26 +97,20 @@ class Header extends React.Component {
           >
             <Tab
               disableRipple
-              label="Trialsets"
+              label="Trial sets"
               id="header-tab-0"
               className={classes.tab}
             />
             <Tab
               disableRipple
-              label="Trials"
+              label="Assets"
               id="header-tab-1"
               className={classes.tab}
             />
             <Tab
               disableRipple
-              label="Assets"
-              id="header-tab-2"
-              className={classes.tab}
-            />
-            <Tab
-              disableRipple
               label="Devices"
-              id="header-tab-3"
+              id="header-tab-2"
               className={classes.tab}
             />
           </StyledTabs>
