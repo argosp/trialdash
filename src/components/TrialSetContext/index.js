@@ -1,69 +1,44 @@
 import React from 'react';
-import { Query, Subscription } from 'react-apollo';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import { styles } from './styles';
-import trialSetsQuery from './utils/trialSetQuery';
-// import TrialSetForm from './TrialSetForm';
-import ListOfTrialSets from './ListOfTrialSets';
-import trialSetsSubscription from './utils/trialSetsSubscription';
-import ContentHeader from '../ContentHeader';
+import { TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE } from '../../constants/base';
+import TrialSets from './TrialSets';
+import Trials from './Trials';
 
-const TabContainer = props => (
-  <Typography component="div" style={{ padding: 8 * 3 }}>
-    {props.children}
-  </Typography>
-);
+class TrialSetMainView extends React.Component {
+  state = {
+    currentContentType: TRIAL_SETS_CONTENT_TYPE,
+  };
 
-class TrialSetMainView extends React.PureComponent {
+  switchCurrentContentType = (contentType) => {
+    this.setState({ currentContentType: contentType });
+  };
+
+  renderContent = (contentType) => {
+    const { experimentId } = this.props;
+
+    switch (contentType) {
+      case TRIAL_SETS_CONTENT_TYPE:
+        return (
+          <TrialSets
+            experimentId={experimentId}
+            openTrials={this.switchCurrentContentType}
+          />
+        );
+      case TRIALS_CONTENT_TYPE:
+        return <Trials experimentId={experimentId} />;
+      default:
+        return (
+          <TrialSets
+            experimentId={experimentId}
+            openTrials={this.switchCurrentContentType}
+          />
+        );
+    }
+  };
+
   render() {
-    let queryRefetch = null;
-
-    return (
-      <div>
-        <ContentHeader
-          title="Trial sets"
-          searchPlaceholder="Search trial sets"
-          addButtonText="Add trial set"
-        />
-        <Query
-          query={trialSetsQuery(this.props.experimentId)}
-        >
-          {
-              ({ loading, error, data, refetch }) => {
-                if (loading) return <p>Loading...</p>;
-                if (error) return <p> No trialSets to show</p>;
-                queryRefetch = refetch;
-                return (
-                  <div>
-                    <TabContainer>
-                      <ListOfTrialSets
-                        trialSets={data.trialSets}
-                        experimentId={this.props.experimentId}
-                      />
-                    </TabContainer>
-                    {/* {value === 1 &&
-                    <TabContainer>
-                        <TrialSetForm
-                          experimentId={this.props.experimentId}
-                          showAll={() => this.setState({ value: 1 })}
-                        />
-                    </TabContainer>} */}
-                  </div>
-                );
-              }
-            }
-        </Query>
-        <Subscription
-          subscription={trialSetsSubscription}
-        >
-          {({ data, loading }) => {
-            if (data && data.trialSetsUpdated) { queryRefetch !== null && queryRefetch(); }
-            return null;
-          }}
-        </Subscription>
-      </div>
-    );
+    return <>{this.renderContent(this.state.currentContentType)}</>;
   }
 }
 
