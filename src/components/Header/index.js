@@ -97,7 +97,7 @@ class Header extends React.Component {
           >
             <Tab
               disableRipple
-              label="Trial sets"
+              label="Trials"
               id="header-tab-0"
               className={classes.tab}
             />

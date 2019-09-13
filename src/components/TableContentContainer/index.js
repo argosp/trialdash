@@ -4,7 +4,7 @@ import ContentTable from '../ContentTable';
 
 const TableContentContainer = ({
   query,
-  experimentId,
+  queryArgs,
   tableHeadColumns,
   subscription,
   renderRow,
@@ -15,7 +15,7 @@ const TableContentContainer = ({
 
   return (
     <>
-      <Query query={query(experimentId)}>
+      <Query query={query(...queryArgs)}>
         {({ loading, error, data, refetch }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p> No data to show</p>;

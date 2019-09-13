@@ -6,42 +6,44 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
 import TableContentContainer from '../../TableContentContainer';
-import trialSetsQuery from '../utils/trialSetQuery';
-import trialSetsSubscription from '../utils/trialSetsSubscription';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
-import { TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import {
+  DEVICES_CONTENT_TYPE,
+} from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
+import devicesQuery from '../utils/deviceQuery';
+import devicesSubscription from '../utils/devicesSubscription';
 
-class TrialSets extends React.Component {
-    openTrials = () => {
-      this.props.openTrials(TRIALS_CONTENT_TYPE);
+class DeviceTypes extends React.Component {
+    openDevices = () => {
+      this.props.openDevices(DEVICES_CONTENT_TYPE);
     };
 
-    renderTableRow = trialSet => (
-      <React.Fragment key={trialSet.id}>
-        <StyledTableCell align="left">Trial set</StyledTableCell>
-        <StyledTableCell align="left">Trials</StyledTableCell>
-        <StyledTableCell align="left">{trialSet.notes}</StyledTableCell>
+    renderTableRow = deviceType => (
+      <React.Fragment key={deviceType.id}>
+        <StyledTableCell align="left">Device name</StyledTableCell>
+        <StyledTableCell align="left">Fields</StyledTableCell>
+        <StyledTableCell align="left">Devices</StyledTableCell>
         <StyledTableCell align="right">
-          <Tooltip title="Clone trial set">
+          <Tooltip title="Clone device type">
             <IconButton
-              aria-label="clone trial set"
+              aria-label="clone device type"
             >
               <QueueOutlinedIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Edit trial set">
+          <Tooltip title="Edit device type">
             <IconButton
-              aria-label="edit trial set"
+              aria-label="edit device type"
             >
               <EditOutlinedIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Open trial set" className={this.props.classes.arrowButton}>
+          <Tooltip title="Open device type" className={this.props.classes.arrowButton}>
             <IconButton
-              aria-label="open trial set"
-              onClick={this.openTrials}
+              aria-label="open device type"
+              onClick={this.openDevices}
             >
               <ArrowForwardIosIcon />
             </IconButton>
@@ -56,10 +58,10 @@ class TrialSets extends React.Component {
           title: '',
         },
         { key: 1,
-          title: 'Trials',
+          title: 'Fields',
         },
         { key: 2,
-          title: 'Description',
+          title: 'Devices',
         },
         { key: 3,
           title: '',
@@ -69,17 +71,17 @@ class TrialSets extends React.Component {
       return (
         <>
           <ContentHeader
-            title="Trial sets"
-            searchPlaceholder="Search trial sets"
-            addButtonText="Add trial set"
+            title="Devices types"
+            searchPlaceholder="Search Devices types"
+            addButtonText="Add device type"
           />
           <TableContentContainer
-            subscriptionUpdateField="trialSetsUpdated"
-            dataType={TRIAL_SETS_CONTENT_TYPE}
-            query={trialSetsQuery}
-            queryArgs={[this.props.experimentId]}
+            subscriptionUpdateField="devicesUpdated"
+            dataType={DEVICES_CONTENT_TYPE}
+            query={devicesQuery}
+            queryArgs={[this.props.experimentId, this.props.entityType]}
             tableHeadColumns={tableHeadColumns}
-            subscription={trialSetsSubscription}
+            subscription={devicesSubscription}
             renderRow={this.renderTableRow}
           />
         </>
@@ -87,4 +89,4 @@ class TrialSets extends React.Component {
     }
 }
 
-export default withStyles(styles)(TrialSets);
+export default withStyles(styles)(DeviceTypes);

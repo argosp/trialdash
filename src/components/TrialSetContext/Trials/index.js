@@ -95,7 +95,7 @@ class TrialSets extends React.Component {
           subscriptionUpdateField="trialsUpdated"
           dataType={TRIALS_CONTENT_TYPE}
           query={trialsQuery}
-          experimentId={this.props.experimentId}
+          queryArgs={[this.props.experimentId]}
           tableHeadColumns={tableHeadColumns}
           subscription={trialsSubscription}
           renderRow={this.renderTableRow}

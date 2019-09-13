@@ -1,54 +1,53 @@
 import React from 'react';
-import { Query, Subscription } from 'react-apollo';
 import { withStyles } from '@material-ui/core/styles';
 import { styles } from './styles';
-import devicesQuery from './utils/deviceQuery';
-import DeviceForm from './DeviceForm';
-import ListOfDevices from './ListOfDevices';
-import devicesSubscription from './utils/devicesSubscription';
+import Devices from './Devices';
+import { DEVICE_TYPES_CONTENT_TYPE, DEVICES_CONTENT_TYPE } from '../../constants/base';
+import DeviceTypes from './DeviceTypes';
 
 class DeviceMainView extends React.PureComponent {
-  render() {
-    const { classes } = this.props;
-    let queryRefetch = null;
+    state = {
+      currentContentType: DEVICE_TYPES_CONTENT_TYPE,
+    };
 
-    return (
-      <div className={classes.root}>
-        <Query
-          query={devicesQuery(this.props.experimentId, this.props.entityType)}
-        >
-          {({ loading, error, data, refetch }) => {
-            if (loading) return <p>Loading...</p>;
-            if (error) {
-              return <p> No {this.props.entityType}s to show</p>;
-            }
-            queryRefetch = refetch;
-            return (
-              <div>
-                <ListOfDevices
-                  devices={data.devices}
-                  experimentId={this.props.experimentId}
-                  entityType={this.props.entityType}
-                />
-                <DeviceForm
-                  experimentId={this.props.experimentId}
-                  entityType={this.props.entityType}
-                />
-              </div>
-            );
-          }}
-        </Query>
-        <Subscription subscription={devicesSubscription}>
-          {({ data, loading }) => {
-            if (data && data.devicesUpdated) {
-              queryRefetch !== null && queryRefetch();
-            }
-            return null;
-          }}
-        </Subscription>
-      </div>
-    );
-  }
+    switchCurrentContentType = (contentType) => {
+      this.setState({ currentContentType: contentType });
+    };
+
+    renderContent = (contentType) => {
+      const { experimentId, entityType } = this.props;
+
+      switch (contentType) {
+        case DEVICE_TYPES_CONTENT_TYPE:
+          return (
+            <DeviceTypes
+              experimentId={experimentId}
+              entityType={entityType}
+              openDevices={this.switchCurrentContentType}
+            />
+          );
+        case DEVICES_CONTENT_TYPE:
+          return (
+            <Devices
+              experimentId={experimentId}
+              entityType={entityType}
+              backToDeviceTypes={this.switchCurrentContentType}
+            />
+          );
+        default:
+          return (
+            <DeviceTypes
+              experimentId={experimentId}
+              entityType={entityType}
+              openDevices={this.switchCurrentContentType}
+            />
+          );
+      }
+    };
+
+    render() {
+      return <>{this.renderContent(this.state.currentContentType)}</>;
+    }
 }
 
 export default withStyles(styles)(DeviceMainView);
