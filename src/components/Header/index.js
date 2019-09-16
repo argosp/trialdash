@@ -18,11 +18,13 @@ const StyledTabs = withStyles(tabsStyles)(props => (
 class Header extends React.Component {
   state = {
     anchorElement: null,
+    isExperimentHovering: false,
   };
 
   handleMenuClick = (event) => {
     this.setState({
       anchorElement: event.currentTarget,
+      isExperimentHovering: false,
     });
   };
 
@@ -34,20 +36,46 @@ class Header extends React.Component {
     this.props.handleTabChange(newValue);
   };
 
+  handleLogoClick = (event) => {
+    this.handleTabChange(event, 0); // 0 is the first tab (Trials)
+  };
+
   selectExperiment = (id, name) => {
     const { selectActiveExperiment } = this.props;
     selectActiveExperiment(id, name);
     this.handleMenuClose();
   };
 
+  handleExperimentMouseEnter = () => {
+    this.setState({ isExperimentHovering: true });
+  };
+
+  handleExperimentMouseLeave = () => {
+    this.setState({ isExperimentHovering: false });
+  };
+
+  renderCurrentExperimentName = (currentExperiment, isExperimentHovering) => {
+    if (currentExperiment.name && currentExperiment.id && isExperimentHovering) {
+      return (
+        `${currentExperiment.name} (ID: ${currentExperiment.id})`
+      );
+    }
+
+    if (currentExperiment.name && !isExperimentHovering) {
+      return `${currentExperiment.name}`;
+    }
+
+    return 'Select an Experiment';
+  };
+
   render() {
     const { classes, currentExperiment, experiments, tabValue } = this.props;
-    const { anchorElement } = this.state;
+    const { anchorElement, isExperimentHovering } = this.state;
 
     return (
       <Grid container className={classes.root}>
         <Grid item container xs={7} alignItems="flex-start">
-          <Link to="/" className={classes.logo}>
+          <Link to="/" onClick={this.handleLogoClick} className={classes.logo}>
             Argos
           </Link>
           <Divider orientation="vertical" className={classes.divider} />
@@ -57,10 +85,10 @@ class Header extends React.Component {
             onClick={this.handleMenuClick}
             disableRipple
             className={classes.expandButton}
+            onMouseEnter={this.handleExperimentMouseEnter}
+            onMouseLeave={this.handleExperimentMouseLeave}
           >
-            {currentExperiment.name && currentExperiment.id
-              ? `${currentExperiment.name} (ID: ${currentExperiment.id})`
-              : 'Select an Experiment'}
+            {this.renderCurrentExperimentName(currentExperiment, isExperimentHovering)}
             <ExpandMoreIcon />
           </Button>
           <Menu
@@ -71,11 +99,11 @@ class Header extends React.Component {
             getContentAnchorEl={null}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'right',
+              horizontal: 'left',
             }}
             transformOrigin={{
               vertical: 'top',
-              horizontal: 'right',
+              horizontal: 'left',
             }}
           >
             {experiments.map(experiment => (
