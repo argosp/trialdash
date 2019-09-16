@@ -38,6 +38,7 @@ class Header extends React.Component {
 
   handleLogoClick = (event) => {
     this.handleTabChange(event, 0); // 0 is the first tab (Trials)
+    this.props.selectActiveExperiment('', ''); // reset selected experiment
   };
 
   selectExperiment = (id, name) => {
