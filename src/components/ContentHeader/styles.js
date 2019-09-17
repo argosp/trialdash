@@ -63,8 +63,6 @@ export const styles = theme => ({
     },
   },
   addButton: {
-    color: '#fff',
     marginLeft: 20,
-    padding: '10px 45px',
   },
 });
