@@ -23,6 +23,7 @@ class FieldTypesPanel extends React.Component {
       <RightPanelContainer title="Field Types">
         {this.generateFieldTypesArray().map(fieldType => (
           <Grid
+            key={fieldType.key}
             container
             alignItems="center"
             className={classes.fieldTypeWrapper}
