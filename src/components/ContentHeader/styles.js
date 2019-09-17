@@ -27,6 +27,11 @@ export const styles = theme => ({
     fontSize: 16,
     verticalAlign: 'bottom',
   },
+  bottomDescription: {
+    color: theme.palette.gray.dark,
+    fontSize: 16,
+    marginTop: 5,
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,

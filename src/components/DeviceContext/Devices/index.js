@@ -56,6 +56,7 @@ class Devices extends React.Component {
     return (
       <>
         <ContentHeader
+          withSearchInput
           title="Device type"
           searchPlaceholder="Search Devices"
           addButtonText="Add device"

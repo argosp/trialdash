@@ -10,12 +10,16 @@ import trialSetsQuery from '../utils/trialSetQuery';
 import trialSetsSubscription from '../utils/trialSetsSubscription';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
-import { TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import {
+  TRIAL_SET_FORM_CONTENT_TYPE,
+  TRIAL_SETS_CONTENT_TYPE,
+  TRIALS_CONTENT_TYPE,
+} from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 
 class TrialSets extends React.Component {
-    openTrials = () => {
-      this.props.openTrials(TRIALS_CONTENT_TYPE);
+    changeContentType = (contentType) => {
+      this.props.changeContentType(contentType);
     };
 
     renderTableRow = trialSet => (
@@ -41,7 +45,7 @@ class TrialSets extends React.Component {
           <Tooltip title="Open trial set" className={this.props.classes.arrowButton}>
             <IconButton
               aria-label="open trial set"
-              onClick={this.openTrials}
+              onClick={() => this.changeContentType(TRIALS_CONTENT_TYPE)}
             >
               <ArrowForwardIosIcon />
             </IconButton>
@@ -69,9 +73,11 @@ class TrialSets extends React.Component {
       return (
         <>
           <ContentHeader
+            withSearchInput
             title="Trial sets"
             searchPlaceholder="Search trial sets"
             addButtonText="Add trial set"
+            addButtonHandler={() => this.changeContentType(TRIAL_SET_FORM_CONTENT_TYPE)}
           />
           <TableContentContainer
             subscriptionUpdateField="trialSetsUpdated"

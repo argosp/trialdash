@@ -4,9 +4,11 @@ import { styles } from './styles';
 import {
   TRIAL_SETS_CONTENT_TYPE,
   TRIALS_CONTENT_TYPE,
+  TRIAL_SET_FORM_CONTENT_TYPE,
 } from '../../constants/base';
 import TrialSets from './TrialSets';
 import Trials from './Trials';
+import TrialSetForm from './TrialSetForm';
 
 class TrialSetMainView extends React.Component {
   state = {
@@ -25,7 +27,7 @@ class TrialSetMainView extends React.Component {
         return (
           <TrialSets
             experimentId={experimentId}
-            openTrials={this.switchCurrentContentType}
+            changeContentType={this.switchCurrentContentType}
           />
         );
       case TRIALS_CONTENT_TYPE:
@@ -35,11 +37,15 @@ class TrialSetMainView extends React.Component {
             backToTrialSets={this.switchCurrentContentType}
           />
         );
+      case TRIAL_SET_FORM_CONTENT_TYPE:
+        return (
+          <TrialSetForm />
+        );
       default:
         return (
           <TrialSets
             experimentId={experimentId}
-            openTrials={this.switchCurrentContentType}
+            changeContentType={this.switchCurrentContentType}
           />
         );
     }

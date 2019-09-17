@@ -71,6 +71,7 @@ class DeviceTypes extends React.Component {
       return (
         <>
           <ContentHeader
+            withSearchInput
             title="Devices types"
             searchPlaceholder="Search Devices types"
             addButtonText="Add device type"
