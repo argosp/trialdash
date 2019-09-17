@@ -1,5 +1,8 @@
 export const styles = theme => ({
   root: {
+    marginBottom: 5,
+  },
+  wrapper: {
     backgroundColor: theme.palette.white.main,
     padding: '25px 30px 25px 20px',
     border: '2px solid transparent',
