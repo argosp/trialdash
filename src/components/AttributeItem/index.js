@@ -12,8 +12,8 @@ import { styles } from './styles';
 import { FIELD_TYPES } from '../../constants/attributes';
 
 const AttributeItem = ({ type, title, classes, inputId, placeholder, bottomDescription }) => (
-  <Grid container>
-    <Grid item container xs={7} className={classes.root}>
+  <Grid container className={classes.root}>
+    <Grid item container xs={7} className={classes.wrapper}>
       <Grid item container xs={6} alignItems="center" wrap="nowrap">
         <OpenWithIcon />
         <CustomInput
