@@ -14,6 +14,8 @@ import CustomInput from '../../CustomInput';
 import CustomHeadline from '../../CustomHeadline';
 import AttributeItem from '../../AttributeItem';
 import FieldTypesPanel from '../../FieldTypesPanel';
+import Footer from '../../Footer';
+import { TRIAL_SETS_CONTENT_TYPE } from '../../../constants/base';
 
 // const graphql = new Graph();
 
@@ -68,6 +70,10 @@ class TrialSetForm extends React.Component {
     this.state.properties.push({ key: '', val: '' });
     this.setState({});
   }; */
+
+  cancelForm = () => {
+    this.props.changeContentType(TRIAL_SETS_CONTENT_TYPE);
+  };
 
   render = () => {
     const { classes, theme } = this.props;
@@ -125,6 +131,7 @@ class TrialSetForm extends React.Component {
             bottomDescription="a short description of the field"
           />
         </form>
+        <Footer cancelButtonHandler={this.cancelForm} />
         {/* <form
         className={classes.container}
         noValidate

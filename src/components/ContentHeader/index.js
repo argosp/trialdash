@@ -1,11 +1,11 @@
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import React from 'react';
 import { withStyles } from '@material-ui/core';
 import { styles } from './styles';
+import SimpleButton from '../SimpleButton';
 
 const ContentHeader = (props) => {
   const {
@@ -51,14 +51,12 @@ const ContentHeader = (props) => {
             }}
             inputProps={{ 'aria-label': searchPlaceholder }}
           />
-          <Button
-            variant="contained"
-            color="primary"
+          <SimpleButton
+            colorVariant="primary"
             className={classes.addButton}
+            text={addButtonText}
             onClick={addButtonHandler}
-          >
-            {addButtonText}
-          </Button>
+          />
         </div>
       ) : null}
     </Grid>
