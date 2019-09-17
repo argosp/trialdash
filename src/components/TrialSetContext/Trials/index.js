@@ -84,6 +84,7 @@ class TrialSets extends React.Component {
     return (
       <>
         <ContentHeader
+          withSearchInput
           title="Trials set"
           searchPlaceholder="Search Trials"
           addButtonText="Add trial"

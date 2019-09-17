@@ -16,6 +16,9 @@ const ContentHeader = (props) => {
     withBackButton,
     backButtonHandler,
     rightDescription,
+    addButtonHandler,
+    bottomDescription,
+    withSearchInput,
   } = props;
 
   return (
@@ -31,27 +34,33 @@ const ContentHeader = (props) => {
         {rightDescription ? (
           <span className={classes.rightDescription}>{rightDescription}</span>
         ) : null}
+        {bottomDescription ? (
+          <p className={classes.bottomDescription}>{bottomDescription}</p>
+        ) : null}
       </div>
-      <div className={classes.search}>
-        <div className={classes.searchIcon}>
-          <SearchIcon />
+      {withSearchInput ? (
+        <div className={classes.search}>
+          <div className={classes.searchIcon}>
+            <SearchIcon />
+          </div>
+          <InputBase
+            placeholder={searchPlaceholder}
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput,
+            }}
+            inputProps={{ 'aria-label': searchPlaceholder }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.addButton}
+            onClick={addButtonHandler}
+          >
+            {addButtonText}
+          </Button>
         </div>
-        <InputBase
-          placeholder={searchPlaceholder}
-          classes={{
-            root: classes.inputRoot,
-            input: classes.inputInput,
-          }}
-          inputProps={{ 'aria-label': searchPlaceholder }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.addButton}
-        >
-          {addButtonText}
-        </Button>
-      </div>
+      ) : null}
     </Grid>
   );
 };
