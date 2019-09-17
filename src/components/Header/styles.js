@@ -12,7 +12,7 @@ export const styles = theme => ({
     marginTop: 4,
   },
   divider: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: theme.palette.white.dark,
     height: 45,
     width: 1,
     marginRight: 20,

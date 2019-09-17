@@ -6,7 +6,7 @@ export const styles = theme => ({
   inputWithBorder: {
     backgroundColor: theme.palette.white.main,
     padding: '10px 15px',
-    border: '1px solid #E0E0E0',
+    border: `1px solid ${theme.palette.white.dark}`,
     fontSize: 14,
   },
   label: {
