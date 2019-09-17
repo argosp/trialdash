@@ -31,6 +31,7 @@ export default createMuiTheme({
     },
     white: {
       main: '#fff',
+      dark: '#E0E0E0',
     },
     black: {
       main: '#333',

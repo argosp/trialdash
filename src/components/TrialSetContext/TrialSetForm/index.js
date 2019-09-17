@@ -13,6 +13,7 @@ import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import CustomHeadline from '../../CustomHeadline';
 import AttributeItem from '../../AttributeItem';
+import FieldTypesPanel from '../../FieldTypesPanel';
 
 // const graphql = new Graph();
 
@@ -74,9 +75,10 @@ class TrialSetForm extends React.Component {
     return (
       <>
         <ContentHeader
-          title="Add Device type"
+          title="Add trial set"
           bottomDescription="a short description of what it means to add a device here"
         />
+        <FieldTypesPanel />
         <form className={classes.form}>
           <Grid container spacing={4}>
             <Grid item xs={3}>

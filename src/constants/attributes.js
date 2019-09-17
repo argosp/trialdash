@@ -14,11 +14,11 @@ export const FIELD_TYPES = {
     iconComponent: <ImageAspectRatioOutlinedIcon />,
   },
   textArea: {
-    title: 'Text area',
+    title: 'Text Area',
     iconComponent: <SubjectIcon />,
   },
   selectList: {
-    title: 'Select list',
+    title: 'Select List',
     iconComponent: <ViewColumnOutlinedIcon />,
   },
   boolean: {
