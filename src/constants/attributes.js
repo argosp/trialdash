@@ -4,7 +4,7 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import ViewColumnOutlinedIcon from '@material-ui/icons/ViewColumnOutlined';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import ViewQuiltOutlinedIcon from '@material-ui/icons/ViewQuiltOutlined';
-import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
+import EventIcon from '@material-ui/icons/Event';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 
@@ -37,7 +37,7 @@ export const FIELD_TYPES = {
   date: {
     key: 5,
     title: 'Date',
-    iconComponent: <CalendarTodayOutlinedIcon />,
+    iconComponent: <EventIcon />,
   },
   time: {
     key: 6,
