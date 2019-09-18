@@ -5,17 +5,11 @@ import React from 'react';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import Select from '@material-ui/core/Select';
 import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 // import Graph from '../../../apolloGraphql';
 // import trialSetMutation from './utils/trialSetMutation';
 import { styles } from './styles';
-import ContentHeader from '../../ContentHeader';
-import CustomInput from '../../CustomInput';
-import CustomHeadline from '../../CustomHeadline';
-import AttributeItem from '../../AttributeItem';
-import FieldTypesPanel from '../../FieldTypesPanel';
-import Footer from '../../Footer';
 import { TRIAL_SETS_CONTENT_TYPE } from '../../../constants/base';
+import AddSetForm from '../../AddSetForm';
 
 // const graphql = new Graph();
 
@@ -75,64 +69,33 @@ class TrialSetForm extends React.Component {
     this.props.changeContentType(TRIAL_SETS_CONTENT_TYPE);
   };
 
-  render = () => {
-    const { classes, theme } = this.props;
-
-    return (
-      <>
-        <ContentHeader
-          title="Add trial set"
-          bottomDescription="a short description of what it means to add a device here"
-        />
-        <FieldTypesPanel />
-        <form className={classes.form}>
-          <Grid container spacing={4}>
-            <Grid item xs={3}>
-              <CustomInput
-                className={classes.mainInput}
-                id="trial-set-name"
-                label="Name"
-                bottomDescription="a short description about the device name"
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <CustomInput
-                className={classes.mainInput}
-                id="trial-set-id"
-                label="ID"
-                bottomDescription="a short description about the device name"
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={4}>
-            <Grid item xs={6}>
-              <CustomInput
-                className={classes.mainInput}
-                id="trial-set-description"
-                label="Description"
-                bottomDescription="a short description about the device name"
-              />
-            </Grid>
-          </Grid>
-          <CustomHeadline
-            className={classes.attributesHeadline}
-            title="Attributes"
-            description="Drag fields from the right bar"
-            titleFontSize={18}
-            descriptionFontSize={16}
-            titleColor={theme.palette.black.main}
-            descriptionColor={theme.palette.gray.dark}
-          />
-          <AttributeItem
-            type="text"
-            title="Release type"
-            inputId="trial-set-attribute-description"
-            placeholder="enter sku here"
-            bottomDescription="a short description of the field"
-          />
-        </form>
-        <Footer cancelButtonHandler={this.cancelForm} />
-        {/* <form
+  render = () => (
+    <>
+      <AddSetForm
+        cancelFormHandler={this.cancelForm}
+        headerTitle="Add trial set"
+        headerDescription="a short description of what it means to add a device here"
+        commonInputs={[
+          {
+            key: 0,
+            id: 'trial-set-name',
+            label: 'Name',
+            description: 'a short description about the device name',
+          },
+          {
+            key: 1,
+            id: 'trial-set-id',
+            label: 'ID',
+            description: 'a short description about the device name',
+          },
+        ]}
+        descriptionInput={{
+          id: 'trial-set-description',
+          label: 'Description',
+          description: 'a short description about the device name',
+        }}
+      />
+      {/* <form
         className={classes.container}
         noValidate
         autoComplete="off"
@@ -215,9 +178,8 @@ class TrialSetForm extends React.Component {
           )}
         </div>
       </form> */}
-      </>
-    );
-  };
+    </>
+  );
 }
 
-export default withStyles(styles, { withTheme: true })(TrialSetForm);
+export default withStyles(styles)(TrialSetForm);
