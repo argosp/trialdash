@@ -9,6 +9,7 @@ import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
+  DEVICE_TYPE_FORM_CONTENT_TYPE,
   DEVICES_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
@@ -16,8 +17,8 @@ import devicesQuery from '../utils/deviceQuery';
 import devicesSubscription from '../utils/devicesSubscription';
 
 class DeviceTypes extends React.Component {
-    openDevices = () => {
-      this.props.openDevices(DEVICES_CONTENT_TYPE);
+    changeContentType = (contentType) => {
+      this.props.changeContentType(contentType);
     };
 
     renderTableRow = deviceType => (
@@ -43,7 +44,7 @@ class DeviceTypes extends React.Component {
           <Tooltip title="Open device type" className={this.props.classes.arrowButton}>
             <IconButton
               aria-label="open device type"
-              onClick={this.openDevices}
+              onClick={() => this.changeContentType(DEVICES_CONTENT_TYPE)}
             >
               <ArrowForwardIosIcon />
             </IconButton>
@@ -75,6 +76,7 @@ class DeviceTypes extends React.Component {
             title="Devices types"
             searchPlaceholder="Search Devices types"
             addButtonText="Add device type"
+            addButtonHandler={() => this.changeContentType(DEVICE_TYPE_FORM_CONTENT_TYPE)}
           />
           <TableContentContainer
             subscriptionUpdateField="devicesUpdated"
