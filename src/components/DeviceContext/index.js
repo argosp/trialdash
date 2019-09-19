@@ -3,12 +3,14 @@ import { withStyles } from '@material-ui/core/styles';
 import { styles } from './styles';
 import Devices from './Devices';
 import {
+  DEVICE_FORM_CONTENT_TYPE,
   DEVICE_TYPE_FORM_CONTENT_TYPE,
   DEVICE_TYPES_CONTENT_TYPE,
   DEVICES_CONTENT_TYPE,
 } from '../../constants/base';
 import DeviceTypes from './DeviceTypes';
 import DeviceTypeForm from './DeviceTypeForm';
+import DeviceForm from './DeviceForm';
 
 class DeviceMainView extends React.PureComponent {
     state = {
@@ -36,7 +38,7 @@ class DeviceMainView extends React.PureComponent {
             <Devices
               experimentId={experimentId}
               entityType={entityType}
-              backToDeviceTypes={this.switchCurrentContentType}
+              changeContentType={this.switchCurrentContentType}
             />
           );
         case DEVICE_TYPE_FORM_CONTENT_TYPE:
@@ -44,6 +46,10 @@ class DeviceMainView extends React.PureComponent {
             <DeviceTypeForm
               changeContentType={this.switchCurrentContentType}
             />
+          );
+        case DEVICE_FORM_CONTENT_TYPE:
+          return (
+            <DeviceForm />
           );
         default:
           return (

@@ -1,7 +1,8 @@
 export const styles = theme => ({
   input: {
     backgroundColor: theme.palette.white.main,
-    padding: '10px 5px',
+    padding: '10px 15px',
+    fontSize: 14,
   },
   inputWithBorder: {
     backgroundColor: theme.palette.white.main,
@@ -10,17 +11,17 @@ export const styles = theme => ({
     fontSize: 14,
   },
   label: {
-    top: -10,
     fontSize: 14,
     color: theme.palette.black.dark,
     fontWeight: 'bold',
   },
   formControl: {
     'label + &': {
-      marginTop: 10,
+      marginTop: 20,
     },
   },
   bottomDescription: {
     marginTop: 5,
+    lineHeight: '15px',
   },
 });

@@ -20,7 +20,7 @@ class FieldTypesPanel extends React.Component {
     const { classes } = this.props;
 
     return (
-      <RightPanelContainer title="Field Types">
+      <RightPanelContainer title={<h3 className={classes.headerTitle}>Field Types</h3>}>
         {this.generateFieldTypesArray().map(fieldType => (
           <Grid
             key={fieldType.key}

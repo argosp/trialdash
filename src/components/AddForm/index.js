@@ -6,10 +6,9 @@ import ContentHeader from '../ContentHeader';
 import CustomInput from '../CustomInput';
 import CustomHeadline from '../CustomHeadline';
 import AttributeItem from '../AttributeItem';
-import FieldTypesPanel from '../FieldTypesPanel';
 import Footer from '../Footer';
 
-const AddSetForm = ({
+const AddForm = ({
   classes,
   theme,
   headerTitle,
@@ -17,13 +16,15 @@ const AddSetForm = ({
   cancelFormHandler,
   commonInputs,
   descriptionInput,
+  rightPanel,
+  withFooter,
 }) => (
   <>
     <ContentHeader
       title={headerTitle}
       bottomDescription={headerDescription}
     />
-    <FieldTypesPanel />
+    {rightPanel}
     <form className={classes.form}>
       <Grid container spacing={4}>
         {commonInputs.map(input => (
@@ -33,6 +34,7 @@ const AddSetForm = ({
               id={input.id}
               label={input.label}
               bottomDescription={input.description}
+              placeholder={input.placeholder}
             />
           </Grid>
         ))}
@@ -45,6 +47,7 @@ const AddSetForm = ({
               id={descriptionInput.id}
               label={descriptionInput.label}
               bottomDescription={descriptionInput.description}
+              placeholder={descriptionInput.placeholder}
             />
           </Grid>
         </Grid>
@@ -66,8 +69,8 @@ const AddSetForm = ({
         bottomDescription="a short description of the field"
       />
     </form>
-    <Footer cancelButtonHandler={cancelFormHandler} />
+    {withFooter ? <Footer cancelButtonHandler={cancelFormHandler} /> : null}
   </>
 );
 
-export default withStyles(styles, { withTheme: true })(AddSetForm);
+export default withStyles(styles, { withTheme: true })(AddForm);
