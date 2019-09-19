@@ -9,7 +9,8 @@ import { withStyles } from '@material-ui/core/styles';
 // import trialSetMutation from './utils/trialSetMutation';
 import { styles } from './styles';
 import { TRIAL_SETS_CONTENT_TYPE } from '../../../constants/base';
-import AddSetForm from '../../AddSetForm';
+import AddForm from '../../AddForm';
+import FieldTypesPanel from '../../FieldTypesPanel';
 
 // const graphql = new Graph();
 
@@ -71,7 +72,9 @@ class TrialSetForm extends React.Component {
 
   render = () => (
     <>
-      <AddSetForm
+      <AddForm
+        withFooter
+        rightPanel={<FieldTypesPanel />}
         cancelFormHandler={this.cancelForm}
         headerTitle="Add trial set"
         headerDescription="a short description of what it means to add a device here"

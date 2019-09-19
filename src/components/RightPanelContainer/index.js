@@ -25,7 +25,7 @@ class RightPanelContainer extends React.Component {
           alignItems="center"
           className={classes.headerWrapper}
         >
-          <h3 className={classes.title}>{title}</h3>
+          {title}
           <CloseIcon
             fontSize="large"
             className={classes.closeIcon}

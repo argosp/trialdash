@@ -6,16 +6,16 @@ import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
-import TableContentContainer from '../../TableContentContainer';
+// import TableContentContainer from '../../TableContentContainer';
 import {
-  DEVICE_TYPES_CONTENT_TYPE, DEVICES_CONTENT_TYPE,
+  DEVICE_FORM_CONTENT_TYPE,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
 
 class Devices extends React.Component {
-  backToDeviceTypes = () => {
-    this.props.backToDeviceTypes(DEVICE_TYPES_CONTENT_TYPE);
-  };
+    changeContentType = (contentType) => {
+      this.props.changeContentType(contentType);
+    };
 
   renderTableRow = device => (
     <React.Fragment key={device.id}>
@@ -61,8 +61,9 @@ class Devices extends React.Component {
           searchPlaceholder="Search Devices"
           addButtonText="Add device"
           withBackButton
-          backButtonHandler={this.backToDeviceTypes}
+          backButtonHandler={this.changeContentType}
           rightDescription="Short description"
+          addButtonHandler={() => this.changeContentType(DEVICE_FORM_CONTENT_TYPE)}
         />
         {/* <TableContentContainer
           subscriptionUpdateField=""

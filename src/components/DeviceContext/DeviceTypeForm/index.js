@@ -9,7 +9,8 @@ import { withStyles } from '@material-ui/core/styles';
 // import deviceMutation from './utils/deviceMutation';
 import { styles } from './styles';
 import { DEVICE_TYPES_CONTENT_TYPE } from '../../../constants/base';
-import AddSetForm from '../../AddSetForm';
+import AddForm from '../../AddForm';
+import FieldTypesPanel from '../../FieldTypesPanel';
 
 // const graphql = new Graph();
 
@@ -79,7 +80,9 @@ class DeviceTypeForm extends React.Component {
   render() {
     return (
       <>
-        <AddSetForm
+        <AddForm
+          withFooter
+          rightPanel={<FieldTypesPanel />}
           cancelFormHandler={this.cancelForm}
           headerTitle="Add device type"
           headerDescription="a short description of what it means to add a device here"
