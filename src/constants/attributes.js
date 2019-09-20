@@ -50,3 +50,7 @@ export const FIELD_TYPES = {
     iconComponent: <LocationOnOutlinedIcon />,
   },
 };
+
+export const ATTRIBUTE_ITEM_INPUT_TYPE = 'input';
+export const ATTRIBUTE_ITEM_CHECKBOX_TYPE = 'checkbox';
+export const ATTRIBUTE_ITEM_RADIO_TYPE = 'radio';

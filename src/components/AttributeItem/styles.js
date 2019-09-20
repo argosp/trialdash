@@ -12,8 +12,6 @@ export const styles = theme => ({
     },
   },
   input: {
-    marginLeft: 15,
-
     '& svg': {
       color: theme.palette.gray.light,
       marginRight: 10,
@@ -21,5 +19,8 @@ export const styles = theme => ({
   },
   attributeButton: {
     marginLeft: 25,
+  },
+  crossIcon: {
+    marginRight: 15,
   },
 });

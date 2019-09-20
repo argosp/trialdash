@@ -7,6 +7,11 @@ import CustomInput from '../CustomInput';
 import CustomHeadline from '../CustomHeadline';
 import AttributeItem from '../AttributeItem';
 import Footer from '../Footer';
+import {
+  ATTRIBUTE_ITEM_CHECKBOX_TYPE,
+  ATTRIBUTE_ITEM_INPUT_TYPE,
+  ATTRIBUTE_ITEM_RADIO_TYPE,
+} from '../../constants/attributes';
 
 const AddForm = ({
   classes,
@@ -62,11 +67,26 @@ const AddForm = ({
         descriptionColor={theme.palette.gray.dark}
       />
       <AttributeItem
-        type="text"
+        fieldType="text"
+        contentType={ATTRIBUTE_ITEM_INPUT_TYPE}
         title="Release type"
-        inputId="trial-set-attribute-description"
+        inputId="attribute-item-1"
         placeholder="enter sku here"
-        bottomDescription="a short description of the field"
+        description="a short description of the field"
+      />
+      <AttributeItem
+        fieldType="selectList"
+        contentType={ATTRIBUTE_ITEM_CHECKBOX_TYPE}
+        title="Type"
+        inputId="attribute-item-2"
+        description="a short description of the field"
+      />
+      <AttributeItem
+        fieldType="selectList"
+        contentType={ATTRIBUTE_ITEM_RADIO_TYPE}
+        title="Type"
+        inputId="attribute-item-3"
+        description="a short description of the field"
       />
     </form>
     {withFooter ? <Footer cancelButtonHandler={cancelFormHandler} /> : null}

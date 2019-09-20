@@ -9,21 +9,47 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import CustomInput from '../CustomInput';
 import { styles } from './styles';
-import { FIELD_TYPES } from '../../constants/attributes';
+import {
+  ATTRIBUTE_ITEM_INPUT_TYPE,
+  FIELD_TYPES,
+} from '../../constants/attributes';
+import ListContent from './ListContent';
 
-const AttributeItem = ({ type, title, classes, inputId, placeholder, bottomDescription }) => (
+const AttributeItem = ({
+  classes,
+  contentType,
+  fieldType,
+  title,
+  description,
+  inputId,
+  placeholder,
+}) => (
   <Grid container className={classes.root}>
     <Grid item container xs={7} className={classes.wrapper}>
       <Grid item container xs={6} alignItems="center" wrap="nowrap">
-        <OpenWithIcon />
-        <CustomInput
-          className={classes.input}
-          id={inputId}
-          placeholder={placeholder}
-          withBorder
-          bottomDescription={bottomDescription}
-          label={<Grid container alignItems="center">{FIELD_TYPES[type].iconComponent}{title}</Grid>}
-        />
+        <OpenWithIcon className={classes.crossIcon} />
+        {contentType === ATTRIBUTE_ITEM_INPUT_TYPE ? (
+          <CustomInput
+            className={classes.input}
+            id={inputId}
+            placeholder={placeholder}
+            withBorder
+            bottomDescription={description}
+            label={(
+              <Grid container alignItems="center">
+                {FIELD_TYPES[fieldType].iconComponent}
+                {title}
+              </Grid>
+            )}
+          />
+        ) : (
+          <ListContent
+            contentType={contentType}
+            fieldType={fieldType}
+            title={title}
+            description={description}
+          />
+        )}
       </Grid>
       <Grid item container xs={6} justify="flex-end" alignItems="center">
         <Tooltip title="Edit attribute" className={classes.attributeButton}>
