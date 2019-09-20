@@ -1,6 +1,6 @@
 export const styles = theme => ({
   root: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: 0,
     left: 0,
     padding: '15px 15px 15px 25px',

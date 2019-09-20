@@ -63,6 +63,7 @@ class ListOfExperiments extends React.Component {
 
     switch (tabValue) {
       case 0:
+      default:
         return <TrialSetMainView experimentId={currentExperiment.id} />;
       case 1:
         return (
@@ -78,8 +79,6 @@ class ListOfExperiments extends React.Component {
             entityType="device"
           />
         );
-      default:
-        return <TrialSetMainView experimentId={currentExperiment.id} />;
     }
   };
 

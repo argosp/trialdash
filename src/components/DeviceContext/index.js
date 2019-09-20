@@ -26,6 +26,7 @@ class DeviceMainView extends React.PureComponent {
 
       switch (contentType) {
         case DEVICE_TYPES_CONTENT_TYPE:
+        default:
           return (
             <DeviceTypes
               experimentId={experimentId}
@@ -50,14 +51,6 @@ class DeviceMainView extends React.PureComponent {
         case DEVICE_FORM_CONTENT_TYPE:
           return (
             <DeviceForm />
-          );
-        default:
-          return (
-            <DeviceTypes
-              experimentId={experimentId}
-              entityType={entityType}
-              changeContentType={this.switchCurrentContentType}
-            />
           );
       }
     };

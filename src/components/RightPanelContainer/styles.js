@@ -1,11 +1,11 @@
 export const styles = theme => ({
   root: {
     display: 'block',
-    position: 'absolute',
+    position: 'fixed',
     right: 0,
     top: 0,
     backgroundColor: theme.palette.white.main,
-    height: '100vh',
+    height: '100%',
     overflowY: 'auto',
     width: 340,
     boxShadow: '-9px 0px 14px rgba(60, 60, 60, 0.05)',

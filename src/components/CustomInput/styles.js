@@ -11,7 +11,7 @@ export const styles = theme => ({
     fontSize: 14,
   },
   label: {
-    fontSize: 14,
+    fontSize: 18,
     color: theme.palette.black.dark,
     fontWeight: 'bold',
   },
