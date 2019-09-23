@@ -70,6 +70,7 @@ class TrialSets extends React.Component {
   };
 
   render() {
+    const { experimentId, trialSetId } = this.props;
     const tableHeadColumns = [
       { key: 0, title: '' },
       { key: 1, title: 'devices' },
@@ -96,7 +97,7 @@ class TrialSets extends React.Component {
           subscriptionUpdateField="trialsUpdated"
           dataType={TRIALS_CONTENT_TYPE}
           query={trialsQuery}
-          queryArgs={[this.props.experimentId]}
+          queryArgs={[experimentId, trialSetId]}
           tableHeadColumns={tableHeadColumns}
           subscription={trialsSubscription}
           renderRow={this.renderTableRow}
