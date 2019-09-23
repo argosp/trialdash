@@ -1,9 +1,8 @@
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
-const trials = experimentId => {
-  return gql`
+const trials = (experimentId, trialSetId) => gql`
   {
-      trials(experimentId:"${experimentId}"){
+      trials(experimentId:"${experimentId}", trialSetId:"${trialSetId}"){
         id
         name
         notes
@@ -49,7 +48,6 @@ const trials = experimentId => {
         type
       }
     }
-  }`
-}
+  }`;
 
 export default trials;

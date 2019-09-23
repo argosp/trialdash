@@ -22,6 +22,11 @@ class TrialSets extends React.Component {
       this.props.changeContentType(contentType);
     };
 
+  openTrialSet = (trialSet) => {
+    this.changeContentType(TRIALS_CONTENT_TYPE);
+    this.props.selectTrialSet(trialSet);
+  };
+
     renderTableRow = trialSet => (
       <React.Fragment key={trialSet.id}>
         <StyledTableCell align="left">Trial set</StyledTableCell>
@@ -45,7 +50,7 @@ class TrialSets extends React.Component {
           <Tooltip title="Open trial set" className={this.props.classes.arrowButton}>
             <IconButton
               aria-label="open trial set"
-              onClick={() => this.changeContentType(TRIALS_CONTENT_TYPE)}
+              onClick={() => this.openTrialSet(trialSet)}
             >
               <ArrowForwardIosIcon />
             </IconButton>

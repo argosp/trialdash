@@ -13,10 +13,15 @@ import TrialSetForm from './TrialSetForm';
 class TrialSetMainView extends React.Component {
   state = {
     currentContentType: TRIAL_SETS_CONTENT_TYPE,
+    selectedTrialSet: null,
   };
 
   switchCurrentContentType = (contentType) => {
     this.setState({ currentContentType: contentType });
+  };
+
+  selectTrialSet = (trialSet) => {
+    this.setState({ selectedTrialSet: trialSet });
   };
 
   renderContent = (contentType) => {
@@ -29,12 +34,14 @@ class TrialSetMainView extends React.Component {
           <TrialSets
             experimentId={experimentId}
             changeContentType={this.switchCurrentContentType}
+            selectTrialSet={this.selectTrialSet}
           />
         );
       case TRIALS_CONTENT_TYPE:
         return (
           <Trials
             experimentId={experimentId}
+            trialSetId={this.state.selectedTrialSet.id}
             backToTrialSets={this.switchCurrentContentType}
           />
         );
