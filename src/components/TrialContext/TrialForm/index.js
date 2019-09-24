@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { styles } from './styles';
-import devicesQuery from '../../DeviceContext/utils/deviceQuery';
+import deviceTypesQuery from '../../DeviceContext/utils/deviceTypeQuery';
 import assetsQuery from '../../AssetContext/utils/assetQuery';
 import trialMutation from './utils/trialMutation';
 import Graph from '../../../apolloGraphql';
@@ -143,10 +143,10 @@ class TrialForm extends React.Component {
     }
 
     componentDidMount() {
-        graphql.sendQuery(devicesQuery(this.props.experimentId, 'device'))
+        graphql.sendQuery(deviceTypesQuery(this.props.experimentId, 'deviceType'))
           .then(data => {
             let existingDevices = this.state.devices.map(d => d.name);
-        //     - "nameFormat": The format of the name. {id} will be replaced by the running number of the device. (start at 1)
+        //     - "nameFormat": The format of the name. {id} will be replaced by the running number of the deviceType. (start at 1)
         //  (For example, if Number=3 and namFormat="name_{id:02d}", you will get 3 devices with names: "name_01", "name_02", "name_03")
             let allDevices = this.buildEntities(data.devices);
             this.setState(() => ({
@@ -271,7 +271,7 @@ class TrialForm extends React.Component {
                         readOnly
                         className={classes.textField}
                         value={this.state.trialSet.name}
-                    />                    
+                    />
                     <br />
                     <TextField style={{ width: '300px', 'marginTop': '30px' }}
                         id="notes"
@@ -300,7 +300,7 @@ class TrialForm extends React.Component {
                                 />
                                 <br />
                             </div>
-                        
+
                     })}
                     <Entity entities={this.state.devices} entityName={'devices'} removeEntity={this.removeEntity} handleChangeMultiple={this.handleChangeMultiple} handleChangeProprty={this.handleChangeProprty} entitiesList={this.state.devicesList}/>
                     <Entity entities={this.state.assets} entityName={'assets'} removeEntity={this.removeEntity} handleChangeMultiple={this.handleChangeMultiple} handleChangeProprty={this.handleChangeProprty} entitiesList={this.state.assetsList}/>
