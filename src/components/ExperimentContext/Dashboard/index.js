@@ -76,7 +76,7 @@ class ListOfExperiments extends React.Component {
         return (
           <DeviceMainView
             experimentId={currentExperiment.id}
-            entityType="device"
+            entityType="deviceType"
           />
         );
     }

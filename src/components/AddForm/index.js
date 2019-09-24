@@ -19,6 +19,7 @@ const AddForm = ({
   headerTitle,
   headerDescription,
   cancelFormHandler,
+  saveFormHandler,
   commonInputs,
   descriptionInput,
   rightPanel,
@@ -89,7 +90,12 @@ const AddForm = ({
         description="a short description of the field"
       />
     </form>
-    {withFooter ? <Footer cancelButtonHandler={cancelFormHandler} /> : null}
+    {withFooter ? (
+      <Footer
+        cancelButtonHandler={cancelFormHandler}
+        saveButtonHandler={saveFormHandler}
+      />
+    ) : null}
   </>
 );
 

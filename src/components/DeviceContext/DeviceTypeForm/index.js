@@ -5,21 +5,18 @@ import React from 'react';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import Select from '@material-ui/core/Select';
 import { withStyles } from '@material-ui/core/styles';
-// import Graph from '../../../apolloGraphql';
+import Graph from '../../../apolloGraphql';
 // import deviceMutation from './utils/deviceMutation';
 import { styles } from './styles';
 import { DEVICE_TYPES_CONTENT_TYPE } from '../../../constants/base';
 import AddForm from '../../AddForm';
 import FieldTypesPanel from '../../FieldTypesPanel';
+import deviceTypeMutation from './utils/deviceTypeMutation';
 
-// const graphql = new Graph();
+const graphql = new Graph();
 
 class DeviceTypeForm extends React.Component {
-  cancelForm = () => {
-    this.props.changeContentType(DEVICE_TYPES_CONTENT_TYPE);
-  };
-
-  /*  constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
       id: this.props.id || null,
@@ -27,44 +24,21 @@ class DeviceTypeForm extends React.Component {
       notes: this.props.notes || '',
       type: this.props.type || '',
       properties: this.props.properties || [],
-      number: this.props.number || 1,
-      options: ['text', 'number', 'date', 'location'],
+      numberOfDevices: this.props.numberOfDevices || 1,
+      numberOfFields: this.props.numberOfFields || 1,
+      // options: ['text', 'number', 'date', 'location'],
     };
   }
 
+  cancelForm = () => {
+    this.props.changeContentType(DEVICE_TYPES_CONTENT_TYPE);
+  };
+
+  /*
   handleChange = key => (event) => {
     this.setState({
       [key]: event.target.value,
     });
-  };
-
-  submitDevice = () => {
-    const newDevice = {
-      id: this.state.id,
-      experimentId: this.props.experimentId,
-      name: this.state.name,
-      notes: this.state.notes,
-      type: this.state.type,
-      number: this.state.number,
-      entityType: this.props.entityType,
-      properties: this.state.properties.map(p => ({
-        key: p.key,
-        val: p.val,
-        type: p.type,
-      })),
-    };
-
-    graphql
-      .sendMutation(deviceMutation(newDevice))
-      .then((data) => {
-        window.alert(
-          `saved ${this.props.entityType} ${data.addUpdateDevice.id}`,
-        );
-        this.props.showAll();
-      })
-      .catch((err) => {
-        window.alert(`error: ${err}`);
-      });
   };
 
   addProperty = () => {
@@ -77,6 +51,36 @@ class DeviceTypeForm extends React.Component {
     this.setState({});
   }; */
 
+  submitDeviceType = () => {
+    const newDeviceType = {
+      id: this.state.id,
+      experimentId: this.props.experimentId,
+      name: this.state.name,
+      notes: this.state.notes,
+      type: this.state.type,
+      numberOfDevices: this.state.numberOfDevices,
+      numberOfFields: this.state.numberOfFields,
+      entityType: this.props.entityType,
+      properties: this.state.properties.map(p => ({
+        key: p.key,
+        val: p.val,
+        type: p.type,
+      })),
+    };
+
+    graphql
+      .sendMutation(deviceTypeMutation(newDeviceType))
+      .then((data) => {
+        window.alert(
+          `saved ${this.props.entityType} ${data.addUpdateDeviceTypes.id}`,
+        );
+        // this.props.showAll();
+      })
+      .catch((err) => {
+        window.alert(`error: ${err}`);
+      });
+  };
+
   render() {
     return (
       <>
@@ -84,6 +88,7 @@ class DeviceTypeForm extends React.Component {
           withFooter
           rightPanel={<FieldTypesPanel />}
           cancelFormHandler={this.cancelForm}
+          saveFormHandler={this.submitDeviceType}
           headerTitle="Add device type"
           headerDescription="a short description of what it means to add a device here"
           commonInputs={[

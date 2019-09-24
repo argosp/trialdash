@@ -10,11 +10,12 @@ import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
   DEVICE_TYPE_FORM_CONTENT_TYPE,
+  DEVICE_TYPES_CONTENT_TYPE,
   DEVICES_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import devicesQuery from '../utils/deviceQuery';
-import devicesSubscription from '../utils/devicesSubscription';
+import deviceTypesQuery from '../utils/deviceTypeQuery';
+import deviceTypesSubscription from '../utils/deviceTypesSubscription';
 
 class DeviceTypes extends React.Component {
     changeContentType = (contentType) => {
@@ -80,11 +81,11 @@ class DeviceTypes extends React.Component {
           />
           <TableContentContainer
             subscriptionUpdateField="devicesUpdated"
-            dataType={DEVICES_CONTENT_TYPE}
-            query={devicesQuery}
+            dataType={DEVICE_TYPES_CONTENT_TYPE}
+            query={deviceTypesQuery}
             queryArgs={[this.props.experimentId, this.props.entityType]}
             tableHeadColumns={tableHeadColumns}
-            subscription={devicesSubscription}
+            subscription={deviceTypesSubscription}
             renderRow={this.renderTableRow}
           />
         </>
