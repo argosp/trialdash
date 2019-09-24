@@ -16,19 +16,15 @@ import deviceTypeMutation from './utils/deviceTypeMutation';
 const graphql = new Graph();
 
 class DeviceTypeForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+    state = {
       id: this.props.id || null,
-      name: this.props.name || '',
-      notes: this.props.notes || '',
+      name: this.props.name || 'Device type name',
       type: this.props.type || '',
       properties: this.props.properties || [],
       numberOfDevices: this.props.numberOfDevices || 1,
       numberOfFields: this.props.numberOfFields || 1,
       // options: ['text', 'number', 'date', 'location'],
     };
-  }
 
   cancelForm = () => {
     this.props.changeContentType(DEVICE_TYPES_CONTENT_TYPE);
@@ -60,7 +56,6 @@ class DeviceTypeForm extends React.Component {
       type: this.state.type,
       numberOfDevices: this.state.numberOfDevices,
       numberOfFields: this.state.numberOfFields,
-      entityType: this.props.entityType,
       properties: this.state.properties.map(p => ({
         key: p.key,
         val: p.val,
@@ -72,7 +67,7 @@ class DeviceTypeForm extends React.Component {
       .sendMutation(deviceTypeMutation(newDeviceType))
       .then((data) => {
         window.alert(
-          `saved ${this.props.entityType} ${data.addUpdateDeviceTypes.id}`,
+          `saved ${data.addUpdateDeviceTypes.id}`,
         );
         // this.props.showAll();
       })

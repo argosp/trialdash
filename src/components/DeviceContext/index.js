@@ -15,14 +15,20 @@ import DeviceForm from './DeviceForm';
 class DeviceMainView extends React.PureComponent {
     state = {
       currentContentType: DEVICE_TYPES_CONTENT_TYPE,
+      selectedDeviceType: null,
     };
 
     switchCurrentContentType = (contentType) => {
       this.setState({ currentContentType: contentType });
     };
 
+    selectDeviceType = (deviceType) => {
+      this.setState({ selectedDeviceType: deviceType });
+    };
+
     renderContent = (contentType) => {
       const { experimentId, entityType } = this.props;
+      const { selectedDeviceType } = this.state;
 
       switch (contentType) {
         case DEVICE_TYPES_CONTENT_TYPE:
@@ -32,13 +38,14 @@ class DeviceMainView extends React.PureComponent {
               experimentId={experimentId}
               entityType={entityType}
               changeContentType={this.switchCurrentContentType}
+              selectDeviceType={this.selectDeviceType}
             />
           );
         case DEVICES_CONTENT_TYPE:
           return (
             <Devices
               experimentId={experimentId}
-              entityType={entityType}
+              deviceTypeId={selectedDeviceType.id}
               changeContentType={this.switchCurrentContentType}
             />
           );
@@ -46,13 +53,16 @@ class DeviceMainView extends React.PureComponent {
           return (
             <DeviceTypeForm
               experimentId={experimentId}
-              entityType={entityType}
               changeContentType={this.switchCurrentContentType}
             />
           );
         case DEVICE_FORM_CONTENT_TYPE:
           return (
-            <DeviceForm />
+            <DeviceForm
+              experimentId={experimentId}
+              deviceType={selectedDeviceType}
+              changeContentType={this.switchCurrentContentType}
+            />
           );
       }
     };
