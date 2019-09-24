@@ -6,11 +6,13 @@ import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
-// import TableContentContainer from '../../TableContentContainer';
+import TableContentContainer from '../../TableContentContainer';
 import {
-  DEVICE_FORM_CONTENT_TYPE,
+  DEVICE_FORM_CONTENT_TYPE, DEVICES_CONTENT_TYPE,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
+import devicesQuery from './utils/deviceQuery';
+import devicesSubscription from './utils/deviceSubscription';
 
 class Devices extends React.Component {
     changeContentType = (contentType) => {
@@ -19,11 +21,11 @@ class Devices extends React.Component {
 
   renderTableRow = device => (
     <React.Fragment key={device.id}>
-      <StyledTableCell align="left">Device name</StyledTableCell>
+      <StyledTableCell align="left">{device.name}</StyledTableCell>
       <StyledTableCell align="left">{device.id}</StyledTableCell>
-      <StyledTableCell align="left">Height</StyledTableCell>
-      <StyledTableCell align="left">SKU</StyledTableCell>
-      <StyledTableCell align="left">Brand</StyledTableCell>
+      <StyledTableCell align="left">{device.height}</StyledTableCell>
+      <StyledTableCell align="left">{device.sku}</StyledTableCell>
+      <StyledTableCell align="left">{device.brand}</StyledTableCell>
       <StyledTableCell align="right">
         <Tooltip title="Clone device">
           <IconButton
@@ -44,6 +46,7 @@ class Devices extends React.Component {
   );
 
   render() {
+    const { experimentId, deviceTypeId } = this.props;
     const tableHeadColumns = [
       { key: 0, title: 'device name' },
       { key: 1, title: 'id' },
@@ -62,18 +65,18 @@ class Devices extends React.Component {
           addButtonText="Add device"
           withBackButton
           backButtonHandler={this.changeContentType}
-          rightDescription="Short description"
+          rightDescription={deviceTypeId}
           addButtonHandler={() => this.changeContentType(DEVICE_FORM_CONTENT_TYPE)}
         />
-        {/* <TableContentContainer
-          subscriptionUpdateField=""
+        <TableContentContainer
+          subscriptionUpdateField="devicesUpdated"
           dataType={DEVICES_CONTENT_TYPE}
-          query={''}
-          queryArgs={''}
+          query={devicesQuery}
+          queryArgs={[experimentId, deviceTypeId]}
           tableHeadColumns={tableHeadColumns}
-          subscription={''}
+          subscription={devicesSubscription}
           renderRow={this.renderTableRow}
-        /> */}
+        />
       </>
     );
   }

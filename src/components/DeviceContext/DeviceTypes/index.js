@@ -22,11 +22,16 @@ class DeviceTypes extends React.Component {
       this.props.changeContentType(contentType);
     };
 
+    openDeviceType = (deviceType) => {
+      this.changeContentType(DEVICES_CONTENT_TYPE);
+      this.props.selectDeviceType(deviceType);
+    };
+
     renderTableRow = deviceType => (
       <React.Fragment key={deviceType.id}>
-        <StyledTableCell align="left">Device name</StyledTableCell>
-        <StyledTableCell align="left">Fields</StyledTableCell>
-        <StyledTableCell align="left">Devices</StyledTableCell>
+        <StyledTableCell align="left">{deviceType.name}</StyledTableCell>
+        <StyledTableCell align="left">{deviceType.numberOfFields}</StyledTableCell>
+        <StyledTableCell align="left">{deviceType.numberOfDevices}</StyledTableCell>
         <StyledTableCell align="right">
           <Tooltip title="Clone device type">
             <IconButton
@@ -45,7 +50,7 @@ class DeviceTypes extends React.Component {
           <Tooltip title="Open device type" className={this.props.classes.arrowButton}>
             <IconButton
               aria-label="open device type"
-              onClick={() => this.changeContentType(DEVICES_CONTENT_TYPE)}
+              onClick={() => this.openDeviceType(deviceType)}
             >
               <ArrowForwardIosIcon />
             </IconButton>
@@ -80,7 +85,7 @@ class DeviceTypes extends React.Component {
             addButtonHandler={() => this.changeContentType(DEVICE_TYPE_FORM_CONTENT_TYPE)}
           />
           <TableContentContainer
-            subscriptionUpdateField="devicesUpdated"
+            subscriptionUpdateField="deviceTypesUpdated"
             dataType={DEVICE_TYPES_CONTENT_TYPE}
             query={deviceTypesQuery}
             queryArgs={[this.props.experimentId, this.props.entityType]}
