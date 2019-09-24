@@ -5,7 +5,6 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
 import config from './../config';
 
 export default class Graph {

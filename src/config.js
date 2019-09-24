@@ -1,5 +1,3 @@
-import dotenv from 'dotenv'
-
 // const envPath = `${process.cwd()}src/.env`;
 // console.log(envPath)
 // dotenv.config({

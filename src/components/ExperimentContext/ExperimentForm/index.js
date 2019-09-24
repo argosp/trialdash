@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import config from '../../../config';
 import experimentMutation from './utils/experimentMutation';
 import Graph from '../../../apolloGraphql';
 
 import classes from './styles';
 //MATERIAL UI DEPENDENCIES
-import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
+import { withTheme } from '@material-ui/core/styles';
 
 // import { withTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -15,53 +14,53 @@ import FormControl from '@material-ui/core/FormControl';
 
 const graphql = new Graph();
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//     PaperProps: {
+//         style: {
+//             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//             width: 250,
+//         },
+//     },
+// };
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 300,
-        maxWidth: 300,
-    },
-    chips: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    chip: {
-        margin: 2,
-    },
-    noLabel: {
-        marginTop: theme.spacing(3),
-    },
-    button: {
-        margin: theme.spacing(1),
-    },
-    input: {
-        display: 'none',
-    }
-}));
+// const useStyles = makeStyles(theme => ({
+//     root: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//     },
+//     formControl: {
+//         margin: theme.spacing(1),
+//         minWidth: 300,
+//         maxWidth: 300,
+//     },
+//     chips: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//     },
+//     chip: {
+//         margin: 2,
+//     },
+//     noLabel: {
+//         marginTop: theme.spacing(3),
+//     },
+//     button: {
+//         margin: theme.spacing(1),
+//     },
+//     input: {
+//         display: 'none',
+//     }
+// }));
 
-function getStyles(device, devices, theme) {
-    return {
-        fontWeight:
-            devices.indexOf(device) === -1
-                ? theme.typography.fontWeightRegular
-                : theme.typography.fontWeightMedium,
-    };
-}
+// function getStyles(device, devices, theme) {
+//     return {
+//         fontWeight:
+//             devices.indexOf(device) === -1
+//                 ? theme.typography.fontWeightRegular
+//                 : theme.typography.fontWeightMedium,
+//     };
+// }
 
 class ExperimentForm extends React.Component {
     constructor(props) {

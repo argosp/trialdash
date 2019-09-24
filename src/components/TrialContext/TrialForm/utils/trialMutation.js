@@ -2,12 +2,12 @@ import gql from 'graphql-tag';
 
 function cleanEntity(entity) {
   return JSON.stringify(entity)
-    .replace(/\"entity\":/g, 'entity:')
-    .replace(/\"name\":/g, 'name:')
-    .replace(/\"properties\":/g, 'properties:')
-    .replace(/\"key\":/g, 'key:')
-    .replace(/\"val\":/g, 'val:')
-    .replace(/\"type\":/g, 'type:');
+    .replace(/"entity":/g, 'entity:')
+    .replace(/"name":/g, 'name:')
+    .replace(/"properties":/g, 'properties:')
+    .replace(/"key":/g, 'key:')
+    .replace(/"val":/g, 'val:')
+    .replace(/"type":/g, 'type:');
 }
 
 export default (trial) => {
@@ -25,8 +25,8 @@ export default (trial) => {
             assets: ${cleanEntity(trial.assets)},
             trialSet: "${trial.trialSet}"
             properties: ${JSON.stringify(trial.properties)
-    .replace(/\"key\":/g, 'key:')
-    .replace(/\"val\":/g, 'val:')}
+    .replace(/"key":/g, 'key:')
+    .replace(/"val":/g, 'val:')}
             ){
             id
         }
