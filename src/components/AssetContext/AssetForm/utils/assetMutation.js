@@ -13,7 +13,7 @@ export default (asset) => {
         type: "${asset.type}",
         number: "${asset.number}",
         entityType: "${asset.entityType}",
-        properties: ${JSON.stringify(asset.properties).replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:')}
+        properties: ${JSON.stringify(asset.properties).replace(/"key":/g, 'key:').replace(/"val":/g, 'val:')}
         ) {
             id
             name

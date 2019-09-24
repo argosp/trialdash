@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { styles } from './styles';
 import deviceTypesQuery from '../../DeviceContext/utils/deviceTypeQuery';
 import assetsQuery from '../../AssetContext/utils/assetQuery';
 import trialMutation from './utils/trialMutation';
@@ -10,7 +9,7 @@ import Entity from './entity';
 
 import classes from './styles';
 //MATERIAL UI DEPENDENCIES
-import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
+import { withTheme } from '@material-ui/core/styles';
 
 // import { withTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -20,53 +19,53 @@ import FormControl from '@material-ui/core/FormControl';
 
 const graphql = new Graph();
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//     PaperProps: {
+//         style: {
+//             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//             width: 250,
+//         },
+//     },
+// };
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 300,
-        maxWidth: 300,
-    },
-    chips: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    chip: {
-        margin: 2,
-    },
-    noLabel: {
-        marginTop: theme.spacing(3),
-    },
-    button: {
-        margin: theme.spacing(1),
-    },
-    input: {
-        display: 'none',
-    }
-}));
+// const useStyles = makeStyles(theme => ({
+//     root: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//     },
+//     formControl: {
+//         margin: theme.spacing(1),
+//         minWidth: 300,
+//         maxWidth: 300,
+//     },
+//     chips: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//     },
+//     chip: {
+//         margin: 2,
+//     },
+//     noLabel: {
+//         marginTop: theme.spacing(3),
+//     },
+//     button: {
+//         margin: theme.spacing(1),
+//     },
+//     input: {
+//         display: 'none',
+//     }
+// }));
 
-function getStyles(device, devices, theme) {
-    return {
-        fontWeight:
-            devices.indexOf(device) === -1
-                ? theme.typography.fontWeightRegular
-                : theme.typography.fontWeightMedium,
-    };
-}
+// function getStyles(device, devices, theme) {
+//     return {
+//         fontWeight:
+//             devices.indexOf(device) === -1
+//                 ? theme.typography.fontWeightRegular
+//                 : theme.typography.fontWeightMedium,
+//     };
+// }
 
 class TrialForm extends React.Component {
     constructor(props) {
@@ -114,11 +113,15 @@ class TrialForm extends React.Component {
     setObj(key, obj) {
         if (key === 'devices') {
             let existingDevices = obj.map(d => d.name);
+            // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+            // eslint-disable-next-line
             this.state.devicesList = this.state.allDevices.filter(d => existingDevices.indexOf(d.name) === -1);
         }
 
         if (key === 'assets') {
             let existingAssets = obj.map(d => d.name);
+            // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+            // eslint-disable-next-line
             this.state.assetsList = this.state.allAssets.filter(d => existingAssets.indexOf(d.name) === -1);
         }
 
@@ -184,7 +187,11 @@ class TrialForm extends React.Component {
     };
 
     handleChangeProprty = (index, key, entityType, entityIndex) => event => {
+        // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+        // eslint-disable-next-line
         if (entityType) this.state[entityType][entityIndex].properties[index][key] = event.target.value;
+        // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+        // eslint-disable-next-line
         else this.state.properties[index][key] = event.target.value;
         this.setState({ });
     };
@@ -229,6 +236,8 @@ class TrialForm extends React.Component {
     render() {
 
         return (
+            // Developrs please fix this line. No duplicate props style allowed.
+            // eslint-disable-next-line
             <form style={classes.container} noValidate autoComplete="off" style={{ display: 'flex', textAlign: 'left' }}>
                 <div>
                     <div>{this.state.id ? `Edit trial of trialSet ${this.state.trialSet.name}` : `Add trial to trialSet ${this.state.trialSet.name}`}</div>

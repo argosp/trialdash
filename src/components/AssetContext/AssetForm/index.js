@@ -1,25 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { styles } from './styles';
-import experimentsQuery from '../../ExperimentContext/utils/experiments-query';
-import config from '../../../config';
 import assetMutation from './utils/assetMutation';
 import Graph from '../../../apolloGraphql';
 
 import classes from './styles';
 //MATERIAL UI DEPENDENCIES
-import { withTheme, makeStyles, useTheme } from '@material-ui/core/styles';
+import { withTheme } from '@material-ui/core/styles';
 
 // import { withTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Chip from '@material-ui/core/Chip';
 
 const graphql = new Graph();
 
@@ -34,42 +28,42 @@ const MenuProps = {
     },
 };
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 300,
-        maxWidth: 300,
-    },
-    chips: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    chip: {
-        margin: 2,
-    },
-    noLabel: {
-        marginTop: theme.spacing(3),
-    },
-    button: {
-        margin: theme.spacing(1),
-    },
-    input: {
-        display: 'none',
-    }
-}));
+// const useStyles = makeStyles(theme => ({
+//     root: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//     },
+//     formControl: {
+//         margin: theme.spacing(1),
+//         minWidth: 300,
+//         maxWidth: 300,
+//     },
+//     chips: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//     },
+//     chip: {
+//         margin: 2,
+//     },
+//     noLabel: {
+//         marginTop: theme.spacing(3),
+//     },
+//     button: {
+//         margin: theme.spacing(1),
+//     },
+//     input: {
+//         display: 'none',
+//     }
+// }));
 
-function getStyles(asset, assets, theme) {
-    return {
-        fontWeight:
-            assets.indexOf(asset) === -1
-                ? theme.typography.fontWeightRegular
-                : theme.typography.fontWeightMedium,
-    };
-}
+// function getStyles(asset, assets, theme) {
+//     return {
+//         fontWeight:
+//             assets.indexOf(asset) === -1
+//                 ? theme.typography.fontWeightRegular
+//                 : theme.typography.fontWeightMedium,
+//     };
+// }
 
 class AssetForm extends React.Component {
     constructor(props) {
@@ -124,6 +118,8 @@ class AssetForm extends React.Component {
     }
 
     handleChangeProprty = (index, key) => event => {
+        // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+        // eslint-disable-next-line
         this.state.properties[index][key] = event.target.value;
         this.setState({ });
     };

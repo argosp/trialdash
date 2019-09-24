@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Graph from '../../../apolloGraphql';
-import assetsQuery from '../utils/assetQuery';
 import AssetForm from '../AssetForm';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -14,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import { styles } from './styles';
 
 
-const graphql = new Graph();
+// const graphql = new Graph();
 
 
 class ListOfAssets extends React.Component {

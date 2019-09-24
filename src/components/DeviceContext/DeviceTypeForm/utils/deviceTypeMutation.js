@@ -17,9 +17,9 @@ export default (deviceType) => {
             numberOfFields: "${deviceType.numberOfFields}",
             entityType: "${deviceType.entityType}",
             properties: ${JSON.stringify(deviceType.properties)
-    .replace(/\"key\":/g, 'key:')
-    .replace(/\"val\":/g, 'val:')
-    .replace(/\"type\":/g, 'type:')}
+    .replace(/"key":/g, 'key:')
+    .replace(/"val":/g, 'val:')
+    .replace(/"type":/g, 'type:')}
             ) {
                 id
                 name
