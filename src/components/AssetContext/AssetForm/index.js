@@ -118,7 +118,7 @@ class AssetForm extends React.Component {
     }
 
     handleChangeProprty = (index, key) => event => {
-        // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+        // TODO DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
         // eslint-disable-next-line
         this.state.properties[index][key] = event.target.value;
         this.setState({ });

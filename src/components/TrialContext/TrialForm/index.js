@@ -113,14 +113,14 @@ class TrialForm extends React.Component {
     setObj(key, obj) {
         if (key === 'devices') {
             let existingDevices = obj.map(d => d.name);
-            // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+            // TODO DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
             // eslint-disable-next-line
             this.state.devicesList = this.state.allDevices.filter(d => existingDevices.indexOf(d.name) === -1);
         }
 
         if (key === 'assets') {
             let existingAssets = obj.map(d => d.name);
-            // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+            // TODO DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
             // eslint-disable-next-line
             this.state.assetsList = this.state.allAssets.filter(d => existingAssets.indexOf(d.name) === -1);
         }
@@ -187,10 +187,10 @@ class TrialForm extends React.Component {
     };
 
     handleChangeProprty = (index, key, entityType, entityIndex) => event => {
-        // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+        // TODO DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
         // eslint-disable-next-line
         if (entityType) this.state[entityType][entityIndex].properties[index][key] = event.target.value;
-        // DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
+        // TODO DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
         // eslint-disable-next-line
         else this.state.properties[index][key] = event.target.value;
         this.setState({ });
@@ -236,7 +236,7 @@ class TrialForm extends React.Component {
     render() {
 
         return (
-            // Developrs please fix this line. No duplicate props style allowed.
+            // TODO Developers please fix this line. No duplicate props style allowed.
             // eslint-disable-next-line
             <form style={classes.container} noValidate autoComplete="off" style={{ display: 'flex', textAlign: 'left' }}>
                 <div>
