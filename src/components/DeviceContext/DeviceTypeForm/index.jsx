@@ -4,10 +4,8 @@ import React from 'react';
 // import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import Select from '@material-ui/core/Select';
-import { withStyles } from '@material-ui/core/styles';
 import Graph from '../../../apolloGraphql';
 // import deviceMutation from './utils/deviceMutation';
-import { styles } from './styles';
 import { DEVICE_TYPES_CONTENT_TYPE } from '../../../constants/base';
 import AddForm from '../../AddForm';
 import FieldTypesPanel from '../../FieldTypesPanel';
@@ -213,4 +211,4 @@ class DeviceTypeForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(DeviceTypeForm);
+export default DeviceTypeForm;

@@ -1,6 +1,4 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { styles } from './styles';
 import Devices from './Devices';
 import {
   DEVICE_FORM_CONTENT_TYPE,
@@ -72,4 +70,4 @@ class DeviceMainView extends React.PureComponent {
     }
 }
 
-export default withStyles(styles)(DeviceMainView);
+export default DeviceMainView;

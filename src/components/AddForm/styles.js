@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = () => ({
   form: {
     marginTop: 20,
     marginBottom: 150,

@@ -1,4 +1,3 @@
-
 export default {
   root: {
     display: 'flex',
@@ -9,7 +8,7 @@ export default {
   form: {
     display: 'flex',
     flexDirection: 'column',
-    paddingTop: 50
+    paddingTop: 50,
   },
   formControl: {
     // margin: theme.spacing.unit,
@@ -37,10 +36,11 @@ export default {
   container: {
     display: 'flex',
     flexWrap: 'wrap',
+    textAlign: 'left',
   },
   textField: {
     width: 200,
-    margin: '20px'
+    margin: '20px',
   },
   dense: {
     marginTop: 19,
@@ -58,9 +58,9 @@ export default {
   entity: {
     border: '1px solid',
     padding: 2,
-    marginBottom: 10
+    marginBottom: 10,
   },
   properties: {
-    display: 'flex'
-  }
+    display: 'flex',
+  },
 };

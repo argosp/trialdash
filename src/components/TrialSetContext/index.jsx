@@ -1,6 +1,4 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { styles } from './styles';
 import {
   TRIAL_SETS_CONTENT_TYPE,
   TRIALS_CONTENT_TYPE,
@@ -57,4 +55,4 @@ class TrialSetMainView extends React.Component {
   }
 }
 
-export default withStyles(styles)(TrialSetMainView);
+export default TrialSetMainView;

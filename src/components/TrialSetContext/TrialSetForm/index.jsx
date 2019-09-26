@@ -4,10 +4,8 @@ import React from 'react';
 // import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import Select from '@material-ui/core/Select';
-import { withStyles } from '@material-ui/core/styles';
 // import Graph from '../../../apolloGraphql';
 // import trialSetMutation from './utils/trialSetMutation';
-import { styles } from './styles';
 import { TRIAL_SETS_CONTENT_TYPE } from '../../../constants/base';
 import AddForm from '../../AddForm';
 import FieldTypesPanel from '../../FieldTypesPanel';
@@ -185,4 +183,4 @@ class TrialSetForm extends React.Component {
   );
 }
 
-export default withStyles(styles)(TrialSetForm);
+export default TrialSetForm;

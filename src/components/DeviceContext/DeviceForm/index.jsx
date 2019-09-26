@@ -1,6 +1,4 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { styles } from './styles';
 import AddForm from '../../AddForm';
 import DeviceFormPanel from '../DeviceFormPanel';
 import deviceMutation from './utils/deviceMutation';
@@ -71,4 +69,4 @@ class DeviceForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(DeviceForm);
+export default DeviceForm;

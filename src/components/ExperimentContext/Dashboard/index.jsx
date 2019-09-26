@@ -45,6 +45,8 @@ class ListOfExperiments extends React.Component {
     const { experiments, render } = this.state;
 
     if (experiments && experiments.length > 0 && render === false) {
+      // TODO Fix needed. Don't use setState in componentDidUpdate
+      // eslint-disable-next-line
       this.setState(() => ({ render: true }));
     }
   }

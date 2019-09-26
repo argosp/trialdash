@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 
-export default (experiment) => {   
-    return gql`mutation {
+export default experiment => gql`mutation {
         addUpdateExperiment(
             uid:"${localStorage.getItem('uid')}"
             id:"${experiment.id}"
@@ -11,5 +10,4 @@ export default (experiment) => {
           ){
             id
         }
-      }`
-}
+      }`;
