@@ -29,7 +29,7 @@ class TrialSets extends React.Component {
 
     renderTableRow = trialSet => (
       <React.Fragment key={trialSet.id}>
-        <StyledTableCell align="left">Trial set</StyledTableCell>
+        <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
         <StyledTableCell align="left">Trials</StyledTableCell>
         <StyledTableCell align="left">{trialSet.notes}</StyledTableCell>
         <StyledTableCell align="right">

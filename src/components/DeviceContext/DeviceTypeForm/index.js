@@ -23,6 +23,7 @@ class DeviceTypeForm extends React.Component {
       properties: this.props.properties || [],
       numberOfDevices: this.props.numberOfDevices || 1,
       numberOfFields: this.props.numberOfFields || 1,
+      entityType: 'deviceType',
       // options: ['text', 'number', 'date', 'location'],
     };
 
@@ -56,6 +57,7 @@ class DeviceTypeForm extends React.Component {
       type: this.state.type,
       numberOfDevices: this.state.numberOfDevices,
       numberOfFields: this.state.numberOfFields,
+      entityType: this.state.entityType,
       properties: this.state.properties.map(p => ({
         key: p.key,
         val: p.val,
