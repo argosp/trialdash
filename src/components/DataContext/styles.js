@@ -1,6 +1,6 @@
-export const styles = theme => ({
-    root: {
-      flexGrow: 1,
-      backgroundColor: "white",
-    },
-  });
+export const styles = () => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: 'white',
+  },
+});

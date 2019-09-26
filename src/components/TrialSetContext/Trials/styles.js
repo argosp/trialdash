@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = () => ({
   locationLink: {
     textDecoration: 'none',
     color: '#2F80ED',

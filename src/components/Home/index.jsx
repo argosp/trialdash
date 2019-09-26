@@ -12,7 +12,7 @@ class Home extends Component {
   componentDidMount() {
     const { authorized } = this.state;
     const { history } = this.props;
-    !authorized && history.push('/login');
+    if (!authorized) history.push('/login');
   }
 
   /*    logout = () => {

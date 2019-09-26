@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = () => ({
   title: {
     fontWeight: 'bold',
     margin: 0,

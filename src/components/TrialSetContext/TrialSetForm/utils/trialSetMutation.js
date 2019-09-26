@@ -1,9 +1,8 @@
 import gql from 'graphql-tag';
-import { resultKeyNameFromField } from 'apollo-utilities';
 
 export default (trialSet) => {
-    var id = trialSet.id ? trialSet.id : `${trialSet.experimentId}_${Date.now()}`;
-    return gql`
+  const id = trialSet.id ? trialSet.id : `${trialSet.experimentId}_${Date.now()}`;
+  return gql`
   mutation {
     addUpdateTrialSet(
         uid: "${localStorage.getItem('uid')}",
@@ -12,15 +11,15 @@ export default (trialSet) => {
         name: "${trialSet.name}",
         notes: "${trialSet.notes}",
         type: "${trialSet.type}",
-        properties: ${JSON.stringify(trialSet.properties).replace(/\"key\":/g, 'key:').replace(/\"val\":/g, 'val:')}
+        properties: ${JSON.stringify(trialSet.properties).replace(/"key":/g, 'key:').replace(/"val":/g, 'val:')}
         ) {
             id
             name
             type
         }
     }
-    `
-}
+    `;
+};
 
 
-//[{key: "heat degrees", val: "text"}]
+// [{key: "heat degrees", val: "text"}]

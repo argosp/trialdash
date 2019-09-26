@@ -1,7 +1,6 @@
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
-const trialSets = experimentId => {
-  return gql`
+const trialSets = experimentId => gql`
   {
       trialSets(experimentId:"${experimentId}"){
        id
@@ -13,7 +12,6 @@ const trialSets = experimentId => {
         val
       }
      }
-  }`
-}
+  }`;
 
 export default trialSets;

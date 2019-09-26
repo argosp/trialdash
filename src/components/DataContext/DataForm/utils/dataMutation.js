@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 
-export default (data) => {   
-    return gql`
+export default data => gql`
   mutation {
     addUpdateData(
         uid: "${localStorage.getItem('uid')}",
@@ -15,5 +14,4 @@ export default (data) => {
             type
         }
     }
-    `
-}
+    `;

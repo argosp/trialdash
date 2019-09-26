@@ -1,8 +1,7 @@
 import gql from 'graphql-tag';
 
-const assets = (experimentId, entityType) => {
-  return gql`
- 	{
+const assets = (experimentId, entityType) => gql`
+  {
      assets(experimentId:"${experimentId}", entityType:"${entityType}"){
        id
        name
@@ -15,7 +14,6 @@ const assets = (experimentId, entityType) => {
            type
         }
      }
-  }`
-}
+  }`;
 
 export default assets;

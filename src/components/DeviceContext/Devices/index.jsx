@@ -1,10 +1,8 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import TableContentContainer from '../../TableContentContainer';
 import {
@@ -82,4 +80,4 @@ class Devices extends React.Component {
   }
 }
 
-export default withStyles(styles)(Devices);
+export default Devices;

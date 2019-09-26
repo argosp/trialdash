@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export default (asset) => {
-    var id = asset.id ? asset.id : `${asset.experimentId}_${Date.now()}`; 
-    return gql`
+  const id = asset.id ? asset.id : `${asset.experimentId}_${Date.now()}`;
+  return gql`
   mutation {
     addUpdateAsset(
         uid: "${localStorage.getItem('uid')}",
@@ -26,5 +26,5 @@ export default (asset) => {
              }
         }
     }
-    `
-}
+    `;
+};
