@@ -11,26 +11,14 @@ export default (deviceType) => {
             experimentId:"${deviceType.experimentId}"
             id: "${id}",
             name: "${deviceType.name}",
-            notes: "${deviceType.notes}",
-            type: "${deviceType.type}",
             numberOfDevices: "${deviceType.numberOfDevices}",
             numberOfFields: "${deviceType.numberOfFields}",
-            entityType: "${deviceType.entityType}",
             properties: ${JSON.stringify(deviceType.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')}
             ) {
-                id
                 name
-                type
-                numberOfDevices
-                numberOfFields
-                properties{
-                    key
-                    val
-                    type
-                }
             }
         }
         `;

@@ -47,7 +47,14 @@ class TrialSetForm extends React.Component {
   render = () => (
     <>
       <AddForm
-        experimentId={this.props.experimentId}
+        initialState={{
+          id: '',
+          name: '',
+          description: '',
+          experimentId: this.props.experimentId,
+          numberOfTrials: 0,
+          properties: [],
+        }}
         withFooter
         rightPanel={<FieldTypesPanel />}
         cancelFormHandler={this.cancelForm}

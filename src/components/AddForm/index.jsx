@@ -14,13 +14,7 @@ import {
 } from '../../constants/attributes';
 
 class AddForm extends React.Component {
-  state = {
-    id: '',
-    name: '',
-    description: '',
-    experimentId: this.props.experimentId,
-    properties: [],
-  };
+  state = this.props.initialState;
 
   inputChangeHandler = (e, type) => {
     this.setState({ [type]: e.target.value });

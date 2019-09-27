@@ -6,6 +6,7 @@ const trialSets = experimentId => gql`
        id
        name
        description
+       numberOfTrials
        properties{
         key
         val
