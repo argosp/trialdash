@@ -10,7 +10,6 @@ const trials = (experimentId, trialSetId) => gql`
         end
         trialSet {
           id
-          type
           name
           properties {
               key
@@ -25,27 +24,23 @@ const trials = (experimentId, trialSetId) => gql`
           entity {
             id
             name
-            type
           }
           properties {
               key
               val
           }
           name
-          type
       }
       assets {
         entity {
           id
           name
-          type
         }
         properties {
             key
             val
         }
         name
-        type
       }
     }
   }`;
