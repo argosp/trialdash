@@ -1,8 +1,5 @@
 jobs:
   build:
-    branches:
-        only:
-          - master
     docker:
       - image: circleci/node:10.15
 
@@ -41,3 +38,7 @@ workflows:
     jobs:
       - build:
           context: argos
+          branches:
+            only:
+              - master
+              - ready-ci 
