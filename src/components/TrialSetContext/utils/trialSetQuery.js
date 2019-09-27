@@ -5,8 +5,7 @@ const trialSets = experimentId => gql`
       trialSets(experimentId:"${experimentId}"){
        id
        name
-       notes
-       type
+       description
        properties{
         key
         val

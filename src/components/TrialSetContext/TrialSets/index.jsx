@@ -31,7 +31,7 @@ class TrialSets extends React.Component {
       <React.Fragment key={trialSet.id}>
         <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
         <StyledTableCell align="left">Trials</StyledTableCell>
-        <StyledTableCell align="left">{trialSet.notes}</StyledTableCell>
+        <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
         <StyledTableCell align="right">
           <Tooltip title="Clone trial set">
             <IconButton

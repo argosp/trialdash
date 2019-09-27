@@ -45,7 +45,10 @@ class TrialSetMainView extends React.Component {
         );
       case TRIAL_SET_FORM_CONTENT_TYPE:
         return (
-          <TrialSetForm changeContentType={this.switchCurrentContentType} />
+          <TrialSetForm
+            experimentId={experimentId}
+            changeContentType={this.switchCurrentContentType}
+          />
         );
     }
   };
