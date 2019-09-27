@@ -38,7 +38,8 @@ workflows:
     jobs:
       - build:
           context: argos
-          branches:
-            only:
-              - master
-              - ready-ci 
+          filters:
+            branches:
+              only:
+                - master
+                - ready-ci 
