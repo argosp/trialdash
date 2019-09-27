@@ -1,10 +1,8 @@
-FROM node:10.15
-COPY ./ /usr/src/app
-# COPY srс /
-WORKDIR /usr/src/app
-RUN npm install
-EXPOSE 3001/tcp
-# RUN npm run build
-CMD ["yarn", "start"]
-# CMD npm start
-
+FROM node:10.15-alpine
+ENV APP_DIR /usr/src/app/
+WORKDIR $APP_DIR
+COPY package*.json yarn.lock $APP_DIR
+RUN yarn install
+COPY . .
+RUN yarn build
+ENTRYPOINT [ "yarn", "serve" ]
