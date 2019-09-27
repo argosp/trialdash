@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: trialdash
+  namespace: {{NAMESPACE}}
+
+spec:
+  selector:
+    app: trialdash
+  ports:
+    - name: trialdash
+      protocol: TCP
+      port: 3131
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: trialdash
+  namespace: {{NAMESPACE}}
+
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: trialdash
+  template:
+    metadata:
+      labels:
+        app: trialdash
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: trialdash
+          image: argosorg/trialdash:{{IMAGE_VERSION}}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: trialdash
+              containerPort: 3131
+          envFrom:
+            - configMapRef:
+                name: trialdash-configmap
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3131
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
