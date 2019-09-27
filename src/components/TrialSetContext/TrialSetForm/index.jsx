@@ -4,29 +4,15 @@ import React from 'react';
 // import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import Select from '@material-ui/core/Select';
-// import Graph from '../../../apolloGraphql';
-// import trialSetMutation from './utils/trialSetMutation';
+import Graph from '../../../apolloGraphql';
 import { TRIAL_SETS_CONTENT_TYPE } from '../../../constants/base';
 import AddForm from '../../AddForm';
 import FieldTypesPanel from '../../FieldTypesPanel';
+import trialSetMutation from './utils/trialSetMutation';
 
-// const graphql = new Graph();
+const graphql = new Graph();
 
 class TrialSetForm extends React.Component {
-  /*  constructor(props) {
-    super(props);
-    this.state = {
-      id: props.id || null,
-      name: props.name || '',
-      notes: props.notes || '',
-      type: '',
-      properties: props.properties || [],
-      devicesList: props.devicesList || [],
-      devices: props.devices || [],
-      options: ['text', 'number', 'date', 'location'],
-    };
-  } */
-
   /*  handleChange = key => (event) => {
     this.setState({
       [key]: event.target.value,
@@ -38,28 +24,18 @@ class TrialSetForm extends React.Component {
     this.setState({});
   }; */
 
-  /*  submitTrialSet = () => {
-    const newTrialSet = {
-      id: this.state.id,
-      experimentId: this.props.experimentId,
-      name: this.state.name,
-      notes: this.state.notes,
-      type: this.state.type,
-      properties: this.state.properties.map(p => ({ key: p.key, val: p.val })),
+    submitTrialSet = (newTrialSet) => {
+      graphql
+        .sendMutation(trialSetMutation(newTrialSet))
+        .then((data) => {
+          window.alert(`saved trialSet ${data.addUpdateTrialSet.name}`);
+        })
+        .catch((err) => {
+          window.alert(`error: ${err}`);
+        });
     };
 
-    graphql
-      .sendMutation(trialSetMutation(newTrialSet))
-      .then((data) => {
-        window.alert(`saved trialSet ${data.addUpdateTrialSet.name}`);
-        this.props.showAll();
-      })
-      .catch((err) => {
-        window.alert(`error: ${err}`);
-      });
-  }; */
-
-  /*  addProperty = () => {
+    /*  addProperty = () => {
     this.state.properties.push({ key: '', val: '' });
     this.setState({});
   }; */
@@ -71,9 +47,11 @@ class TrialSetForm extends React.Component {
   render = () => (
     <>
       <AddForm
+        experimentId={this.props.experimentId}
         withFooter
         rightPanel={<FieldTypesPanel />}
         cancelFormHandler={this.cancelForm}
+        saveFormHandler={this.submitTrialSet}
         headerTitle="Add trial set"
         headerDescription="a short description of what it means to add a device here"
         commonInputs={[

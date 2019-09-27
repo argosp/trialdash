@@ -9,13 +9,10 @@ export default (trialSet) => {
         experimentId:"${trialSet.experimentId}"
         id: "${id}",
         name: "${trialSet.name}",
-        notes: "${trialSet.notes}",
-        type: "${trialSet.type}",
+        description: "${trialSet.description}",
         properties: ${JSON.stringify(trialSet.properties).replace(/"key":/g, 'key:').replace(/"val":/g, 'val:')}
         ) {
-            id
-            name
-            type
+            name 
         }
     }
     `;
