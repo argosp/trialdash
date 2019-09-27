@@ -7,25 +7,7 @@ import Graph from '../../../apolloGraphql';
 const graphql = new Graph();
 
 class DeviceForm extends React.Component {
-    state = {
-      id: this.props.id || null,
-      name: this.props.name || 'Device name',
-      height: this.props.height || '',
-      sku: this.props.sku || '',
-      brand: this.props.brand || '',
-    };
-
-  submitDevice = () => {
-    const newDevice = {
-      id: this.state.id,
-      experimentId: this.props.experimentId,
-      name: this.state.name,
-      height: this.state.height,
-      sku: this.state.sku,
-      brand: this.state.brand,
-      deviceType: this.props.deviceType.id,
-    };
-
+  submitDevice = (newDevice) => {
     graphql
       .sendMutation(deviceMutation(newDevice))
       .then((data) => {
@@ -42,6 +24,15 @@ class DeviceForm extends React.Component {
   render() {
     return (
       <AddForm
+        initialState={{
+          experimentId: this.props.experimentId,
+          deviceType: this.props.deviceType.id,
+          id: '',
+          name: '',
+          height: '',
+          sku: '',
+          brand: '',
+        }}
         saveFormHandler={this.submitDevice}
         rightPanel={<DeviceFormPanel />}
         // cancelFormHandler={}
@@ -52,16 +43,16 @@ class DeviceForm extends React.Component {
           {
             key: 0,
             id: 'device-name',
-            label: 'Device Name',
+            label: 'Name',
             description: 'a short description about the device name',
-            placeholder: 'Search Devices',
+            placeholder: 'Value',
           },
           {
             key: 1,
             id: 'device-id',
-            label: 'Device ID',
+            label: 'ID',
             description: 'a short description about the device name',
-            placeholder: 'Search Devices',
+            placeholder: 'Value',
           },
         ]}
       />
