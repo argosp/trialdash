@@ -30,7 +30,7 @@ class TrialSets extends React.Component {
     renderTableRow = trialSet => (
       <React.Fragment key={trialSet.id}>
         <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
-        <StyledTableCell align="left">Trials</StyledTableCell>
+        <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
         <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
         <StyledTableCell align="right">
           <Tooltip title="Clone trial set">

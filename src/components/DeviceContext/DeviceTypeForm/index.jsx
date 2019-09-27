@@ -14,17 +14,6 @@ import deviceTypeMutation from './utils/deviceTypeMutation';
 const graphql = new Graph();
 
 class DeviceTypeForm extends React.Component {
-    state = {
-      id: this.props.id || null,
-      name: this.props.name || 'Device type name',
-      type: this.props.type || '',
-      properties: this.props.properties || [],
-      numberOfDevices: this.props.numberOfDevices || 1,
-      numberOfFields: this.props.numberOfFields || 1,
-      entityType: 'deviceType',
-      // options: ['text', 'number', 'date', 'location'],
-    };
-
   cancelForm = () => {
     this.props.changeContentType(DEVICE_TYPES_CONTENT_TYPE);
   };
@@ -46,28 +35,12 @@ class DeviceTypeForm extends React.Component {
     this.setState({});
   }; */
 
-  submitDeviceType = () => {
-    const newDeviceType = {
-      id: this.state.id,
-      experimentId: this.props.experimentId,
-      name: this.state.name,
-      notes: this.state.notes,
-      type: this.state.type,
-      numberOfDevices: this.state.numberOfDevices,
-      numberOfFields: this.state.numberOfFields,
-      entityType: this.state.entityType,
-      properties: this.state.properties.map(p => ({
-        key: p.key,
-        val: p.val,
-        type: p.type,
-      })),
-    };
-
+  submitDeviceType = (newDeviceType) => {
     graphql
       .sendMutation(deviceTypeMutation(newDeviceType))
       .then((data) => {
         window.alert(
-          `saved ${data.addUpdateDeviceTypes.id}`,
+          `saved ${data.addUpdateDeviceTypes.name}`,
         );
         // this.props.showAll();
       })
@@ -80,6 +53,14 @@ class DeviceTypeForm extends React.Component {
     return (
       <>
         <AddForm
+          initialState={{
+            id: '',
+            experimentId: this.props.experimentId,
+            name: '',
+            numberOfDevices: 0,
+            numberOfFields: 0,
+            properties: [],
+          }}
           withFooter
           rightPanel={<FieldTypesPanel />}
           cancelFormHandler={this.cancelForm}

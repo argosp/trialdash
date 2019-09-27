@@ -1,12 +1,10 @@
 import gql from 'graphql-tag';
 
-const deviceTypes = (experimentId, entityType) => gql`
+const deviceTypes = experimentId => gql`
  {
-    deviceTypes(experimentId:"${experimentId}", entityType:"${entityType}"){
+    deviceTypes(experimentId:"${experimentId}"){
        id
        name
-       notes
-       type
        numberOfDevices
        numberOfFields
        properties{
