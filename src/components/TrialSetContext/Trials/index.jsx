@@ -91,7 +91,7 @@ class TrialSets extends React.Component {
           addButtonText="Add trial"
           withBackButton
           backButtonHandler={this.backToTrialSets}
-          rightDescription="Short description"
+          rightDescription={trialSetId}
         />
         <TableContentContainer
           subscriptionUpdateField="trialsUpdated"
