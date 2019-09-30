@@ -13,14 +13,22 @@ export const styles = theme => ({
   },
   input: {
     '& svg': {
-      color: theme.palette.gray.light,
       marginRight: 10,
     },
   },
   attributeButton: {
+    display: 'inline',
     marginLeft: 25,
+    color: theme.palette.black.dark,
+  },
+  hiddenAttributeButton: {
+    display: 'none',
   },
   crossIcon: {
+    display: 'inline-block',
     marginRight: 15,
+  },
+  hiddenCrossIcon: {
+    color: theme.palette.white.main,
   },
 });
