@@ -5,7 +5,6 @@ import OpenWithIcon from '@material-ui/icons/OpenWith';
 import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import classnames from 'classnames';
 import CustomInput from '../CustomInput';
@@ -15,6 +14,7 @@ import {
   FIELD_TYPES,
 } from '../../constants/attributes';
 import ListContent from './ListContent';
+import CustomTooltip from '../CustomTooltip';
 
 class AttributeItem extends React.Component {
   state = {
@@ -83,42 +83,42 @@ class AttributeItem extends React.Component {
             )}
           </Grid>
           <Grid item container xs={6} justify="flex-end" alignItems="center">
-            <Tooltip
-              title="Edit attribute"
+            <CustomTooltip
+              title="Edit"
               className={
-                isMouseHover
-                  ? classes.attributeButton
-                  : classes.hiddenAttributeButton
-              }
+              isMouseHover
+                ? classes.attributeButton
+                : classes.hiddenAttributeButton
+            }
             >
-              <IconButton aria-label="edit attribute">
+              <IconButton aria-label="edit">
                 <EditOutlinedIcon />
               </IconButton>
-            </Tooltip>
-            <Tooltip
-              title="Clone attribute"
+            </CustomTooltip>
+            <CustomTooltip
+              title="Clone"
               className={
-                isMouseHover
-                  ? classes.attributeButton
-                  : classes.hiddenAttributeButton
-              }
+              isMouseHover
+                ? classes.attributeButton
+                : classes.hiddenAttributeButton
+            }
             >
-              <IconButton aria-label="clone attribute">
+              <IconButton aria-label="clone">
                 <QueueOutlinedIcon />
               </IconButton>
-            </Tooltip>
-            <Tooltip
-              title="Delete attribute"
+            </CustomTooltip>
+            <CustomTooltip
+              title="Delete"
               className={
-                isMouseHover
-                  ? classes.attributeButton
-                  : classes.hiddenAttributeButton
-              }
+              isMouseHover
+                ? classes.attributeButton
+                : classes.hiddenAttributeButton
+            }
             >
-              <IconButton aria-label="delete attribute">
+              <IconButton aria-label="delete">
                 <DeleteOutlineOutlinedIcon />
               </IconButton>
-            </Tooltip>
+            </CustomTooltip>
           </Grid>
         </Grid>
       </Grid>

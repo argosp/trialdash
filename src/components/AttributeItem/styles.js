@@ -19,7 +19,13 @@ export const styles = theme => ({
   attributeButton: {
     display: 'inline',
     marginLeft: 25,
+    padding: 10,
     color: theme.palette.black.dark,
+
+    '&:hover': {
+      color: theme.palette.primary.main,
+      backgroundColor: theme.palette.white.main,
+    },
   },
   hiddenAttributeButton: {
     display: 'none',
@@ -27,6 +33,11 @@ export const styles = theme => ({
   crossIcon: {
     display: 'inline-block',
     marginRight: 15,
+    cursor: 'pointer',
+
+    '&:hover': {
+      color: theme.palette.primary.main,
+    },
   },
   hiddenCrossIcon: {
     color: theme.palette.white.main,
