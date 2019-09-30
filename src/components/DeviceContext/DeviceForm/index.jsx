@@ -4,6 +4,7 @@ import DeviceFormPanel from '../DeviceFormPanel';
 import deviceMutation from './utils/deviceMutation';
 import Graph from '../../../apolloGraphql';
 import { DEVICES_CONTENT_TYPE } from '../../../constants/base';
+import deviceTypeMutation from '../DeviceTypeForm/utils/deviceTypeMutation';
 
 const graphql = new Graph();
 
@@ -12,8 +13,8 @@ class DeviceForm extends React.Component {
     this.props.changeContentType(DEVICES_CONTENT_TYPE);
   };
 
-  submitDevice = (newDevice) => {
-    graphql
+  submitDevice = async (newDevice) => {
+    await graphql
       .sendMutation(deviceMutation(newDevice))
       .then((data) => {
         window.alert(
@@ -23,6 +24,20 @@ class DeviceForm extends React.Component {
       })
       .catch((err) => {
         window.alert(`error: ${err}`);
+      });
+
+    const updatedDeviceType = this.props.selectedDeviceType;
+    updatedDeviceType.numberOfDevices = +updatedDeviceType.numberOfDevices + 1;
+    updatedDeviceType.experimentId = this.props.experimentId;
+    if (!updatedDeviceType.properties) updatedDeviceType.properties = [];
+
+    await graphql
+      .sendMutation(deviceTypeMutation(updatedDeviceType))
+      .then((data) => {
+        console.log('updated device type', data.addUpdateDeviceTypes);
+      })
+      .catch((error) => {
+        console.log('addUpdateDevice error', error);
       });
   };
 
