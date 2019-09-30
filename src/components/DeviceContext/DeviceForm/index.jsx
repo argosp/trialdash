@@ -3,10 +3,15 @@ import AddForm from '../../AddForm';
 import DeviceFormPanel from '../DeviceFormPanel';
 import deviceMutation from './utils/deviceMutation';
 import Graph from '../../../apolloGraphql';
+import { DEVICES_CONTENT_TYPE } from '../../../constants/base';
 
 const graphql = new Graph();
 
 class DeviceForm extends React.Component {
+  cancelForm = () => {
+    this.props.changeContentType(DEVICES_CONTENT_TYPE);
+  };
+
   submitDevice = (newDevice) => {
     graphql
       .sendMutation(deviceMutation(newDevice))
@@ -35,7 +40,7 @@ class DeviceForm extends React.Component {
         }}
         saveFormHandler={this.submitDevice}
         rightPanel={<DeviceFormPanel />}
-        // cancelFormHandler={}
+        cancelFormHandler={this.cancelForm}
         withFooter
         headerTitle="Add device"
         headerDescription="a short description of what it means to add a device here"
