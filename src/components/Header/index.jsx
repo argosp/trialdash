@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core';
+import classnames from 'classnames';
 import Divider from '@material-ui/core/Divider';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -9,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Avatar from '@material-ui/core/Avatar';
 import { styles, tabsStyles } from './styles';
 
 const StyledTabs = withStyles(tabsStyles)(props => (
@@ -75,17 +77,17 @@ class Header extends React.Component {
 
     return (
       <Grid container className={classes.root}>
-        <Grid item container xs={7} alignItems="flex-start">
+        <Grid item container xs={4} alignItems="flex-start">
           <Link to="/" onClick={this.handleLogoClick} className={classes.logo}>
             Argos
           </Link>
-          <Divider orientation="vertical" className={classes.divider} />
+          <Divider orientation="vertical" className={classnames(classes.divider, classes.leftDivider)} />
           <Button
-            aria-controls="header-menu"
+            aria-controls="experiments-menu"
             aria-haspopup="true"
             onClick={this.handleMenuClick}
             disableRipple
-            className={classes.expandButton}
+            className={classnames(classes.expandButton, classes.expandExperimentButton)}
             onMouseEnter={this.handleExperimentMouseEnter}
             onMouseLeave={this.handleExperimentMouseLeave}
           >
@@ -93,7 +95,7 @@ class Header extends React.Component {
             <ExpandMoreIcon />
           </Button>
           <Menu
-            id="header-menu"
+            id="experiments-menu"
             open={Boolean(anchorElement)}
             onClose={this.handleMenuClose}
             anchorEl={anchorElement}
@@ -118,7 +120,7 @@ class Header extends React.Component {
             ))}
           </Menu>
         </Grid>
-        <Grid item container xs={5} justify="flex-end">
+        <Grid item container xs={8} justify="flex-end">
           <StyledTabs
             value={tabValue}
             onChange={this.handleTabChange}
@@ -143,6 +145,20 @@ class Header extends React.Component {
               className={classes.tab}
             />
           </StyledTabs>
+          <Divider orientation="vertical" className={classnames(classes.divider, classes.rightDivider)} />
+          <div className={classes.profileWrapper}>
+            <Avatar alt="user avatar" className={classes.avatar} />
+            <Button
+              aria-controls="user-menu"
+              aria-haspopup="true"
+              // onClick={}
+              disableRipple
+              className={classnames(classes.expandButton, classes.expandProfileButton)}
+            >
+                Name Surname
+              <ExpandMoreIcon />
+            </Button>
+          </div>
         </Grid>
       </Grid>
     );
