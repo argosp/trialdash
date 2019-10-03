@@ -29,6 +29,20 @@ class DeviceTypeForm extends React.Component {
     this.props.changeContentType(DEVICE_TYPES_CONTENT_TYPE);
   };
 
+  changeFieldTypeValue = (event, key) => {
+    const { selectedFieldTypes } = this.state;
+    const changedFieldTypes = [];
+
+    selectedFieldTypes.forEach((selectedFieldType) => {
+      const fieldType = selectedFieldType;
+      if (fieldType.key === key) fieldType.val = event.target.value;
+
+      changedFieldTypes.push(fieldType);
+    });
+
+    this.setState({ selectedFieldTypes: changedFieldTypes });
+  };
+
   /*
   handleChange = key => (event) => {
     this.setState({
@@ -46,7 +60,26 @@ class DeviceTypeForm extends React.Component {
     this.setState({});
   }; */
 
-  submitDeviceType = (newDeviceType) => {
+  addPropertiesAndFieldsNumber = (deviceType) => {
+    const { selectedFieldTypes } = this.state;
+    const resultDeviceType = deviceType;
+
+    resultDeviceType.numberOfFields = selectedFieldTypes.length;
+
+    resultDeviceType.properties = [];
+
+    selectedFieldTypes.forEach((fieldType) => {
+      const property = { key: fieldType.key, val: fieldType.val, type: fieldType.type };
+
+      resultDeviceType.properties.push(property);
+    });
+
+    return resultDeviceType;
+  };
+
+  submitDeviceType = (deviceType) => {
+    const newDeviceType = this.addPropertiesAndFieldsNumber(deviceType);
+
     graphql
       .sendMutation(deviceTypeMutation(newDeviceType))
       .then((data) => {
@@ -134,6 +167,7 @@ class DeviceTypeForm extends React.Component {
           selectedAttributes={selectedFieldTypes}
           cancelFormHandler={this.cancelForm}
           saveFormHandler={this.submitDeviceType}
+          changeAttributeValueHandler={this.changeFieldTypeValue}
           headerTitle="Add device type"
           headerDescription="a short description of what it means to add a device here"
           commonInputs={[

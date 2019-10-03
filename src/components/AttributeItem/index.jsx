@@ -38,6 +38,7 @@ class AttributeItem extends React.Component {
       description,
       inputId,
       placeholder,
+      changeAttributeValueHandler,
     } = this.props;
     const { isMouseHover } = this.state;
 
@@ -63,6 +64,7 @@ class AttributeItem extends React.Component {
               placeholder={placeholder}
               withBorder
               bottomDescription={description}
+              onChange={changeAttributeValueHandler}
               label={(
                 <Grid container alignItems="center">
                   {FIELD_TYPES[fieldType].iconComponent}

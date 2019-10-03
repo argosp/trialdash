@@ -18,7 +18,9 @@ class AddForm extends React.Component {
   };
 
   inputChangeHandler = (e, type) => {
-    this.setState(state => ({ formObject: { ...state.formObject, [type]: e.target.value } }));
+    const { value } = e.target;
+
+    this.setState(state => ({ formObject: { ...state.formObject, [type]: value } }));
   };
 
   render() {
@@ -34,6 +36,7 @@ class AddForm extends React.Component {
       rightPanel,
       withFooter,
       selectedAttributes,
+      changeAttributeValueHandler,
     } = this.props;
 
     return (
@@ -102,6 +105,9 @@ class AddForm extends React.Component {
                           contentType={ATTRIBUTE_ITEM_INPUT_TYPE}
                           title={attribute.title}
                           inputId={attribute.key}
+                          changeAttributeValueHandler={
+                            event => changeAttributeValueHandler(event, attribute.key)
+                          }
                           placeholder="enter value"
                           description="a short description of the field"
                         />
@@ -113,28 +119,6 @@ class AddForm extends React.Component {
               </div>
             )}
           </Droppable>
-          {/*          <AttributeItem
-            fieldType="text"
-            contentType={ATTRIBUTE_ITEM_INPUT_TYPE}
-            title="Release type"
-            inputId="attribute-item-1"
-            placeholder="enter sku here"
-            description="a short description of the field"
-          />
-          <AttributeItem
-            fieldType="selectList"
-            contentType={ATTRIBUTE_ITEM_CHECKBOX_TYPE}
-            title="Type"
-            inputId="attribute-item-2"
-            description="a short description of the field"
-          />
-          <AttributeItem
-            fieldType="selectList"
-            contentType={ATTRIBUTE_ITEM_RADIO_TYPE}
-            title="Type"
-            inputId="attribute-item-3"
-            description="a short description of the field"
-          /> */}
         </form>
         {withFooter ? (
           <Footer
