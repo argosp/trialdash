@@ -6,10 +6,10 @@ import { styles } from './styles';
 import ContentHeader from '../ContentHeader';
 import CustomInput from '../CustomInput';
 import CustomHeadline from '../CustomHeadline';
-import AttributeItem from '../AttributeItem';
+import FieldTypeItem from '../FieldTypeItem';
 import Footer from '../Footer';
 import {
-  ATTRIBUTE_ITEM_INPUT_TYPE,
+  FIELD_TYPE_ITEM_INPUT_TYPE,
 } from '../../constants/attributes';
 
 class AddForm extends React.Component {
@@ -36,7 +36,7 @@ class AddForm extends React.Component {
       rightPanel,
       withFooter,
       selectedAttributes,
-      changeAttributeValueHandler,
+      changeFieldTypeValueHandler,
     } = this.props;
 
     return (
@@ -88,10 +88,10 @@ class AddForm extends React.Component {
                 ref={droppableProvided.innerRef}
                 className={classes.dropZone}
               >
-                {selectedAttributes.map((attribute, index) => (
+                {selectedAttributes.map((fieldType, index) => (
                   <Draggable
-                    key={attribute.key}
-                    draggableId={attribute.key}
+                    key={fieldType.key}
+                    draggableId={fieldType.key}
                     index={index}
                   >
                     {draggableProvided => (
@@ -100,13 +100,13 @@ class AddForm extends React.Component {
                         {...draggableProvided.draggableProps}
                         {...draggableProvided.dragHandleProps}
                       >
-                        <AttributeItem
-                          fieldType={attribute.type}
-                          contentType={ATTRIBUTE_ITEM_INPUT_TYPE}
-                          title={attribute.title}
-                          inputId={attribute.key}
-                          changeAttributeValueHandler={
-                            event => changeAttributeValueHandler(event, attribute.key)
+                        <FieldTypeItem
+                          fieldType={fieldType.type}
+                          contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
+                          title={fieldType.title}
+                          inputId={fieldType.key}
+                          changeFieldTypeValueHandler={
+                            event => changeFieldTypeValueHandler(event, fieldType.key)
                           }
                           placeholder="enter value"
                           description="a short description of the field"

@@ -2,6 +2,7 @@ import React from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core';
+import uuid from 'uuid/v4';
 import Graph from '../../apolloGraphql';
 import {
   DEVICE_TYPES_CONTENT_TYPE,
@@ -10,13 +11,13 @@ import {
 import FieldTypesPanel from '../FieldTypesPanel';
 import deviceTypeMutation from '../DeviceContext/utils/deviceTypeMutation';
 import {
-  ATTRIBUTE_ITEM_INPUT_TYPE,
+  FIELD_TYPE_ITEM_INPUT_TYPE,
   FIELD_TYPES_ARRAY,
 } from '../../constants/attributes';
 import ContentHeader from '../ContentHeader';
 import CustomInput from '../CustomInput';
 import CustomHeadline from '../CustomHeadline';
-import AttributeItem from '../AttributeItem';
+import FieldTypeItem from '../FieldTypeItem';
 import Footer from '../Footer';
 import { styles } from './styles';
 import trialSetMutation from '../TrialSetContext/utils/trialSetMutation';
@@ -62,7 +63,7 @@ class AddSetForm extends React.Component {
     const changedFieldTypes = [];
 
     selectedFieldTypes.forEach((selectedFieldType) => {
-      const fieldType = selectedFieldType;
+      const fieldType = { ...selectedFieldType };
       if (fieldType.key === key) fieldType.val = event.target.value;
 
       changedFieldTypes.push(fieldType);
@@ -74,7 +75,7 @@ class AddSetForm extends React.Component {
   addAdditionalFields = (entity) => {
     const { selectedFieldTypes } = this.state;
     const { type } = this.props;
-    const resultEntity = entity;
+    const resultEntity = { ...entity };
 
     // add number of field types to the device type
     if (DEVICE_TYPES_CONTENT_TYPE === type) resultEntity.numberOfFields = selectedFieldTypes.length;
@@ -113,7 +114,7 @@ class AddSetForm extends React.Component {
       });
   };
 
-  reorder = (list, startIndex, endIndex) => {
+  reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -122,7 +123,12 @@ class AddSetForm extends React.Component {
   };
 
   // Moves an item from one list to another list
-  move = (source, destination, droppableSource, droppableDestination) => {
+  moveFieldType = (
+    source,
+    destination,
+    droppableSource,
+    droppableDestination,
+  ) => {
     const sourceClone = Array.from(source);
     const destClone = Array.from(destination);
     const [removed] = sourceClone.splice(droppableSource.index, 1);
@@ -136,7 +142,7 @@ class AddSetForm extends React.Component {
     return result;
   };
 
-  getList = id => this.state[this.state.idToList[id]];
+  getListOfDraggableItems = id => this.state[this.state.idToList[id]];
 
   onDragEnd = ({ source, destination }) => {
     // dropped outside the list
@@ -145,17 +151,17 @@ class AddSetForm extends React.Component {
     }
 
     if (source.droppableId === destination.droppableId) {
-      const reorderedItems = this.reorder(
-        this.getList(source.droppableId),
+      const reorderedItems = this.reorderDraggedFieldTypes(
+        this.getListOfDraggableItems(source.droppableId),
         source.index,
         destination.index,
       );
 
       this.setState({ selectedFieldTypes: reorderedItems });
     } else {
-      const result = this.move(
-        this.getList(source.droppableId),
-        this.getList(destination.droppableId),
+      const result = this.moveFieldType(
+        this.getListOfDraggableItems(source.droppableId),
+        this.getListOfDraggableItems(destination.droppableId),
         source,
         destination,
       );
@@ -172,6 +178,15 @@ class AddSetForm extends React.Component {
 
     this.setState(state => ({
       formObject: { ...state.formObject, [type]: value },
+    }));
+  };
+
+  cloneDraggedFieldType = (fieldType) => {
+    const clonedFieldType = { ...fieldType };
+    clonedFieldType.key = uuid();
+
+    this.setState(state => ({
+      selectedFieldTypes: [...state.selectedFieldTypes, clonedFieldType],
     }));
   };
 
@@ -236,10 +251,10 @@ class AddSetForm extends React.Component {
                 ref={droppableProvided.innerRef}
                 className={classes.dropZone}
               >
-                {selectedFieldTypes.map((attribute, index) => (
+                {selectedFieldTypes.map((fieldType, index) => (
                   <Draggable
-                    key={attribute.key}
-                    draggableId={attribute.key}
+                    key={fieldType.key}
+                    draggableId={fieldType.key}
                     index={index}
                   >
                     {draggableProvided => (
@@ -248,14 +263,16 @@ class AddSetForm extends React.Component {
                         {...draggableProvided.draggableProps}
                         {...draggableProvided.dragHandleProps}
                       >
-                        <AttributeItem
-                          fieldType={attribute.type}
-                          contentType={ATTRIBUTE_ITEM_INPUT_TYPE}
-                          title={attribute.title}
-                          inputId={attribute.key}
-                          changeAttributeValueHandler={event => this.changeFieldTypeValueHandler(
+                        <FieldTypeItem
+                          inputValue={fieldType.val}
+                          cloneFieldType={() => this.cloneDraggedFieldType(fieldType)}
+                          fieldType={fieldType.type}
+                          contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
+                          title={fieldType.title}
+                          inputId={fieldType.key}
+                          changeFieldTypeValueHandler={event => this.changeFieldTypeValueHandler(
                             event,
-                            attribute.key,
+                            fieldType.key,
                           )
                           }
                           placeholder="enter value"

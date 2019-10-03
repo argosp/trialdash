@@ -12,8 +12,10 @@ const CustomInput = ({
   placeholder,
   className,
   onChange,
+  value,
 }) => (
   <TextField
+    value={value || null}
     onChange={onChange}
     className={className}
     label={label}
