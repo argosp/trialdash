@@ -72,6 +72,6 @@ const generateFieldTypesArray = () => {
 
 export const FIELD_TYPES_ARRAY = generateFieldTypesArray();
 
-export const ATTRIBUTE_ITEM_INPUT_TYPE = 'input';
-export const ATTRIBUTE_ITEM_CHECKBOX_TYPE = 'checkbox';
-export const ATTRIBUTE_ITEM_RADIO_TYPE = 'radio';
+export const FIELD_TYPE_ITEM_INPUT_TYPE = 'input';
+export const FIELD_TYPE_ITEM_CHECKBOX_TYPE = 'checkbox';
+export const FIELD_TYPE_ITEM_RADIO_TYPE = 'radio';

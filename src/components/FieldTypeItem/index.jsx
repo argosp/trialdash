@@ -10,13 +10,13 @@ import classnames from 'classnames';
 import CustomInput from '../CustomInput';
 import { styles } from './styles';
 import {
-  ATTRIBUTE_ITEM_INPUT_TYPE,
+  FIELD_TYPE_ITEM_INPUT_TYPE,
   FIELD_TYPES,
 } from '../../constants/attributes';
 import ListContent from './ListContent';
 import CustomTooltip from '../CustomTooltip';
 
-class AttributeItem extends React.Component {
+class FieldTypeItem extends React.Component {
   state = {
     isMouseHover: false,
   };
@@ -38,7 +38,9 @@ class AttributeItem extends React.Component {
       description,
       inputId,
       placeholder,
-      changeAttributeValueHandler,
+      changeFieldTypeValueHandler,
+      cloneFieldType,
+      inputValue,
     } = this.props;
     const { isMouseHover } = this.state;
 
@@ -57,14 +59,15 @@ class AttributeItem extends React.Component {
                   : classnames(classes.crossIcon, classes.hiddenCrossIcon)
               }
           />
-          {contentType === ATTRIBUTE_ITEM_INPUT_TYPE ? (
+          {contentType === FIELD_TYPE_ITEM_INPUT_TYPE ? (
             <CustomInput
+              value={inputValue}
               className={classes.input}
               id={inputId}
               placeholder={placeholder}
               withBorder
               bottomDescription={description}
-              onChange={changeAttributeValueHandler}
+              onChange={changeFieldTypeValueHandler}
               label={(
                 <Grid container alignItems="center">
                   {FIELD_TYPES[fieldType].iconComponent}
@@ -102,7 +105,7 @@ class AttributeItem extends React.Component {
                 : classes.hiddenAttributeButton
             }
           >
-            <IconButton aria-label="clone">
+            <IconButton aria-label="clone" onClick={cloneFieldType}>
               <QueueOutlinedIcon />
             </IconButton>
           </CustomTooltip>
@@ -124,4 +127,4 @@ class AttributeItem extends React.Component {
   }
 }
 
-export default withStyles(styles)(AttributeItem);
+export default withStyles(styles)(FieldTypeItem);
