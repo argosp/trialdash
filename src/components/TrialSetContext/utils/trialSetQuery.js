@@ -10,6 +10,7 @@ const trialSets = experimentId => gql`
        properties{
         key
         val
+        type
       }
      }
   }`;

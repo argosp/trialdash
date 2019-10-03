@@ -4,7 +4,7 @@ import DeviceFormPanel from '../DeviceFormPanel';
 import deviceMutation from './utils/deviceMutation';
 import Graph from '../../../apolloGraphql';
 import { DEVICES_CONTENT_TYPE } from '../../../constants/base';
-import deviceTypeMutation from '../DeviceTypeForm/utils/deviceTypeMutation';
+import deviceTypeMutation from '../utils/deviceTypeMutation';
 
 const graphql = new Graph();
 
