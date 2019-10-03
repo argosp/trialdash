@@ -2,6 +2,7 @@ export const styles = theme => ({
   table: {
     borderCollapse: 'separate',
     borderSpacing: '0 3px',
+    marginBottom: 70,
 
     '& td:first-child': {
       fontWeight: 'bold',
