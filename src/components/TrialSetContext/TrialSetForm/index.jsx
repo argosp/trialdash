@@ -47,7 +47,7 @@ class TrialSetForm extends React.Component {
   render = () => (
     <>
       <AddForm
-        initialState={{
+        initialValues={{
           id: '',
           name: '',
           description: '',

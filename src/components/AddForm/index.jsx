@@ -1,6 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { styles } from './styles';
 import ContentHeader from '../ContentHeader';
 import CustomInput from '../CustomInput';
@@ -8,16 +9,16 @@ import CustomHeadline from '../CustomHeadline';
 import AttributeItem from '../AttributeItem';
 import Footer from '../Footer';
 import {
-  ATTRIBUTE_ITEM_CHECKBOX_TYPE,
   ATTRIBUTE_ITEM_INPUT_TYPE,
-  ATTRIBUTE_ITEM_RADIO_TYPE,
 } from '../../constants/attributes';
 
 class AddForm extends React.Component {
-  state = this.props.initialState;
+  state = {
+    formObject: this.props.initialValues,
+  };
 
   inputChangeHandler = (e, type) => {
-    this.setState({ [type]: e.target.value });
+    this.setState(state => ({ formObject: { ...state.formObject, [type]: e.target.value } }));
   };
 
   render() {
@@ -32,6 +33,7 @@ class AddForm extends React.Component {
       descriptionInput,
       rightPanel,
       withFooter,
+      selectedAttributes,
     } = this.props;
 
     return (
@@ -77,7 +79,41 @@ class AddForm extends React.Component {
             titleColor={theme.palette.black.main}
             descriptionColor={theme.palette.gray.dark}
           />
-          <AttributeItem
+          <Droppable droppableId="droppable">
+            {droppableProvided => (
+              <div
+                ref={droppableProvided.innerRef}
+                className={classes.dropZone}
+              >
+                {selectedAttributes.map((attribute, index) => (
+                  <Draggable
+                    key={attribute.key}
+                    draggableId={attribute.key}
+                    index={index}
+                  >
+                    {draggableProvided => (
+                      <div
+                        ref={draggableProvided.innerRef}
+                        {...draggableProvided.draggableProps}
+                        {...draggableProvided.dragHandleProps}
+                      >
+                        <AttributeItem
+                          fieldType={attribute.type}
+                          contentType={ATTRIBUTE_ITEM_INPUT_TYPE}
+                          title={attribute.title}
+                          inputId={attribute.key}
+                          placeholder="enter value"
+                          description="a short description of the field"
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {droppableProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
+          {/*          <AttributeItem
             fieldType="text"
             contentType={ATTRIBUTE_ITEM_INPUT_TYPE}
             title="Release type"
@@ -98,12 +134,12 @@ class AddForm extends React.Component {
             title="Type"
             inputId="attribute-item-3"
             description="a short description of the field"
-          />
+          /> */}
         </form>
         {withFooter ? (
           <Footer
             cancelButtonHandler={cancelFormHandler}
-            saveButtonHandler={() => saveFormHandler(this.state)}
+            saveButtonHandler={() => saveFormHandler(this.state.formObject)}
           />
         ) : null}
       </>

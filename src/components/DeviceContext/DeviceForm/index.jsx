@@ -44,7 +44,7 @@ class DeviceForm extends React.Component {
   render() {
     return (
       <AddForm
-        initialState={{
+        initialValues={{
           experimentId: this.props.experimentId,
           deviceType: this.props.deviceType.id,
           id: '',

@@ -4,16 +4,27 @@ import React from 'react';
 // import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import Select from '@material-ui/core/Select';
+import { DragDropContext } from 'react-beautiful-dnd';
 import Graph from '../../../apolloGraphql';
 // import deviceMutation from './utils/deviceMutation';
 import { DEVICE_TYPES_CONTENT_TYPE } from '../../../constants/base';
 import AddForm from '../../AddForm';
 import FieldTypesPanel from '../../FieldTypesPanel';
 import deviceTypeMutation from './utils/deviceTypeMutation';
+import { FIELD_TYPES_ARRAY } from '../../../constants/attributes';
 
 const graphql = new Graph();
 
 class DeviceTypeForm extends React.Component {
+  state = {
+    fieldTypes: FIELD_TYPES_ARRAY,
+    selectedFieldTypes: [],
+    idToList: {
+      droppable: 'selectedFieldTypes',
+      droppable2: 'fieldTypes',
+    },
+  };
+
   cancelForm = () => {
     this.props.changeContentType(DEVICE_TYPES_CONTENT_TYPE);
   };
@@ -49,20 +60,78 @@ class DeviceTypeForm extends React.Component {
       });
   };
 
+  reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+
+  // Moves an item from one list to another list
+  move = (source, destination, droppableSource, droppableDestination) => {
+    const sourceClone = Array.from(source);
+    const destClone = Array.from(destination);
+    const [removed] = sourceClone.splice(droppableSource.index, 1);
+
+    destClone.splice(droppableDestination.index, 0, removed);
+
+    const result = {};
+    result[droppableSource.droppableId] = sourceClone;
+    result[droppableDestination.droppableId] = destClone;
+
+    return result;
+  };
+
+  getList = id => this.state[this.state.idToList[id]];
+
+  onDragEnd = ({ source, destination }) => {
+    // dropped outside the list
+    if (!destination) {
+      return;
+    }
+
+    if (source.droppableId === destination.droppableId) {
+      const reorderedItems = this.reorder(
+        this.getList(source.droppableId),
+        source.index,
+        destination.index,
+      );
+
+      this.setState({ selectedFieldTypes: reorderedItems });
+    } else {
+      const result = this.move(
+        this.getList(source.droppableId),
+        this.getList(destination.droppableId),
+        source,
+        destination,
+      );
+
+      this.setState({
+        selectedFieldTypes: result.droppable,
+        fieldTypes: result.droppable2,
+      });
+    }
+  };
+
   render() {
+    const { fieldTypes, selectedFieldTypes } = this.state;
+    const { experimentId } = this.props;
+
     return (
-      <>
+      <DragDropContext onDragEnd={this.onDragEnd}>
         <AddForm
-          initialState={{
+          initialValues={{
             id: '',
-            experimentId: this.props.experimentId,
+            experimentId,
             name: '',
             numberOfDevices: 0,
             numberOfFields: 0,
             properties: [],
           }}
           withFooter
-          rightPanel={<FieldTypesPanel />}
+          rightPanel={<FieldTypesPanel fieldTypes={fieldTypes} />}
+          selectedAttributes={selectedFieldTypes}
           cancelFormHandler={this.cancelForm}
           saveFormHandler={this.submitDeviceType}
           headerTitle="Add device type"
@@ -187,7 +256,7 @@ class DeviceTypeForm extends React.Component {
             </Button>
           )}
         </div> */}
-      </>
+      </DragDropContext>
     );
   }
 }
