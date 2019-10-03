@@ -7,49 +7,70 @@ import ViewQuiltOutlinedIcon from '@material-ui/icons/ViewQuiltOutlined';
 import EventIcon from '@material-ui/icons/Event';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
+import uuid from 'uuid/v4';
 
 export const FIELD_TYPES = {
   text: {
-    key: 0,
+    key: uuid(),
     title: 'Text',
     iconComponent: <ImageAspectRatioOutlinedIcon />,
+    type: 'text',
   },
   textArea: {
-    key: 1,
+    key: uuid(),
     title: 'Text Area',
     iconComponent: <SubjectIcon />,
+    type: 'textArea',
   },
   selectList: {
-    key: 2,
+    key: uuid(),
     title: 'Select List',
     iconComponent: <ViewColumnOutlinedIcon />,
+    type: 'selectList',
   },
   boolean: {
-    key: 3,
+    key: uuid(),
     title: 'Boolean',
     iconComponent: <CheckBoxOutlinedIcon />,
+    type: 'boolean',
   },
   number: {
-    key: 4,
+    key: uuid(),
     title: 'Number',
     iconComponent: <ViewQuiltOutlinedIcon />,
+    type: 'number',
   },
   date: {
-    key: 5,
+    key: uuid(),
     title: 'Date',
     iconComponent: <EventIcon />,
+    type: 'date',
   },
   time: {
-    key: 6,
+    key: uuid(),
     title: 'Time',
     iconComponent: <WatchLaterOutlinedIcon />,
+    type: 'time',
   },
   location: {
-    key: 7,
+    key: uuid(),
     title: 'Location',
     iconComponent: <LocationOnOutlinedIcon />,
+    type: 'location',
   },
 };
+
+const generateFieldTypesArray = () => {
+  const fieldTypesArray = [];
+
+  Object.keys(FIELD_TYPES).forEach((fieldType) => {
+    fieldTypesArray.push(FIELD_TYPES[fieldType]);
+  });
+
+  return fieldTypesArray;
+};
+
+export const FIELD_TYPES_ARRAY = generateFieldTypesArray();
 
 export const ATTRIBUTE_ITEM_INPUT_TYPE = 'input';
 export const ATTRIBUTE_ITEM_CHECKBOX_TYPE = 'checkbox';

@@ -42,84 +42,80 @@ class AttributeItem extends React.Component {
     const { isMouseHover } = this.state;
 
     return (
-      <Grid container className={classes.root}>
-        <Grid
-          item
-          container
-          xs={7}
-          className={classes.wrapper}
-          onMouseEnter={this.handleWrapperMouseEnter}
-          onMouseLeave={this.handleWrapperMouseLeave}
-        >
-          <Grid item container xs={6} alignItems="center" wrap="nowrap">
-            <OpenWithIcon
-              className={
+      <Grid
+        container
+        className={classes.wrapper}
+        onMouseEnter={this.handleWrapperMouseEnter}
+        onMouseLeave={this.handleWrapperMouseLeave}
+      >
+        <Grid item container xs={6} alignItems="center" wrap="nowrap">
+          <OpenWithIcon
+            className={
                 isMouseHover
                   ? classes.crossIcon
                   : classnames(classes.crossIcon, classes.hiddenCrossIcon)
               }
-            />
-            {contentType === ATTRIBUTE_ITEM_INPUT_TYPE ? (
-              <CustomInput
-                className={classes.input}
-                id={inputId}
-                placeholder={placeholder}
-                withBorder
-                bottomDescription={description}
-                label={(
-                  <Grid container alignItems="center">
-                    {FIELD_TYPES[fieldType].iconComponent}
-                    {title}
-                  </Grid>
+          />
+          {contentType === ATTRIBUTE_ITEM_INPUT_TYPE ? (
+            <CustomInput
+              className={classes.input}
+              id={inputId}
+              placeholder={placeholder}
+              withBorder
+              bottomDescription={description}
+              label={(
+                <Grid container alignItems="center">
+                  {FIELD_TYPES[fieldType].iconComponent}
+                  {title}
+                </Grid>
 )}
-              />
-            ) : (
-              <ListContent
-                contentType={contentType}
-                fieldType={fieldType}
-                title={title}
-                description={description}
-              />
-            )}
-          </Grid>
-          <Grid item container xs={6} justify="flex-end" alignItems="center">
-            <CustomTooltip
-              title="Edit"
-              className={
+            />
+          ) : (
+            <ListContent
+              contentType={contentType}
+              fieldType={fieldType}
+              title={title}
+              description={description}
+            />
+          )}
+        </Grid>
+        <Grid item container xs={6} justify="flex-end" alignItems="center">
+          <CustomTooltip
+            title="Edit"
+            className={
               isMouseHover
                 ? classes.attributeButton
                 : classes.hiddenAttributeButton
             }
-            >
-              <IconButton aria-label="edit">
-                <EditOutlinedIcon />
-              </IconButton>
-            </CustomTooltip>
-            <CustomTooltip
-              title="Clone"
-              className={
+          >
+            <IconButton aria-label="edit">
+              <EditOutlinedIcon />
+            </IconButton>
+          </CustomTooltip>
+          <CustomTooltip
+            title="Clone"
+            className={
               isMouseHover
                 ? classes.attributeButton
                 : classes.hiddenAttributeButton
             }
-            >
-              <IconButton aria-label="clone">
-                <QueueOutlinedIcon />
-              </IconButton>
-            </CustomTooltip>
-            <CustomTooltip
-              title="Delete"
-              className={
+          >
+            <IconButton aria-label="clone">
+              <QueueOutlinedIcon />
+            </IconButton>
+          </CustomTooltip>
+          <CustomTooltip
+            title="Delete"
+            className={
               isMouseHover
                 ? classes.attributeButton
                 : classes.hiddenAttributeButton
             }
-            >
-              <IconButton aria-label="delete">
-                <DeleteOutlineOutlinedIcon />
-              </IconButton>
-            </CustomTooltip>
-          </Grid>
+          >
+            <IconButton aria-label="delete">
+              <DeleteOutlineOutlinedIcon />
+            </IconButton>
+          </CustomTooltip>
         </Grid>
       </Grid>
     );

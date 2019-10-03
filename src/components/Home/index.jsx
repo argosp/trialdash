@@ -26,9 +26,7 @@ class Home extends Component {
     const { history } = this.props;
 
     return (
-      <div>
-        <ListOfExperiments history={history} />
-      </div>
+      <ListOfExperiments history={history} />
     );
   }
 }
