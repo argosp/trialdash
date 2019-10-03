@@ -6,7 +6,7 @@ import {
 } from '../../constants/base';
 import TrialSets from './TrialSets';
 import Trials from './Trials';
-import TrialSetForm from './TrialSetForm';
+import AddSetForm from '../AddSetForm';
 
 class TrialSetMainView extends React.Component {
   state = {
@@ -45,7 +45,8 @@ class TrialSetMainView extends React.Component {
         );
       case TRIAL_SET_FORM_CONTENT_TYPE:
         return (
-          <TrialSetForm
+          <AddSetForm
+            type={TRIAL_SETS_CONTENT_TYPE}
             experimentId={experimentId}
             changeContentType={this.switchCurrentContentType}
           />

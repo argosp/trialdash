@@ -7,7 +7,7 @@ import {
   DEVICES_CONTENT_TYPE,
 } from '../../constants/base';
 import DeviceTypes from './DeviceTypes';
-import DeviceTypeForm from './DeviceTypeForm';
+import AddSetForm from '../AddSetForm';
 import DeviceForm from './DeviceForm';
 
 class DeviceMainView extends React.PureComponent {
@@ -49,7 +49,8 @@ class DeviceMainView extends React.PureComponent {
           );
         case DEVICE_TYPE_FORM_CONTENT_TYPE:
           return (
-            <DeviceTypeForm
+            <AddSetForm
+              type={DEVICE_TYPES_CONTENT_TYPE}
               experimentId={experimentId}
               changeContentType={this.switchCurrentContentType}
             />

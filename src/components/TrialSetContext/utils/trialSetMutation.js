@@ -11,7 +11,10 @@ export default (trialSet) => {
         name: "${trialSet.name}",
         description: "${trialSet.description}",
         numberOfTrials: "${trialSet.numberOfTrials}",
-        properties: ${JSON.stringify(trialSet.properties).replace(/"key":/g, 'key:').replace(/"val":/g, 'val:')}
+        properties: ${JSON.stringify(trialSet.properties)
+    .replace(/"key":/g, 'key:')
+    .replace(/"val":/g, 'val:')
+    .replace(/"type":/g, 'type:')}
         ) {
             name 
         }
