@@ -41,6 +41,7 @@ class FieldTypeItem extends React.Component {
       changeFieldTypeValueHandler,
       cloneFieldType,
       inputValue,
+      deleteFieldType,
     } = this.props;
     const { isMouseHover } = this.state;
 
@@ -117,7 +118,7 @@ class FieldTypeItem extends React.Component {
                 : classes.hiddenAttributeButton
             }
           >
-            <IconButton aria-label="delete">
+            <IconButton aria-label="delete" onClick={deleteFieldType}>
               <DeleteOutlineOutlinedIcon />
             </IconButton>
           </CustomTooltip>

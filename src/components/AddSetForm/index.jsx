@@ -190,6 +190,14 @@ class AddSetForm extends React.Component {
     }));
   };
 
+  deleteDraggedFieldType = (fieldType) => {
+    this.setState(state => ({
+      selectedFieldTypes: state.selectedFieldTypes.filter(
+        selectedFieldType => selectedFieldType.key !== fieldType.key,
+      ),
+    }));
+  };
+
   render() {
     const { fieldTypes, selectedFieldTypes } = this.state;
     const { classes, theme, type } = this.props;
@@ -264,8 +272,9 @@ class AddSetForm extends React.Component {
                         {...draggableProvided.dragHandleProps}
                       >
                         <FieldTypeItem
-                          inputValue={fieldType.val}
+                          inputValue={fieldType.val || ''}
                           cloneFieldType={() => this.cloneDraggedFieldType(fieldType)}
+                          deleteFieldType={() => this.deleteDraggedFieldType(fieldType)}
                           fieldType={fieldType.type}
                           contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
                           title={fieldType.title}
