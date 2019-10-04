@@ -1,8 +1,7 @@
-export const styles = theme => ({
+export const styles = () => ({
   root: {
     minWidth: 155,
     padding: '10px 25px',
-    color: theme.palette.white.main,
     fontWeight: 'bold',
   },
 });
