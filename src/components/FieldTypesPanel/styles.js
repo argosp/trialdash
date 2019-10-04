@@ -9,6 +9,11 @@ export const styles = theme => ({
     fontWeight: 'bold',
     backgroundColor: theme.palette.white.main,
   },
+  fieldTypeWrapperCopy: {
+    '& ~ div': {
+      transform: 'none !important',
+    },
+  },
   fieldTypeTitle: {
     marginLeft: 25,
   },
