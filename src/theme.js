@@ -21,6 +21,29 @@ export default createMuiTheme({
         '@font-face': [interFont],
       },
     },
+    MuiButton: {
+      containedPrimary: {
+        color: '#FFF',
+
+        '&:hover': {
+          backgroundColor: '#2ECE72',
+        },
+      },
+      outlined: {
+        '&:hover': {
+          backgroundColor: '#AAA',
+          color: '#FFF',
+        },
+      },
+      outlinedSecondary: {
+        color: '#EB5757',
+
+        '&:hover': {
+          backgroundColor: '#EB5757',
+          color: '#FFF',
+        },
+      },
+    },
   },
   palette: {
     background: {

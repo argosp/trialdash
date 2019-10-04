@@ -28,7 +28,6 @@ const Footer = ({
     </div>
     {withDeleteButton ? (
       <SimpleButton
-        className={classes.deleteButton}
         variant="outlined"
         colorVariant="secondary"
         onClick={deleteButtonHandler}

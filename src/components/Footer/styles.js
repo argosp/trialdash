@@ -13,7 +13,4 @@ export const styles = theme => ({
   cancelButton: {
     color: theme.palette.gray.dark,
   },
-  deleteButton: {
-    color: theme.palette.red.main,
-  },
 });
