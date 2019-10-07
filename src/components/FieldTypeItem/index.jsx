@@ -34,53 +34,57 @@ class FieldTypeItem extends React.Component {
       classes,
       contentType,
       fieldType,
-      title,
       description,
-      inputId,
       placeholder,
       changeFieldTypeValueHandler,
       cloneFieldType,
-      inputValue,
       deleteFieldType,
+      isEditModeEnabled,
+      activateEditMode,
+      editedFieldTypeId,
     } = this.props;
     const { isMouseHover } = this.state;
 
     return (
       <Grid
         container
-        className={classes.wrapper}
-        onMouseEnter={this.handleWrapperMouseEnter}
-        onMouseLeave={this.handleWrapperMouseLeave}
+        className={
+          isEditModeEnabled && editedFieldTypeId === fieldType.key
+            ? classnames(classes.wrapperEditMode, classes.wrapper)
+            : classes.wrapper
+        }
+        onMouseEnter={!isEditModeEnabled ? this.handleWrapperMouseEnter : null}
+        onMouseLeave={!isEditModeEnabled ? this.handleWrapperMouseLeave : null}
       >
         <Grid item container xs={6} alignItems="center" wrap="nowrap">
           <OpenWithIcon
             className={
-                isMouseHover
-                  ? classes.crossIcon
-                  : classnames(classes.crossIcon, classes.hiddenCrossIcon)
-              }
+              isMouseHover && !isEditModeEnabled
+                ? classes.crossIcon
+                : classes.hiddenCrossIcon
+            }
           />
           {contentType === FIELD_TYPE_ITEM_INPUT_TYPE ? (
             <CustomInput
-              value={inputValue}
+              value={fieldType.val || ''}
               className={classes.input}
-              id={inputId}
+              id={fieldType.key}
               placeholder={placeholder}
               withBorder
               bottomDescription={description}
               onChange={changeFieldTypeValueHandler}
               label={(
                 <Grid container alignItems="center">
-                  {FIELD_TYPES[fieldType].iconComponent}
-                  {title}
+                  {FIELD_TYPES[fieldType.type].iconComponent}
+                  {fieldType.title}
                 </Grid>
 )}
             />
           ) : (
             <ListContent
               contentType={contentType}
-              fieldType={fieldType}
-              title={title}
+              fieldType={fieldType.type}
+              title={fieldType.title}
               description={description}
             />
           )}
@@ -89,19 +93,22 @@ class FieldTypeItem extends React.Component {
           <CustomTooltip
             title="Edit"
             className={
-              isMouseHover
+              isMouseHover && !isEditModeEnabled
                 ? classes.attributeButton
                 : classes.hiddenAttributeButton
             }
           >
-            <IconButton aria-label="edit">
+            <IconButton
+              aria-label="edit"
+              onClick={() => activateEditMode(fieldType.key)}
+            >
               <EditOutlinedIcon />
             </IconButton>
           </CustomTooltip>
           <CustomTooltip
             title="Clone"
             className={
-              isMouseHover
+              isMouseHover && !isEditModeEnabled
                 ? classes.attributeButton
                 : classes.hiddenAttributeButton
             }
@@ -113,7 +120,7 @@ class FieldTypeItem extends React.Component {
           <CustomTooltip
             title="Delete"
             className={
-              isMouseHover
+              isMouseHover && !isEditModeEnabled
                 ? classes.attributeButton
                 : classes.hiddenAttributeButton
             }

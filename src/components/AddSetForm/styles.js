@@ -1,4 +1,4 @@
-export const styles = () => ({
+export const styles = theme => ({
   form: {
     height: '100%',
   },
@@ -7,8 +7,12 @@ export const styles = () => ({
     marginBottom: 50,
   },
   dropZone: {
-    minHeight: '70%',
     width: '70%',
     marginBottom: 150,
+  },
+  dropZoneEmpty: {
+    width: '70%',
+    height: 200,
+    border: `3px dashed ${theme.palette.primary.main}`,
   },
 });

@@ -11,6 +11,7 @@ class RightPanelContainer extends React.Component {
 
   closePanel = () => {
     this.setState({ isPanelOpen: false });
+    this.props.onClose();
   };
 
   render() {

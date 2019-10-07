@@ -4,13 +4,14 @@ import ImageAspectRatioOutlinedIcon from '@material-ui/icons/ImageAspectRatioOut
 import Grid from '@material-ui/core/Grid';
 import classnames from 'classnames';
 import { styles } from './styles';
-import RightPanelContainer from '../../RightPanelContainer';
-import CustomInput from '../../CustomInput';
+import RightPanelContainer from '../RightPanelContainer';
+import CustomInput from '../CustomInput';
 import SwitchSection from './SwitchSection';
-import SimpleButton from '../../SimpleButton';
+import SimpleButton from '../SimpleButton';
 
-const DeviceFormPanel = ({ classes }) => (
+const EditFieldTypePanel = ({ classes, deactivateEditMode }) => (
   <RightPanelContainer
+    onClose={deactivateEditMode}
     title={(
       <span className={classes.header}>
         {<ImageAspectRatioOutlinedIcon className={classes.headerIcon} />}
@@ -20,21 +21,21 @@ const DeviceFormPanel = ({ classes }) => (
   >
     <div className={classes.content}>
       <CustomInput
-        id="device-sku-label"
+        id="field-type-label"
         label="Label"
-        placeholder="Device SKU"
+        placeholder="Label"
         bottomDescription="a short description about the device name"
         className={classes.input}
       />
       <CustomInput
-        id="device-sku-description"
+        id="field-type-description"
         label="Description"
-        placeholder="a short description about the device name"
+        placeholder="Description"
         bottomDescription="a short description about the device name"
         className={classes.input}
       />
       <CustomInput
-        id="device-sku-id"
+        id="field-type-id"
         label="ID"
         bottomDescription="a short description about the device name"
         className={classes.input}
@@ -42,7 +43,7 @@ const DeviceFormPanel = ({ classes }) => (
       <Grid container spacing={3}>
         <Grid item xs>
           <CustomInput
-            id="device-sku-prefix"
+            id="field-type-prefix"
             label="Prefix"
             bottomDescription="a short description about the device name"
             className={classes.input}
@@ -50,8 +51,8 @@ const DeviceFormPanel = ({ classes }) => (
         </Grid>
         <Grid item xs>
           <CustomInput
-            id="device-sku-sufix"
-            label="Sufix"
+            id="field-type-suffix"
+            label="Suffix"
             bottomDescription="a short description about the device name"
             className={classes.input}
           />
@@ -63,7 +64,7 @@ const DeviceFormPanel = ({ classes }) => (
         description="a short description about the device name"
       />
       <CustomInput
-        id="device-sku-template"
+        id="field-type-template"
         className={classnames(classes.input, classes.templateInput)}
         bottomDescription={(
           <>
@@ -90,7 +91,7 @@ const DeviceFormPanel = ({ classes }) => (
           <SimpleButton
             className={classes.button}
             colorVariant="primary"
-            // onClick={}
+            onClick={deactivateEditMode}
             text="Save"
           />
         </Grid>
@@ -98,7 +99,7 @@ const DeviceFormPanel = ({ classes }) => (
           <SimpleButton
             variant="outlined"
             className={classnames(classes.button, classes.cancelButton)}
-            // onClick={}
+            onClick={deactivateEditMode}
             text="Cancel"
           />
         </Grid>
@@ -107,4 +108,4 @@ const DeviceFormPanel = ({ classes }) => (
   </RightPanelContainer>
 );
 
-export default withStyles(styles)(DeviceFormPanel);
+export default withStyles(styles)(EditFieldTypePanel);

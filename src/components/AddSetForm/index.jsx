@@ -3,6 +3,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
+import { isEmpty } from 'lodash';
 import Graph from '../../apolloGraphql';
 import {
   DEVICE_TYPES_CONTENT_TYPE,
@@ -21,6 +22,7 @@ import FieldTypeItem from '../FieldTypeItem';
 import Footer from '../Footer';
 import { styles } from './styles';
 import trialSetMutation from '../TrialSetContext/utils/trialSetMutation';
+import EditFieldTypePanel from '../EditFieldTypePanel';
 
 const graphql = new Graph();
 
@@ -50,6 +52,17 @@ class AddSetForm extends React.Component {
 
     // this field correspond to the <Droppable droppableId="droppable">
     selectedFieldTypes: [],
+    isEditModeEnabled: false,
+    isDragDisabled: false,
+    editedFieldTypeId: '',
+  };
+
+  activateEditMode = (editedFieldTypeId) => {
+    this.setState({ isEditModeEnabled: true, isDragDisabled: true, editedFieldTypeId });
+  };
+
+  deactivateEditMode = () => {
+    this.setState({ isEditModeEnabled: false, isDragDisabled: false, editedFieldTypeId: '' });
   };
 
   cancelForm = () => {
@@ -193,7 +206,13 @@ class AddSetForm extends React.Component {
   };
 
   render() {
-    const { fieldTypes, selectedFieldTypes } = this.state;
+    const {
+      fieldTypes,
+      selectedFieldTypes,
+      isEditModeEnabled,
+      isDragDisabled,
+      editedFieldTypeId,
+    } = this.state;
     const { classes, theme, type } = this.props;
 
     return (
@@ -206,7 +225,13 @@ class AddSetForm extends React.Component {
           }
           bottomDescription="a short description of what it means to add an item here"
         />
-        <FieldTypesPanel fieldTypes={fieldTypes} />
+        {isEditModeEnabled ? (
+          <EditFieldTypePanel
+            deactivateEditMode={this.deactivateEditMode}
+          />
+        ) : (
+          <FieldTypesPanel fieldTypes={fieldTypes} />
+        )}
         <form className={classes.form}>
           <Grid container spacing={4}>
             <Grid item xs={3}>
@@ -251,13 +276,18 @@ class AddSetForm extends React.Component {
             {droppableProvided => (
               <div
                 ref={droppableProvided.innerRef}
-                className={classes.dropZone}
+                className={
+                  isEmpty(selectedFieldTypes)
+                    ? classes.dropZoneEmpty
+                    : classes.dropZone
+                }
               >
                 {selectedFieldTypes.map((fieldType, index) => (
                   <Draggable
                     key={fieldType.key}
                     draggableId={fieldType.key}
                     index={index}
+                    isDragDisabled={isDragDisabled}
                   >
                     {draggableProvided => (
                       <div
@@ -266,13 +296,13 @@ class AddSetForm extends React.Component {
                         {...draggableProvided.dragHandleProps}
                       >
                         <FieldTypeItem
-                          inputValue={fieldType.val || ''}
+                          editedFieldTypeId={editedFieldTypeId}
+                          isEditModeEnabled={isEditModeEnabled}
+                          activateEditMode={this.activateEditMode}
                           cloneFieldType={() => this.cloneDraggedFieldType(fieldType)}
                           deleteFieldType={() => this.deleteDraggedFieldType(fieldType)}
-                          fieldType={fieldType.type}
+                          fieldType={fieldType}
                           contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
-                          title={fieldType.title}
-                          inputId={fieldType.key}
                           changeFieldTypeValueHandler={event => this.changeFieldTypeValueHandler(
                             event,
                             fieldType.key,
@@ -290,10 +320,12 @@ class AddSetForm extends React.Component {
             )}
           </Droppable>
         </form>
-        <Footer
-          cancelButtonHandler={this.cancelForm}
-          saveButtonHandler={() => this.submitEntity(this.state.formObject)}
-        />
+        {!isEditModeEnabled ? (
+          <Footer
+            cancelButtonHandler={this.cancelForm}
+            saveButtonHandler={() => this.submitEntity(this.state.formObject)}
+          />
+        ) : null}
       </DragDropContext>
     );
   }

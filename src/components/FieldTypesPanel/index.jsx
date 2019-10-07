@@ -7,7 +7,7 @@ import { styles } from './styles';
 import RightPanelContainer from '../RightPanelContainer';
 
 // used to style field type when dragging (https://github.com/atlassian/react-beautiful-dnd/issues/216)
-const FieldTypeItem = (
+const FieldType = (
   ({ classes, rootClassName, icon, title }) => (
     <Grid container alignItems="center" className={rootClassName}>
       {icon}
@@ -44,7 +44,7 @@ class FieldTypesPanel extends React.Component {
                         {...draggableProvided.draggableProps}
                         {...draggableProvided.dragHandleProps}
                       >
-                        <FieldTypeItem
+                        <FieldType
                           classes={classes}
                           rootClassName={classes.fieldTypeWrapper}
                           icon={fieldType.iconComponent}
@@ -52,7 +52,7 @@ class FieldTypesPanel extends React.Component {
                         />
                       </div>
                       {snapshot.isDragging && (
-                        <FieldTypeItem
+                        <FieldType
                           classes={classes}
                           rootClassName={classnames(
                             classes.fieldTypeWrapper,
