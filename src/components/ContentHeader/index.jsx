@@ -3,6 +3,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import React from 'react';
+import classnames from 'classnames';
 import { withStyles } from '@material-ui/core';
 import { styles } from './styles';
 import SimpleButton from '../SimpleButton';
@@ -15,14 +16,16 @@ const ContentHeader = (props) => {
     addButtonText,
     withBackButton,
     backButtonHandler,
+    topDescription,
     rightDescription,
     addButtonHandler,
     bottomDescription,
     withSearchInput,
+    className,
   } = props;
 
   return (
-    <Grid container justify="space-between" className={classes.header}>
+    <Grid container justify="space-between" className={classnames(classes.header, className)}>
       <div>
         {withBackButton ? (
           <KeyboardBackspaceIcon
@@ -30,6 +33,7 @@ const ContentHeader = (props) => {
             onClick={backButtonHandler}
           />
         ) : null}
+        {topDescription ? <p className={classes.topDescription}>{topDescription}</p> : null}
         <h1 className={classes.title}>{title}</h1>
         {rightDescription ? (
           <span className={classes.rightDescription}>{rightDescription}</span>
