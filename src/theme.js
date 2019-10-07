@@ -24,12 +24,15 @@ export default createMuiTheme({
     MuiButton: {
       containedPrimary: {
         color: '#FFF',
+        border: '1px solid transparent',
 
         '&:hover': {
           backgroundColor: '#2ECE72',
         },
       },
       outlined: {
+        border: '1px solid #AAA',
+
         '&:hover': {
           backgroundColor: '#AAA',
           color: '#FFF',
@@ -37,8 +40,10 @@ export default createMuiTheme({
       },
       outlinedSecondary: {
         color: '#EB5757',
+        border: '1px solid #EB5757',
 
         '&:hover': {
+          border: '1px solid transparent',
           backgroundColor: '#EB5757',
           color: '#FFF',
         },

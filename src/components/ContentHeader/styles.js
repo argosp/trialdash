@@ -11,6 +11,13 @@ export const styles = theme => ({
       color: theme.palette.gray.main,
     },
   },
+  topDescription: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: theme.palette.gray.main,
+    margin: 0,
+    textTransform: 'uppercase',
+  },
   title: {
     fontSize: 24,
     textTransform: 'uppercase',
