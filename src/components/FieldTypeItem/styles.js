@@ -9,6 +9,13 @@ export const styles = theme => ({
       border: '2px solid #56CCF2',
     },
   },
+  wrapperEditMode: {
+    border: `2px solid ${theme.palette.primary.main}`,
+
+    '&:hover': {
+      border: `2px solid ${theme.palette.primary.main}`,
+    },
+  },
   input: {
     '& svg': {
       marginRight: 10,
@@ -31,7 +38,6 @@ export const styles = theme => ({
   crossIcon: {
     display: 'inline-block',
     marginRight: 15,
-    cursor: 'pointer',
 
     '&:hover': {
       color: theme.palette.primary.main,
@@ -39,5 +45,6 @@ export const styles = theme => ({
   },
   hiddenCrossIcon: {
     color: theme.palette.white.main,
+    marginRight: 15,
   },
 });

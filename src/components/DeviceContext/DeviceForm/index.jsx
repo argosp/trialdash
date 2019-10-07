@@ -1,6 +1,5 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core';
-// import DeviceFormPanel from '../DeviceFormPanel';
 // import deviceMutation from './utils/deviceMutation';
 // import Graph from '../../../apolloGraphql';
 import { DEVICES_CONTENT_TYPE } from '../../../constants/base';
