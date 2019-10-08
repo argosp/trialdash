@@ -5,6 +5,7 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 import classnames from 'classnames';
 import { styles } from './styles';
 import RightPanelContainer from '../RightPanelContainer';
+import { FIELD_TYPES_ICONS } from '../../constants/fieldTypes';
 
 // used to style field type when dragging (https://github.com/atlassian/react-beautiful-dnd/issues/216)
 const FieldType = (
@@ -47,8 +48,8 @@ class FieldTypesPanel extends React.Component {
                         <FieldType
                           classes={classes}
                           rootClassName={classes.fieldTypeWrapper}
-                          icon={fieldType.iconComponent}
-                          title={fieldType.title}
+                          icon={FIELD_TYPES_ICONS[fieldType.type]}
+                          title={fieldType.label}
                         />
                       </div>
                       {snapshot.isDragging && (
@@ -58,8 +59,8 @@ class FieldTypesPanel extends React.Component {
                             classes.fieldTypeWrapper,
                             classes.fieldTypeWrapperCopy,
                           )}
-                          icon={fieldType.iconComponent}
-                          title={fieldType.title}
+                          icon={FIELD_TYPES_ICONS[fieldType.type]}
+                          title={fieldType.label}
                         />
                       )}
                     </>

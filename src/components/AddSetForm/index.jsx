@@ -14,7 +14,7 @@ import deviceTypeMutation from '../DeviceContext/utils/deviceTypeMutation';
 import {
   FIELD_TYPE_ITEM_INPUT_TYPE,
   FIELD_TYPES_ARRAY,
-} from '../../constants/attributes';
+} from '../../constants/fieldTypes';
 import ContentHeader from '../ContentHeader';
 import CustomInput from '../CustomInput';
 import CustomHeadline from '../CustomHeadline';
@@ -54,15 +54,35 @@ class AddSetForm extends React.Component {
     selectedFieldTypes: [],
     isEditModeEnabled: false,
     isDragDisabled: false,
-    editedFieldTypeId: '',
+    editedFieldType: {}, // used to cancel changes of a field type
   };
 
-  activateEditMode = (editedFieldTypeId) => {
-    this.setState({ isEditModeEnabled: true, isDragDisabled: true, editedFieldTypeId });
+  activateEditMode = (editedFieldType) => {
+    this.setState({
+      isEditModeEnabled: true,
+      isDragDisabled: true,
+      editedFieldType,
+    });
   };
 
   deactivateEditMode = () => {
-    this.setState({ isEditModeEnabled: false, isDragDisabled: false, editedFieldTypeId: '' });
+    this.setState({
+      isEditModeEnabled: false,
+      isDragDisabled: false,
+      editedFieldType: {},
+    });
+  };
+
+  cancelFieldTypeChanges = (fieldTypeKey) => {
+    const initialState = this.state.editedFieldType;
+
+    this.setState(state => ({
+      selectedFieldTypes: state.selectedFieldTypes.map(
+        fieldType => (fieldType.key === fieldTypeKey ? { ...initialState } : fieldType),
+      ),
+    }));
+
+    this.deactivateEditMode();
   };
 
   cancelForm = () => {
@@ -71,18 +91,18 @@ class AddSetForm extends React.Component {
     changeContentType(type);
   };
 
-  changeFieldTypeValueHandler = (event, key) => {
-    const { selectedFieldTypes } = this.state;
-    const changedFieldTypes = [];
+  fieldTypeValueChangeHandler = (e, controlType, fieldTypeKey, property) => {
+    let value;
 
-    selectedFieldTypes.forEach((selectedFieldType) => {
-      const fieldType = { ...selectedFieldType };
-      if (fieldType.key === key) fieldType.val = event.target.value;
+    if (controlType === 'input') {
+      ({ value } = e.target);
+    } else value = e.target.checked;
 
-      changedFieldTypes.push(fieldType);
-    });
-
-    this.setState({ selectedFieldTypes: changedFieldTypes });
+    this.setState(state => ({
+      selectedFieldTypes: state.selectedFieldTypes.map(fieldType => (fieldType.key === fieldTypeKey
+        ? { ...fieldType, [property]: value }
+        : fieldType)),
+    }));
   };
 
   addAdditionalFields = (entity) => {
@@ -99,7 +119,6 @@ class AddSetForm extends React.Component {
     selectedFieldTypes.forEach((fieldType) => {
       const property = {
         key: fieldType.key,
-        val: fieldType.val,
         type: fieldType.type,
       };
 
@@ -211,7 +230,7 @@ class AddSetForm extends React.Component {
       selectedFieldTypes,
       isEditModeEnabled,
       isDragDisabled,
-      editedFieldTypeId,
+      editedFieldType,
     } = this.state;
     const { classes, theme, type } = this.props;
 
@@ -228,6 +247,11 @@ class AddSetForm extends React.Component {
         {isEditModeEnabled ? (
           <EditFieldTypePanel
             deactivateEditMode={this.deactivateEditMode}
+            fieldType={selectedFieldTypes.find(
+              fieldType => fieldType.key === editedFieldType.key,
+            )}
+            onValueChange={this.fieldTypeValueChangeHandler}
+            cancelChanges={this.cancelFieldTypeChanges}
           />
         ) : (
           <FieldTypesPanel fieldTypes={fieldTypes} />
@@ -296,20 +320,14 @@ class AddSetForm extends React.Component {
                         {...draggableProvided.dragHandleProps}
                       >
                         <FieldTypeItem
-                          editedFieldTypeId={editedFieldTypeId}
+                          editedFieldTypeKey={editedFieldType.key}
                           isEditModeEnabled={isEditModeEnabled}
                           activateEditMode={this.activateEditMode}
                           cloneFieldType={() => this.cloneDraggedFieldType(fieldType)}
                           deleteFieldType={() => this.deleteDraggedFieldType(fieldType)}
                           fieldType={fieldType}
                           contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
-                          changeFieldTypeValueHandler={event => this.changeFieldTypeValueHandler(
-                            event,
-                            fieldType.key,
-                          )
-                          }
-                          placeholder="enter value"
-                          description="a short description of the field"
+                          placeholder="Value"
                         />
                       </div>
                     )}
