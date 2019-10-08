@@ -1,10 +1,11 @@
 export const styles = theme => ({
   header: {
-    fontWeight: 'bold',
+    display: 'flex',
+    alignItems: 'center',
   },
-  headerIcon: {
-    verticalAlign: 'middle',
-    marginRight: 20,
+  headerTitle: {
+    marginLeft: 20,
+    fontWeight: 'bold',
   },
   input: {
     marginBottom: 25,

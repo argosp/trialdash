@@ -9,55 +9,77 @@ import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import uuid from 'uuid/v4';
 
+const FIELD_TYPE_BASE = {
+  description: 'a short description of the field',
+  id: '',
+  prefix: '',
+  suffix: '',
+  required: false,
+  template: '',
+  multipleValues: false,
+  trialField: false,
+};
+
 export const FIELD_TYPES = {
   text: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Text',
-    iconComponent: <ImageAspectRatioOutlinedIcon />,
+    label: 'Text',
     type: 'text',
   },
   textArea: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Text Area',
-    iconComponent: <SubjectIcon />,
+    label: 'Text Area',
     type: 'textArea',
   },
   selectList: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Select List',
-    iconComponent: <ViewColumnOutlinedIcon />,
+    label: 'Select List',
     type: 'selectList',
   },
   boolean: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Boolean',
-    iconComponent: <CheckBoxOutlinedIcon />,
+    label: 'Boolean',
     type: 'boolean',
   },
   number: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Number',
-    iconComponent: <ViewQuiltOutlinedIcon />,
+    label: 'Number',
     type: 'number',
   },
   date: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Date',
-    iconComponent: <EventIcon />,
+    label: 'Date',
     type: 'date',
   },
   time: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Time',
-    iconComponent: <WatchLaterOutlinedIcon />,
+    label: 'Time',
     type: 'time',
   },
   location: {
+    ...FIELD_TYPE_BASE,
     key: uuid(),
-    title: 'Location',
-    iconComponent: <LocationOnOutlinedIcon />,
+    label: 'Location',
     type: 'location',
   },
+};
+
+export const FIELD_TYPES_ICONS = {
+  text: <ImageAspectRatioOutlinedIcon />,
+  textArea: <SubjectIcon />,
+  selectList: <ViewColumnOutlinedIcon />,
+  boolean: <CheckBoxOutlinedIcon />,
+  number: <ViewQuiltOutlinedIcon />,
+  date: <EventIcon />,
+  time: <WatchLaterOutlinedIcon />,
+  location: <LocationOnOutlinedIcon />,
 };
 
 const generateFieldTypesArray = () => {

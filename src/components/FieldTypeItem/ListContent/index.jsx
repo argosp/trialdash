@@ -12,23 +12,21 @@ import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import Radio from '@material-ui/core/Radio';
 import {
   FIELD_TYPE_ITEM_CHECKBOX_TYPE,
-  FIELD_TYPES,
-} from '../../../constants/attributes';
+  FIELD_TYPES_ICONS,
+} from '../../../constants/fieldTypes';
 import { styles } from './styles';
 
 const ListContent = ({
-  title,
   fieldType,
   classes,
-  description,
   contentType,
 }) => (
   <div>
     <Grid container alignItems="center">
-      {FIELD_TYPES[fieldType].iconComponent}
-      <span className={classes.title}>{title}</span>
+      {FIELD_TYPES_ICONS[fieldType.type]}
+      <span className={classes.title}>{fieldType.title}</span>
     </Grid>
-    <p className={classes.description}>{description}</p>
+    <p className={classes.description}>{fieldType.description}</p>
     {contentType === FIELD_TYPE_ITEM_CHECKBOX_TYPE ? (
       <FormGroup>
         <FormControlLabel

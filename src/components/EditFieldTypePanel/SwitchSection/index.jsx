@@ -7,41 +7,25 @@ import { styles, switcher } from './styles';
 
 const CustomSwitch = withStyles(switcher)(Switch);
 
-class SwitchSection extends React.Component {
-  state = {
-    isSwitchChecked: false,
-  };
-
-  changeSwitch = () => {
-    this.setState(state => ({ isSwitchChecked: !state.isSwitchChecked }));
-    // this.props.switchHandler();
-  };
-
-  render() {
-    const { title, description, classes, className } = this.props;
-    const { isSwitchChecked } = this.state;
-
-    return (
-      <Grid
-        container
-        justify="space-between"
-        wrap="nowrap"
-        className={classnames(classes.root, className)}
-      >
-        <Grid item>
-          <p className={classes.title}>{title}</p>
-          <p className={classes.description}>{description}</p>
-        </Grid>
-        <Grid item>
-          <CustomSwitch
-            checked={isSwitchChecked}
-            onChange={this.changeSwitch}
-            inputProps={{ 'aria-label': 'switch' }}
-          />
-        </Grid>
-      </Grid>
-    );
-  }
-}
+const SwitchSection = ({ title, description, classes, className, onChange, isChecked }) => (
+  <Grid
+    container
+    justify="space-between"
+    wrap="nowrap"
+    className={classnames(classes.root, className)}
+  >
+    <Grid item>
+      <p className={classes.title}>{title}</p>
+      <p className={classes.description}>{description}</p>
+    </Grid>
+    <Grid item>
+      <CustomSwitch
+        checked={isChecked || false}
+        onChange={(e, switchName) => onChange(e, switchName)}
+        inputProps={{ 'aria-label': 'switch' }}
+      />
+    </Grid>
+  </Grid>
+);
 
 export default withStyles(styles)(SwitchSection);
