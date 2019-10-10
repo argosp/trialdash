@@ -9,8 +9,16 @@ const deviceTypes = experimentId => gql`
        numberOfFields
        properties{
            key
-           val
            type
+           id
+           label
+           description
+           prefix
+           suffix
+           required
+           template
+           multipleValues
+           trialField
         }
      }
   }
