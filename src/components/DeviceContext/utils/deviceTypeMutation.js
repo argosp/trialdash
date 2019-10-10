@@ -11,12 +11,21 @@ export default (deviceType) => {
             experimentId:"${deviceType.experimentId}"
             id: "${id}",
             name: "${deviceType.name}",
-            numberOfDevices: "${deviceType.numberOfDevices}",
-            numberOfFields: "${deviceType.numberOfFields}",
+            numberOfDevices: ${deviceType.numberOfDevices},
+            numberOfFields: ${deviceType.numberOfFields},
             properties: ${JSON.stringify(deviceType.properties)
     .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')
-    .replace(/"type":/g, 'type:')}
+    .replace(/"type":/g, 'type:')
+    .replace(/"id":/g, 'id:')
+    .replace(/"label":/g, 'label:')
+    .replace(/"description":/g, 'description:')
+    .replace(/"prefix":/g, 'prefix:')
+    .replace(/"suffix":/g, 'suffix:')
+    .replace(/"required":/g, 'required:')
+    .replace(/"template":/g, 'template:')
+    .replace(/"multipleValues":/g, 'multipleValues:')
+    .replace(/"trialField":/g, 'trialField:')
+}
             ) {
                 name
             }

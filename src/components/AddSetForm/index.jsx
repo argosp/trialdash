@@ -36,7 +36,7 @@ class AddSetForm extends React.Component {
           experimentId: this.props.experimentId,
           numberOfDevices: 0,
           numberOfFields: 0,
-          properties: [],
+          properties: [], // this field correspond to the <Droppable droppableId="droppable">
         }
         : {
           id: '',
@@ -44,14 +44,11 @@ class AddSetForm extends React.Component {
           description: '',
           experimentId: this.props.experimentId,
           numberOfTrials: 0,
-          properties: [],
+          properties: [], // this field correspond to the <Droppable droppableId="droppable">
         },
 
     // this field correspond to the <Droppable droppableId="droppable2">
     fieldTypes: FIELD_TYPES_ARRAY,
-
-    // this field correspond to the <Droppable droppableId="droppable">
-    selectedFieldTypes: [],
     isEditModeEnabled: false,
     isDragDisabled: false,
     editedFieldType: {}, // used to cancel changes of a field type
@@ -77,9 +74,12 @@ class AddSetForm extends React.Component {
     const initialState = this.state.editedFieldType;
 
     this.setState(state => ({
-      selectedFieldTypes: state.selectedFieldTypes.map(
-        fieldType => (fieldType.key === fieldTypeKey ? { ...initialState } : fieldType),
-      ),
+      formObject: {
+        ...state.formObject,
+        properties: state.formObject.properties.map(fieldType => (fieldType.key === fieldTypeKey
+          ? { ...initialState }
+          : fieldType)),
+      },
     }));
 
     this.deactivateEditMode();
@@ -99,39 +99,24 @@ class AddSetForm extends React.Component {
     } else value = e.target.checked;
 
     this.setState(state => ({
-      selectedFieldTypes: state.selectedFieldTypes.map(fieldType => (fieldType.key === fieldTypeKey
-        ? { ...fieldType, [property]: value }
-        : fieldType)),
+      formObject: {
+        ...state.formObject,
+        properties: state.formObject.properties.map(fieldType => (fieldType.key === fieldTypeKey
+          ? { ...fieldType, [property]: value }
+          : fieldType)),
+      },
     }));
   };
 
-  addAdditionalFields = (entity) => {
-    const { selectedFieldTypes } = this.state;
+  submitEntity = (entity) => {
+    const newEntity = entity;
     const { type } = this.props;
-    const resultEntity = { ...entity };
 
     // add number of field types to the device type
-    if (DEVICE_TYPES_CONTENT_TYPE === type) resultEntity.numberOfFields = selectedFieldTypes.length;
+    if (DEVICE_TYPES_CONTENT_TYPE === type) {
+      newEntity.numberOfFields = this.state.formObject.properties.length;
+    }
 
-    // add field types
-    resultEntity.properties = [];
-
-    selectedFieldTypes.forEach((fieldType) => {
-      const property = {
-        key: fieldType.key,
-        type: fieldType.type,
-      };
-
-      resultEntity.properties.push(property);
-    });
-
-    return resultEntity;
-  };
-
-  submitEntity = (entity) => {
-    const newEntity = this.addAdditionalFields(entity);
-
-    const { type } = this.props;
     const mutation = DEVICE_TYPES_CONTENT_TYPE === type
       ? deviceTypeMutation
       : trialSetMutation;
@@ -181,20 +166,26 @@ class AddSetForm extends React.Component {
 
     if (source.droppableId === destination.droppableId) {
       this.setState(state => ({
-        selectedFieldTypes: this.reorderDraggedFieldTypes(
-          state.selectedFieldTypes,
-          source.index,
-          destination.index,
-        ),
+        formObject: {
+          ...state.formObject,
+          properties: this.reorderDraggedFieldTypes(
+            state.formObject.properties,
+            source.index,
+            destination.index,
+          ),
+        },
       }));
     } else {
       this.setState(state => ({
-        selectedFieldTypes: this.moveFieldType(
-          state.fieldTypes,
-          state.selectedFieldTypes,
-          source,
-          destination,
-        ),
+        formObject: {
+          ...state.formObject,
+          properties: this.moveFieldType(
+            state.fieldTypes,
+            state.formObject.properties,
+            source,
+            destination,
+          ),
+        },
       }));
     }
   };
@@ -212,22 +203,28 @@ class AddSetForm extends React.Component {
     clonedFieldType.key = uuid();
 
     this.setState(state => ({
-      selectedFieldTypes: [...state.selectedFieldTypes, clonedFieldType],
+      formObject: {
+        ...state.formObject,
+        properties: [...state.formObject.properties, clonedFieldType],
+      },
     }));
   };
 
   deleteDraggedFieldType = (fieldType) => {
     this.setState(state => ({
-      selectedFieldTypes: state.selectedFieldTypes.filter(
-        selectedFieldType => selectedFieldType.key !== fieldType.key,
-      ),
+      formObject: {
+        ...state.formObject,
+        properties: state.formObject.properties.filter(
+          selectedFieldType => selectedFieldType.key !== fieldType.key,
+        ),
+      },
     }));
   };
 
   render() {
     const {
       fieldTypes,
-      selectedFieldTypes,
+      formObject,
       isEditModeEnabled,
       isDragDisabled,
       editedFieldType,
@@ -247,7 +244,7 @@ class AddSetForm extends React.Component {
         {isEditModeEnabled ? (
           <EditFieldTypePanel
             deactivateEditMode={this.deactivateEditMode}
-            fieldType={selectedFieldTypes.find(
+            fieldType={formObject.properties.find(
               fieldType => fieldType.key === editedFieldType.key,
             )}
             onValueChange={this.fieldTypeValueChangeHandler}
@@ -301,12 +298,12 @@ class AddSetForm extends React.Component {
               <div
                 ref={droppableProvided.innerRef}
                 className={
-                  isEmpty(selectedFieldTypes)
+                  isEmpty(formObject.properties)
                     ? classes.dropZoneEmpty
                     : classes.dropZone
                 }
               >
-                {selectedFieldTypes.map((fieldType, index) => (
+                {formObject.properties.map((fieldType, index) => (
                   <Draggable
                     key={fieldType.key}
                     draggableId={fieldType.key}

@@ -30,7 +30,7 @@ class DeviceForm extends React.Component {
         });
 
       const updatedDeviceType = this.props.deviceType;
-      updatedDeviceType.numberOfDevices = +updatedDeviceType.numberOfDevices + 1;
+      updatedDeviceType.numberOfDevices = updatedDeviceType.numberOfDevices + 1;
       updatedDeviceType.experimentId = this.props.experimentId;
       if (!updatedDeviceType.properties) updatedDeviceType.properties = [];
 
