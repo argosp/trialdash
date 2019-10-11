@@ -8,8 +8,7 @@ jobs:
     steps:
       - checkout
 
-      - setup_remote_docker:
-          docker_layer_caching: true 
+      - setup_remote_docker
 
       - run:  | 
           echo 'export IMAGE_VERSION="0.1.$CIRCLE_BUILD_NUM"' >> $BASH_ENV
