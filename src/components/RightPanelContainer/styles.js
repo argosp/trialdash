@@ -9,6 +9,7 @@ export const styles = theme => ({
     overflowY: 'auto',
     width: 340,
     boxShadow: '-9px 0px 14px rgba(60, 60, 60, 0.05)',
+    zIndex: 10,
   },
   hiddenRoot: {
     display: 'none',

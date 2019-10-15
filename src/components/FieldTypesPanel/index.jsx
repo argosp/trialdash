@@ -8,13 +8,11 @@ import RightPanelContainer from '../RightPanelContainer';
 import { FIELD_TYPES_ICONS } from '../../constants/fieldTypes';
 
 // used to style field type when dragging (https://github.com/atlassian/react-beautiful-dnd/issues/216)
-const FieldType = (
-  ({ classes, rootClassName, icon, title }) => (
-    <Grid container alignItems="center" className={rootClassName}>
-      {icon}
-      <span className={classes.fieldTypeTitle}>{title}</span>
-    </Grid>
-  )
+const FieldType = ({ classes, rootClassName, icon, title }) => (
+  <Grid container alignItems="center" className={rootClassName}>
+    {icon}
+    <span className={classes.fieldTypeTitle}>{title}</span>
+  </Grid>
 );
 
 class FieldTypesPanel extends React.Component {
@@ -47,7 +45,14 @@ class FieldTypesPanel extends React.Component {
                       >
                         <FieldType
                           classes={classes}
-                          rootClassName={classes.fieldTypeWrapper}
+                          rootClassName={
+                            snapshot.isDragging
+                              ? classnames(
+                                classes.fieldTypeWrapper,
+                                classes.fieldTypeWrapperDragging,
+                              )
+                              : classes.fieldTypeWrapper
+                          }
                           icon={FIELD_TYPES_ICONS[fieldType.type]}
                           title={fieldType.label}
                         />
