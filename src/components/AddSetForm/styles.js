@@ -12,7 +12,13 @@ export const styles = theme => ({
   },
   dropZoneEmpty: {
     width: '70%',
-    height: 200,
-    border: `3px dashed ${theme.palette.primary.main}`,
+    height: 300,
+    border: `1px dashed ${theme.palette.primary.main}`,
+    textAlign: 'center',
+  },
+  dropZoneText: {
+    fontSize: 19,
+    color: theme.palette.black.dark,
+    lineHeight: '300px',
   },
 });

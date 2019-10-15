@@ -303,7 +303,11 @@ class AddSetForm extends React.Component {
                     : classes.dropZone
                 }
               >
-                {formObject.properties.map((fieldType, index) => (
+                {isEmpty(formObject.properties) ? (
+                  <span className={classes.dropZoneText}>
+                    Drag and drop field types here to add
+                  </span>
+                ) : formObject.properties.map((fieldType, index) => (
                   <Draggable
                     key={fieldType.key}
                     draggableId={fieldType.key}
