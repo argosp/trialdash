@@ -15,8 +15,10 @@ const EditFieldTypePanel = ({
   fieldType,
   onValueChange,
   cancelChanges,
+  isPanelOpen,
 }) => (
   <RightPanelContainer
+    isPanelOpen={isPanelOpen}
     onClose={() => cancelChanges(fieldType.key)}
     title={(
       <div className={classes.header}>

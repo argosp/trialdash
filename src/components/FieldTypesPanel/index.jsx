@@ -17,10 +17,12 @@ const FieldType = ({ classes, rootClassName, icon, title }) => (
 
 class FieldTypesPanel extends React.Component {
   render() {
-    const { classes, fieldTypes } = this.props;
+    const { classes, fieldTypes, isPanelOpen, onClose } = this.props;
 
     return (
       <RightPanelContainer
+        isPanelOpen={isPanelOpen}
+        onClose={onClose}
         title={<h3 className={classes.headerTitle}>Field Types</h3>}
       >
         <Droppable

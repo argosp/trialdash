@@ -2,9 +2,12 @@ export const styles = theme => ({
   form: {
     height: '100%',
   },
-  attributesHeadline: {
+  attributesHeadlineWrapper: {
     marginTop: 30,
     marginBottom: 50,
+  },
+  attributesHeadline: {
+    display: 'inline-block',
   },
   dropZone: {
     width: '70%',
@@ -23,5 +26,8 @@ export const styles = theme => ({
     outline: `${theme.palette.primary.main} dashed 3px`,
     color: theme.palette.primary.main,
     fontWeight: 'bold',
+  },
+  addButton: {
+    marginLeft: 20,
   },
 });
