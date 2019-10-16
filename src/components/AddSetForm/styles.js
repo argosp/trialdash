@@ -13,12 +13,15 @@ export const styles = theme => ({
   dropZoneEmpty: {
     width: '70%',
     height: 300,
-    border: `1px dashed ${theme.palette.primary.main}`,
     textAlign: 'center',
-  },
-  dropZoneText: {
+    outline: `${theme.palette.primary.main} dashed 1px`,
     fontSize: 19,
     color: theme.palette.black.dark,
     lineHeight: '300px',
+  },
+  dropZoneEmptyDragging: {
+    outline: `${theme.palette.primary.main} dashed 3px`,
+    color: theme.palette.primary.main,
+    fontWeight: 'bold',
   },
 });
