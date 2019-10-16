@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import classnames from 'classnames';
+import Box from '@material-ui/core/Box';
 import Graph from '../../apolloGraphql';
 import {
   DEVICE_TYPES_CONTENT_TYPE,
@@ -24,6 +25,7 @@ import Footer from '../Footer';
 import { styles } from './styles';
 import trialSetMutation from '../TrialSetContext/utils/trialSetMutation';
 import EditFieldTypePanel from '../EditFieldTypePanel';
+import SimpleButton from '../SimpleButton';
 
 const graphql = new Graph();
 
@@ -54,6 +56,16 @@ class AddSetForm extends React.Component {
     isDragDisabled: false,
     editedFieldType: {}, // used to cancel changes of a field type
     isDragging: false,
+    isFieldTypesPanelOpen: true,
+    isEditFieldTypePanelOpen: false,
+  };
+
+  openFieldTypesPanel = () => {
+    this.setState({ isFieldTypesPanelOpen: true });
+  };
+
+  closeFieldTypesPanel = () => {
+    this.setState({ isFieldTypesPanelOpen: false });
   };
 
   activateEditMode = (editedFieldType) => {
@@ -61,6 +73,7 @@ class AddSetForm extends React.Component {
       isEditModeEnabled: true,
       isDragDisabled: true,
       editedFieldType,
+      isEditFieldTypePanelOpen: true,
     });
   };
 
@@ -69,6 +82,7 @@ class AddSetForm extends React.Component {
       isEditModeEnabled: false,
       isDragDisabled: false,
       editedFieldType: {},
+      isEditFieldTypePanelOpen: false,
     });
   };
 
@@ -237,12 +251,17 @@ class AddSetForm extends React.Component {
       isDragDisabled,
       editedFieldType,
       isDragging,
+      isFieldTypesPanelOpen,
+      isEditFieldTypePanelOpen,
     } = this.state;
     const { classes, theme, type } = this.props;
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {
-      dropZoneClassName = classnames(classes.dropZoneEmpty, classes.dropZoneEmptyDragging);
+      dropZoneClassName = classnames(
+        classes.dropZoneEmpty,
+        classes.dropZoneEmptyDragging,
+      );
     }
 
     if (isEmpty(formObject.properties) && !isDragging) {
@@ -250,7 +269,10 @@ class AddSetForm extends React.Component {
     }
 
     return (
-      <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
+      <DragDropContext
+        onDragStart={this.onDragStart}
+        onDragEnd={this.onDragEnd}
+      >
         <ContentHeader
           title={
             DEVICE_TYPES_CONTENT_TYPE === type
@@ -261,6 +283,7 @@ class AddSetForm extends React.Component {
         />
         {isEditModeEnabled ? (
           <EditFieldTypePanel
+            isPanelOpen={isEditFieldTypePanelOpen}
             deactivateEditMode={this.deactivateEditMode}
             fieldType={formObject.properties.find(
               fieldType => fieldType.key === editedFieldType.key,
@@ -269,7 +292,11 @@ class AddSetForm extends React.Component {
             cancelChanges={this.cancelFieldTypeChanges}
           />
         ) : (
-          <FieldTypesPanel fieldTypes={fieldTypes} />
+          <FieldTypesPanel
+            fieldTypes={fieldTypes}
+            isPanelOpen={isFieldTypesPanelOpen}
+            onClose={this.closeFieldTypesPanel}
+          />
         )}
         <form className={classes.form}>
           <Grid container spacing={4}>
@@ -302,15 +329,30 @@ class AddSetForm extends React.Component {
               </Grid>
             </Grid>
           ) : null}
-          <CustomHeadline
-            className={classes.attributesHeadline}
-            title="Attributes"
-            description="Drag fields from the right bar"
-            titleFontSize={18}
-            descriptionFontSize={16}
-            titleColor={theme.palette.black.main}
-            descriptionColor={theme.palette.gray.dark}
-          />
+          <Box
+            display="flex"
+            alignItems="center"
+            className={classes.attributesHeadlineWrapper}
+          >
+            <CustomHeadline
+              className={classes.attributesHeadline}
+              title="Attributes"
+              description="Drag fields from the right bar"
+              titleFontSize={18}
+              descriptionFontSize={16}
+              titleColor={theme.palette.black.main}
+              descriptionColor={theme.palette.gray.dark}
+            />
+            <SimpleButton
+              variant="outlined"
+              colorVariant="primary"
+              className={classes.addButton}
+              onClick={this.openFieldTypesPanel}
+              text="Add"
+              size="small"
+              disabled={isEditModeEnabled || isFieldTypesPanelOpen || false}
+            />
+          </Box>
           <Droppable droppableId="droppable">
             {droppableProvided => (
               <div
@@ -318,36 +360,36 @@ class AddSetForm extends React.Component {
                 className={dropZoneClassName}
               >
                 {isEmpty(formObject.properties) ? (
-                  <span>
-                    Drag and drop field types here to add
-                  </span>
-                ) : formObject.properties.map((fieldType, index) => (
-                  <Draggable
-                    key={fieldType.key}
-                    draggableId={fieldType.key}
-                    index={index}
-                    isDragDisabled={isDragDisabled}
-                  >
-                    {draggableProvided => (
-                      <div
-                        ref={draggableProvided.innerRef}
-                        {...draggableProvided.draggableProps}
-                        {...draggableProvided.dragHandleProps}
-                      >
-                        <FieldTypeItem
-                          editedFieldTypeKey={editedFieldType.key}
-                          isEditModeEnabled={isEditModeEnabled}
-                          activateEditMode={this.activateEditMode}
-                          cloneFieldType={() => this.cloneDraggedFieldType(fieldType)}
-                          deleteFieldType={() => this.deleteDraggedFieldType(fieldType)}
-                          fieldType={fieldType}
-                          contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
-                          placeholder="Value"
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
+                  <span>Drag and drop field types here to add</span>
+                ) : (
+                  formObject.properties.map((fieldType, index) => (
+                    <Draggable
+                      key={fieldType.key}
+                      draggableId={fieldType.key}
+                      index={index}
+                      isDragDisabled={isDragDisabled}
+                    >
+                      {draggableProvided => (
+                        <div
+                          ref={draggableProvided.innerRef}
+                          {...draggableProvided.draggableProps}
+                          {...draggableProvided.dragHandleProps}
+                        >
+                          <FieldTypeItem
+                            editedFieldTypeKey={editedFieldType.key}
+                            isEditModeEnabled={isEditModeEnabled}
+                            activateEditMode={this.activateEditMode}
+                            cloneFieldType={() => this.cloneDraggedFieldType(fieldType)}
+                            deleteFieldType={() => this.deleteDraggedFieldType(fieldType)}
+                            fieldType={fieldType}
+                            contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
+                            placeholder="Value"
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))
+                )}
                 {droppableProvided.placeholder}
               </div>
             )}

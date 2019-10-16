@@ -22,12 +22,16 @@ export default createMuiTheme({
       },
     },
     MuiButton: {
+      contained: {
+        boxShadow: 'none',
+      },
       containedPrimary: {
         color: '#FFF',
         border: '1px solid transparent',
 
         '&:hover': {
           backgroundColor: '#2ECE72',
+          boxShadow: '0 10px 16px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06)',
         },
       },
       outlined: {
@@ -36,6 +40,16 @@ export default createMuiTheme({
         '&:hover': {
           backgroundColor: '#AAA',
           color: '#FFF',
+          boxShadow: '0 10px 16px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06)',
+        },
+      },
+      outlinedPrimary: {
+        border: '1px solid #27AE60',
+
+        '&:hover': {
+          backgroundColor: '#27AE60',
+          color: '#FFF',
+          boxShadow: '0 10px 16px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06)',
         },
       },
       outlinedSecondary: {
@@ -46,6 +60,7 @@ export default createMuiTheme({
           border: '1px solid transparent',
           backgroundColor: '#EB5757',
           color: '#FFF',
+          boxShadow: '0 10px 16px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06)',
         },
       },
     },
