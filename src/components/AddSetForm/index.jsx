@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
+import classnames from 'classnames';
 import Graph from '../../apolloGraphql';
 import {
   DEVICE_TYPES_CONTENT_TYPE,
@@ -52,6 +53,7 @@ class AddSetForm extends React.Component {
     isEditModeEnabled: false,
     isDragDisabled: false,
     editedFieldType: {}, // used to cancel changes of a field type
+    isDragging: false,
   };
 
   activateEditMode = (editedFieldType) => {
@@ -158,7 +160,13 @@ class AddSetForm extends React.Component {
     return destClone;
   };
 
+  onDragStart = () => {
+    this.setState({ isDragging: true });
+  };
+
   onDragEnd = ({ source, destination }) => {
+    this.setState({ isDragging: false });
+
     // dropped outside the list
     if (!destination) {
       return;
@@ -228,11 +236,21 @@ class AddSetForm extends React.Component {
       isEditModeEnabled,
       isDragDisabled,
       editedFieldType,
+      isDragging,
     } = this.state;
     const { classes, theme, type } = this.props;
+    let dropZoneClassName = classes.dropZone;
+
+    if (isEmpty(formObject.properties) && isDragging) {
+      dropZoneClassName = classnames(classes.dropZoneEmpty, classes.dropZoneEmptyDragging);
+    }
+
+    if (isEmpty(formObject.properties) && !isDragging) {
+      dropZoneClassName = classes.dropZoneEmpty;
+    }
 
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
+      <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <ContentHeader
           title={
             DEVICE_TYPES_CONTENT_TYPE === type
@@ -297,14 +315,10 @@ class AddSetForm extends React.Component {
             {droppableProvided => (
               <div
                 ref={droppableProvided.innerRef}
-                className={
-                  isEmpty(formObject.properties)
-                    ? classes.dropZoneEmpty
-                    : classes.dropZone
-                }
+                className={dropZoneClassName}
               >
                 {isEmpty(formObject.properties) ? (
-                  <span className={classes.dropZoneText}>
+                  <span>
                     Drag and drop field types here to add
                   </span>
                 ) : formObject.properties.map((fieldType, index) => (
