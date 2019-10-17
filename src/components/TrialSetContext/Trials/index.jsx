@@ -11,6 +11,7 @@ import trialsQuery from '../../TrialContext/utils/trialQuery';
 import { styles } from './styles';
 import trialsSubscription from '../../TrialContext/utils/trialsSubscription';
 import StyledTableCell from '../../StyledTableCell';
+import StatusBadge from '../../StatusBadge';
 import {
   TRIALS_CONTENT_TYPE,
   TRIAL_SETS_CONTENT_TYPE,
@@ -42,7 +43,7 @@ class TrialSets extends React.Component {
         </StyledTableCell>
         <StyledTableCell align="left">{trial.begin}</StyledTableCell>
         <StyledTableCell align="left">
-          <div className={classes.stateWrapper}>State</div>
+          <StatusBadge color="#BB6BD9" title="State" />
         </StyledTableCell>
         <StyledTableCell align="right">
           <Tooltip title="">

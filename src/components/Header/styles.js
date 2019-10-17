@@ -3,6 +3,9 @@ export const styles = theme => ({
     padding: '20px 0 0 40px',
     backgroundColor: theme.palette.white.main,
   },
+  rootWithoutExperiments: {
+    padding: '20px 0 15px 40px',
+  },
   logoWrapper: {
     marginTop: 4,
     marginRight: 20,
@@ -51,6 +54,7 @@ export const styles = theme => ({
     paddingBottom: 30,
     fontWeight: 'bold',
     fontSize: 14,
+    minHeight: 'auto',
 
     '&.Mui-selected': {
       color: theme.palette.black.main,
@@ -76,6 +80,9 @@ export const styles = theme => ({
 });
 
 export const tabsStyles = theme => ({
+  root: {
+    minHeight: 'auto',
+  },
   indicator: {
     display: 'flex',
     justifyContent: 'center',
