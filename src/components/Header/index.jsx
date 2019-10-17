@@ -41,13 +41,13 @@ class Header extends React.Component {
   };
 
   handleLogoClick = (event) => {
-    this.handleTabChange(event, 0); // 0 is the first tab (Trials)
-    this.props.selectActiveExperiment('', ''); // reset selected experiment
+    this.handleTabChange(event, 3); // 3 is the Experiments
+    this.props.selectActiveExperiment({}); // reset selected experiment
   };
 
-  selectExperiment = (id, name) => {
+  selectExperiment = (experiment) => {
     const { selectActiveExperiment } = this.props;
-    selectActiveExperiment(id, name);
+    selectActiveExperiment(experiment);
     this.handleMenuClose();
   };
 
@@ -60,10 +60,12 @@ class Header extends React.Component {
   };
 
   renderCurrentExperimentName = (currentExperiment, isExperimentHovering) => {
-    if (currentExperiment.name && currentExperiment.id && isExperimentHovering) {
-      return (
-        `${currentExperiment.name} (ID: ${currentExperiment.id})`
-      );
+    if (
+      currentExperiment.name
+      && currentExperiment.id
+      && isExperimentHovering
+    ) {
+      return `${currentExperiment.name} (ID: ${currentExperiment.id})`;
     }
 
     if (currentExperiment.name && !isExperimentHovering) {
@@ -74,83 +76,123 @@ class Header extends React.Component {
   };
 
   render() {
-    const { classes, currentExperiment, experiments, tabValue } = this.props;
+    const {
+      classes,
+      currentExperiment,
+      experiments,
+      tabValue,
+      withExperiments,
+    } = this.props;
     const { anchorElement, isExperimentHovering } = this.state;
 
     return (
-      <Grid container className={classes.root}>
+      <Grid
+        container
+        className={
+          withExperiments
+            ? classes.root
+            : classnames(classes.root, classes.rootWithoutExperiments)
+        }
+      >
         <Grid item container xs={4} alignItems="flex-start">
-          <Box display="flex" alignItems="center" className={classes.logoWrapper}>
+          <Box
+            display="flex"
+            alignItems="center"
+            className={classes.logoWrapper}
+          >
             <MenuIcon className={classes.menuIcon} />
-            <Link to="/" onClick={this.handleLogoClick} className={classes.logo}>
+            <Link
+              to="/"
+              onClick={this.handleLogoClick}
+              className={classes.logo}
+            >
               Argos
             </Link>
           </Box>
-          <Divider orientation="vertical" className={classnames(classes.divider, classes.leftDivider)} />
-          <Button
-            aria-controls="experiments-menu"
-            aria-haspopup="true"
-            onClick={this.handleMenuClick}
-            disableRipple
-            className={classnames(classes.expandButton, classes.expandExperimentButton)}
-            onMouseEnter={this.handleExperimentMouseEnter}
-            onMouseLeave={this.handleExperimentMouseLeave}
-          >
-            {this.renderCurrentExperimentName(currentExperiment, isExperimentHovering)}
-            <ExpandMoreIcon />
-          </Button>
-          <Menu
-            id="experiments-menu"
-            open={Boolean(anchorElement)}
-            onClose={this.handleMenuClose}
-            anchorEl={anchorElement}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            {experiments.map(experiment => (
-              <MenuItem
-                key={experiment.id}
-                onClick={() => this.selectExperiment(experiment.id, experiment.name)
-                }
+          <Divider
+            orientation="vertical"
+            className={classnames(classes.divider, classes.leftDivider)}
+          />
+          {withExperiments ? (
+            <>
+              <Button
+                aria-controls="experiments-menu"
+                aria-haspopup="true"
+                onClick={this.handleMenuClick}
+                disableRipple
+                className={classnames(
+                  classes.expandButton,
+                  classes.expandExperimentButton,
+                )}
+                onMouseEnter={this.handleExperimentMouseEnter}
+                onMouseLeave={this.handleExperimentMouseLeave}
               >
-                {experiment.name}
-              </MenuItem>
-            ))}
-          </Menu>
+                {this.renderCurrentExperimentName(
+                  currentExperiment,
+                  isExperimentHovering,
+                )}
+                <ExpandMoreIcon />
+              </Button>
+              <Menu
+                id="experiments-menu"
+                open={Boolean(anchorElement)}
+                onClose={this.handleMenuClose}
+                anchorEl={anchorElement}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+              >
+                {experiments.map(experiment => (
+                  <MenuItem
+                    key={experiment.id}
+                    onClick={() => this.selectExperiment(experiment)}
+                  >
+                    {experiment.name}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          ) : null}
         </Grid>
         <Grid item container xs={8} justify="flex-end">
-          <StyledTabs
-            value={tabValue}
-            onChange={this.handleTabChange}
-            aria-label="header tabs"
-          >
-            <Tab
-              disableRipple
-              label="Trials"
-              id="header-tab-0"
-              className={classes.tab}
-            />
-            <Tab
-              disableRipple
-              label="Assets"
-              id="header-tab-1"
-              className={classes.tab}
-            />
-            <Tab
-              disableRipple
-              label="Devices"
-              id="header-tab-2"
-              className={classes.tab}
-            />
-          </StyledTabs>
-          <Divider orientation="vertical" className={classnames(classes.divider, classes.rightDivider)} />
+          {withExperiments ? (
+            <>
+              <StyledTabs
+                value={tabValue}
+                onChange={this.handleTabChange}
+                aria-label="header tabs"
+              >
+                <Tab
+                  disableRipple
+                  label="Trials"
+                  id="header-tab-0"
+                  className={classes.tab}
+                />
+                <Tab
+                  disableRipple
+                  label="Assets"
+                  id="header-tab-1"
+                  className={classes.tab}
+                />
+                <Tab
+                  disableRipple
+                  label="Devices"
+                  id="header-tab-2"
+                  className={classes.tab}
+                />
+              </StyledTabs>
+              <Divider
+                orientation="vertical"
+                className={classnames(classes.divider, classes.rightDivider)}
+              />
+            </>
+          ) : null}
           <div className={classes.profileWrapper}>
             <Avatar alt="user avatar" className={classes.avatar} />
             <Button
@@ -158,9 +200,12 @@ class Header extends React.Component {
               aria-haspopup="true"
               // onClick={}
               disableRipple
-              className={classnames(classes.expandButton, classes.expandProfileButton)}
+              className={classnames(
+                classes.expandButton,
+                classes.expandProfileButton,
+              )}
             >
-                Name Surname
+              Name Surname
               <ExpandMoreIcon />
             </Button>
           </div>

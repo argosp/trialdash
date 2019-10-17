@@ -1,5 +1,6 @@
 import { Query } from 'react-apollo';
 import React from 'react';
+import { isEmpty } from 'lodash';
 import ContentTable from '../ContentTable';
 
 const TableContentContainer = ({
@@ -12,7 +13,7 @@ const TableContentContainer = ({
   // subscriptionUpdateField,
 }) => (
   <>
-    <Query query={query(...queryArgs)}>
+    <Query query={isEmpty(queryArgs) ? query : query(...queryArgs)}>
       {({ loading, error, data, refetch }) => {
         if (loading) return <p>Loading...</p>;
         if (error) return <p> No data to show</p>;

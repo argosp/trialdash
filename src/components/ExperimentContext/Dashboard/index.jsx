@@ -1,7 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 // import { Subscription } from 'react-apollo';
-import experimentsQuery from '../utils/experiments-query';
+import { isEmpty } from 'lodash';
+import experimentsQuery from '../utils/experimentsQuery';
 import ExperimentForm from '../ExperimentForm';
 // import experimentsSubscription from '../utils/experimentsSubscription';
 import { styles } from './styles';
@@ -10,18 +11,19 @@ import Graph from '../../../apolloGraphql';
 import TrialSetMainView from '../../TrialSetContext';
 import AssetMainView from '../../AssetContext';
 import DeviceMainView from '../../DeviceContext';
+import Experiments from '../Experiments';
 
 const graphql = new Graph();
 
-class ListOfExperiments extends React.Component {
+class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       experiments: [],
       render: false,
       timeout: false,
-      currentExperiment: { name: '', id: '' },
-      headerTabValue: 0,
+      currentExperiment: {},
+      contentId: 3,
     };
   }
 
@@ -51,19 +53,18 @@ class ListOfExperiments extends React.Component {
     }
   }
 
-  handleHeaderTabChange = (newValue) => {
-    this.setState({ headerTabValue: newValue });
+  changeContentId = (newValue) => {
+    this.setState({ contentId: newValue });
   };
 
-  selectActiveExperiment = (id, name) => {
-    const currentExperiment = { name, id };
-    this.setState({ currentExperiment });
+  selectActiveExperiment = (experiment) => {
+    this.setState({ currentExperiment: experiment });
   };
 
-  renderContent = (tabValue) => {
+  renderContent = (contentId) => {
     const { currentExperiment } = this.state;
 
-    switch (tabValue) {
+    switch (contentId) {
       case 0:
       default:
         return <TrialSetMainView experimentId={currentExperiment.id} />;
@@ -79,6 +80,13 @@ class ListOfExperiments extends React.Component {
           <DeviceMainView
             experimentId={currentExperiment.id}
             entityType="deviceType"
+          />
+        );
+      case 3:
+        return (
+          <Experiments
+            openExperiment={this.selectActiveExperiment}
+            changeContentId={this.changeContentId}
           />
         );
     }
@@ -98,19 +106,26 @@ class ListOfExperiments extends React.Component {
       render,
       add,
       timeout,
-      headerTabValue,
+      contentId,
     } = this.state;
 
     if (render) {
       return (
         <>
-          {add && (<ExperimentForm close={() => { this.setState({ add: false }); }} />)}
+          {add && (
+            <ExperimentForm
+              close={() => {
+                this.setState({ add: false });
+              }}
+            />
+          )}
           <Header
+            withExperiments={!isEmpty(currentExperiment)}
             selectActiveExperiment={this.selectActiveExperiment}
             currentExperiment={currentExperiment}
             experiments={experiments}
-            handleTabChange={this.handleHeaderTabChange}
-            tabValue={headerTabValue}
+            handleTabChange={this.changeContentId}
+            tabValue={contentId}
           />
           {/*
               <Button
@@ -122,10 +137,7 @@ class ListOfExperiments extends React.Component {
           */}
 
           <div className={classes.contentWrapper}>
-            {
-              currentExperiment.id ? (this.renderContent(headerTabValue))
-                : (<div>Select an Experiment Or add a new Experiment</div>)
-            }
+            {this.renderContent(contentId)}
           </div>
 
           {/* <Subscription
@@ -143,4 +155,4 @@ class ListOfExperiments extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(ListOfExperiments);
+export default withStyles(styles, { withTheme: true })(Dashboard);

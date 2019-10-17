@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ListOfExperiments from '../ExperimentContext/Dashboard';
+import Dashboard from '../ExperimentContext/Dashboard';
 
 class Home extends Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class Home extends Component {
     const { history } = this.props;
 
     return (
-      <ListOfExperiments history={history} />
+      <Dashboard history={history} />
     );
   }
 }

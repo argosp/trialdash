@@ -4,7 +4,7 @@ export const styles = theme => ({
     borderSpacing: '0 3px',
     marginBottom: 70,
 
-    '& td:first-child': {
+    '& td > p:first-child': {
       fontWeight: 'bold',
       maxWidth: 340,
     },
