@@ -6,7 +6,7 @@ export const styles = theme => ({
     marginBottom: 5,
 
     '&:hover': {
-      border: '2px solid #56CCF2',
+      border: `2px solid ${theme.palette.blue.main}`,
     },
   },
   wrapperEditMode: {

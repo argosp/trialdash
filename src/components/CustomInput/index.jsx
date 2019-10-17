@@ -34,6 +34,7 @@ const CustomInput = ({
       classes: {
         root: withBorder ? classes.inputWithBorder : classes.input,
         formControl: classes.formControl,
+        focused: classes.inputFocused,
       },
     }}
   />

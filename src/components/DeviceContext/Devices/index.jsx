@@ -1,8 +1,7 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import ContentHeader from '../../ContentHeader';
 import TableContentContainer from '../../TableContentContainer';
 import {
@@ -11,6 +10,8 @@ import {
 import StyledTableCell from '../../StyledTableCell';
 import devicesQuery from './utils/deviceQuery';
 import devicesSubscription from './utils/deviceSubscription';
+import { ReactComponent as CloneIcon } from '../../../assets/icons/clone.svg';
+import { ReactComponent as PenIcon } from '../../../assets/icons/pen.svg';
 
 class Devices extends React.Component {
     changeContentType = (contentType) => {
@@ -29,14 +30,14 @@ class Devices extends React.Component {
           <IconButton
             aria-label="clone device"
           >
-            <QueueOutlinedIcon />
+            <SvgIcon component={CloneIcon} />
           </IconButton>
         </Tooltip>
         <Tooltip title="Edit device">
           <IconButton
             aria-label="edit device"
           >
-            <EditOutlinedIcon />
+            <SvgIcon component={PenIcon} />
           </IconButton>
         </Tooltip>
       </StyledTableCell>

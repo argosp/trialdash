@@ -1,13 +1,13 @@
 import React from 'react';
-import ImageAspectRatioOutlinedIcon from '@material-ui/icons/ImageAspectRatioOutlined';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ViewColumnOutlinedIcon from '@material-ui/icons/ViewColumnOutlined';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
-import ViewQuiltOutlinedIcon from '@material-ui/icons/ViewQuiltOutlined';
-import EventIcon from '@material-ui/icons/Event';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import uuid from 'uuid/v4';
+import { ReactComponent as TextIcon } from '../assets/icons/text.svg';
+import { ReactComponent as TextAreaIcon } from '../assets/icons/text-area.svg';
+import { ReactComponent as SelectListIcon } from '../assets/icons/select-list.svg';
+import { ReactComponent as NumberIcon } from '../assets/icons/number.svg';
+import { ReactComponent as DateIcon } from '../assets/icons/date.svg';
 
 const FIELD_TYPE_BASE = {
   description: 'a short description of the field',
@@ -72,12 +72,12 @@ export const FIELD_TYPES = {
 };
 
 export const FIELD_TYPES_ICONS = {
-  text: <ImageAspectRatioOutlinedIcon />,
-  textArea: <SubjectIcon />,
-  selectList: <ViewColumnOutlinedIcon />,
+  text: <TextIcon />,
+  textArea: <TextAreaIcon />,
+  selectList: <SelectListIcon />,
   boolean: <CheckBoxOutlinedIcon />,
-  number: <ViewQuiltOutlinedIcon />,
-  date: <EventIcon />,
+  number: <NumberIcon />,
+  date: <DateIcon />,
   time: <WatchLaterOutlinedIcon />,
   location: <LocationOnOutlinedIcon />,
 };

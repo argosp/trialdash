@@ -3,13 +3,20 @@ export const styles = theme => ({
     padding: '20px 0 0 40px',
     backgroundColor: theme.palette.white.main,
   },
+  logoWrapper: {
+    marginTop: 4,
+    marginRight: 20,
+  },
+  menuIcon: {
+    cursor: 'pointer',
+    marginRight: 15,
+  },
   logo: {
     color: theme.palette.primary.main,
     fontSize: 24,
     textTransform: 'uppercase',
     textDecoration: 'none',
-    marginRight: 20,
-    marginTop: 4,
+    zIndex: 5,
   },
   divider: {
     backgroundColor: theme.palette.white.dark,

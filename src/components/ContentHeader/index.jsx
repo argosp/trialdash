@@ -52,6 +52,7 @@ const ContentHeader = (props) => {
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput,
+              focused: classes.inputFocused,
             }}
             inputProps={{ 'aria-label': searchPlaceholder }}
           />
