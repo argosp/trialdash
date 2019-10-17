@@ -90,5 +90,8 @@ export default createMuiTheme({
     red: {
       main: '#EB5757',
     },
+    blue: {
+      main: '#56CCF2',
+    },
   },
 });

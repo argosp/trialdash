@@ -1,12 +1,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import OpenWithIcon from '@material-ui/icons/OpenWith';
-import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import classnames from 'classnames';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import CustomInput from '../CustomInput';
 import { styles } from './styles';
 import {
@@ -15,6 +12,10 @@ import {
 } from '../../constants/fieldTypes';
 import ListContent from './ListContent';
 import CustomTooltip from '../CustomTooltip';
+import { ReactComponent as CloneIcon } from '../../assets/icons/clone.svg';
+import { ReactComponent as BasketIcon } from '../../assets/icons/basket.svg';
+import { ReactComponent as PenIcon } from '../../assets/icons/pen.svg';
+import { ReactComponent as CrossIcon } from '../../assets/icons/cross.svg';
 
 class FieldTypeItem extends React.Component {
   state = {
@@ -55,7 +56,8 @@ class FieldTypeItem extends React.Component {
         onMouseLeave={!isEditModeEnabled ? this.handleWrapperMouseLeave : null}
       >
         <Grid item container xs={6} alignItems="center" wrap="nowrap">
-          <OpenWithIcon
+          <SvgIcon
+            component={CrossIcon}
             className={
               isMouseHover && !isEditModeEnabled
                 ? classes.crossIcon
@@ -96,7 +98,7 @@ class FieldTypeItem extends React.Component {
               aria-label="edit"
               onClick={() => activateEditMode(fieldType)}
             >
-              <EditOutlinedIcon />
+              <SvgIcon component={PenIcon} />
             </IconButton>
           </CustomTooltip>
           <CustomTooltip
@@ -108,7 +110,7 @@ class FieldTypeItem extends React.Component {
             }
           >
             <IconButton aria-label="clone" onClick={cloneFieldType}>
-              <QueueOutlinedIcon />
+              <SvgIcon component={CloneIcon} />
             </IconButton>
           </CustomTooltip>
           <CustomTooltip
@@ -120,7 +122,7 @@ class FieldTypeItem extends React.Component {
             }
           >
             <IconButton aria-label="delete" onClick={deleteFieldType}>
-              <DeleteOutlineOutlinedIcon />
+              <SvgIcon component={BasketIcon} />
             </IconButton>
           </CustomTooltip>
         </Grid>

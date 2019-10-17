@@ -41,7 +41,6 @@ export const styles = theme => ({
   },
   search: {
     position: 'relative',
-    borderRadius: theme.shape.borderRadius,
   },
   searchIcon: {
     width: theme.spacing(7),
@@ -58,7 +57,7 @@ export const styles = theme => ({
     height: '100%',
     padding: '0 14px',
     backgroundColor: '#FDFDFD',
-    borderRadius: 5,
+    border: '1px solid transparent',
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
@@ -68,6 +67,9 @@ export const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       width: 200,
     },
+  },
+  inputFocused: {
+    border: `1px solid ${theme.palette.blue.main}`,
   },
   addButton: {
     marginLeft: 20,

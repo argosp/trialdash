@@ -1,10 +1,9 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
@@ -16,6 +15,8 @@ import {
 import ContentHeader from '../../ContentHeader';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import deviceTypesSubscription from '../utils/deviceTypesSubscription';
+import { ReactComponent as CloneIcon } from '../../../assets/icons/clone.svg';
+import { ReactComponent as PenIcon } from '../../../assets/icons/pen.svg';
 
 class DeviceTypes extends React.Component {
     changeContentType = (contentType) => {
@@ -37,14 +38,14 @@ class DeviceTypes extends React.Component {
             <IconButton
               aria-label="clone device type"
             >
-              <QueueOutlinedIcon />
+              <SvgIcon component={CloneIcon} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Edit device type">
             <IconButton
               aria-label="edit device type"
             >
-              <EditOutlinedIcon />
+              <SvgIcon component={PenIcon} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Open device type" className={this.props.classes.arrowButton}>

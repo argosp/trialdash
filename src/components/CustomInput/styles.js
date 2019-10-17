@@ -3,12 +3,16 @@ export const styles = theme => ({
     backgroundColor: theme.palette.white.main,
     padding: '10px 15px',
     fontSize: 14,
+    border: '1px solid transparent',
   },
   inputWithBorder: {
     backgroundColor: theme.palette.white.main,
     padding: '10px 15px',
     border: `1px solid ${theme.palette.white.dark}`,
     fontSize: 14,
+  },
+  inputFocused: {
+    border: `1px solid ${theme.palette.blue.main}`,
   },
   label: {
     fontSize: 18,

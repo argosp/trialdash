@@ -1,12 +1,11 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import QueueOutlinedIcon from '@material-ui/icons/QueueOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import GridOnOutlinedIcon from '@material-ui/icons/GridOnOutlined';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import TableContentContainer from '../../TableContentContainer';
 import trialsQuery from '../../TrialContext/utils/trialQuery';
 import { styles } from './styles';
@@ -17,6 +16,8 @@ import {
   TRIAL_SETS_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
+import { ReactComponent as CloneIcon } from '../../../assets/icons/clone.svg';
+import { ReactComponent as PenIcon } from '../../../assets/icons/pen.svg';
 
 class TrialSets extends React.Component {
   backToTrialSets = () => {
@@ -51,12 +52,12 @@ class TrialSets extends React.Component {
           </Tooltip>
           <Tooltip title="Clone trial">
             <IconButton aria-label="clone trial">
-              <QueueOutlinedIcon />
+              <SvgIcon component={CloneIcon} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Edit trial">
             <IconButton aria-label="edit trial">
-              <EditOutlinedIcon />
+              <SvgIcon component={PenIcon} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Open trial" className={classes.arrowButton}>

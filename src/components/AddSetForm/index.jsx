@@ -126,7 +126,7 @@ class AddSetForm extends React.Component {
 
   submitEntity = (entity) => {
     const newEntity = entity;
-    const { type } = this.props;
+    const { type, changeContentType } = this.props;
 
     // add number of field types to the device type
     if (DEVICE_TYPES_CONTENT_TYPE === type) {
@@ -140,10 +140,10 @@ class AddSetForm extends React.Component {
     graphql
       .sendMutation(mutation(newEntity))
       .then(() => {
-        window.alert('Saved!');
+        changeContentType(type);
       })
       .catch((err) => {
-        window.alert(`error: ${err}`);
+        console.log(`error: ${err}`);
       });
   };
 

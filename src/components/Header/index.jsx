@@ -11,6 +11,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Avatar from '@material-ui/core/Avatar';
+import MenuIcon from '@material-ui/icons/Menu';
+import Box from '@material-ui/core/Box';
 import { styles, tabsStyles } from './styles';
 
 const StyledTabs = withStyles(tabsStyles)(props => (
@@ -78,9 +80,12 @@ class Header extends React.Component {
     return (
       <Grid container className={classes.root}>
         <Grid item container xs={4} alignItems="flex-start">
-          <Link to="/" onClick={this.handleLogoClick} className={classes.logo}>
-            Argos
-          </Link>
+          <Box display="flex" alignItems="center" className={classes.logoWrapper}>
+            <MenuIcon className={classes.menuIcon} />
+            <Link to="/" onClick={this.handleLogoClick} className={classes.logo}>
+              Argos
+            </Link>
+          </Box>
           <Divider orientation="vertical" className={classnames(classes.divider, classes.leftDivider)} />
           <Button
             aria-controls="experiments-menu"
