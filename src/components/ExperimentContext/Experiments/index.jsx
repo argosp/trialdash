@@ -1,12 +1,8 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
-import SvgIcon from '@material-ui/core/SvgIcon';
 import moment from 'moment';
 import Dotdotdot from 'react-dotdotdot';
-import { ReactComponent as CloneIcon } from '../../../assets/icons/clone.svg';
 import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
@@ -14,9 +10,10 @@ import {
   EXPERIMENTS_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { ReactComponent as PenIcon } from '../../../assets/icons/pen.svg';
 import experimentsQuery from '../utils/experimentsQuery';
 import StatusBadge from '../../StatusBadge';
+import { CloneIcon, PenIcon } from '../../../constants/icons';
+import CustomTooltip from '../../CustomTooltip';
 
 class Experiments extends React.Component {
   openExperiment = (experiment) => {
@@ -29,11 +26,11 @@ class Experiments extends React.Component {
     <React.Fragment key={experiment.id}>
       <StyledTableCell align="left">
         <p className={this.props.classes.cellTextLine}>{experiment.name}</p>
-        <p className={this.props.classes.cellTextLine}>
+        <div className={this.props.classes.cellTextLine}>
           <Dotdotdot clamp={1}>
             {experiment.description}
           </Dotdotdot>
-        </p>
+        </div>
       </StyledTableCell>
       <StyledTableCell align="left">{moment(experiment.begin).format('D/M/YYYY')}</StyledTableCell>
       <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
@@ -42,28 +39,20 @@ class Experiments extends React.Component {
         <StatusBadge color="#27AE60" title={experiment.status} />
       </StyledTableCell>
       <StyledTableCell align="right">
-        <Tooltip title="Clone experiment">
-          <IconButton
-            aria-label="clone experiment"
-          >
-            <SvgIcon component={CloneIcon} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Edit experiment">
-          <IconButton
-            aria-label="edit experiment"
-          >
-            <SvgIcon component={PenIcon} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Open experiment" className={this.props.classes.arrowButton}>
-          <IconButton
-            aria-label="open experiment"
-            onClick={() => this.openExperiment(experiment)}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
-        </Tooltip>
+        <CustomTooltip title="Clone" ariaLabel="clone">
+          <CloneIcon />
+        </CustomTooltip>
+        <CustomTooltip title="Edit" ariaLabel="edit">
+          <PenIcon />
+        </CustomTooltip>
+        <CustomTooltip
+          title="Open"
+          className={this.props.classes.arrowButton}
+          ariaLabel="open"
+          onClick={() => this.openExperiment(experiment)}
+        >
+          <ArrowForwardIosIcon />
+        </CustomTooltip>
       </StyledTableCell>
     </React.Fragment>
   );

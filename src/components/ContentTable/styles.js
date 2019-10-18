@@ -9,10 +9,6 @@ export const styles = theme => ({
       maxWidth: 340,
     },
 
-    '& svg': {
-      color: theme.palette.black.dark,
-    },
-
     '& td': {
       color: theme.palette.black.dark,
     },

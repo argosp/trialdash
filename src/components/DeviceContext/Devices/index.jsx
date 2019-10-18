@@ -1,7 +1,4 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import SvgIcon from '@material-ui/core/SvgIcon';
 import ContentHeader from '../../ContentHeader';
 import TableContentContainer from '../../TableContentContainer';
 import {
@@ -10,8 +7,8 @@ import {
 import StyledTableCell from '../../StyledTableCell';
 import devicesQuery from './utils/deviceQuery';
 import devicesSubscription from './utils/deviceSubscription';
-import { ReactComponent as CloneIcon } from '../../../assets/icons/clone.svg';
-import { ReactComponent as PenIcon } from '../../../assets/icons/pen.svg';
+import { CloneIcon, PenIcon } from '../../../constants/icons';
+import CustomTooltip from '../../CustomTooltip';
 
 class Devices extends React.Component {
     changeContentType = (contentType) => {
@@ -26,20 +23,12 @@ class Devices extends React.Component {
       <StyledTableCell align="left">{device.sku}</StyledTableCell>
       <StyledTableCell align="left">{device.brand}</StyledTableCell>
       <StyledTableCell align="right">
-        <Tooltip title="Clone device">
-          <IconButton
-            aria-label="clone device"
-          >
-            <SvgIcon component={CloneIcon} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Edit device">
-          <IconButton
-            aria-label="edit device"
-          >
-            <SvgIcon component={PenIcon} />
-          </IconButton>
-        </Tooltip>
+        <CustomTooltip title="Clone" ariaLabel="clone">
+          <CloneIcon />
+        </CustomTooltip>
+        <CustomTooltip title="Edit" ariaLabel="edit">
+          <PenIcon />
+        </CustomTooltip>
       </StyledTableCell>
     </React.Fragment>
   );

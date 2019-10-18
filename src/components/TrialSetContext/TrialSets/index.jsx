@@ -1,10 +1,6 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import { ReactComponent as CloneIcon } from '../../../assets/icons/clone.svg';
 import TableContentContainer from '../../TableContentContainer';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialSetsSubscription from '../utils/trialSetsSubscription';
@@ -16,7 +12,8 @@ import {
   TRIALS_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { ReactComponent as PenIcon } from '../../../assets/icons/pen.svg';
+import { CloneIcon, PenIcon } from '../../../constants/icons';
+import CustomTooltip from '../../CustomTooltip';
 
 class TrialSets extends React.Component {
     changeContentType = (contentType) => {
@@ -34,28 +31,20 @@ class TrialSets extends React.Component {
         <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
         <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
         <StyledTableCell align="right">
-          <Tooltip title="Clone trial set">
-            <IconButton
-              aria-label="clone trial set"
-            >
-              <SvgIcon component={CloneIcon} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Edit trial set">
-            <IconButton
-              aria-label="edit trial set"
-            >
-              <SvgIcon component={PenIcon} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Open trial set" className={this.props.classes.arrowButton}>
-            <IconButton
-              aria-label="open trial set"
-              onClick={() => this.openTrialSet(trialSet)}
-            >
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </Tooltip>
+          <CustomTooltip title="Clone" ariaLabel="clone">
+            <CloneIcon />
+          </CustomTooltip>
+          <CustomTooltip title="Edit" ariaLabel="edit">
+            <PenIcon />
+          </CustomTooltip>
+          <CustomTooltip
+            title="Open"
+            className={this.props.classes.arrowButton}
+            ariaLabel="open"
+            onClick={() => this.openTrialSet(trialSet)}
+          >
+            <ArrowForwardIosIcon />
+          </CustomTooltip>
         </StyledTableCell>
       </React.Fragment>
     );

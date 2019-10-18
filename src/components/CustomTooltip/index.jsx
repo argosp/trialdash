@@ -1,6 +1,8 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
+import classnames from 'classnames';
 import { withStyles } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
 import { styles } from './styles';
 
 class CustomTooltip extends React.Component {
@@ -15,12 +17,12 @@ class CustomTooltip extends React.Component {
   };
 
   render() {
-    const { classes, title, children, className, placement } = this.props;
+    const { classes, title, children, className, placement, ariaLabel, onClick } = this.props;
 
     return (
       <Tooltip
         placement={placement || 'top'}
-        className={className}
+        className={classnames(classes.root, className)}
         title={(
           <React.Fragment>
             {title}
@@ -46,7 +48,13 @@ class CustomTooltip extends React.Component {
           },
         }}
       >
-        {children}
+        <IconButton
+          aria-label={ariaLabel}
+          onClick={onClick}
+          disableRipple
+        >
+          {children}
+        </IconButton>
       </Tooltip>
     );
   }

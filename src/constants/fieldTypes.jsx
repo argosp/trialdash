@@ -3,11 +3,7 @@ import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import uuid from 'uuid/v4';
-import { ReactComponent as TextIcon } from '../assets/icons/text.svg';
-import { ReactComponent as TextAreaIcon } from '../assets/icons/text-area.svg';
-import { ReactComponent as SelectListIcon } from '../assets/icons/select-list.svg';
-import { ReactComponent as NumberIcon } from '../assets/icons/number.svg';
-import { ReactComponent as DateIcon } from '../assets/icons/date.svg';
+import { DateIcon, NumberIcon, SelectListIcon, TextAreaIcon, TextIcon } from './icons';
 
 const FIELD_TYPE_BASE = {
   description: 'a short description of the field',

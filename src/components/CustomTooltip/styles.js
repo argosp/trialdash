@@ -50,6 +50,14 @@ function arrowGenerator(color) {
 }
 
 export const styles = theme => ({
+  root: {
+    color: theme.palette.black.dark,
+
+    '&:hover': {
+      color: theme.palette.primary.main,
+      backgroundColor: theme.palette.white.main,
+    },
+  },
   arrow: {
     position: 'absolute',
     fontSize: 6,
