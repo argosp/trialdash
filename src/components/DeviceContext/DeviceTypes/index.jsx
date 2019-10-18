@@ -1,9 +1,6 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
-import SvgIcon from '@material-ui/core/SvgIcon';
 import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
@@ -15,8 +12,8 @@ import {
 import ContentHeader from '../../ContentHeader';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import deviceTypesSubscription from '../utils/deviceTypesSubscription';
-import { ReactComponent as CloneIcon } from '../../../assets/icons/clone.svg';
-import { ReactComponent as PenIcon } from '../../../assets/icons/pen.svg';
+import { CloneIcon, PenIcon } from '../../../constants/icons';
+import CustomTooltip from '../../CustomTooltip';
 
 class DeviceTypes extends React.Component {
     changeContentType = (contentType) => {
@@ -34,28 +31,20 @@ class DeviceTypes extends React.Component {
         <StyledTableCell align="left">{deviceType.numberOfFields}</StyledTableCell>
         <StyledTableCell align="left">{deviceType.numberOfDevices}</StyledTableCell>
         <StyledTableCell align="right">
-          <Tooltip title="Clone device type">
-            <IconButton
-              aria-label="clone device type"
-            >
-              <SvgIcon component={CloneIcon} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Edit device type">
-            <IconButton
-              aria-label="edit device type"
-            >
-              <SvgIcon component={PenIcon} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Open device type" className={this.props.classes.arrowButton}>
-            <IconButton
-              aria-label="open device type"
-              onClick={() => this.openDeviceType(deviceType)}
-            >
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </Tooltip>
+          <CustomTooltip title="Clone" ariaLabel="clone">
+            <CloneIcon />
+          </CustomTooltip>
+          <CustomTooltip title="Edit" aria-label="edit">
+            <PenIcon />
+          </CustomTooltip>
+          <CustomTooltip
+            title="Open"
+            className={this.props.classes.arrowButton}
+            ariaLabel="open"
+            onClick={() => this.openDeviceType(deviceType)}
+          >
+            <ArrowForwardIosIcon />
+          </CustomTooltip>
         </StyledTableCell>
       </React.Fragment>
     );

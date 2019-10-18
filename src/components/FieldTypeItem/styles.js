@@ -21,17 +21,6 @@ export const styles = theme => ({
       marginRight: 10,
     },
   },
-  attributeButton: {
-    display: 'inline',
-    marginLeft: 25,
-    padding: 10,
-    color: theme.palette.black.dark,
-
-    '&:hover': {
-      color: theme.palette.primary.main,
-      backgroundColor: theme.palette.white.main,
-    },
-  },
   hiddenAttributeButton: {
     display: 'none',
   },
