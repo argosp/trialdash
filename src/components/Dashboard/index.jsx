@@ -2,16 +2,16 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 // import { Subscription } from 'react-apollo';
 import { isEmpty } from 'lodash';
-import experimentsQuery from '../utils/experimentsQuery';
-import ExperimentForm from '../ExperimentForm';
+import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
+import ExperimentForm from '../ExperimentContext/ExperimentForm';
 // import experimentsSubscription from '../utils/experimentsSubscription';
 import { styles } from './styles';
-import Header from '../../Header';
-import Graph from '../../../apolloGraphql';
-import TrialSetMainView from '../../TrialSetContext';
-import AssetMainView from '../../AssetContext';
-import DeviceMainView from '../../DeviceContext';
-import Experiments from '../Experiments';
+import Header from '../Header';
+import Graph from '../../apolloGraphql';
+import TrialSetMainView from '../TrialSetContext';
+import AssetMainView from '../AssetContext';
+import DeviceMainView from '../DeviceContext';
+import ExperimentMainView from '../ExperimentContext';
 
 const graphql = new Graph();
 
@@ -84,8 +84,8 @@ class Dashboard extends React.Component {
         );
       case 3:
         return (
-          <Experiments
-            openExperiment={this.selectActiveExperiment}
+          <ExperimentMainView
+            selectActiveExperiment={this.selectActiveExperiment}
             changeContentId={this.changeContentId}
           />
         );

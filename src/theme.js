@@ -64,6 +64,11 @@ export default createMuiTheme({
         },
       },
     },
+    MuiPickersDay: {
+      daySelected: {
+        color: '#FFF',
+      },
+    },
   },
   palette: {
     background: {

@@ -7,6 +7,7 @@ import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
+  EXPERIMENT_FORM_CONTENT_TYPE,
   EXPERIMENTS_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
@@ -86,7 +87,7 @@ class Experiments extends React.Component {
           title="Experiments"
           searchPlaceholder="Search experiments"
           addButtonText="Add experiment"
-          // addButtonHandler={}
+          addButtonHandler={() => this.props.changeContentType(EXPERIMENT_FORM_CONTENT_TYPE)}
         />
         <TableContentContainer
           // subscriptionUpdateField="experimentsUpdated"
