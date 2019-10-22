@@ -6,8 +6,8 @@ import MomentUtils from '@date-io/moment';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import moment from 'moment';
 import { Map, Marker, TileLayer } from 'react-leaflet';
-// import Graph from '../../../apolloGraphql';
-// import experimentMutation from './utils/experimentMutation';
+import Graph from '../../../apolloGraphql';
+import experimentMutation from './utils/experimentMutation';
 import { EXPERIMENTS_CONTENT_TYPE } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import Footer from '../../Footer';
@@ -17,36 +17,9 @@ import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
 
-// const graphql = new Graph();
+const graphql = new Graph();
 
 class ExperimentForm extends React.Component {
-  /*
-  submitExperiment = () => {
-    this.setState({ errors: {} });
-    if (!this.state.name || this.state.name.trim() === '') {
-      this.setState({ errors: { name: true } });
-      return;
-    }
-    const newExperiment = {
-      // id: this.state.id,
-      name: this.state.name,
-      begin: this.state.begin,
-      end: this.state.end,
-    };
-
-    const self = this;
-
-    graphql
-      .sendMutation(experimentMutation(newExperiment))
-      .then((data) => {
-        window.alert(`saved experiment ${data.addUpdateExperiment.id}`);
-        if (self.props.close) self.props.close();
-      })
-      .catch((err) => {
-        window.alert(`error: ${err}`);
-      });
-  }; */
-
   state = {
     formObject: {
       name: '',
@@ -54,6 +27,7 @@ class ExperimentForm extends React.Component {
       begin: new Date().toISOString(),
       end: new Date().toISOString(),
       location: '0,0',
+      numberOfTrials: 0,
     },
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false,
@@ -63,11 +37,35 @@ class ExperimentForm extends React.Component {
 
   endDatePickerRef = React.createRef();
 
+  submitExperiment = (newExperiment) => {
+    graphql
+      .sendMutation(experimentMutation(newExperiment))
+      .then(() => {
+        window.alert('saved!');
+      })
+      .catch((err) => {
+        console.log(`error: ${err}`);
+      });
+  };
+
   changeFormObject = (event, field) => {
     let value;
 
     switch (field) {
       case 'begin':
+        value = moment.utc(event).format();
+
+        // if the end date is earlier than the start date set end date is equal to the start date
+        if (event.isAfter(this.state.formObject.end, 'day')) {
+          this.setState(state => ({
+            formObject: {
+              ...state.formObject,
+              end: value,
+            },
+          }));
+        }
+
+        break;
       case 'end':
         value = moment.utc(event).format();
         break;
@@ -134,11 +132,10 @@ class ExperimentForm extends React.Component {
           </Grid>
           <Grid container>
             <Grid item xs={5}>
-              <Grid container spacing={2}>
+              <Grid container spacing={2} className={classes.dates}>
                 <Grid item xs={5} ref={this.startDatePickerRef}>
                   <DatePicker
-                    onClose={() => this.setIsDatePickerOpen('isStartDatePickerOpen', false)
-                    }
+                    onClose={() => this.setIsDatePickerOpen('isStartDatePickerOpen', false)}
                     disableToolbar
                     variant="inline"
                     format="D/M/YYYY"
@@ -153,7 +150,6 @@ class ExperimentForm extends React.Component {
                     TextFieldComponent={props => (
                       <CustomInput
                         {...props}
-                        className={classes.input}
                         inputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -164,8 +160,7 @@ class ExperimentForm extends React.Component {
                                 onClick={() => this.setIsDatePickerOpen(
                                   'isStartDatePickerOpen',
                                   true,
-                                )
-                                }
+                                )}
                               >
                                 <DateIcon />
                               </CustomTooltip>
@@ -178,8 +173,8 @@ class ExperimentForm extends React.Component {
                 </Grid>
                 <Grid item xs={5} ref={this.endDatePickerRef}>
                   <DatePicker
-                    onClose={() => this.setIsDatePickerOpen('isEndDatePickerOpen', false)
-                    }
+                    onClose={() => this.setIsDatePickerOpen('isEndDatePickerOpen', false)}
+                    minDate={formObject.begin} // the end date can't be earlier than the start date
                     disableToolbar
                     variant="inline"
                     format="D/M/YYYY"
@@ -194,7 +189,6 @@ class ExperimentForm extends React.Component {
                     TextFieldComponent={props => (
                       <CustomInput
                         {...props}
-                        className={classes.input}
                         inputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -248,7 +242,7 @@ class ExperimentForm extends React.Component {
         <Footer
           cancelButtonHandler={() => changeContentType(EXPERIMENTS_CONTENT_TYPE)
           }
-          // saveButtonHandler={() => this.submitEntity(this.state.formObject)}
+          saveButtonHandler={() => this.submitExperiment(formObject)}
         />
       </MuiPickersUtilsProvider>
     );

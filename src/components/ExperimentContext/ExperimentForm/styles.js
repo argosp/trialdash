@@ -5,6 +5,9 @@ export const styles = () => ({
   input: {
     marginBottom: 30,
   },
+  dates: {
+    marginBottom: 30,
+  },
   locationInput: {
     marginBottom: 10,
   },
