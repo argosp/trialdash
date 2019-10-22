@@ -2,14 +2,17 @@ import gql from 'graphql-tag';
 
 export default gql`
 {
-    experiments{
+    experimentsWithData{
         id
-        name
-        description
         begin
         end
         location
-        status
         numberOfTrials
+        project {
+          id
+          name
+          description
+          status
+        }
     }
 }`;

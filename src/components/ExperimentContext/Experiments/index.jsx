@@ -8,7 +8,7 @@ import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
   EXPERIMENT_FORM_CONTENT_TYPE,
-  EXPERIMENTS_CONTENT_TYPE,
+  EXPERIMENTS_WITH_DATA_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
@@ -24,12 +24,12 @@ class Experiments extends React.Component {
   };
 
   renderTableRow = experiment => (
-    <React.Fragment key={experiment.id}>
+    <React.Fragment key={experiment.project.id}>
       <StyledTableCell align="left">
-        <p className={this.props.classes.cellTextLine}>{experiment.name}</p>
+        <p className={this.props.classes.cellTextLine}>{experiment.project.name}</p>
         <div className={this.props.classes.cellTextLine}>
           <Dotdotdot clamp={1}>
-            {experiment.description}
+            {experiment.project.description}
           </Dotdotdot>
         </div>
       </StyledTableCell>
@@ -37,7 +37,7 @@ class Experiments extends React.Component {
       <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
       <StyledTableCell align="left">{experiment.numberOfTrials}</StyledTableCell>
       <StyledTableCell align="left">
-        <StatusBadge color="#27AE60" title={experiment.status} />
+        <StatusBadge color="#27AE60" title={experiment.project.status} />
       </StyledTableCell>
       <StyledTableCell align="right">
         <CustomTooltip title="Clone" ariaLabel="clone">
@@ -91,7 +91,7 @@ class Experiments extends React.Component {
         />
         <TableContentContainer
           // subscriptionUpdateField="experimentsUpdated"
-          dataType={EXPERIMENTS_CONTENT_TYPE}
+          dataType={EXPERIMENTS_WITH_DATA_CONTENT_TYPE}
           query={experimentsQuery}
           tableHeadColumns={tableHeadColumns}
           // subscription={}
