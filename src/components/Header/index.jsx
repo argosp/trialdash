@@ -61,15 +61,15 @@ class Header extends React.Component {
 
   renderCurrentExperimentName = (currentExperiment, isExperimentHovering) => {
     if (
-      currentExperiment.name
-      && currentExperiment.id
+      currentExperiment.project.name
+      && currentExperiment.project.id
       && isExperimentHovering
     ) {
-      return `${currentExperiment.name} (ID: ${currentExperiment.id})`;
+      return `${currentExperiment.project.name} (ID: ${currentExperiment.project.id})`;
     }
 
-    if (currentExperiment.name && !isExperimentHovering) {
-      return `${currentExperiment.name}`;
+    if (currentExperiment.project.name && !isExperimentHovering) {
+      return `${currentExperiment.project.name}`;
     }
 
     return 'Select an Experiment';
@@ -150,10 +150,10 @@ class Header extends React.Component {
               >
                 {experiments.map(experiment => (
                   <MenuItem
-                    key={experiment.id}
+                    key={experiment.project.id}
                     onClick={() => this.selectExperiment(experiment)}
                   >
-                    {experiment.name}
+                    {experiment.project.name}
                   </MenuItem>
                 ))}
               </Menu>

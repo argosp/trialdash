@@ -32,7 +32,7 @@ class Dashboard extends React.Component {
       .sendQuery(experimentsQuery)
       .then((data) => {
         this.setState(() => ({
-          experiments: data.experiments,
+          experiments: data.experimentsWithData,
           render: true,
         }));
       })
@@ -67,18 +67,18 @@ class Dashboard extends React.Component {
     switch (contentId) {
       case 0:
       default:
-        return <TrialSetMainView experimentId={currentExperiment.id} />;
+        return <TrialSetMainView experimentId={currentExperiment.project.id} />;
       case 1:
         return (
           <AssetMainView
-            experimentId={currentExperiment.id}
+            experimentId={currentExperiment.project.id}
             entityType="asset"
           />
         );
       case 2:
         return (
           <DeviceMainView
-            experimentId={currentExperiment.id}
+            experimentId={currentExperiment.project.id}
             entityType="deviceType"
           />
         );
