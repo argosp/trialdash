@@ -1,13 +1,20 @@
-export default {
-  container: {
-    display: 'flex',
-    textAlign: 'left',
-    background: 'aquamarine',
-    position: 'absolute',
-    width: '70%',
-    height: '75%',
-    marginLeft: '25%',
-    zIndex: 999,
-    marginTop: '20px',
+export const styles = () => ({
+  header: {
+    marginBottom: 45,
   },
-};
+  input: {
+    marginBottom: 30,
+  },
+  locationInput: {
+    marginBottom: 10,
+  },
+  dateTooltip: {
+    padding: 0,
+  },
+  map: {
+    position: 'absolute',
+    width: 500,
+    height: 340,
+    zIndex: 0,
+  },
+});

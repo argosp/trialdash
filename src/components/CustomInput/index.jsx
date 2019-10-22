@@ -13,8 +13,11 @@ const CustomInput = ({
   className,
   onChange,
   value,
+  inputProps,
+  disabled,
 }) => (
   <TextField
+    disabled={disabled}
     value={value}
     onChange={onChange}
     className={className}
@@ -30,6 +33,7 @@ const CustomInput = ({
       classes: { formControl: classes.label },
     }}
     InputProps={{
+      ...inputProps,
       disableUnderline: true,
       classes: {
         root: withBorder ? classes.inputWithBorder : classes.input,

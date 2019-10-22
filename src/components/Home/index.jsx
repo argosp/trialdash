@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Dashboard from '../ExperimentContext/Dashboard';
+import Dashboard from '../Dashboard';
 
 class Home extends Component {
   constructor(props) {
