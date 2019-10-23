@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-const trials = (experimentId, trialSetId) => gql`
+const trials = (experimentId, trialSetKey) => gql`
   {
-      trials(experimentId:"${experimentId}", trialSetId:"${trialSetId}"){
+      trials(experimentId:"${experimentId}", trialSetKey:"${trialSetKey}"){
         id
         name
         notes

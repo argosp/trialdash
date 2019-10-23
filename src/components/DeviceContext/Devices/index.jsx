@@ -99,7 +99,7 @@ class Devices extends React.Component {
           rightDescription={deviceType.id}
           addButtonHandler={() => this.changeContentType(DEVICE_FORM_CONTENT_TYPE)}
         />
-        {experimentId && deviceType.key ? (
+        {deviceType.key ? (
           <TableContentContainer
             subscriptionUpdateField="devicesUpdated"
             dataType={DEVICES_CONTENT_TYPE}
@@ -109,9 +109,7 @@ class Devices extends React.Component {
             subscription={devicesSubscription}
             renderRow={this.renderTableRow}
           />
-        ) : (
-          'Loading...'
-        )}
+        ) : ('Loading...')}
       </>
     );
   }
