@@ -2,7 +2,7 @@ export const styles = () => ({
   header: {
     marginBottom: 55,
   },
-  attribute: {
+  property: {
     marginBottom: 20,
   },
 });

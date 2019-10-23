@@ -4,9 +4,9 @@ const deviceTypes = experimentId => gql`
  {
     deviceTypes(experimentId:"${experimentId}"){
        id
+       key
        name
        numberOfDevices
-       numberOfFields
        properties{
            key
            type

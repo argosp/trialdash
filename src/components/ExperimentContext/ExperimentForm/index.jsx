@@ -41,7 +41,7 @@ class ExperimentForm extends React.Component {
     graphql
       .sendMutation(experimentMutation(newExperiment))
       .then(() => {
-        window.alert('saved!');
+        this.props.changeContentType(EXPERIMENTS_CONTENT_TYPE);
       })
       .catch((err) => {
         console.log(`error: ${err}`);
@@ -240,8 +240,7 @@ class ExperimentForm extends React.Component {
           </Grid>
         </form>
         <Footer
-          cancelButtonHandler={() => changeContentType(EXPERIMENTS_CONTENT_TYPE)
-          }
+          cancelButtonHandler={() => changeContentType(EXPERIMENTS_CONTENT_TYPE)}
           saveButtonHandler={() => this.submitExperiment(formObject)}
         />
       </MuiPickersUtilsProvider>

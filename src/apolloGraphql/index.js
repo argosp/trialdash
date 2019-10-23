@@ -3,20 +3,13 @@ import { HttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
-import { IntrospectionFragmentMatcher, InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import config from '../config';
 
 export default class Graph {
   constructor() {
     this.apiUrl = `${config.url}/graphql`;
     this.apiWs = `${config.ws}/subscriptions`;
-    const fragmentMatcher = new IntrospectionFragmentMatcher({
-      introspectionQueryResultData: {
-        __schema: {
-          types: [],
-        },
-      },
-    });
     let wsLink = new WebSocketLink({
       uri: this.apiWs,
       options: {
@@ -26,15 +19,18 @@ export default class Graph {
         },
       },
     });
+
     let httpLink = new HttpLink({
       uri: this.apiUrl,
     });
+
     const middlewareLink = new ApolloLink((operation, forward) => {
       operation.setContext({
         headers: {
           authorization: localStorage.getItem('jwt') || null,
         },
       });
+
       return forward(operation);
     });
 
@@ -45,12 +41,19 @@ export default class Graph {
       // split based on operation type
       ({ query }) => {
         const { kind, operation } = getMainDefinition(query);
+
         return kind === 'OperationDefinition' && operation === 'subscription';
       },
       wsLink,
       httpLink,
     );
-    const cache = new InMemoryCache({ fragmentMatcher });
+
+    const cache = new InMemoryCache({
+      // eslint-disable-next-line
+      dataIdFromObject: o => (o._id ? `${o.__typename}:${o._id}` : null),
+      addTypename: false,
+    });
+
     this.client = new ApolloClient({
       link,
       cache,
