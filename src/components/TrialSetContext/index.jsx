@@ -39,7 +39,7 @@ class TrialSetMainView extends React.Component {
         return (
           <Trials
             experimentId={experimentId}
-            trialSetId={this.state.selectedTrialSet.id}
+            trialSet={this.state.selectedTrialSet}
             backToTrialSets={this.switchCurrentContentType}
           />
         );

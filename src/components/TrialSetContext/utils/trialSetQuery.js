@@ -8,9 +8,17 @@ const trialSets = experimentId => gql`
        description
        numberOfTrials
        properties{
-        key
-        val
-        type
+           key
+           type
+           id
+           label
+           description
+           prefix
+           suffix
+           required
+           template
+           multipleValues
+           trialField
       }
      }
   }`;

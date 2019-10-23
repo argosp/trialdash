@@ -60,7 +60,7 @@ class TrialSets extends React.Component {
   };
 
   render() {
-    const { experimentId, trialSetId } = this.props;
+    const { experimentId, trialSet } = this.props;
     const tableHeadColumns = [
       { key: 0, title: '' },
       { key: 1, title: 'devices' },
@@ -81,17 +81,19 @@ class TrialSets extends React.Component {
           addButtonText="Add trial"
           withBackButton
           backButtonHandler={this.backToTrialSets}
-          rightDescription={trialSetId}
+          rightDescription={trialSet.id}
         />
-        <TableContentContainer
-          subscriptionUpdateField="trialsUpdated"
-          dataType={TRIALS_CONTENT_TYPE}
-          query={trialsQuery}
-          queryArgs={[experimentId, trialSetId]}
-          tableHeadColumns={tableHeadColumns}
-          subscription={trialsSubscription}
-          renderRow={this.renderTableRow}
-        />
+        {trialSet.key ? (
+          <TableContentContainer
+            subscriptionUpdateField="trialsUpdated"
+            dataType={TRIALS_CONTENT_TYPE}
+            query={trialsQuery}
+            queryArgs={[experimentId, trialSet.key]}
+            tableHeadColumns={tableHeadColumns}
+            subscription={trialsSubscription}
+            renderRow={this.renderTableRow}
+          />
+        ) : ('Loading...')}
       </>
     );
   }
