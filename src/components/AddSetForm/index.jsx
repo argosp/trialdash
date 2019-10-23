@@ -34,14 +34,15 @@ class AddSetForm extends React.Component {
     formObject:
       DEVICE_TYPES_CONTENT_TYPE === this.props.type
         ? {
+          key: uuid(),
           id: '',
           name: '',
           experimentId: this.props.experimentId,
           numberOfDevices: 0,
-          numberOfFields: 0,
           properties: [], // this field correspond to the <Droppable droppableId="droppable">
         }
         : {
+          key: uuid(),
           id: '',
           name: '',
           description: '',

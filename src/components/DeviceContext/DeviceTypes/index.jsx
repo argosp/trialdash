@@ -26,9 +26,9 @@ class DeviceTypes extends React.Component {
     };
 
     renderTableRow = deviceType => (
-      <React.Fragment key={deviceType.id}>
+      <React.Fragment key={deviceType.key}>
         <StyledTableCell align="left">{deviceType.name}</StyledTableCell>
-        <StyledTableCell align="left">{deviceType.numberOfFields}</StyledTableCell>
+        <StyledTableCell align="left">{deviceType.properties.length}</StyledTableCell>
         <StyledTableCell align="left">{deviceType.numberOfDevices}</StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip title="Clone" ariaLabel="clone">
@@ -78,7 +78,7 @@ class DeviceTypes extends React.Component {
             subscriptionUpdateField="deviceTypesUpdated"
             dataType={DEVICE_TYPES_CONTENT_TYPE}
             query={deviceTypesQuery}
-            queryArgs={[this.props.experimentId, this.props.entityType]}
+            queryArgs={[this.props.experimentId]}
             tableHeadColumns={tableHeadColumns}
             subscription={deviceTypesSubscription}
             renderRow={this.renderTableRow}

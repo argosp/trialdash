@@ -19,5 +19,6 @@ export const styles = () => ({
     width: 500,
     height: 340,
     zIndex: 0,
+    marginBottom: 100,
   },
 });

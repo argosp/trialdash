@@ -1,16 +1,14 @@
 import gql from 'graphql-tag';
 
-const devices = (experimentId, deviceTypeId) => gql`
+const devices = (experimentId, deviceTypeKey) => gql`
   {
-      devices(experimentId:"${experimentId}", deviceTypeId:"${deviceTypeId}"){
+      devices(experimentId:"${experimentId}", deviceTypeKey:"${deviceTypeKey}"){
         id
         name
-        height
-        sku
-        brand
-        deviceType {
-          id
-        }
+        properties {
+           key
+           val
+           }
       }
   }`;
 

@@ -43,7 +43,7 @@ class DeviceMainView extends React.PureComponent {
           return (
             <Devices
               experimentId={experimentId}
-              deviceTypeId={selectedDeviceType.id}
+              deviceTypeKey={selectedDeviceType.key}
               changeContentType={this.switchCurrentContentType}
             />
           );

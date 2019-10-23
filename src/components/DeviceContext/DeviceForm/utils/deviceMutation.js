@@ -8,10 +8,11 @@ export default (device) => {
             experimentId:"${device.experimentId}"
             id:"${id}"
             name:"${device.name}"
-            height:"${device.height}"
-            sku:"${device.sku}"
-            brand:"${device.brand}"
-            deviceType: "${device.deviceType}"
+            deviceTypeKey: "${device.deviceTypeKey}"
+            properties: ${JSON.stringify(device.properties)
+    .replace(/"key":/g, 'key:')
+    .replace(/"val":/g, 'val:')
+}
             ){
             id
         }
