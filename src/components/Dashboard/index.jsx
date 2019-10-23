@@ -1,10 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-// import { Subscription } from 'react-apollo';
 import { isEmpty } from 'lodash';
+import gql from 'graphql-tag';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
-import ExperimentForm from '../ExperimentContext/ExperimentForm';
-// import experimentsSubscription from '../utils/experimentsSubscription';
 import { styles } from './styles';
 import Header from '../Header';
 import Graph from '../../apolloGraphql';
@@ -20,10 +18,9 @@ class Dashboard extends React.Component {
     super(props);
     this.state = {
       experiments: [],
-      render: false,
-      timeout: false,
       currentExperiment: {},
       contentId: 3,
+      user: {},
     };
   }
 
@@ -31,26 +28,23 @@ class Dashboard extends React.Component {
     graphql
       .sendQuery(experimentsQuery)
       .then((data) => {
-        this.setState(() => ({
-          experiments: data.experimentsWithData,
-          render: true,
-        }));
-      })
-      .then(() => {
-        setTimeout(() => {
-          this.setState(() => ({ timeout: true }));
-        }, 5000);
+        this.setState({ experiments: data.experimentsWithData });
       });
-  }
 
-  componentDidUpdate() {
-    const { experiments, render } = this.state;
-
-    if (experiments && experiments.length > 0 && render === false) {
-      // TODO Fix needed. Don't use setState in componentDidUpdate
-      // eslint-disable-next-line
-      this.setState(() => ({ render: true }));
-    }
+    graphql
+      .sendQuery(
+        gql` {
+          user(uid:"${localStorage.getItem('uid')}") {
+              email
+              name
+              username
+              avatar
+          }
+        }
+        `,
+      ).then((data) => {
+        this.setState({ user: data.user });
+      });
   }
 
   changeContentId = (newValue) => {
@@ -92,67 +86,33 @@ class Dashboard extends React.Component {
     }
   };
 
-  /*  logout = () => {
-    const { history } = this.props;
-    localStorage.clear();
-    history.push('/login');
-  } */
-
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
     const {
       currentExperiment,
       experiments,
-      render,
-      add,
-      timeout,
       contentId,
+      user,
     } = this.state;
 
-    if (render) {
-      return (
-        <>
-          {add && (
-            <ExperimentForm
-              close={() => {
-                this.setState({ add: false });
-              }}
-            />
-          )}
-          <Header
-            withExperiments={!isEmpty(currentExperiment)}
-            selectActiveExperiment={this.selectActiveExperiment}
-            currentExperiment={currentExperiment}
-            experiments={experiments}
-            handleTabChange={this.changeContentId}
-            tabValue={contentId}
-          />
-          {/*
-              <Button
-                onClick={this.logout}
-              >
-                Logout
-            </Button>
-            <div onClick={() => this.setState({ add: true })}> + Add An Experiment</div>
-          */}
-
-          <div className={classes.contentWrapper}>
-            {this.renderContent(contentId)}
-          </div>
-
-          {/* <Subscription
-            subscription={experimentsSubscription}>
-            {({ data, loading }) => {
-              if (data && data.experimentsUpdated)
-                this.queryRefecth !== null && this.queryRefecth();
-              return null
-            }}
-          </Subscription> */}
-        </>
-      );
-    }
-    return timeout ? <p>Something went wrong... </p> : <p>Please wait... </p>;
+    return (
+      <>
+        <Header
+          user={user}
+          withExperiments={!isEmpty(currentExperiment)}
+          selectActiveExperiment={this.selectActiveExperiment}
+          currentExperiment={currentExperiment}
+          experiments={experiments}
+          handleTabChange={this.changeContentId}
+          tabValue={contentId}
+          history={history}
+        />
+        <div className={classes.contentWrapper}>
+          {this.renderContent(contentId)}
+        </div>
+      </>
+    );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Dashboard);
+export default withStyles(styles)(Dashboard);
