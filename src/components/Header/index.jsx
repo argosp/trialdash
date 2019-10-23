@@ -21,19 +21,26 @@ const StyledTabs = withStyles(tabsStyles)(props => (
 
 class Header extends React.Component {
   state = {
-    anchorElement: null,
+    anchorExperimentsMenu: null,
+    anchorProfileMenu: null,
     isExperimentHovering: false,
   };
 
-  handleMenuClick = (event) => {
+  handleProfileMenuClick = (event) => {
     this.setState({
-      anchorElement: event.currentTarget,
+      anchorProfileMenu: event.currentTarget,
+    });
+  };
+
+  handleExperimentsMenuClick = (event) => {
+    this.setState({
+      anchorExperimentsMenu: event.currentTarget,
       isExperimentHovering: false,
     });
   };
 
-  handleMenuClose = () => {
-    this.setState({ anchorElement: null });
+  handleMenuClose = (anchor) => {
+    this.setState({ [anchor]: null });
   };
 
   handleTabChange = (event, newValue) => {
@@ -48,7 +55,7 @@ class Header extends React.Component {
   selectExperiment = (experiment) => {
     const { selectActiveExperiment } = this.props;
     selectActiveExperiment(experiment);
-    this.handleMenuClose();
+    this.handleMenuClose('anchorExperimentsMenu');
   };
 
   handleExperimentMouseEnter = () => {
@@ -75,69 +82,150 @@ class Header extends React.Component {
     return 'Select an Experiment';
   };
 
-  render() {
-    const {
-      classes,
-      currentExperiment,
-      experiments,
-      tabValue,
-      withExperiments,
-    } = this.props;
-    const { anchorElement, isExperimentHovering } = this.state;
+    logout = () => {
+      localStorage.clear();
+      this.props.history.push('/login');
+    };
 
-    return (
-      <Grid
-        container
-        className={
+    render() {
+      const {
+        classes,
+        currentExperiment,
+        experiments,
+        tabValue,
+        withExperiments,
+        user,
+      } = this.props;
+      const { anchorExperimentsMenu, anchorProfileMenu, isExperimentHovering } = this.state;
+
+      return (
+        <Grid
+          container
+          className={
           withExperiments
             ? classes.root
             : classnames(classes.root, classes.rootWithoutExperiments)
         }
-      >
-        <Grid item container xs={4} alignItems="flex-start">
-          <Box
-            display="flex"
-            alignItems="center"
-            className={classes.logoWrapper}
-          >
-            <MenuIcon className={classes.menuIcon} />
-            <Link
-              to="/"
-              onClick={this.handleLogoClick}
-              className={classes.logo}
+        >
+          <Grid item container xs={4} alignItems="flex-start">
+            <Box
+              display="flex"
+              alignItems="center"
+              className={classes.logoWrapper}
             >
+              <MenuIcon className={classes.menuIcon} />
+              <Link
+                to="/"
+                onClick={this.handleLogoClick}
+                className={classes.logo}
+              >
               Argos
-            </Link>
-          </Box>
-          <Divider
-            orientation="vertical"
-            className={classnames(classes.divider, classes.leftDivider)}
-          />
-          {withExperiments ? (
-            <>
+              </Link>
+            </Box>
+            <Divider
+              orientation="vertical"
+              className={classnames(classes.divider, classes.leftDivider)}
+            />
+            {withExperiments ? (
+              <>
+                <Button
+                  aria-controls="experiments-menu"
+                  aria-haspopup="true"
+                  onClick={this.handleExperimentsMenuClick}
+                  disableRipple
+                  className={classnames(
+                    classes.expandButton,
+                    classes.expandExperimentButton,
+                  )}
+                  onMouseEnter={this.handleExperimentMouseEnter}
+                  onMouseLeave={this.handleExperimentMouseLeave}
+                >
+                  {this.renderCurrentExperimentName(
+                    currentExperiment,
+                    isExperimentHovering,
+                  )}
+                  <ExpandMoreIcon />
+                </Button>
+                <Menu
+                  id="experiments-menu"
+                  open={Boolean(anchorExperimentsMenu)}
+                  onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
+                  anchorEl={anchorExperimentsMenu}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                >
+                  {experiments.map(experiment => (
+                    <MenuItem
+                      key={experiment.project.id}
+                      onClick={() => this.selectExperiment(experiment)}
+                    >
+                      {experiment.project.name}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+            ) : null}
+          </Grid>
+          <Grid item container xs={8} justify="flex-end">
+            {withExperiments ? (
+              <>
+                <StyledTabs
+                  value={tabValue}
+                  onChange={this.handleTabChange}
+                  aria-label="header tabs"
+                >
+                  <Tab
+                    disableRipple
+                    label="Trials"
+                    id="header-tab-0"
+                    className={classes.tab}
+                  />
+                  <Tab
+                    disableRipple
+                    label="Assets"
+                    id="header-tab-1"
+                    className={classes.tab}
+                  />
+                  <Tab
+                    disableRipple
+                    label="Devices"
+                    id="header-tab-2"
+                    className={classes.tab}
+                  />
+                </StyledTabs>
+                <Divider
+                  orientation="vertical"
+                  className={classnames(classes.divider, classes.rightDivider)}
+                />
+              </>
+            ) : null}
+            <div className={classes.profileWrapper}>
+              <Avatar src={user.avatar} alt="user avatar" className={classes.avatar} />
               <Button
-                aria-controls="experiments-menu"
+                aria-controls="user-menu"
                 aria-haspopup="true"
-                onClick={this.handleMenuClick}
+                onClick={this.handleProfileMenuClick}
                 disableRipple
                 className={classnames(
                   classes.expandButton,
-                  classes.expandExperimentButton,
+                  classes.expandProfileButton,
                 )}
-                onMouseEnter={this.handleExperimentMouseEnter}
-                onMouseLeave={this.handleExperimentMouseLeave}
               >
-                {this.renderCurrentExperimentName(
-                  currentExperiment,
-                  isExperimentHovering,
-                )}
+                {user.name}
                 <ExpandMoreIcon />
               </Button>
               <Menu
-                id="experiments-menu"
-                open={Boolean(anchorElement)}
-                onClose={this.handleMenuClose}
-                anchorEl={anchorElement}
+                id="profile-menu"
+                open={Boolean(anchorProfileMenu)}
+                onClose={() => this.handleMenuClose('anchorProfileMenu')}
+                anchorEl={anchorProfileMenu}
                 getContentAnchorEl={null}
                 anchorOrigin={{
                   vertical: 'bottom',
@@ -148,71 +236,17 @@ class Header extends React.Component {
                   horizontal: 'left',
                 }}
               >
-                {experiments.map(experiment => (
-                  <MenuItem
-                    key={experiment.project.id}
-                    onClick={() => this.selectExperiment(experiment)}
-                  >
-                    {experiment.project.name}
-                  </MenuItem>
-                ))}
+                <MenuItem
+                  onClick={() => this.logout()}
+                >
+                  Log out
+                </MenuItem>
               </Menu>
-            </>
-          ) : null}
+            </div>
+          </Grid>
         </Grid>
-        <Grid item container xs={8} justify="flex-end">
-          {withExperiments ? (
-            <>
-              <StyledTabs
-                value={tabValue}
-                onChange={this.handleTabChange}
-                aria-label="header tabs"
-              >
-                <Tab
-                  disableRipple
-                  label="Trials"
-                  id="header-tab-0"
-                  className={classes.tab}
-                />
-                <Tab
-                  disableRipple
-                  label="Assets"
-                  id="header-tab-1"
-                  className={classes.tab}
-                />
-                <Tab
-                  disableRipple
-                  label="Devices"
-                  id="header-tab-2"
-                  className={classes.tab}
-                />
-              </StyledTabs>
-              <Divider
-                orientation="vertical"
-                className={classnames(classes.divider, classes.rightDivider)}
-              />
-            </>
-          ) : null}
-          <div className={classes.profileWrapper}>
-            <Avatar alt="user avatar" className={classes.avatar} />
-            <Button
-              aria-controls="user-menu"
-              aria-haspopup="true"
-              // onClick={}
-              disableRipple
-              className={classnames(
-                classes.expandButton,
-                classes.expandProfileButton,
-              )}
-            >
-              Name Surname
-              <ExpandMoreIcon />
-            </Button>
-          </div>
-        </Grid>
-      </Grid>
-    );
-  }
+      );
+    }
 }
 
 export default withStyles(styles)(Header);

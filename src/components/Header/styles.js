@@ -40,10 +40,12 @@ export const styles = theme => ({
     },
   },
   expandExperimentButton: {
+    color: theme.palette.black.main,
     fontWeight: 'bold',
     paddingTop: 6,
   },
   expandProfileButton: {
+    color: theme.palette.black.dark,
     textTransform: 'none',
     fontSize: 16,
     padding: 0,
