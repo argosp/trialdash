@@ -23,7 +23,7 @@ import CustomHeadline from '../CustomHeadline';
 import FieldTypeItem from '../FieldTypeItem';
 import Footer from '../Footer';
 import { styles } from './styles';
-import trialSetMutation from '../TrialSetContext/utils/trialSetMutation';
+import trialSetMutation from '../TrialContext/utils/trialSetMutation';
 import EditFieldTypePanel from '../EditFieldTypePanel';
 import SimpleButton from '../SimpleButton';
 

@@ -3,8 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import LeafLetMap from '../LeafLetMap';
-import classes from './styles';
+// import LeafLetMap from '../../TrialContext/LeafLetMap';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -33,31 +32,49 @@ const Entity = props => (
       ))}
     </Select>
     {props.entities.map((d, index) => (
-      <div key={d.entity.id} style={classes.entity}>
+      <div key={d.entity.id}>
         <div>{d.name}</div>
-        <div style={classes.properties}>
-          {d.properties && d.properties.map((p, i) => {
-            if (p.type === 'location') return <LeafLetMap onChange={props.handleChangeProprty(i, 'val')} location={p.val && p.val !== '' ? p.val.split(',') : [0, 0]} />;
-            return (
-              // TODO Add id field into p
-              <div key={p.id} style={{ display: 'flex' }}>
-                <TextField
-                  style={{ width: '300px' }}
-                  type={p.type}
-                  label={p.key}
-                  className={classes.textField}
-                  value={p.val}
-                  onChange={props.handleChangeProprty(i, 'val', props.entityName, index)}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-                <br />
-              </div>
-            );
-          })}
+        <div>
+          {d.properties
+            && d.properties.map((p, i) => {
+              if (p.type === 'location') {
+                // return (
+                //   <LeafLetMap
+                //     onChange={props.handleChangeProprty(i, 'val')}
+                //     location={p.val && p.val !== '' ? p.val.split(',') : [0, 0]}
+                //   />
+                // );
+              }
+              return (
+                // TODO Add id field into p
+                <div key={p.id} style={{ display: 'flex' }}>
+                  <TextField
+                    style={{ width: '300px' }}
+                    type={p.type}
+                    label={p.key}
+                    value={p.val}
+                    onChange={props.handleChangeProprty(
+                      i,
+                      'val',
+                      props.entityName,
+                      index,
+                    )}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <br />
+                </div>
+              );
+            })}
         </div>
-        <button type="button" onClick={() => props.removeEntity(props.entityName, d.entity.id, d.name)}>X</button>
+        <button
+          type="button"
+          onClick={() => props.removeEntity(props.entityName, d.entity.id, d.name)
+          }
+        >
+          X
+        </button>
       </div>
     ))}
   </div>

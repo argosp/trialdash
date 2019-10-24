@@ -5,6 +5,7 @@ import ContentHeader from '../../ContentHeader';
 import TableContentContainer from '../../TableContentContainer';
 import {
   DEVICE_FORM_CONTENT_TYPE,
+  DEVICE_TYPES_CONTENT_TYPE,
   DEVICES_CONTENT_TYPE,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
@@ -34,12 +35,8 @@ class Devices extends React.Component {
     });
   }
 
-  changeContentType = (contentType) => {
-    this.props.changeContentType(contentType);
-  };
-
   renderTableRow = device => (
-    <React.Fragment key={device.id}>
+    <React.Fragment key={device.key}>
       <StyledTableCell align="left">{device.name}</StyledTableCell>
       <StyledTableCell align="left">{device.id}</StyledTableCell>
       {device.properties.map(property => (
@@ -66,7 +63,7 @@ class Devices extends React.Component {
 
     if (!isEmpty(deviceType) && !isEmpty(deviceType.properties)) {
       deviceType.properties.forEach((property, index) => {
-        if (index === deviceType.properties.length - 1) { // the last column is for buttons
+        if (index === deviceType.properties.length - 1) { // the last column is static (buttons)
           columns.push(
             { key: uuid(), title: property.label },
             { key: uuid(), title: '' },
@@ -83,7 +80,7 @@ class Devices extends React.Component {
   };
 
   render() {
-    const { experimentId } = this.props;
+    const { experimentId, changeContentType } = this.props;
     const { deviceType } = this.state;
     const tableHeadColumns = this.generateTableColumns(deviceType);
 
@@ -95,9 +92,9 @@ class Devices extends React.Component {
           searchPlaceholder="Search Devices"
           addButtonText="Add device"
           withBackButton
-          backButtonHandler={this.changeContentType}
+          backButtonHandler={() => changeContentType(DEVICE_TYPES_CONTENT_TYPE)}
           rightDescription={deviceType.id}
-          addButtonHandler={() => this.changeContentType(DEVICE_FORM_CONTENT_TYPE)}
+          addButtonHandler={() => changeContentType(DEVICE_FORM_CONTENT_TYPE)}
         />
         {deviceType.key ? (
           <TableContentContainer

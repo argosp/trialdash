@@ -1,72 +1,24 @@
 import React from 'react';
-import { withTheme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import deviceTypesQuery from '../../DeviceContext/utils/deviceTypeQuery';
-import assetsQuery from '../../AssetContext/utils/assetQuery';
+// import Button from '@material-ui/core/Button';
+// import TextField from '@material-ui/core/TextField';
+// import FormControl from '@material-ui/core/FormControl';
+// import assetsQuery from '../../AssetContext/utils/assetQuery';
+import { withStyles } from '@material-ui/core';
+import update from 'immutability-helper';
 import trialMutation from './utils/trialMutation';
 import Graph from '../../../apolloGraphql';
-import LeafLetMap from '../LeafLetMap';
-import Entity from './entity';
-
-import classes from './styles';
-// MATERIAL UI DEPENDENCIES
-
-// import { withTheme } from '@material-ui/core/styles';
+// import Entity from './entity';
+import { styles } from './styles';
+import ContentHeader from '../../ContentHeader';
+import CustomInput from '../../CustomInput';
+import Footer from '../../Footer';
+import { TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import trialSetMutation from '../utils/trialSetMutation';
 
 const graphql = new Graph();
 
-// const ITEM_HEIGHT = 48;
-// const ITEM_PADDING_TOP = 8;
-// const MenuProps = {
-//     PaperProps: {
-//         style: {
-//             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-//             width: 250,
-//         },
-//     },
-// };
-
-// const useStyles = makeStyles(theme => ({
-//     root: {
-//         display: 'flex',
-//         flexWrap: 'wrap',
-//     },
-//     formControl: {
-//         margin: theme.spacing(1),
-//         minWidth: 300,
-//         maxWidth: 300,
-//     },
-//     chips: {
-//         display: 'flex',
-//         flexWrap: 'wrap',
-//     },
-//     chip: {
-//         margin: 2,
-//     },
-//     noLabel: {
-//         marginTop: theme.spacing(3),
-//     },
-//     button: {
-//         margin: theme.spacing(1),
-//     },
-//     input: {
-//         display: 'none',
-//     }
-// }));
-
-// function getStyles(device, devices, theme) {
-//     return {
-//         fontWeight:
-//             devices.indexOf(device) === -1
-//                 ? theme.typography.fontWeightRegular
-//                 : theme.typography.fontWeightMedium,
-//     };
-// }
-
 class TrialForm extends React.Component {
-  constructor(props) {
+  /*  constructor(props) {
     super(props);
     const properties = props.properties || [];
     if (props.trialSet && props.trialSet.properties) {
@@ -194,7 +146,7 @@ class TrialForm extends React.Component {
   handleChangeProprty = (index, key, entityType, entityIndex) => (event) => {
     // TODO DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
     // eslint-disable-next-line
-    if (entityType) this.state[entityType][entityIndex].properties[index][key] =        event.target.value;
+    if (entityType) this.state[entityType][entityIndex].properties[index][key] = event.target.value;
     // TODO DEVELOPERS PLEASE FIX IT. STATE MUTATION IS TO BE DONE USING setState
     // eslint-disable-next-line
     else this.state.properties[index][key] = event.target.value;
@@ -257,161 +209,267 @@ class TrialForm extends React.Component {
     entities.forEach((e) => {
       for (let i = 0; i < parseInt(e.number, 10); i += 1) {
         a = JSON.parse(JSON.stringify(e));
-        a.name = e.name.replace(/{id:(\d*)d}/, (match, number) => ('0'.repeat(parseInt(number, 10)) + (i + 1)).slice(-parseInt(number, 10)));
+        a.name = e.name.replace(/{id:(\d*)d}/, (match, number) => (
+          '0'.repeat(parseInt(number, 10)) + (i + 1)
+        ).slice(
+          -parseInt(number, 10),
+        ));
         list.push(a);
       }
     });
     return list;
+  }; */
+
+  constructor(props) {
+    super(props);
+    const properties = [];
+    props.trialSet.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+
+    this.state = {
+      trial: {
+        trialSetKey: props.trialSet.key,
+        experimentId: props.experimentId,
+        id: '',
+        name: '',
+        numberOfDevices: 0,
+        properties,
+      },
+    };
+  }
+
+  onPropertyChange = (e, propertyKey) => {
+    const { value } = e.target;
+    const indexOfProperty = this.state.trial.properties.findIndex(
+      property => property.key === propertyKey,
+    );
+
+    this.setState(state => ({
+      trial: {
+        ...state.trial,
+        properties: update(state.trial.properties, {
+          [indexOfProperty]: { val: { $set: value } },
+        }),
+      },
+    }));
+  };
+
+  onInputChange = (e, inputName) => {
+    const { value } = e.target;
+
+    this.setState(state => ({
+      trial: {
+        ...state.trial,
+        [inputName]: value,
+      },
+    }));
+  };
+
+  cancelForm = () => {
+    this.props.changeContentType(TRIALS_CONTENT_TYPE);
+  };
+
+  submitTrial = async (newTrial) => {
+    const { trialSet, changeContentType, experimentId } = this.props;
+
+    await graphql.sendMutation(trialMutation(newTrial));
+
+    // update number of trials of the trial set
+    const updatedTrialSet = { ...trialSet };
+    let { numberOfTrials } = updatedTrialSet;
+    numberOfTrials += 1;
+    updatedTrialSet.numberOfTrials = numberOfTrials;
+    updatedTrialSet.experimentId = experimentId;
+
+    await graphql.sendMutation(trialSetMutation(updatedTrialSet));
+    changeContentType(TRIALS_CONTENT_TYPE);
   };
 
   render() {
+    const { trialSet, classes } = this.props;
+
     return (
-      <form
-        style={classes.container}
-        noValidate
-        autoComplete="off"
-      >
-        <div>
-          <div>
-            {this.state.id
-              ? `Edit trial of trialSet ${this.state.trialSet.name}`
-              : `Add trial to trialSet ${this.state.trialSet.name}`}
-          </div>
-          <TextField
-            style={{ width: '300px', marginTop: '30px' }}
-            id="name"
-            label="Name"
-            className={classes.textField}
-            value={this.state.name}
-            onChange={this.handleChange('name')}
-          />
-          <br />
-          <TextField
-            style={{ width: '300px', marginTop: '30px' }}
-            id="begin"
-            label="Begin"
-            type="date"
-            className={classes.textField}
-            value={this.state.begin}
-            onChange={this.handleChange('begin')}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <br />
-          <TextField
-            style={{ width: '300px', marginTop: '30px' }}
-            id="end"
-            label="End"
-            type="date"
-            className={classes.textField}
-            value={this.state.end}
-            onChange={this.handleChange('end')}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <br />
-          <TextField
-            style={{ width: '300px', marginTop: '30px' }}
-            id="trialSet"
-            label="Tial Set"
-            type="text"
-            readOnly
-            className={classes.textField}
-            value={this.state.trialSet.name}
-          />
-          <br />
-          <TextField
-            style={{ width: '300px', marginTop: '30px' }}
-            id="notes"
-            label="Notes"
-            multiline
-            rows={5}
-            className={classes.textField}
-            value={this.state.notes}
-            onChange={this.handleChange('notes')}
-          />
-          <br />
-          <h3>properties:</h3>
-          {this.state.properties.map((p, i) => {
-            if (p.type === 'location') {
-              return (
-                <LeafLetMap
-                  onChange={this.handleChangeProprty(i, 'val')}
-                  location={p.val && p.val !== '' ? p.val.split(',') : [0, 0]}
-                />
-              );
-            }
-            return (
-              // TODO Add id field into p
-              <div key={p.id} style={{ display: 'flex' }}>
-                <TextField
-                  style={{ width: '300px' }}
-                  type={p.type}
-                  label={p.key}
-                  className={classes.textField}
-                  value={p.val}
-                  onChange={this.handleChangeProprty(i, 'val')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-                <br />
-              </div>
-            );
-          })}
-          <Entity
-            entities={this.state.devices}
-            entityName="devices"
-            removeEntity={this.removeEntity}
-            handleChangeMultiple={this.handleChangeMultiple}
-            handleChangeProprty={this.handleChangeProprty}
-            entitiesList={this.state.devicesList}
-          />
-          <Entity
-            entities={this.state.assets}
-            entityName="assets"
-            removeEntity={this.removeEntity}
-            handleChangeMultiple={this.handleChangeMultiple}
-            handleChangeProprty={this.handleChangeProprty}
-            entitiesList={this.state.assetsList}
-          />
-          <FormControl
-            className={classes.formControl}
-            style={{ width: '300px', marginTop: '30px' }}
-          >
-            <div
-              style={{
-                marginTop: '50px',
-                textAlign: 'center',
-                display: 'flex',
-              }}
-            >
-              <Button
-                variant="contained"
-                className={classes.button}
-                style={{ width: '180px' }}
-                onClick={this.submitTrial}
-              >
-                Submit
-              </Button>
-              {this.props.cancel && (
-                <Button
-                  variant="contained"
-                  className={classes.button}
-                  style={{ width: '180px' }}
-                  onClick={this.props.showAll}
-                >
-                  Cancel
-                </Button>
-              )}
-            </div>
-          </FormControl>
-        </div>
-      </form>
+      <>
+        <ContentHeader
+          title={`Add ${trialSet.name}`}
+          className={classes.header}
+        />
+        <CustomInput
+          id="trial-name"
+          className={classes.property}
+          onChange={e => this.onInputChange(e, 'name')}
+          label="Name"
+          bottomDescription="a short description"
+        />
+        <CustomInput
+          id="trial-id"
+          className={classes.property}
+          onChange={e => this.onInputChange(e, 'id')}
+          label="ID"
+          bottomDescription="a short description"
+        />
+        {trialSet.properties
+          ? trialSet.properties.map(property => (
+            <CustomInput
+              id={`trial-property-${property.key}`}
+              className={classes.property}
+              key={property.key}
+              onChange={e => this.onPropertyChange(e, property.key)}
+              label={property.label}
+              bottomDescription={property.description}
+            />
+          ))
+          : null}
+        <Footer
+          cancelButtonHandler={this.cancelForm}
+          saveButtonHandler={() => this.submitTrial(this.state.trial)}
+        />
+        {/* <form */}
+        {/*  style={classes.container} */}
+        {/*  noValidate */}
+        {/*  autoComplete="off" */}
+        {/* > */}
+        {/*  <div> */}
+        {/*    <div> */}
+        {/*      {this.state.id */}
+        {/*        ? `Edit trial of trialSet ${this.state.trialSet.name}` */}
+        {/*        : `Add trial to trialSet ${this.state.trialSet.name}`} */}
+        {/*    </div> */}
+        {/*    <TextField */}
+        {/*      style={{ width: '300px', marginTop: '30px' }} */}
+        {/*      id="name" */}
+        {/*      label="Name" */}
+        {/*      className={classes.textField} */}
+        {/*      value={this.state.name} */}
+        {/*      onChange={this.handleChange('name')} */}
+        {/*    /> */}
+        {/*    <br /> */}
+        {/*    <TextField */}
+        {/*      style={{ width: '300px', marginTop: '30px' }} */}
+        {/*      id="begin" */}
+        {/*      label="Begin" */}
+        {/*      type="date" */}
+        {/*      className={classes.textField} */}
+        {/*      value={this.state.begin} */}
+        {/*      onChange={this.handleChange('begin')} */}
+        {/*      InputLabelProps={{ */}
+        {/*        shrink: true, */}
+        {/*      }} */}
+        {/*    /> */}
+        {/*    <br /> */}
+        {/*    <TextField */}
+        {/*      style={{ width: '300px', marginTop: '30px' }} */}
+        {/*      id="end" */}
+        {/*      label="End" */}
+        {/*      type="date" */}
+        {/*      className={classes.textField} */}
+        {/*      value={this.state.end} */}
+        {/*      onChange={this.handleChange('end')} */}
+        {/*      InputLabelProps={{ */}
+        {/*        shrink: true, */}
+        {/*      }} */}
+        {/*    /> */}
+        {/*    <br /> */}
+        {/*    <TextField */}
+        {/*      style={{ width: '300px', marginTop: '30px' }} */}
+        {/*      id="trialSet" */}
+        {/*      label="Tial Set" */}
+        {/*      type="text" */}
+        {/*      readOnly */}
+        {/*      className={classes.textField} */}
+        {/*      value={this.state.trialSet.name} */}
+        {/*    /> */}
+        {/*    <br /> */}
+        {/*    <TextField */}
+        {/*      style={{ width: '300px', marginTop: '30px' }} */}
+        {/*      id="notes" */}
+        {/*      label="Notes" */}
+        {/*      multiline */}
+        {/*      rows={5} */}
+        {/*      className={classes.textField} */}
+        {/*      value={this.state.notes} */}
+        {/*      onChange={this.handleChange('notes')} */}
+        {/*    /> */}
+        {/*    <br /> */}
+        {/*    <h3>properties:</h3> */}
+        {/*    {this.state.properties.map((p, i) => { */}
+        {/*      if (p.type === 'location') { */}
+        {/*        return ( */}
+        {/*          <LeafLetMap */}
+        {/*            onChange={this.handleChangeProprty(i, 'val')} */}
+        {/*            location={p.val && p.val !== '' ? p.val.split(',') : [0, 0]} */}
+        {/*          /> */}
+        {/*        ); */}
+        {/*      } */}
+        {/*      return ( */}
+        {/*        // TODO Add id field into p */}
+        {/*        <div key={p.id} style={{ display: 'flex' }}> */}
+        {/*          <TextField */}
+        {/*            style={{ width: '300px' }} */}
+        {/*            type={p.type} */}
+        {/*            label={p.key} */}
+        {/*            className={classes.textField} */}
+        {/*            value={p.val} */}
+        {/*            onChange={this.handleChangeProprty(i, 'val')} */}
+        {/*            InputLabelProps={{ */}
+        {/*              shrink: true, */}
+        {/*            }} */}
+        {/*          /> */}
+        {/*          <br /> */}
+        {/*        </div> */}
+        {/*      ); */}
+        {/*    })} */}
+        {/*    <Entity */}
+        {/*      entities={this.state.devices} */}
+        {/*      entityName="devices" */}
+        {/*      removeEntity={this.removeEntity} */}
+        {/*      handleChangeMultiple={this.handleChangeMultiple} */}
+        {/*      handleChangeProprty={this.handleChangeProprty} */}
+        {/*      entitiesList={this.state.devicesList} */}
+        {/*    /> */}
+        {/*    <Entity */}
+        {/*      entities={this.state.assets} */}
+        {/*      entityName="assets" */}
+        {/*      removeEntity={this.removeEntity} */}
+        {/*      handleChangeMultiple={this.handleChangeMultiple} */}
+        {/*      handleChangeProprty={this.handleChangeProprty} */}
+        {/*      entitiesList={this.state.assetsList} */}
+        {/*    /> */}
+        {/*    <FormControl */}
+        {/*      className={classes.formControl} */}
+        {/*      style={{ width: '300px', marginTop: '30px' }} */}
+        {/*    > */}
+        {/*      <div */}
+        {/*        style={{ */}
+        {/*          marginTop: '50px', */}
+        {/*          textAlign: 'center', */}
+        {/*          display: 'flex', */}
+        {/*        }} */}
+        {/*      > */}
+        {/*        <Button */}
+        {/*          variant="contained" */}
+        {/*          className={classes.button} */}
+        {/*          style={{ width: '180px' }} */}
+        {/*          onClick={this.submitTrial} */}
+        {/*        > */}
+        {/*          Submit */}
+        {/*        </Button> */}
+        {/*        {this.props.cancel && ( */}
+        {/*          <Button */}
+        {/*            variant="contained" */}
+        {/*            className={classes.button} */}
+        {/*            style={{ width: '180px' }} */}
+        {/*            onClick={this.props.showAll} */}
+        {/*          > */}
+        {/*            Cancel */}
+        {/*          </Button> */}
+        {/*        )} */}
+        {/*      </div> */}
+        {/*    </FormControl> */}
+        {/*  </div> */}
+        {/* </form> */}
+      </>
     );
   }
 }
 
-export default withTheme(TrialForm);
+export default withStyles(styles)(TrialForm);
