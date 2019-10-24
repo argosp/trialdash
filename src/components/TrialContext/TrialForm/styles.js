@@ -1,66 +1,8 @@
-export default {
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    alignSelf: 'center',
+export const styles = () => ({
+  header: {
+    marginBottom: 55,
   },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 50,
+  property: {
+    marginBottom: 20,
   },
-  formControl: {
-    // margin: theme.spacing.unit,
-    minWidth: 300,
-  },
-  selectEmpty: {
-    // marginTop: theme.spacing.unit * 2,
-  },
-  button: {
-    // margin: theme.spacing.unit * 2
-  },
-  // formControl: {
-  //   // margin: theme.spacing(1),
-  //   minWidth: 120,
-  //   maxWidth: 300,
-  // },
-  chips: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  chip: {
-    margin: 2,
-  },
-
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    textAlign: 'left',
-  },
-  textField: {
-    width: 200,
-    margin: '20px',
-  },
-  dense: {
-    marginTop: 19,
-  },
-  menu: {
-    width: 200,
-  },
-  // ,
-  // menuItem: {
-  //   fontWeight:
-  //     personName.indexOf(name) === -1
-  //       ? theme.typography.fontWeightRegular
-  //       : theme.typography.fontWeightMedium
-  // }
-  entity: {
-    border: '1px solid',
-    padding: 2,
-    marginBottom: 10,
-  },
-  properties: {
-    display: 'flex',
-  },
-};
+});

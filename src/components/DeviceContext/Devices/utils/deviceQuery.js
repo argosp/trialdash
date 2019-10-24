@@ -4,11 +4,12 @@ const devices = (experimentId, deviceTypeKey) => gql`
   {
       devices(experimentId:"${experimentId}", deviceTypeKey:"${deviceTypeKey}"){
         id
+        key
         name
         properties {
            key
            val
-           }
+        }
       }
   }`;
 

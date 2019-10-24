@@ -1,12 +1,14 @@
 import gql from 'graphql-tag';
 
 export default (device) => {
-  const id = device.id ? device.id : `${device.experimentId}_${Date.now()}`;
+  const key = device.key ? device.key : `${device.experimentId}_${Date.now()}`;
+
   return gql`mutation {
         addUpdateDevice(
+            key: "${key}",
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${device.experimentId}"
-            id:"${id}"
+            id:"${device.id}"
             name:"${device.name}"
             deviceTypeKey: "${device.deviceTypeKey}"
             properties: ${JSON.stringify(device.properties)

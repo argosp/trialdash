@@ -1,5 +1,6 @@
 export const TRIAL_SETS_CONTENT_TYPE = 'trialSets';
 export const TRIALS_CONTENT_TYPE = 'trials';
+export const TRIAL_FORM_CONTENT_TYPE = 'trialForm';
 export const TRIAL_SET_FORM_CONTENT_TYPE = 'trialSetForm';
 
 export const DEVICE_TYPES_CONTENT_TYPE = 'deviceTypes';

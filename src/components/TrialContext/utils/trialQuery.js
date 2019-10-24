@@ -4,45 +4,16 @@ const trials = (experimentId, trialSetKey) => gql`
   {
       trials(experimentId:"${experimentId}", trialSetKey:"${trialSetKey}"){
         id
+        key
         name
-        notes
-        begin
-        end
-        trialSet {
-          id
-          name
-          properties {
-              key
-              val
-           }
-        }
+        created
+        status
+        numberOfDevices
         properties {
-          key
-          val
-       }
-        devices {
-          entity {
-            id
-            name
-          }
-          properties {
-              key
-              val
-          }
-          name
-      }
-      assets {
-        entity {
-          id
-          name
+           key
+           val
         }
-        properties {
-            key
-            val
-        }
-        name
       }
-    }
   }`;
 
 export default trials;

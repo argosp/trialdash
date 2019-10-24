@@ -6,7 +6,7 @@ import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { styles } from './styles';
 import Header from '../Header';
 import Graph from '../../apolloGraphql';
-import TrialSetMainView from '../TrialSetContext';
+import TrialSetMainView from '../TrialContext';
 import AssetMainView from '../AssetContext';
 import DeviceMainView from '../DeviceContext';
 import ExperimentMainView from '../ExperimentContext';

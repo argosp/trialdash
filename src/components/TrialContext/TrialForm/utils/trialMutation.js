@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-function cleanEntity(entity) {
+/* function cleanEntity(entity) {
   return JSON.stringify(entity)
     .replace(/"entity":/g, 'entity:')
     .replace(/"name":/g, 'name:')
@@ -8,27 +8,26 @@ function cleanEntity(entity) {
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:');
-}
+} */
 
 export default (trial) => {
-  const id = trial.id ? trial.id : `${trial.experimentId}_${Date.now()}`;
+  const key = trial.key ? trial.key : `${trial.experimentId}_${Date.now()}`;
+
   return gql`mutation {
         addUpdateTrial(
+            key:"${key}",
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${trial.experimentId}"
-            id:"${id}"
+            id:"${trial.id}"
             name:"${trial.name}"
-            notes:"${trial.notes}"
-            begin:"${trial.begin}"
-            end:"${trial.end}"
-            deviceTypes: ${cleanEntity(trial.deviceTypes)},
-            assets: ${cleanEntity(trial.assets)},
-            trialSet: "${trial.trialSet}"
+            trialSetKey:"${trial.trialSetKey}"
+            numberOfDevices:${trial.numberOfDevices}
             properties: ${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')}
+    .replace(/"val":/g, 'val:')
+}
             ){
-            id
-        }
+              id
+            }
       }`;
 };
