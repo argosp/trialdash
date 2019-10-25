@@ -1,7 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { isEmpty } from 'lodash';
 import gql from 'graphql-tag';
+import { matchPath, withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { styles } from './styles';
 import Header from '../Header';
@@ -13,7 +14,7 @@ import ExperimentMainView from '../ExperimentContext';
 
 const graphql = new Graph();
 
-class Dashboard extends React.Component {
+class AppLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -87,7 +88,7 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { classes, history } = this.props;
+    const { classes, children, location } = this.props;
     const {
       currentExperiment,
       experiments,
@@ -95,24 +96,29 @@ class Dashboard extends React.Component {
       user,
     } = this.state;
 
+    const isExperimentOpen = matchPath(location.pathname, {
+      path: '/experiments/:id',
+      exact: false,
+      strict: false,
+    });
+
     return (
       <>
         <Header
           user={user}
-          withExperiments={!isEmpty(currentExperiment)}
+          withExperiments={Boolean(isExperimentOpen)}
           selectActiveExperiment={this.selectActiveExperiment}
           currentExperiment={currentExperiment}
           experiments={experiments}
           handleTabChange={this.changeContentId}
           tabValue={contentId}
-          history={history}
         />
         <div className={classes.contentWrapper}>
-          {this.renderContent(contentId)}
+          {children}
         </div>
       </>
     );
   }
 }
 
-export default withStyles(styles)(Dashboard);
+export default compose(withRouter, withStyles(styles))(AppLayout);
