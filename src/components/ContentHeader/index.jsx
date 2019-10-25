@@ -5,6 +5,7 @@ import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import React from 'react';
 import classnames from 'classnames';
 import { withStyles } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 import { styles } from './styles';
 import SimpleButton from '../SimpleButton';
 
@@ -22,26 +23,34 @@ const ContentHeader = (props) => {
     bottomDescription,
     withSearchInput,
     className,
+    rightComponent,
   } = props;
 
   return (
     <Grid container justify="space-between" className={classnames(classes.header, className)}>
-      <div>
+      <Box
+        display="flex"
+        alignItems="center"
+      >
         {withBackButton ? (
           <KeyboardBackspaceIcon
             className={classes.backIcon}
             onClick={backButtonHandler}
           />
         ) : null}
-        {topDescription ? <p className={classes.topDescription}>{topDescription}</p> : null}
-        <h1 className={classes.title}>{title}</h1>
-        {rightDescription ? (
-          <span className={classes.rightDescription}>{rightDescription}</span>
-        ) : null}
-        {bottomDescription ? (
-          <p className={classes.bottomDescription}>{bottomDescription}</p>
-        ) : null}
-      </div>
+        <Box display="inline-block">
+          <Box display="inline-block">
+            {topDescription ? <p className={classes.topDescription}>{topDescription}</p> : null}
+            <h1 className={classes.title}>{title}</h1>
+          </Box>
+          {rightDescription ? (
+            <div className={classes.rightDescription}>{rightDescription}</div>
+          ) : null}
+          {bottomDescription ? (
+            <div className={classes.bottomDescription}>{bottomDescription}</div>
+          ) : null}
+        </Box>
+      </Box>
       {withSearchInput ? (
         <div className={classes.search}>
           <div className={classes.searchIcon}>
@@ -63,7 +72,7 @@ const ContentHeader = (props) => {
             onClick={addButtonHandler}
           />
         </div>
-      ) : null}
+      ) : rightComponent}
     </Grid>
   );
 };

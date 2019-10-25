@@ -5,6 +5,15 @@ import React from 'react';
 // import assetsQuery from '../../AssetContext/utils/assetQuery';
 import { withStyles } from '@material-ui/core';
 import update from 'immutability-helper';
+import uuid from 'uuid/v4';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import EditLocationIcon from '@material-ui/icons/EditLocation';
+import classnames from 'classnames';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import trialMutation from './utils/trialMutation';
 import Graph from '../../../apolloGraphql';
 // import Entity from './entity';
@@ -14,8 +23,25 @@ import CustomInput from '../../CustomInput';
 import Footer from '../../Footer';
 import { TRIALS_CONTENT_TYPE } from '../../../constants/base';
 import trialSetMutation from '../utils/trialSetMutation';
+import StatusBadge from '../../StatusBadge';
+import StyledTabs from '../../StyledTabs';
+import SimpleButton from '../../SimpleButton';
+import { GridIcon, ListIcon, TreeIcon } from '../../../constants/icons';
 
 const graphql = new Graph();
+
+const TabPanel = ({ children, value, index, ...other }) => (
+  <Typography
+    component="div"
+    role="tabpanel"
+    hidden={value !== index}
+    id={`trial-tabpanel-${index}`}
+    aria-labelledby={`trial-tab-${index}`}
+    {...other}
+  >
+    <Box>{children}</Box>
+  </Typography>
+);
 
 class TrialForm extends React.Component {
   /*  constructor(props) {
@@ -234,8 +260,19 @@ class TrialForm extends React.Component {
         numberOfDevices: 0,
         properties,
       },
+      tabValue: 0,
+      selectedViewIndex: 0,
+      isLocationPopupOpen: false,
     };
   }
+
+  changeView = (selectedViewIndex) => {
+    this.setState({ selectedViewIndex });
+  };
+
+  changeTab = (event, tabValue) => {
+    this.setState({ tabValue });
+  };
 
   onPropertyChange = (e, propertyKey) => {
     const { value } = e.target;
@@ -284,41 +321,135 @@ class TrialForm extends React.Component {
     changeContentType(TRIALS_CONTENT_TYPE);
   };
 
+  openLocationPopup = () => {
+    this.setState({ isLocationPopupOpen: true });
+  };
+
+  closeLocationPopup = () => {
+    this.setState({ isLocationPopupOpen: false });
+  };
+
   render() {
-    const { trialSet, classes } = this.props;
+    const { trialSet, classes, theme } = this.props;
+    const { tabValue, selectedViewIndex, isLocationPopupOpen } = this.state;
 
     return (
       <>
-        <ContentHeader
-          title={`Add ${trialSet.name}`}
-          className={classes.header}
-        />
-        <CustomInput
-          id="trial-name"
-          className={classes.property}
-          onChange={e => this.onInputChange(e, 'name')}
-          label="Name"
-          bottomDescription="a short description"
-        />
-        <CustomInput
-          id="trial-id"
-          className={classes.property}
-          onChange={e => this.onInputChange(e, 'id')}
-          label="ID"
-          bottomDescription="a short description"
-        />
-        {trialSet.properties
-          ? trialSet.properties.map(property => (
-            <CustomInput
-              id={`trial-property-${property.key}`}
-              className={classes.property}
-              key={property.key}
-              onChange={e => this.onPropertyChange(e, property.key)}
-              label={property.label}
-              bottomDescription={property.description}
-            />
-          ))
-          : null}
+        <div>
+          <ContentHeader
+            backButtonHandler={this.cancelForm}
+            topDescription={trialSet.name}
+            withBackButton
+            rightDescription={(
+              <StatusBadge
+                className={classes.statusBadge}
+                title="New"
+                color={theme.palette.violet.main}
+              />
+              )}
+            title="trial name goes here"
+            className={classes.header}
+            rightComponent={(
+              <StyledTabs
+                tabs={[
+                  { key: uuid(), label: 'General', id: 'trial-tab-0' },
+                  { key: uuid(), label: 'Devices', id: 'trial-tab-1' },
+                ]}
+                value={tabValue}
+                onChange={this.changeTab}
+                ariaLabel="trial tabs"
+              />
+              )}
+          />
+        </div>
+        <TabPanel value={tabValue} index={0}>
+          <CustomInput
+            id="trial-name"
+            className={classes.property}
+            onChange={e => this.onInputChange(e, 'name')}
+            label="Name"
+            bottomDescription="a short description"
+          />
+          <CustomInput
+            id="trial-id"
+            className={classes.property}
+            onChange={e => this.onInputChange(e, 'id')}
+            label="ID"
+            bottomDescription="a short description"
+          />
+          {trialSet.properties
+            ? trialSet.properties.map(property => (
+              <CustomInput
+                id={`trial-property-${property.key}`}
+                className={classes.property}
+                key={property.key}
+                onChange={e => this.onPropertyChange(e, property.key)}
+                label={property.label}
+                bottomDescription={property.description}
+              />
+            ))
+            : null}
+        </TabPanel>
+        <TabPanel value={tabValue} index={1}>
+          <Grid
+            container
+            justify="space-between"
+            className={classes.devicesPanelHeader}
+          >
+            <Grid item>
+              <IconButton
+                disableRipple
+                className={
+                  selectedViewIndex === 0
+                    ? classnames(classes.viewButton, classes.viewButtonSelected)
+                    : classes.viewButton
+                }
+                onClick={() => this.changeView(0)}
+              >
+                <TreeIcon />
+              </IconButton>
+              <IconButton
+                disableRipple
+                className={
+                  selectedViewIndex === 1
+                    ? classnames(classes.viewButton, classes.viewButtonSelected)
+                    : classes.viewButton
+                }
+                onClick={() => this.changeView(1)}
+              >
+                <ListIcon />
+              </IconButton>
+              <IconButton
+                disableRipple
+                className={
+                  selectedViewIndex === 2
+                    ? classnames(classes.viewButton, classes.viewButtonSelected)
+                    : classes.viewButton
+                }
+                onClick={() => this.changeView(2)}
+              >
+                <GridIcon />
+              </IconButton>
+              <IconButton
+                disableRipple
+                className={classes.viewButton}
+                onClick={this.openLocationPopup}
+              >
+                <EditLocationIcon className={classes.locationIcon} />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <SimpleButton text="Add" colorVariant="primary" />
+            </Grid>
+          </Grid>
+          <Dialog
+            onClose={this.closeLocationPopup}
+            aria-labelledby="location-popup-title"
+            open={isLocationPopupOpen}
+          >
+            <DialogTitle id="location-popup-title">Location</DialogTitle>
+          </Dialog>
+        </TabPanel>
         <Footer
           cancelButtonHandler={this.cancelForm}
           saveButtonHandler={() => this.submitTrial(this.state.trial)}
@@ -472,4 +603,4 @@ class TrialForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(TrialForm);
+export default withStyles(styles, { withTheme: true })(TrialForm);

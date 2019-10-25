@@ -41,7 +41,7 @@ class Trials extends React.Component {
   }
 
   renderTableRow = (trial) => {
-    const { classes } = this.props;
+    const { classes, theme } = this.props;
 
     return (
       <React.Fragment key={trial.key}>
@@ -58,7 +58,7 @@ class Trials extends React.Component {
           {moment(trial.created).format('D/M/YYYY')}
         </StyledTableCell>
         <StyledTableCell align="left">
-          <StatusBadge color="#BB6BD9" title={trial.status} />
+          <StatusBadge color={theme.palette.violet.main} title={trial.status} />
         </StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip title="Devices" ariaLabel="devices">
@@ -138,4 +138,4 @@ class Trials extends React.Component {
   }
 }
 
-export default withStyles(styles)(Trials);
+export default withStyles(styles, { withTheme: true })(Trials);
