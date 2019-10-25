@@ -33,6 +33,7 @@
     "react-leaflet": "^2.5.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
+    "recompose": "^0.30.0",
     "serve": "^11.2.0",
     "subscriptions-transport-ws": "0.9.16",
     "uuid": "^3.3.3"

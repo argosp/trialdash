@@ -3,6 +3,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
 import moment from 'moment';
 import Dotdotdot from 'react-dotdotdot';
+import { Link } from 'react-router-dom';
 import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
@@ -17,49 +18,55 @@ import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 
 class Experiments extends React.Component {
-  openExperiment = (experiment) => {
+/*  openExperiment = (experiment) => {
     const { openExperiment, changeContentId } = this.props;
     openExperiment(experiment);
     changeContentId(0);
-  };
+  }; */
 
-  renderTableRow = experiment => (
-    <React.Fragment key={experiment.project.id}>
-      <StyledTableCell align="left">
-        <p className={this.props.classes.cellTextLine}>{experiment.project.name}</p>
-        <div className={this.props.classes.cellTextLine}>
-          <Dotdotdot clamp={1}>
-            {experiment.project.description}
-          </Dotdotdot>
-        </div>
-      </StyledTableCell>
-      <StyledTableCell align="left">{moment(experiment.begin).format('D/M/YYYY')}</StyledTableCell>
-      <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
-      <StyledTableCell align="left">{experiment.numberOfTrials}</StyledTableCell>
-      <StyledTableCell align="left">
-        <StatusBadge
-          color={this.props.theme.palette.violet.main}
-          title={experiment.project.status}
-        />
-      </StyledTableCell>
-      <StyledTableCell align="right">
-        <CustomTooltip title="Clone" ariaLabel="clone">
-          <CloneIcon />
-        </CustomTooltip>
-        <CustomTooltip title="Edit" ariaLabel="edit">
-          <PenIcon />
-        </CustomTooltip>
-        <CustomTooltip
-          title="Open"
-          className={this.props.classes.arrowButton}
-          ariaLabel="open"
-          onClick={() => this.openExperiment(experiment)}
-        >
-          <ArrowForwardIosIcon />
-        </CustomTooltip>
-      </StyledTableCell>
-    </React.Fragment>
-  );
+  renderTableRow = (experiment) => {
+    const { classes, theme } = this.props;
+
+    return (
+      <React.Fragment key={experiment.project.id}>
+        <StyledTableCell align="left">
+          <p className={classes.cellTextLine}>{experiment.project.name}</p>
+          <div className={classes.cellTextLine}>
+            <Dotdotdot clamp={1}>
+              {experiment.project.description}
+            </Dotdotdot>
+          </div>
+        </StyledTableCell>
+        <StyledTableCell align="left">{moment(experiment.begin).format('D/M/YYYY')}</StyledTableCell>
+        <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
+        <StyledTableCell align="left">{experiment.numberOfTrials}</StyledTableCell>
+        <StyledTableCell align="left">
+          <StatusBadge
+            color={theme.palette.violet.main}
+            title={experiment.project.status}
+          />
+        </StyledTableCell>
+        <StyledTableCell align="right">
+          <CustomTooltip title="Clone" ariaLabel="clone">
+            <CloneIcon />
+          </CustomTooltip>
+          <CustomTooltip title="Edit" ariaLabel="edit">
+            <PenIcon />
+          </CustomTooltip>
+          <CustomTooltip
+            title="Open"
+            className={classes.arrowButtonTooltip}
+            ariaLabel="open"
+            // onClick={() => this.openExperiment(experiment)}
+          >
+            <Link to={`/experiments/${experiment.project.id}/trialSets`} className={classes.arrowButtonLink}>
+              <ArrowForwardIosIcon />
+            </Link>
+          </CustomTooltip>
+        </StyledTableCell>
+      </React.Fragment>
+    );
+  };
 
   render() {
     const tableHeadColumns = [

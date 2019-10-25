@@ -55,7 +55,7 @@ class Login extends React.Component {
         localStorage.setItem('jwt', data.login.token);
         localStorage.setItem('uid', data.login.uid);
         setAuthToken(data.login.token);
-        this.props.history.push('/');
+        this.props.history.push('/experiments');
       }
     });
   };

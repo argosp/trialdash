@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core';
 import classnames from 'classnames';
@@ -12,6 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
 import uuid from 'uuid/v4';
+import { compose } from 'recompose';
 import { styles } from './styles';
 import StyledTabs from '../StyledTabs';
 
@@ -19,7 +20,7 @@ class Header extends React.Component {
   state = {
     anchorExperimentsMenu: null,
     anchorProfileMenu: null,
-    isExperimentHovering: false,
+    // isExperimentHovering: false,
   };
 
   handleProfileMenuClick = (event) => {
@@ -31,7 +32,7 @@ class Header extends React.Component {
   handleExperimentsMenuClick = (event) => {
     this.setState({
       anchorExperimentsMenu: event.currentTarget,
-      isExperimentHovering: false,
+      // isExperimentHovering: false,
     });
   };
 
@@ -54,15 +55,15 @@ class Header extends React.Component {
     this.handleMenuClose('anchorExperimentsMenu');
   };
 
-  handleExperimentMouseEnter = () => {
+  /*  handleExperimentMouseEnter = () => {
     this.setState({ isExperimentHovering: true });
-  };
+  }; */
 
-  handleExperimentMouseLeave = () => {
+  /*  handleExperimentMouseLeave = () => {
     this.setState({ isExperimentHovering: false });
-  };
+  }; */
 
-  renderCurrentExperimentName = (currentExperiment, isExperimentHovering) => {
+  /*  renderCurrentExperimentName = (currentExperiment, isExperimentHovering) => {
     if (
       currentExperiment.project.name
       && currentExperiment.project.id
@@ -76,7 +77,7 @@ class Header extends React.Component {
     }
 
     return 'Select an Experiment';
-  };
+  }; */
 
     logout = () => {
       localStorage.clear();
@@ -86,13 +87,13 @@ class Header extends React.Component {
     render() {
       const {
         classes,
-        currentExperiment,
+        // currentExperiment,
         experiments,
         tabValue,
         withExperiments,
         user,
       } = this.props;
-      const { anchorExperimentsMenu, anchorProfileMenu, isExperimentHovering } = this.state;
+      const { anchorExperimentsMenu, anchorProfileMenu/* , isExperimentHovering */ } = this.state;
 
       return (
         <Grid
@@ -133,13 +134,13 @@ class Header extends React.Component {
                     classes.expandButton,
                     classes.expandExperimentButton,
                   )}
-                  onMouseEnter={this.handleExperimentMouseEnter}
-                  onMouseLeave={this.handleExperimentMouseLeave}
+                  // onMouseEnter={this.handleExperimentMouseEnter}
+                  // onMouseLeave={this.handleExperimentMouseLeave}
                 >
-                  {this.renderCurrentExperimentName(
-                    currentExperiment,
-                    isExperimentHovering,
-                  )}
+                  {/* {this.renderCurrentExperimentName( */}
+                  {/*  currentExperiment, */}
+                  {/*  isExperimentHovering, */}
+                  {/* )} */}
                   <ExpandMoreIcon />
                 </Button>
                 <Menu
@@ -237,4 +238,4 @@ class Header extends React.Component {
     }
 }
 
-export default withStyles(styles)(Header);
+export default compose(withRouter, withStyles(styles))(Header);

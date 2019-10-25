@@ -16,9 +16,9 @@ import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 
 class TrialSets extends React.Component {
-    changeContentType = (contentType) => {
-      this.props.changeContentType(contentType);
-    };
+  changeContentType = (contentType) => {
+    this.props.changeContentType(contentType);
+  };
 
   openTrialSet = (trialSet) => {
     this.changeContentType(TRIALS_CONTENT_TYPE);
@@ -78,7 +78,7 @@ class TrialSets extends React.Component {
             subscriptionUpdateField="trialSetsUpdated"
             dataType={TRIAL_SETS_CONTENT_TYPE}
             query={trialSetsQuery}
-            queryArgs={[this.props.experimentId]}
+            queryArgs={[this.props.match.params.id]}
             tableHeadColumns={tableHeadColumns}
             subscription={trialSetsSubscription}
             renderRow={this.renderTableRow}
