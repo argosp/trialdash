@@ -1,9 +1,10 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core';
+import classnames from 'classnames';
 import { styles } from './styles';
 
-const StatusBadge = ({ classes, title, color }) => (
-  <div className={classes.root} style={{ color, border: `1px solid ${color}` }}>
+const StatusBadge = ({ classes, className, title, color }) => (
+  <div className={classnames(classes.root, className)} style={{ color, border: `1px solid ${color}` }}>
     {title}
   </div>
 );

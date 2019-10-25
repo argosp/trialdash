@@ -37,7 +37,10 @@ class Experiments extends React.Component {
       <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
       <StyledTableCell align="left">{experiment.numberOfTrials}</StyledTableCell>
       <StyledTableCell align="left">
-        <StatusBadge color="#27AE60" title={experiment.project.status} />
+        <StatusBadge
+          color={this.props.theme.palette.violet.main}
+          title={experiment.project.status}
+        />
       </StyledTableCell>
       <StyledTableCell align="right">
         <CustomTooltip title="Clone" ariaLabel="clone">
@@ -102,4 +105,4 @@ class Experiments extends React.Component {
   }
 }
 
-export default withStyles(styles)(Experiments);
+export default withStyles(styles, { withTheme: true })(Experiments);

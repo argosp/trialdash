@@ -29,8 +29,9 @@ export const styles = theme => ({
     verticalAlign: 'middle',
   },
   rightDescription: {
+    display: 'inline-block',
     color: theme.palette.gray.dark,
-    marginLeft: 15,
+    margin: '0 0 0 15px',
     fontSize: 16,
     verticalAlign: 'bottom',
   },

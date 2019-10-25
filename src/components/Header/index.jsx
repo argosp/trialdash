@@ -8,16 +8,12 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Avatar from '@material-ui/core/Avatar';
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
-import { styles, tabsStyles } from './styles';
-
-const StyledTabs = withStyles(tabsStyles)(props => (
-  <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />
-));
+import uuid from 'uuid/v4';
+import { styles } from './styles';
+import StyledTabs from '../StyledTabs';
 
 class Header extends React.Component {
   state = {
@@ -177,29 +173,21 @@ class Header extends React.Component {
             {withExperiments ? (
               <>
                 <StyledTabs
+                  tabs={[
+                    { key: uuid(),
+                      label: 'Trials',
+                      id: 'header-tab-0' },
+                    { key: uuid(),
+                      label: 'Assets',
+                      id: 'header-tab-1' },
+                    { key: uuid(),
+                      label: 'Devices',
+                      id: 'header-tab-2' },
+                  ]}
                   value={tabValue}
                   onChange={this.handleTabChange}
-                  aria-label="header tabs"
-                >
-                  <Tab
-                    disableRipple
-                    label="Trials"
-                    id="header-tab-0"
-                    className={classes.tab}
-                  />
-                  <Tab
-                    disableRipple
-                    label="Assets"
-                    id="header-tab-1"
-                    className={classes.tab}
-                  />
-                  <Tab
-                    disableRipple
-                    label="Devices"
-                    id="header-tab-2"
-                    className={classes.tab}
-                  />
-                </StyledTabs>
+                  ariaLabel="header tabs"
+                />
                 <Divider
                   orientation="vertical"
                   className={classnames(classes.divider, classes.rightDivider)}
