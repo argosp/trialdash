@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, matchPath } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core';
 import classnames from 'classnames';
@@ -13,15 +13,69 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
 import uuid from 'uuid/v4';
 import { compose } from 'recompose';
+import { isEmpty } from 'lodash';
+import gql from 'graphql-tag';
+import { Query, withApollo } from 'react-apollo';
 import { styles } from './styles';
 import StyledTabs from '../StyledTabs';
+import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
+
+const UserData = ({ classes, handleProfileMenuClick }) => (
+  <Query
+    query={gql` {
+          user(uid:"${localStorage.getItem('uid')}") {
+              email
+              name
+              username
+              avatar
+          }
+        }
+        `}
+  >
+    {({ loading, error, data }) => {
+      if (loading) return <p>Loading...</p>;
+      if (error) return <p> No data to show</p>;
+      return (
+        <>
+          <Avatar
+            src={data.user.avatar}
+            alt="user avatar"
+            className={classes.avatar}
+          />
+          <Button
+            aria-controls="user-menu"
+            aria-haspopup="true"
+            onClick={handleProfileMenuClick}
+            disableRipple
+            className={classnames(
+              classes.expandButton,
+              classes.expandProfileButton,
+            )}
+          >
+            {data.user.name}
+            <ExpandMoreIcon />
+          </Button>
+        </>
+      );
+    }}
+  </Query>
+);
 
 class Header extends React.Component {
   state = {
     anchorExperimentsMenu: null,
     anchorProfileMenu: null,
-    // isExperimentHovering: false,
+    isExperimentHovering: false,
+    isLoading: true,
   };
+
+  componentDidMount() {
+    const { client } = this.props;
+
+    client
+      .query({ query: experimentsQuery })
+      .then(() => this.setState({ isLoading: false }));
+  }
 
   handleProfileMenuClick = (event) => {
     this.setState({
@@ -32,7 +86,7 @@ class Header extends React.Component {
   handleExperimentsMenuClick = (event) => {
     this.setState({
       anchorExperimentsMenu: event.currentTarget,
-      // isExperimentHovering: false,
+      isExperimentHovering: false,
     });
   };
 
@@ -40,30 +94,28 @@ class Header extends React.Component {
     this.setState({ [anchor]: null });
   };
 
-  handleTabChange = (event, newValue) => {
-    this.props.handleTabChange(newValue);
+  handleTabChange = (event, tabId) => {
+    this.props.client.writeData({ data: { headerTabId: tabId } });
   };
 
-  handleLogoClick = (event) => {
-    this.handleTabChange(event, 3); // 3 is the Experiments
-    this.props.selectActiveExperiment({}); // reset selected experiment
-  };
-
-  selectExperiment = (experiment) => {
-    const { selectActiveExperiment } = this.props;
-    selectActiveExperiment(experiment);
+  selectExperiment = (experimentId) => {
+    const { history, client } = this.props;
+    history.push(`/experiments/${experimentId}/trial-sets`);
+    client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
     this.handleMenuClose('anchorExperimentsMenu');
   };
 
-  /*  handleExperimentMouseEnter = () => {
+  handleExperimentMouseEnter = () => {
     this.setState({ isExperimentHovering: true });
-  }; */
+  };
 
-  /*  handleExperimentMouseLeave = () => {
+  handleExperimentMouseLeave = () => {
     this.setState({ isExperimentHovering: false });
-  }; */
+  };
 
-  /*  renderCurrentExperimentName = (currentExperiment, isExperimentHovering) => {
+  renderCurrentExperimentName = (currentExperiment) => {
+    const { isExperimentHovering } = this.state;
+
     if (
       currentExperiment.project.name
       && currentExperiment.project.id
@@ -77,144 +129,78 @@ class Header extends React.Component {
     }
 
     return 'Select an Experiment';
-  }; */
+  };
 
-    logout = () => {
-      localStorage.clear();
-      this.props.history.push('/login');
-    };
+  logout = () => {
+    localStorage.clear();
+    this.props.history.push('/login');
+  };
 
-    render() {
-      const {
-        classes,
-        // currentExperiment,
-        experiments,
-        tabValue,
-        withExperiments,
-        user,
-      } = this.props;
-      const { anchorExperimentsMenu, anchorProfileMenu/* , isExperimentHovering */ } = this.state;
+  render() {
+    const { classes, client } = this.props;
+    const { anchorExperimentsMenu, anchorProfileMenu, isLoading } = this.state;
+    const pathObj = matchPath(this.props.location.pathname, {
+      path: '/experiments/:id',
+      exact: false,
+      strict: false,
+    });
+    const withExperiments = Boolean(pathObj);
+    const experiments = !isLoading
+      ? client.readQuery({ query: experimentsQuery }).experimentsWithData
+      : [];
+    const currentExperiment = withExperiments
+      ? experiments.find(
+        experiment => experiment.project.id === pathObj.params.id,
+      )
+      : {};
 
-      return (
-        <Grid
-          container
-          className={
+    return (
+      <Grid
+        container
+        className={
           withExperiments
             ? classes.root
             : classnames(classes.root, classes.rootWithoutExperiments)
         }
-        >
-          <Grid item container xs={4} alignItems="flex-start">
-            <Box
-              display="flex"
-              alignItems="center"
-              className={classes.logoWrapper}
-            >
-              <MenuIcon className={classes.menuIcon} />
-              <Link
-                to="/"
-                onClick={this.handleLogoClick}
-                className={classes.logo}
-              >
+      >
+        <Grid item container xs={5} alignItems="flex-start">
+          <Box
+            display="flex"
+            alignItems="center"
+            className={classes.logoWrapper}
+          >
+            <MenuIcon className={classes.menuIcon} />
+            <Link to="/" className={classes.logo}>
               Argos
-              </Link>
-            </Box>
-            <Divider
-              orientation="vertical"
-              className={classnames(classes.divider, classes.leftDivider)}
-            />
-            {withExperiments ? (
-              <>
-                <Button
-                  aria-controls="experiments-menu"
-                  aria-haspopup="true"
-                  onClick={this.handleExperimentsMenuClick}
-                  disableRipple
-                  className={classnames(
-                    classes.expandButton,
-                    classes.expandExperimentButton,
-                  )}
-                  // onMouseEnter={this.handleExperimentMouseEnter}
-                  // onMouseLeave={this.handleExperimentMouseLeave}
-                >
-                  {/* {this.renderCurrentExperimentName( */}
-                  {/*  currentExperiment, */}
-                  {/*  isExperimentHovering, */}
-                  {/* )} */}
-                  <ExpandMoreIcon />
-                </Button>
-                <Menu
-                  id="experiments-menu"
-                  open={Boolean(anchorExperimentsMenu)}
-                  onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
-                  anchorEl={anchorExperimentsMenu}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                >
-                  {experiments.map(experiment => (
-                    <MenuItem
-                      key={experiment.project.id}
-                      onClick={() => this.selectExperiment(experiment)}
-                    >
-                      {experiment.project.name}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </>
-            ) : null}
-          </Grid>
-          <Grid item container xs={8} justify="flex-end">
-            {withExperiments ? (
-              <>
-                <StyledTabs
-                  tabs={[
-                    { key: uuid(),
-                      label: 'Trials',
-                      id: 'header-tab-0' },
-                    { key: uuid(),
-                      label: 'Assets',
-                      id: 'header-tab-1' },
-                    { key: uuid(),
-                      label: 'Devices',
-                      id: 'header-tab-2' },
-                  ]}
-                  value={tabValue}
-                  onChange={this.handleTabChange}
-                  ariaLabel="header tabs"
-                />
-                <Divider
-                  orientation="vertical"
-                  className={classnames(classes.divider, classes.rightDivider)}
-                />
-              </>
-            ) : null}
-            <div className={classes.profileWrapper}>
-              <Avatar src={user.avatar} alt="user avatar" className={classes.avatar} />
+            </Link>
+          </Box>
+          <Divider
+            orientation="vertical"
+            className={classnames(classes.divider, classes.leftDivider)}
+          />
+          {withExperiments ? (
+            <>
               <Button
-                aria-controls="user-menu"
+                aria-controls="experiments-menu"
                 aria-haspopup="true"
-                onClick={this.handleProfileMenuClick}
+                onClick={this.handleExperimentsMenuClick}
                 disableRipple
                 className={classnames(
                   classes.expandButton,
-                  classes.expandProfileButton,
+                  classes.expandExperimentButton,
                 )}
+                onMouseEnter={this.handleExperimentMouseEnter}
+                onMouseLeave={this.handleExperimentMouseLeave}
               >
-                {user.name}
+                {!isEmpty(currentExperiment)
+                  && this.renderCurrentExperimentName(currentExperiment)}
                 <ExpandMoreIcon />
               </Button>
               <Menu
-                id="profile-menu"
-                open={Boolean(anchorProfileMenu)}
-                onClose={() => this.handleMenuClose('anchorProfileMenu')}
-                anchorEl={anchorProfileMenu}
+                id="experiments-menu"
+                open={Boolean(anchorExperimentsMenu)}
+                onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
+                anchorEl={anchorExperimentsMenu}
                 getContentAnchorEl={null}
                 anchorOrigin={{
                   vertical: 'bottom',
@@ -225,17 +211,80 @@ class Header extends React.Component {
                   horizontal: 'left',
                 }}
               >
-                <MenuItem
-                  onClick={() => this.logout()}
-                >
-                  Log out
-                </MenuItem>
+                {!isEmpty(experiments)
+                  && experiments.map(experiment => (
+                    <MenuItem
+                      key={experiment.project.id}
+                      onClick={() => this.selectExperiment(experiment.project.id)
+                      }
+                    >
+                      {experiment.project.name}
+                    </MenuItem>
+                  ))}
               </Menu>
-            </div>
-          </Grid>
+            </>
+          ) : null}
         </Grid>
-      );
-    }
+        <Grid item container xs={7} justify="flex-end">
+          {withExperiments ? (
+            <>
+              <Query
+                query={gql`
+                  {
+                    headerTabId @client
+                  }
+                `}
+              >
+                {({ data }) => (
+                  <StyledTabs
+                    tabs={[
+                      { key: uuid(), label: 'Trials', id: 'header-tab-0' },
+                      { key: uuid(), label: 'Assets', id: 'header-tab-1' },
+                      { key: uuid(), label: 'Devices', id: 'header-tab-2' },
+                    ]}
+                    value={data.headerTabId}
+                    onChange={this.handleTabChange}
+                    ariaLabel="header tabs"
+                  />
+                )}
+              </Query>
+              <Divider
+                orientation="vertical"
+                className={classnames(classes.divider, classes.rightDivider)}
+              />
+            </>
+          ) : null}
+          <div className={classes.profileWrapper}>
+            <UserData
+              classes={classes}
+              handleProfileMenuClick={this.handleProfileMenuClick}
+            />
+            <Menu
+              id="profile-menu"
+              open={Boolean(anchorProfileMenu)}
+              onClose={() => this.handleMenuClose('anchorProfileMenu')}
+              anchorEl={anchorProfileMenu}
+              getContentAnchorEl={null}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              <MenuItem onClick={() => this.logout()}>Log out</MenuItem>
+            </Menu>
+          </div>
+        </Grid>
+      </Grid>
+    );
+  }
 }
 
-export default compose(withRouter, withStyles(styles))(Header);
+export default compose(
+  withRouter,
+  withApollo,
+  withStyles(styles),
+)(Header);

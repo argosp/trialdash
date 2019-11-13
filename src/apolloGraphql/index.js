@@ -54,9 +54,12 @@ export default class Graph {
       addTypename: false,
     });
 
+    cache.writeData({ data: { headerTabId: 0 } }); // initial values of the cache
+
     this.client = new ApolloClient({
       link,
       cache,
+      connectToDevTools: true,
     });
   }
 
