@@ -4,13 +4,12 @@ import { withStyles } from '@material-ui/core';
 import moment from 'moment';
 import Dotdotdot from 'react-dotdotdot';
 import { Link } from 'react-router-dom';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
-import {
-  EXPERIMENT_FORM_CONTENT_TYPE,
-  EXPERIMENTS_WITH_DATA_CONTENT_TYPE,
-} from '../../../constants/base';
+import { EXPERIMENTS_WITH_DATA_CONTENT_TYPE } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
 import StatusBadge from '../../StatusBadge';
@@ -18,14 +17,8 @@ import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 
 class Experiments extends React.Component {
-/*  openExperiment = (experiment) => {
-    const { openExperiment, changeContentId } = this.props;
-    openExperiment(experiment);
-    changeContentId(0);
-  }; */
-
   renderTableRow = (experiment) => {
-    const { classes, theme } = this.props;
+    const { classes, theme, client } = this.props;
 
     return (
       <React.Fragment key={experiment.project.id}>
@@ -57,9 +50,14 @@ class Experiments extends React.Component {
             title="Open"
             className={classes.arrowButtonTooltip}
             ariaLabel="open"
-            // onClick={() => this.openExperiment(experiment)}
           >
-            <Link to={`/experiments/${experiment.project.id}/trialSets`} className={classes.arrowButtonLink}>
+            <Link
+              to={() => {
+                client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
+                return `/experiments/${experiment.project.id}/trial-sets`;
+              }}
+              className={classes.arrowButtonLink}
+            >
               <ArrowForwardIosIcon />
             </Link>
           </CustomTooltip>
@@ -97,7 +95,7 @@ class Experiments extends React.Component {
           title="Experiments"
           searchPlaceholder="Search experiments"
           addButtonText="Add experiment"
-          addButtonHandler={() => this.props.changeContentType(EXPERIMENT_FORM_CONTENT_TYPE)}
+          addButtonHandler={() => this.props.history.push('/add-experiment')}
         />
         <TableContentContainer
           // subscriptionUpdateField="experimentsUpdated"
@@ -112,4 +110,4 @@ class Experiments extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Experiments);
+export default compose(withApollo, withStyles(styles, { withTheme: true }))(Experiments);

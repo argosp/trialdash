@@ -8,7 +8,6 @@ import moment from 'moment';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import Graph from '../../../apolloGraphql';
 import experimentMutation from './utils/experimentMutation';
-import { EXPERIMENTS_CONTENT_TYPE } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import Footer from '../../Footer';
 import { styles } from './styles';
@@ -41,7 +40,7 @@ class ExperimentForm extends React.Component {
     graphql
       .sendMutation(experimentMutation(newExperiment))
       .then(() => {
-        this.props.changeContentType(EXPERIMENTS_CONTENT_TYPE);
+        this.props.history.push('/experiments');
       })
       .catch((err) => {
         console.log(`error: ${err}`);
@@ -97,7 +96,7 @@ class ExperimentForm extends React.Component {
   };
 
   render() {
-    const { changeContentType, classes } = this.props;
+    const { history, classes } = this.props;
     const {
       formObject,
       isStartDatePickerOpen,
@@ -240,7 +239,7 @@ class ExperimentForm extends React.Component {
           </Grid>
         </form>
         <Footer
-          cancelButtonHandler={() => changeContentType(EXPERIMENTS_CONTENT_TYPE)}
+          cancelButtonHandler={() => history.push('/experiments')}
           saveButtonHandler={() => this.submitExperiment(formObject)}
         />
       </MuiPickersUtilsProvider>
