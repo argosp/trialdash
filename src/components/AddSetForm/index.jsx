@@ -6,10 +6,12 @@ import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import classnames from 'classnames';
 import Box from '@material-ui/core/Box';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 import Graph from '../../apolloGraphql';
 import {
-  DEVICE_TYPES_CONTENT_TYPE,
-  TRIAL_SETS_CONTENT_TYPE,
+  DEVICE_TYPES,
+  TRIAL_SETS,
 } from '../../constants/base';
 import FieldTypesPanel from '../FieldTypesPanel';
 import deviceTypeMutation from '../DeviceContext/utils/deviceTypeMutation';
@@ -32,12 +34,12 @@ const graphql = new Graph();
 class AddSetForm extends React.Component {
   state = {
     formObject:
-      DEVICE_TYPES_CONTENT_TYPE === this.props.type
+      DEVICE_TYPES === this.props.formType
         ? {
           key: uuid(),
           id: '',
           name: '',
-          experimentId: this.props.experimentId,
+          experimentId: this.props.match.params.id,
           numberOfDevices: 0,
           properties: [], // this field correspond to the <Droppable droppableId="droppable">
         }
@@ -46,7 +48,7 @@ class AddSetForm extends React.Component {
           id: '',
           name: '',
           description: '',
-          experimentId: this.props.experimentId,
+          experimentId: this.props.match.params.id,
           numberOfTrials: 0,
           properties: [], // this field correspond to the <Droppable droppableId="droppable">
         },
@@ -102,12 +104,6 @@ class AddSetForm extends React.Component {
     this.deactivateEditMode();
   };
 
-  cancelForm = () => {
-    const { type, changeContentType } = this.props;
-
-    changeContentType(type);
-  };
-
   fieldTypeValueChangeHandler = (e, controlType, fieldTypeKey, property) => {
     let value;
 
@@ -127,21 +123,21 @@ class AddSetForm extends React.Component {
 
   submitEntity = (entity) => {
     const newEntity = entity;
-    const { type, changeContentType } = this.props;
+    const { formType, match, history } = this.props;
 
     // add number of field types to the device type
-    if (DEVICE_TYPES_CONTENT_TYPE === type) {
+    if (DEVICE_TYPES === formType) {
       newEntity.numberOfFields = this.state.formObject.properties.length;
     }
 
-    const mutation = DEVICE_TYPES_CONTENT_TYPE === type
+    const mutation = DEVICE_TYPES === formType
       ? deviceTypeMutation
       : trialSetMutation;
 
     graphql
       .sendMutation(mutation(newEntity))
       .then(() => {
-        changeContentType(type);
+        history.push(`/experiments/${match.params.id}/${formType}`);
       })
       .catch((err) => {
         console.log(`error: ${err}`);
@@ -255,7 +251,7 @@ class AddSetForm extends React.Component {
       isFieldTypesPanelOpen,
       isEditFieldTypePanelOpen,
     } = this.state;
-    const { classes, theme, type } = this.props;
+    const { classes, theme, formType, history, match } = this.props;
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {
@@ -276,7 +272,7 @@ class AddSetForm extends React.Component {
       >
         <ContentHeader
           title={
-            DEVICE_TYPES_CONTENT_TYPE === type
+            DEVICE_TYPES === formType
               ? 'Add device type'
               : 'Add trial set'
           }
@@ -318,7 +314,7 @@ class AddSetForm extends React.Component {
               />
             </Grid>
           </Grid>
-          {TRIAL_SETS_CONTENT_TYPE === type ? (
+          {TRIAL_SETS === formType ? (
             <Grid container spacing={4}>
               <Grid item xs={6}>
                 <CustomInput
@@ -398,7 +394,7 @@ class AddSetForm extends React.Component {
         </form>
         {!isEditModeEnabled ? (
           <Footer
-            cancelButtonHandler={this.cancelForm}
+            cancelButtonHandler={() => history.push(`/experiments/${match.params.id}/${formType}`)}
             saveButtonHandler={() => this.submitEntity(this.state.formObject)}
           />
         ) : null}
@@ -407,4 +403,7 @@ class AddSetForm extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(AddSetForm);
+export default compose(
+  withRouter,
+  withStyles(styles, { withTheme: true }),
+)(AddSetForm);

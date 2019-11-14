@@ -9,7 +9,7 @@ import { withApollo } from 'react-apollo';
 import TableContentContainer from '../../TableContentContainer';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
-import { EXPERIMENTS_WITH_DATA_CONTENT_TYPE } from '../../../constants/base';
+import { EXPERIMENTS_WITH_DATA_CONTENT_TYPE, TRIAL_SETS } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
 import StatusBadge from '../../StatusBadge';
@@ -54,7 +54,7 @@ class Experiments extends React.Component {
             <Link
               to={() => {
                 client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
-                return `/experiments/${experiment.project.id}/trial-sets`;
+                return `/experiments/${experiment.project.id}/${TRIAL_SETS}`;
               }}
               className={classes.arrowButtonLink}
             >

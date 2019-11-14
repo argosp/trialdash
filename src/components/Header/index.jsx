@@ -19,6 +19,8 @@ import { Query, withApollo } from 'react-apollo';
 import { styles } from './styles';
 import StyledTabs from '../StyledTabs';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
+import { TRIAL_SETS } from '../../constants/base';
+import { TABS } from '../../constants/routes';
 
 const UserData = ({ classes, handleProfileMenuClick }) => (
   <Query
@@ -70,7 +72,13 @@ class Header extends React.Component {
   };
 
   componentDidMount() {
-    const { client } = this.props;
+    const { client, location } = this.props;
+
+    Object.keys(TABS).forEach((tab) => {
+      if (location.pathname.includes(TABS[tab])) {
+        client.writeData({ data: { headerTabId: +tab } });
+      }
+    });
 
     client
       .query({ query: experimentsQuery })
@@ -94,13 +102,16 @@ class Header extends React.Component {
     this.setState({ [anchor]: null });
   };
 
-  handleTabChange = (event, tabId) => {
-    this.props.client.writeData({ data: { headerTabId: tabId } });
+  handleTabChange = (event, tabId, experimentId) => {
+    const { client, history } = this.props;
+
+    client.writeData({ data: { headerTabId: tabId } });
+    history.push(`/experiments/${experimentId}/${TABS[tabId]}`);
   };
 
   selectExperiment = (experimentId) => {
     const { history, client } = this.props;
-    history.push(`/experiments/${experimentId}/trial-sets`);
+    history.push(`/experiments/${experimentId}/${TRIAL_SETS}`);
     client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
     this.handleMenuClose('anchorExperimentsMenu');
   };
@@ -243,7 +254,9 @@ class Header extends React.Component {
                       { key: uuid(), label: 'Devices', id: 'header-tab-2' },
                     ]}
                     value={data.headerTabId}
-                    onChange={this.handleTabChange}
+                    onChange={
+                      (event, tabId) => this.handleTabChange(event, tabId, pathObj.params.id)
+                    }
                     ariaLabel="header tabs"
                   />
                 )}

@@ -25,19 +25,14 @@ class DeviceMainView extends React.PureComponent {
     };
 
     renderContent = (contentType) => {
-      const { experimentId, entityType } = this.props;
+      const { experimentId } = this.props;
       const { selectedDeviceType } = this.state;
 
       switch (contentType) {
         case DEVICE_TYPES_CONTENT_TYPE:
         default:
           return (
-            <DeviceTypes
-              experimentId={experimentId}
-              entityType={entityType}
-              changeContentType={this.switchCurrentContentType}
-              selectDeviceType={this.selectDeviceType}
-            />
+            <DeviceTypes />
           );
         case DEVICES_CONTENT_TYPE:
           return (
