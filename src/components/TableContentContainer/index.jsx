@@ -14,11 +14,11 @@ const TableContentContainer = ({
 }) => (
   <>
     <Query query={isEmpty(queryArgs) ? query : query(...queryArgs)}>
-      {({ loading, error, data, refetch }) => {
+      {({ loading, error, data }) => {
         if (loading) return <p>Loading...</p>;
         if (error) return <p> No data to show</p>;
         return (
-          <ContentTable headerColumns={tableHeadColumns} refetchData={refetch}>
+          <ContentTable headerColumns={tableHeadColumns}>
             {data[dataType].map(renderRow)}
           </ContentTable>
         );

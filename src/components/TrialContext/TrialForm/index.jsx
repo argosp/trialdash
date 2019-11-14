@@ -14,21 +14,22 @@ import EditLocationIcon from '@material-ui/icons/EditLocation';
 import classnames from 'classnames';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
 import trialMutation from './utils/trialMutation';
-import Graph from '../../../apolloGraphql';
 // import Entity from './entity';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import Footer from '../../Footer';
-import { TRIALS_CONTENT_TYPE } from '../../../constants/base';
-import trialSetMutation from '../utils/trialSetMutation';
+import { TRIAL_SETS, TRIALS_CONTENT_TYPE } from '../../../constants/base';
 import StatusBadge from '../../StatusBadge';
 import StyledTabs from '../../StyledTabs';
 import SimpleButton from '../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../constants/icons';
-
-const graphql = new Graph();
+import trialSetsQuery from '../utils/trialSetQuery';
+import trialsQuery from '../utils/trialQuery';
 
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
@@ -246,24 +247,40 @@ class TrialForm extends React.Component {
     return list;
   }; */
 
-  constructor(props) {
-    super(props);
-    const properties = [];
-    props.trialSet.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+  state = {
+    trial: {
+      trialSetKey: this.props.match.params.trialSetKey,
+      experimentId: this.props.match.params.id,
+      id: '',
+      name: '',
+      numberOfDevices: 0,
+      properties: [],
+    },
+    trialSet: {},
+    tabValue: 0,
+    selectedViewIndex: 0,
+    isLocationPopupOpen: false,
+  };
 
-    this.state = {
-      trial: {
-        trialSetKey: props.trialSet.key,
-        experimentId: props.experimentId,
-        id: '',
-        name: '',
-        numberOfDevices: 0,
-        properties,
-      },
-      tabValue: 0,
-      selectedViewIndex: 0,
-      isLocationPopupOpen: false,
-    };
+  componentDidMount() {
+    const { client, match } = this.props;
+
+    client.query({ query: trialSetsQuery(match.params.id) }).then((data) => {
+      const trialSet = data.data.trialSets.find(
+        item => item.key === match.params.trialSetKey,
+      );
+      const properties = [];
+
+      trialSet.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+
+      this.setState(state => ({
+        trial: {
+          ...state.trial,
+          properties,
+        },
+        trialSet,
+      }));
+    });
   }
 
   changeView = (selectedViewIndex) => {
@@ -301,24 +318,41 @@ class TrialForm extends React.Component {
     }));
   };
 
-  cancelForm = () => {
-    this.props.changeContentType(TRIALS_CONTENT_TYPE);
+  closeForm = () => {
+    const { match, history } = this.props;
+
+    history.push(
+      `/experiments/${match.params.id}/${TRIAL_SETS}/${match.params.trialSetKey}/${TRIALS_CONTENT_TYPE}`,
+    );
   };
 
   submitTrial = async (newTrial) => {
-    const { trialSet, changeContentType, experimentId } = this.props;
+    const { match, client } = this.props;
+    const { trialSet } = this.state;
 
-    await graphql.sendMutation(trialMutation(newTrial));
+    await client.mutate({
+      mutation: trialMutation(newTrial),
+      update: (cache, mutationResult) => {
+        const { trials } = cache.readQuery({
+          query: trialsQuery(match.params.id, match.params.trialSetKey),
+        });
+
+        cache.writeQuery({ // set the new trial in Apollo cache
+          query: trialsQuery(match.params.id, match.params.trialSetKey),
+          data: { trials: trials.concat([mutationResult.data.addUpdateTrial]) },
+        });
+      },
+    });
 
     // update number of trials of the trial set
     const updatedTrialSet = { ...trialSet };
     let { numberOfTrials } = updatedTrialSet;
     numberOfTrials += 1;
     updatedTrialSet.numberOfTrials = numberOfTrials;
-    updatedTrialSet.experimentId = experimentId;
+    updatedTrialSet.experimentId = match.params.id;
 
-    await graphql.sendMutation(trialSetMutation(updatedTrialSet));
-    changeContentType(TRIALS_CONTENT_TYPE);
+    // await graphql.sendMutation(trialSetMutation(updatedTrialSet));
+    this.closeForm();
   };
 
   openLocationPopup = () => {
@@ -330,14 +364,19 @@ class TrialForm extends React.Component {
   };
 
   render() {
-    const { trialSet, classes, theme } = this.props;
-    const { tabValue, selectedViewIndex, isLocationPopupOpen } = this.state;
+    const { classes, theme } = this.props;
+    const {
+      tabValue,
+      selectedViewIndex,
+      isLocationPopupOpen,
+      trialSet,
+    } = this.state;
 
     return (
       <>
         <div>
           <ContentHeader
-            backButtonHandler={this.cancelForm}
+            backButtonHandler={this.closeForm}
             topDescription={trialSet.name}
             withBackButton
             rightDescription={(
@@ -346,7 +385,7 @@ class TrialForm extends React.Component {
                 title="New"
                 color={theme.palette.violet.main}
               />
-              )}
+            )}
             title="trial name goes here"
             className={classes.header}
             rightComponent={(
@@ -451,7 +490,7 @@ class TrialForm extends React.Component {
           </Dialog>
         </TabPanel>
         <Footer
-          cancelButtonHandler={this.cancelForm}
+          cancelButtonHandler={this.closeForm}
           saveButtonHandler={() => this.submitTrial(this.state.trial)}
         />
         {/* <form */}
@@ -603,4 +642,8 @@ class TrialForm extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(TrialForm);
+export default compose(
+  withRouter,
+  withApollo,
+  withStyles(styles, { withTheme: true }),
+)(TrialForm);
