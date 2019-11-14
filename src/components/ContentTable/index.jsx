@@ -7,36 +7,25 @@ import { withStyles } from '@material-ui/core';
 import { styles } from './styles';
 import StyledTableCell from '../StyledTableCell';
 
-class ContentTable extends React.Component {
-  componentDidMount() {
-    const { refetchData } = this.props;
-    if (refetchData) refetchData();
-  }
-
-  render() {
-    const { classes, headerColumns, children } = this.props;
-
-    return (
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            {headerColumns.map(({ title, key }) => (
-              <StyledTableCell align="left" key={key}>
-                {title}
-              </StyledTableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {children.map(child => (
-            <TableRow key={child.key} className={classes.tableBodyRow}>
-              {child}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    );
-  }
-}
+const ContentTable = ({ classes, headerColumns, children }) => (
+  <Table className={classes.table}>
+    <TableHead>
+      <TableRow>
+        {headerColumns.map(({ title, key }) => (
+          <StyledTableCell align="left" key={key}>
+            {title}
+          </StyledTableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {children.map(child => (
+        <TableRow key={child.key} className={classes.tableBodyRow}>
+          {child}
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+);
 
 export default withStyles(styles)(ContentTable);

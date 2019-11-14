@@ -9,36 +9,41 @@ import trialSetsSubscription from '../utils/trialSetsSubscription';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
-  TRIAL_SETS_CONTENT_TYPE,
+  TRIAL_SETS,
+  TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 
 class TrialSets extends React.Component {
-    renderTableRow = trialSet => (
-      <React.Fragment key={trialSet.key}>
-        <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
-        <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
-        <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
-        <StyledTableCell align="right">
-          <CustomTooltip title="Clone" ariaLabel="clone">
-            <CloneIcon />
-          </CustomTooltip>
-          <CustomTooltip title="Edit" ariaLabel="edit">
-            <PenIcon />
-          </CustomTooltip>
-          <CustomTooltip
-            title="Open"
-            className={this.props.classes.arrowButton}
-            ariaLabel="open"
-            // onClick={() => this.openTrialSet(trialSet)}
-          >
-            <ArrowForwardIosIcon />
-          </CustomTooltip>
-        </StyledTableCell>
-      </React.Fragment>
-    );
+    renderTableRow = (trialSet) => {
+      const { history, match, classes } = this.props;
+
+      return (
+        <React.Fragment key={trialSet.key}>
+          <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
+          <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
+          <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
+          <StyledTableCell align="right">
+            <CustomTooltip title="Clone" ariaLabel="clone">
+              <CloneIcon />
+            </CustomTooltip>
+            <CustomTooltip title="Edit" ariaLabel="edit">
+              <PenIcon />
+            </CustomTooltip>
+            <CustomTooltip
+              title="Open"
+              className={classes.arrowButton}
+              ariaLabel="open"
+              onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS}/${trialSet.key}/${TRIALS_CONTENT_TYPE}`)}
+            >
+              <ArrowForwardIosIcon />
+            </CustomTooltip>
+          </StyledTableCell>
+        </React.Fragment>
+      );
+    };
 
     render() {
       const tableHeadColumns = [

@@ -27,7 +27,17 @@ export default (trial) => {
     .replace(/"val":/g, 'val:')
 }
             ){
+              key
+              created
+              status
               id
+              name
+              trialSetKey
+              numberOfDevices
+              properties {
+                key
+                val
+              }
             }
       }`;
 };
