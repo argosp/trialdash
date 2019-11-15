@@ -6,6 +6,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 import { styles } from './styles';
 import StyledTableCell from '../StyledTableCell';
 
@@ -24,15 +25,29 @@ class ContentTable extends React.Component {
 
       this.setState({ [contentType]: items });
     } catch {
-      client
-        .query({
-          query,
-        })
-        .then((data) => {
-          this.setState({ [contentType]: data.data[contentType] });
-        });
+      this.getItemsFromServer();
     }
   }
+
+  componentDidUpdate(prevProps) {
+    const { match } = this.props;
+
+    if (prevProps.match.params.id !== match.params.id) {
+      this.getItemsFromServer();
+    }
+  }
+
+  getItemsFromServer = () => {
+    const { query, contentType, client } = this.props;
+
+    client
+      .query({
+        query,
+      })
+      .then((data) => {
+        this.setState({ [contentType]: data.data[contentType] });
+      });
+  };
 
   render() {
     const {
@@ -67,5 +82,6 @@ class ContentTable extends React.Component {
 
 export default compose(
   withApollo,
+  withRouter,
   withStyles(styles),
 )(ContentTable);
