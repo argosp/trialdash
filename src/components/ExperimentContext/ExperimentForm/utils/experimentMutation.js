@@ -15,7 +15,17 @@ export default (experiment) => {
             location:"${experiment.location}"
             numberOfTrials:${experiment.numberOfTrials}
           ){
+            begin
+            end
             id
+            location
+            numberOfTrials
+            project {
+              id
+              name
+              description
+              status
+             }  
         }
       }`;
 };

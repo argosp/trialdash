@@ -69,11 +69,4 @@ export default class Graph {
         .then(data => resolve(data.data));
     });
   }
-
-  sendQuery(query) {
-    return new Promise((resolve) => {
-      this.client.query({ query })
-        .then(data => resolve(data.data));
-    });
-  }
 }

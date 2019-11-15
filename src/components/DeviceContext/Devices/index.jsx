@@ -2,6 +2,8 @@ import React from 'react';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 import ContentHeader from '../../ContentHeader';
 import {
   DEVICE_TYPES,
@@ -10,12 +12,9 @@ import {
 import StyledTableCell from '../../StyledTableCell';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
-import Graph from '../../../apolloGraphql';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import devicesQuery from './utils/deviceQuery';
 import ContentTable from '../../ContentTable';
-
-const graphql = new Graph();
 
 class Devices extends React.Component {
   state = {
@@ -23,15 +22,17 @@ class Devices extends React.Component {
   };
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, client } = this.props;
 
-    graphql.sendQuery(deviceTypesQuery(match.params.id)).then((data) => {
-      this.setState({
-        deviceType: data.deviceTypes.find(
-          deviceType => deviceType.key === match.params.deviceTypeKey,
-        ),
+    client
+      .query({ query: deviceTypesQuery(match.params.id) })
+      .then((data) => {
+        this.setState({
+          deviceType: data.data.deviceTypes.find(
+            deviceType => deviceType.key === match.params.deviceTypeKey,
+          ),
+        });
       });
-    });
   }
 
   renderTableRow = device => (
@@ -108,4 +109,7 @@ class Devices extends React.Component {
   }
 }
 
-export default withRouter(Devices);
+export default compose(
+  withApollo,
+  withRouter,
+)(Devices);

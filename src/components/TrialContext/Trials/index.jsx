@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
 import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
@@ -14,11 +15,8 @@ import { TRIAL_SETS, TRIALS_CONTENT_TYPE } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
-import Graph from '../../../apolloGraphql';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
-
-const graphql = new Graph();
 
 class Trials extends React.Component {
   state = {
@@ -26,15 +24,17 @@ class Trials extends React.Component {
   };
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, client } = this.props;
 
-    graphql.sendQuery(trialSetsQuery(match.params.id)).then((data) => {
-      this.setState({
-        trialSet: data.trialSets.find(
-          trialSet => trialSet.key === match.params.trialSetKey,
-        ),
+    client
+      .query({ query: trialSetsQuery(match.params.id) })
+      .then((data) => {
+        this.setState({
+          trialSet: data.data.trialSets.find(
+            trialSet => trialSet.key === match.params.trialSetKey,
+          ),
+        });
       });
-    });
   }
 
   renderTableRow = (trial) => {
@@ -136,5 +136,6 @@ class Trials extends React.Component {
 
 export default compose(
   withRouter,
+  withApollo,
   withStyles(styles, { withTheme: true }),
 )(Trials);
