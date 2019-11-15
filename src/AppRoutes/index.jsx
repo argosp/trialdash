@@ -7,14 +7,18 @@ import ExperimentForm from '../components/ExperimentContext/ExperimentForm';
 import AuthPage from '../components/AuthPage';
 import AddSetForm from '../components/AddSetForm';
 import DeviceTypes from '../components/DeviceContext/DeviceTypes';
+import deviceTypesQuery from '../components/DeviceContext/utils/deviceTypeQuery';
 import Trials from '../components/TrialContext/Trials';
 import TrialForm from '../components/TrialContext/TrialForm';
+import trialSetsQuery from '../components/TrialContext/utils/trialSetQuery';
 import Devices from '../components/DeviceContext/Devices';
 import DeviceForm from '../components/DeviceContext/DeviceForm';
 import {
   DEVICE_TYPES,
+  DEVICE_TYPES_CONTENT_TYPE,
   DEVICES_CONTENT_TYPE,
   TRIAL_SETS,
+  TRIAL_SETS_CONTENT_TYPE,
   TRIALS_CONTENT_TYPE,
 } from '../constants/base';
 
@@ -47,12 +51,28 @@ const AppRoutes = () => (
         <Route
           path="/experiments/:id/add-trial-set"
           exact
-          render={props => <AddSetForm {...props} formType={TRIAL_SETS} />}
+          render={props => (
+            <AddSetForm
+              {...props}
+              formType={TRIAL_SETS}
+              cacheQuery={trialSetsQuery}
+              itemsName={TRIAL_SETS_CONTENT_TYPE}
+              mutationName="addUpdateTrialSet"
+            />
+          )}
         />
         <Route
           path="/experiments/:id/add-device-type"
           exact
-          render={props => <AddSetForm {...props} formType={DEVICE_TYPES} />}
+          render={props => (
+            <AddSetForm
+              {...props}
+              formType={DEVICE_TYPES}
+              cacheQuery={deviceTypesQuery}
+              itemsName={DEVICE_TYPES_CONTENT_TYPE}
+              mutationName="addUpdateDeviceTypes"
+            />
+          )}
         />
         <Route
           path={`/experiments/:id/${TRIAL_SETS}/:trialSetKey/add-trial`}

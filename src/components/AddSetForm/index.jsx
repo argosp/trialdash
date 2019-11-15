@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import Box from '@material-ui/core/Box';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
-import Graph from '../../apolloGraphql';
+import { withApollo } from 'react-apollo';
 import {
   DEVICE_TYPES,
   TRIAL_SETS,
@@ -28,8 +28,7 @@ import { styles } from './styles';
 import trialSetMutation from '../TrialContext/utils/trialSetMutation';
 import EditFieldTypePanel from '../EditFieldTypePanel';
 import SimpleButton from '../SimpleButton';
-
-const graphql = new Graph();
+import { updateCache } from '../../apolloGraphql';
 
 class AddSetForm extends React.Component {
   state = {
@@ -121,9 +120,9 @@ class AddSetForm extends React.Component {
     }));
   };
 
-  submitEntity = (entity) => {
+  submitEntity = async (entity) => {
     const newEntity = entity;
-    const { formType, match, history } = this.props;
+    const { formType, match, history, client, cacheQuery, itemsName, mutationName } = this.props;
 
     // add number of field types to the device type
     if (DEVICE_TYPES === formType) {
@@ -134,14 +133,21 @@ class AddSetForm extends React.Component {
       ? deviceTypeMutation
       : trialSetMutation;
 
-    graphql
-      .sendMutation(mutation(newEntity))
-      .then(() => {
-        history.push(`/experiments/${match.params.id}/${formType}`);
-      })
-      .catch((err) => {
-        console.log(`error: ${err}`);
+    await client
+      .mutate({
+        mutation: mutation(newEntity),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            cacheQuery(match.params.id),
+            itemsName,
+            mutationName,
+          );
+        },
       });
+
+    history.push(`/experiments/${match.params.id}/${formType}`);
   };
 
   reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
@@ -405,5 +411,6 @@ class AddSetForm extends React.Component {
 
 export default compose(
   withRouter,
+  withApollo,
   withStyles(styles, { withTheme: true }),
 )(AddSetForm);

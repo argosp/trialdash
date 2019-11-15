@@ -3,7 +3,7 @@ import { ApolloProvider } from 'react-apollo';
 // eslint-disable-next-line
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Graph from './apolloGraphql';
+import { Graph } from './apolloGraphql';
 import './App.css';
 import theme from './theme';
 import AppRoutes from './AppRoutes';

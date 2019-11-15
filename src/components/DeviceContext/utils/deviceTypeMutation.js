@@ -28,7 +28,23 @@ export default (deviceType) => {
     .replace(/"trialField":/g, 'trialField:')
 }
             ) {
+                key
+                id
                 name
+                numberOfDevices
+                properties {
+                  key
+                  type
+                  id
+                  label
+                  description
+                  prefix
+                  suffix
+                  required
+                  template
+                  multipleValues
+                  trialField
+                }
             }
         }
         `;

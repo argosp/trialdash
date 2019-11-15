@@ -28,7 +28,24 @@ export default (trialSet) => {
     .replace(/"multipleValues":/g, 'multipleValues:')
     .replace(/"trialField":/g, 'trialField:')}
         ) {
-            name 
+            key
+            id
+            name
+            description
+            numberOfTrials
+            properties {
+              key
+              type
+              id
+              label
+              description
+              prefix
+              suffix
+              required
+              template
+              multipleValues
+              trialField
+            }
         }
     }
     `;

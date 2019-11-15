@@ -5,11 +5,8 @@ import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import deviceMutation from './utils/deviceMutation';
-import Graph from '../../../apolloGraphql';
-import {
-  DEVICE_TYPES,
-  DEVICES_CONTENT_TYPE,
-} from '../../../constants/base';
+import { Graph, updateCache } from '../../../apolloGraphql';
+import { DEVICE_TYPES, DEVICES_CONTENT_TYPE } from '../../../constants/base';
 import deviceTypeMutation from '../utils/deviceTypeMutation';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
@@ -21,38 +18,37 @@ import devicesQuery from '../Devices/utils/deviceQuery';
 const graphql = new Graph();
 
 class DeviceForm extends React.Component {
-    state = {
-      device: {
-        deviceTypeKey: this.props.match.params.deviceTypeKey,
-        experimentId: this.props.match.params.id,
-        id: '',
-        name: '',
-        properties: [],
-      },
-      deviceType: {},
-    };
+  state = {
+    device: {
+      deviceTypeKey: this.props.match.params.deviceTypeKey,
+      experimentId: this.props.match.params.id,
+      id: '',
+      name: '',
+      properties: [],
+    },
+    deviceType: {},
+  };
 
-    componentDidMount() {
-      const { client, match } = this.props;
+  componentDidMount() {
+    const { client, match } = this.props;
 
-      client.query({ query: deviceTypesQuery(match.params.id) })
-        .then((data) => {
-          const deviceType = data.data.deviceTypes.find(
-            item => item.key === match.params.deviceTypeKey,
-          );
-          const properties = [];
+    client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
+      const deviceType = data.data.deviceTypes.find(
+        item => item.key === match.params.deviceTypeKey,
+      );
+      const properties = [];
 
-          deviceType.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+      deviceType.properties.forEach(property => properties.push({ key: property.key, val: '' }));
 
-          this.setState(state => ({
-            device: {
-              ...state.device,
-              properties,
-            },
-            deviceType,
-          }));
-        });
-    }
+      this.setState(state => ({
+        device: {
+          ...state.device,
+          properties,
+        },
+        deviceType,
+      }));
+    });
+  }
 
   onPropertyChange = (e, propertyKey) => {
     const { value } = e.target;
@@ -96,14 +92,13 @@ class DeviceForm extends React.Component {
     await client.mutate({
       mutation: deviceMutation(newDevice),
       update: (cache, mutationResult) => {
-        const { devices } = cache.readQuery({
-          query: devicesQuery(match.params.id, match.params.deviceTypeKey),
-        });
-
-        cache.writeQuery({ // set the new device in Apollo cache
-          query: devicesQuery(match.params.id, match.params.deviceTypeKey),
-          data: { devices: devices.concat([mutationResult.data.addUpdateDevice]) },
-        });
+        updateCache(
+          cache,
+          mutationResult,
+          devicesQuery(match.params.id, match.params.deviceTypeKey),
+          DEVICES_CONTENT_TYPE,
+          'addUpdateDevice',
+        );
       },
     });
 
