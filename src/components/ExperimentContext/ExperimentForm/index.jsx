@@ -6,7 +6,8 @@ import MomentUtils from '@date-io/moment';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import moment from 'moment';
 import { Map, Marker, TileLayer } from 'react-leaflet';
-import Graph from '../../../apolloGraphql';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 import experimentMutation from './utils/experimentMutation';
 import ContentHeader from '../../ContentHeader';
 import Footer from '../../Footer';
@@ -15,8 +16,7 @@ import CustomInput from '../../CustomInput';
 import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
-
-const graphql = new Graph();
+import experimentsQuery from '../utils/experimentsQuery';
 
 class ExperimentForm extends React.Component {
   state = {
@@ -36,15 +36,29 @@ class ExperimentForm extends React.Component {
 
   endDatePickerRef = React.createRef();
 
-  submitExperiment = (newExperiment) => {
-    graphql
-      .sendMutation(experimentMutation(newExperiment))
-      .then(() => {
-        this.props.history.push('/experiments');
-      })
-      .catch((err) => {
-        console.log(`error: ${err}`);
-      });
+  submitExperiment = async (newExperiment) => {
+    const { client } = this.props;
+
+    await client.mutate({
+      mutation: experimentMutation(newExperiment),
+      update: (cache, mutationResult) => {
+        const { experimentsWithData } = cache.readQuery({
+          query: experimentsQuery,
+        });
+
+        // set the new experiment in Apollo cache
+        cache.writeQuery({
+          query: experimentsQuery,
+          data: {
+            experimentsWithData: experimentsWithData.concat([
+              mutationResult.data.addUpdateExperiment,
+            ]),
+          },
+        });
+      },
+    });
+
+    this.props.history.push('/experiments');
   };
 
   changeFormObject = (event, field) => {
@@ -247,4 +261,7 @@ class ExperimentForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(ExperimentForm);
+export default compose(
+  withApollo,
+  withStyles(styles),
+)(ExperimentForm);
