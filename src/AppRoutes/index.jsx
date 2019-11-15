@@ -9,8 +9,11 @@ import AddSetForm from '../components/AddSetForm';
 import DeviceTypes from '../components/DeviceContext/DeviceTypes';
 import Trials from '../components/TrialContext/Trials';
 import TrialForm from '../components/TrialContext/TrialForm';
+import Devices from '../components/DeviceContext/Devices';
+import DeviceForm from '../components/DeviceContext/DeviceForm';
 import {
   DEVICE_TYPES,
+  DEVICES_CONTENT_TYPE,
   TRIAL_SETS,
   TRIALS_CONTENT_TYPE,
 } from '../constants/base';
@@ -27,6 +30,17 @@ const AppRoutes = () => (
             from="/experiments/:id"
             to={`/experiments/:id/${TRIAL_SETS}`}
           />
+          <Redirect
+            exact
+            from={`/experiments/:id/${TRIAL_SETS}/:trialSetKey`}
+            to={`/experiments/:id/${TRIAL_SETS}/:trialSetKey/trials`}
+          />
+          <Redirect
+            exact
+            from={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey`}
+            to={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey/devices`}
+          />
+          {/* TODO Add redirect for assets */}
         </Switch>
         <Route path="/experiments" component={Experiments} exact />
         <Route path="/add-experiment" component={ExperimentForm} exact />
@@ -41,9 +55,14 @@ const AppRoutes = () => (
           render={props => <AddSetForm {...props} formType={DEVICE_TYPES} />}
         />
         <Route
-          path="/experiments/:id/trial-sets/:trialSetKey/add-trial"
+          path={`/experiments/:id/${TRIAL_SETS}/:trialSetKey/add-trial`}
           exact
           component={TrialForm}
+        />
+        <Route
+          path={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey/add-device`}
+          exact
+          component={DeviceForm}
         />
         <Route
           path={`/experiments/:id/${TRIAL_SETS}`}
@@ -59,6 +78,11 @@ const AppRoutes = () => (
         <Route
           path={`/experiments/:id/${TRIAL_SETS}/:trialSetKey/${TRIALS_CONTENT_TYPE}`}
           component={Trials}
+          exact
+        />
+        <Route
+          path={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey/${DEVICES_CONTENT_TYPE}`}
+          component={Devices}
           exact
         />
       </AuthPage>

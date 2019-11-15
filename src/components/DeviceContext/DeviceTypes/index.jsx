@@ -3,42 +3,47 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
-import TableContentContainer from '../../TableContentContainer';
+import ContentTable from '../../ContentTable';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
+  DEVICE_TYPES,
   DEVICE_TYPES_CONTENT_TYPE,
+  DEVICES_CONTENT_TYPE,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
-import deviceTypesSubscription from '../utils/deviceTypesSubscription';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 
 class DeviceTypes extends React.Component {
-    renderTableRow = deviceType => (
-      <React.Fragment key={deviceType.key}>
-        <StyledTableCell align="left">{deviceType.name}</StyledTableCell>
-        <StyledTableCell align="left">{deviceType.properties.length}</StyledTableCell>
-        <StyledTableCell align="left">{deviceType.numberOfDevices}</StyledTableCell>
-        <StyledTableCell align="right">
-          <CustomTooltip title="Clone" ariaLabel="clone">
-            <CloneIcon />
-          </CustomTooltip>
-          <CustomTooltip title="Edit" aria-label="edit">
-            <PenIcon />
-          </CustomTooltip>
-          <CustomTooltip
-            title="Open"
-            className={this.props.classes.arrowButton}
-            ariaLabel="open"
-            // onClick={() => this.openDeviceType(deviceType)}
-          >
-            <ArrowForwardIosIcon />
-          </CustomTooltip>
-        </StyledTableCell>
-      </React.Fragment>
-    );
+    renderTableRow = (deviceType) => {
+      const { history, match, classes } = this.props;
+
+      return (
+        <React.Fragment key={deviceType.key}>
+          <StyledTableCell align="left">{deviceType.name}</StyledTableCell>
+          <StyledTableCell align="left">{deviceType.properties.length}</StyledTableCell>
+          <StyledTableCell align="left">{deviceType.numberOfDevices}</StyledTableCell>
+          <StyledTableCell align="right">
+            <CustomTooltip title="Clone" ariaLabel="clone">
+              <CloneIcon />
+            </CustomTooltip>
+            <CustomTooltip title="Edit" aria-label="edit">
+              <PenIcon />
+            </CustomTooltip>
+            <CustomTooltip
+              title="Open"
+              className={classes.arrowButton}
+              ariaLabel="open"
+              onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES}/${deviceType.key}/${DEVICES_CONTENT_TYPE}`)}
+            >
+              <ArrowForwardIosIcon />
+            </CustomTooltip>
+          </StyledTableCell>
+        </React.Fragment>
+      );
+    };
 
     render() {
       const tableHeadColumns = [
@@ -66,13 +71,10 @@ class DeviceTypes extends React.Component {
             addButtonText="Add device type"
             addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-device-type`)}
           />
-          <TableContentContainer
-            subscriptionUpdateField="deviceTypesUpdated"
-            dataType={DEVICE_TYPES_CONTENT_TYPE}
-            query={deviceTypesQuery}
-            queryArgs={[match.params.id]}
+          <ContentTable
+            contentType={DEVICE_TYPES_CONTENT_TYPE}
+            query={deviceTypesQuery(match.params.id)}
             tableHeadColumns={tableHeadColumns}
-            subscription={deviceTypesSubscription}
             renderRow={this.renderTableRow}
           />
         </>

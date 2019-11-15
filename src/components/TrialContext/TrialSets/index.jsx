@@ -3,9 +3,8 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
-import TableContentContainer from '../../TableContentContainer';
+import ContentTable from '../../ContentTable';
 import trialSetsQuery from '../utils/trialSetQuery';
-import trialSetsSubscription from '../utils/trialSetsSubscription';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
@@ -71,13 +70,10 @@ class TrialSets extends React.Component {
             addButtonText="Add trial set"
             addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-trial-set`)}
           />
-          <TableContentContainer
-            subscriptionUpdateField="trialSetsUpdated"
-            dataType={TRIAL_SETS_CONTENT_TYPE}
-            query={trialSetsQuery}
-            queryArgs={[match.params.id]}
+          <ContentTable
+            contentType={TRIAL_SETS_CONTENT_TYPE}
+            query={trialSetsQuery(match.params.id)}
             tableHeadColumns={tableHeadColumns}
-            subscription={trialSetsSubscription}
             renderRow={this.renderTableRow}
           />
         </>

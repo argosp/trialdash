@@ -1,33 +1,58 @@
 import React from 'react';
 import update from 'immutability-helper';
 import { withStyles } from '@material-ui/core';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 import deviceMutation from './utils/deviceMutation';
 import Graph from '../../../apolloGraphql';
-import { DEVICES_CONTENT_TYPE } from '../../../constants/base';
+import {
+  DEVICE_TYPES,
+  DEVICES_CONTENT_TYPE,
+} from '../../../constants/base';
 import deviceTypeMutation from '../utils/deviceTypeMutation';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import { styles } from './styles';
 import Footer from '../../Footer';
+import deviceTypesQuery from '../utils/deviceTypeQuery';
+import devicesQuery from '../Devices/utils/deviceQuery';
 
 const graphql = new Graph();
 
 class DeviceForm extends React.Component {
-  constructor(props) {
-    super(props);
-    const properties = [];
-    props.deviceType.properties.forEach(property => properties.push({ key: property.key, val: '' }));
-
-    this.state = {
+    state = {
       device: {
-        deviceTypeKey: props.deviceType.key,
-        experimentId: props.experimentId,
+        deviceTypeKey: this.props.match.params.deviceTypeKey,
+        experimentId: this.props.match.params.id,
         id: '',
         name: '',
-        properties,
+        properties: [],
       },
+      deviceType: {},
     };
-  }
+
+    componentDidMount() {
+      const { client, match } = this.props;
+
+      client.query({ query: deviceTypesQuery(match.params.id) })
+        .then((data) => {
+          const deviceType = data.data.deviceTypes.find(
+            item => item.key === match.params.deviceTypeKey,
+          );
+          const properties = [];
+
+          deviceType.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+
+          this.setState(state => ({
+            device: {
+              ...state.device,
+              properties,
+            },
+            deviceType,
+          }));
+        });
+    }
 
   onPropertyChange = (e, propertyKey) => {
     const { value } = e.target;
@@ -56,28 +81,46 @@ class DeviceForm extends React.Component {
     }));
   };
 
-  cancelForm = () => {
-    this.props.changeContentType(DEVICES_CONTENT_TYPE);
+  closeForm = () => {
+    const { match, history } = this.props;
+
+    history.push(
+      `/experiments/${match.params.id}/${DEVICE_TYPES}/${match.params.deviceTypeKey}/${DEVICES_CONTENT_TYPE}`,
+    );
   };
 
   submitDevice = async (newDevice) => {
-    const { deviceType, changeContentType, experimentId } = this.props;
+    const { match, client } = this.props;
+    const { deviceType } = this.state;
 
-    await graphql.sendMutation(deviceMutation(newDevice));
+    await client.mutate({
+      mutation: deviceMutation(newDevice),
+      update: (cache, mutationResult) => {
+        const { devices } = cache.readQuery({
+          query: devicesQuery(match.params.id, match.params.deviceTypeKey),
+        });
+
+        cache.writeQuery({ // set the new device in Apollo cache
+          query: devicesQuery(match.params.id, match.params.deviceTypeKey),
+          data: { devices: devices.concat([mutationResult.data.addUpdateDevice]) },
+        });
+      },
+    });
 
     // update number of devices of the device type
     const updatedDeviceType = { ...deviceType };
     let { numberOfDevices } = updatedDeviceType;
     numberOfDevices += 1;
     updatedDeviceType.numberOfDevices = numberOfDevices;
-    updatedDeviceType.experimentId = experimentId;
+    updatedDeviceType.experimentId = match.params.id;
 
     await graphql.sendMutation(deviceTypeMutation(updatedDeviceType));
-    changeContentType(DEVICES_CONTENT_TYPE);
+    this.closeForm();
   };
 
   render() {
-    const { deviceType, classes } = this.props;
+    const { classes } = this.props;
+    const { deviceType } = this.state;
 
     return (
       <>
@@ -112,7 +155,7 @@ class DeviceForm extends React.Component {
           ))
           : null}
         <Footer
-          cancelButtonHandler={this.cancelForm}
+          cancelButtonHandler={this.closeForm}
           saveButtonHandler={() => this.submitDevice(this.state.device)}
         />
       </>
@@ -120,4 +163,8 @@ class DeviceForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(DeviceForm);
+export default compose(
+  withRouter,
+  withApollo,
+  withStyles(styles),
+)(DeviceForm);
