@@ -30,6 +30,7 @@ import SimpleButton from '../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../constants/icons';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
+import { updateCache } from '../../../apolloGraphql';
 
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
@@ -333,14 +334,13 @@ class TrialForm extends React.Component {
     await client.mutate({
       mutation: trialMutation(newTrial),
       update: (cache, mutationResult) => {
-        const { trials } = cache.readQuery({
-          query: trialsQuery(match.params.id, match.params.trialSetKey),
-        });
-
-        cache.writeQuery({ // set the new trial in Apollo cache
-          query: trialsQuery(match.params.id, match.params.trialSetKey),
-          data: { trials: trials.concat([mutationResult.data.addUpdateTrial]) },
-        });
+        updateCache(
+          cache,
+          mutationResult,
+          trialsQuery(match.params.id, match.params.trialSetKey),
+          TRIALS_CONTENT_TYPE,
+          'addUpdateTrial',
+        );
       },
     });
 

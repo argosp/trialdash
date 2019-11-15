@@ -6,7 +6,7 @@ import { getMainDefinition } from 'apollo-utilities';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import config from '../config';
 
-export default class Graph {
+export class Graph {
   constructor() {
     this.apiUrl = `${config.url}/graphql`;
     this.apiWs = `${config.ws}/subscriptions`;
@@ -70,3 +70,19 @@ export default class Graph {
     });
   }
 }
+
+export const updateCache = (cache, mutationResult, query, itemsName, mutationName) => {
+  const items = cache.readQuery({
+    query,
+  })[itemsName];
+
+  // set the new item in the Apollo cache
+  cache.writeQuery({
+    query,
+    data: {
+      [itemsName]: items.concat([
+        mutationResult.data[mutationName],
+      ]),
+    },
+  });
+};

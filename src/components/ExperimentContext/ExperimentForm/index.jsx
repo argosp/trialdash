@@ -17,6 +17,8 @@ import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
 import experimentsQuery from '../utils/experimentsQuery';
+import { EXPERIMENTS_WITH_DATA_CONTENT_TYPE } from '../../../constants/base';
+import { updateCache } from '../../../apolloGraphql';
 
 class ExperimentForm extends React.Component {
   state = {
@@ -37,28 +39,22 @@ class ExperimentForm extends React.Component {
   endDatePickerRef = React.createRef();
 
   submitExperiment = async (newExperiment) => {
-    const { client } = this.props;
+    const { client, history } = this.props;
 
     await client.mutate({
       mutation: experimentMutation(newExperiment),
       update: (cache, mutationResult) => {
-        const { experimentsWithData } = cache.readQuery({
-          query: experimentsQuery,
-        });
-
-        // set the new experiment in Apollo cache
-        cache.writeQuery({
-          query: experimentsQuery,
-          data: {
-            experimentsWithData: experimentsWithData.concat([
-              mutationResult.data.addUpdateExperiment,
-            ]),
-          },
-        });
+        updateCache(
+          cache,
+          mutationResult,
+          experimentsQuery,
+          EXPERIMENTS_WITH_DATA_CONTENT_TYPE,
+          'addUpdateExperiment',
+        );
       },
     });
 
-    this.props.history.push('/experiments');
+    history.push('/experiments');
   };
 
   changeFormObject = (event, field) => {

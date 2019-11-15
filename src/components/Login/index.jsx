@@ -17,7 +17,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 // APOLLO GRAPHQL
 import gql from 'graphql-tag';
-import Graph from '../../apolloGraphql';
+import { Graph } from '../../apolloGraphql';
 import { styles } from './styles';
 import setAuthToken from './setAuthToken';
 
