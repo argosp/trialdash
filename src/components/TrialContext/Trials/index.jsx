@@ -6,12 +6,11 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
-import { withApollo } from 'react-apollo';
 import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import { TRIAL_SETS } from '../../../constants/base';
+import { TRIAL_SETS, TRIALS_CONTENT_TYPE } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
@@ -23,28 +22,11 @@ const graphql = new Graph();
 
 class Trials extends React.Component {
   state = {
-    trials: [],
     trialSet: {},
   };
 
   componentDidMount() {
-    const { match, client } = this.props;
-
-    try {
-      const { trials } = client.readQuery({
-        query: trialsQuery(match.params.id, match.params.trialSetKey),
-      });
-
-      this.setState({ trials });
-    } catch {
-      client
-        .query({
-          query: trialsQuery(match.params.id, match.params.trialSetKey),
-        })
-        .then((data) => {
-          this.setState({ trials: data.data.trials });
-        });
-    }
+    const { match } = this.props;
 
     graphql.sendQuery(trialSetsQuery(match.params.id)).then((data) => {
       this.setState({
@@ -124,7 +106,7 @@ class Trials extends React.Component {
 
   render() {
     const { history, match } = this.props;
-    const { trialSet, trials } = this.state;
+    const { trialSet } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
     return (
@@ -141,9 +123,12 @@ class Trials extends React.Component {
             `/experiments/${match.params.id}/${TRIAL_SETS}/${match.params.trialSetKey}/add-trial`,
           )}
         />
-        <ContentTable headerColumns={tableHeadColumns}>
-          {trials.map(this.renderTableRow)}
-        </ContentTable>
+        <ContentTable
+          contentType={TRIALS_CONTENT_TYPE}
+          query={trialsQuery(match.params.id, match.params.trialSetKey)}
+          tableHeadColumns={tableHeadColumns}
+          renderRow={this.renderTableRow}
+        />
       </>
     );
   }
@@ -151,6 +136,5 @@ class Trials extends React.Component {
 
 export default compose(
   withRouter,
-  withApollo,
   withStyles(styles, { withTheme: true }),
 )(Trials);

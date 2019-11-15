@@ -6,10 +6,13 @@ import Dotdotdot from 'react-dotdotdot';
 import { Link } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
-import TableContentContainer from '../../TableContentContainer';
+import ContentTable from '../../ContentTable';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
-import { EXPERIMENTS_WITH_DATA_CONTENT_TYPE, TRIAL_SETS } from '../../../constants/base';
+import {
+  EXPERIMENTS_WITH_DATA_CONTENT_TYPE,
+  TRIAL_SETS,
+} from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
 import StatusBadge from '../../StatusBadge';
@@ -97,12 +100,10 @@ class Experiments extends React.Component {
           addButtonText="Add experiment"
           addButtonHandler={() => this.props.history.push('/add-experiment')}
         />
-        <TableContentContainer
-          // subscriptionUpdateField="experimentsUpdated"
-          dataType={EXPERIMENTS_WITH_DATA_CONTENT_TYPE}
+        <ContentTable
+          contentType={EXPERIMENTS_WITH_DATA_CONTENT_TYPE}
           query={experimentsQuery}
           tableHeadColumns={tableHeadColumns}
-          // subscription={}
           renderRow={this.renderTableRow}
         />
       </>

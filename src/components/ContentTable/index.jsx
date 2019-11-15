@@ -4,28 +4,68 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import React from 'react';
 import { withStyles } from '@material-ui/core';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 import { styles } from './styles';
 import StyledTableCell from '../StyledTableCell';
 
-const ContentTable = ({ classes, headerColumns, children }) => (
-  <Table className={classes.table}>
-    <TableHead>
-      <TableRow>
-        {headerColumns.map(({ title, key }) => (
-          <StyledTableCell align="left" key={key}>
-            {title}
-          </StyledTableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {children.map(child => (
-        <TableRow key={child.key} className={classes.tableBodyRow}>
-          {child}
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-);
+class ContentTable extends React.Component {
+  state = {
+    [this.props.contentType]: [],
+  };
 
-export default withStyles(styles)(ContentTable);
+  componentDidMount() {
+    const { client, contentType, query } = this.props;
+
+    try {
+      const items = client.readQuery({
+        query,
+      })[contentType];
+
+      this.setState({ [contentType]: items });
+    } catch {
+      client
+        .query({
+          query,
+        })
+        .then((data) => {
+          this.setState({ [contentType]: data.data[contentType] });
+        });
+    }
+  }
+
+  render() {
+    const {
+      tableHeadColumns,
+      renderRow,
+      contentType,
+      classes,
+    } = this.props;
+
+    return (
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            {tableHeadColumns.map(({ title, key }) => (
+              <StyledTableCell align="left" key={key}>
+                {title}
+              </StyledTableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {this.state[contentType].map(renderRow).map(child => (
+            <TableRow key={child.key} className={classes.tableBodyRow}>
+              {child}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  }
+}
+
+export default compose(
+  withApollo,
+  withStyles(styles),
+)(ContentTable);
