@@ -18,12 +18,13 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import trialMutation from './utils/trialMutation';
+import trialSetMutation from '../utils/trialSetMutation';
 // import Entity from './entity';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import Footer from '../../Footer';
-import { TRIAL_SETS, TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import { TRIAL_SETS, TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE } from '../../../constants/base';
 import StatusBadge from '../../StatusBadge';
 import StyledTabs from '../../StyledTabs';
 import SimpleButton from '../../SimpleButton';
@@ -346,12 +347,23 @@ class TrialForm extends React.Component {
 
     // update number of trials of the trial set
     const updatedTrialSet = { ...trialSet };
-    let { numberOfTrials } = updatedTrialSet;
-    numberOfTrials += 1;
-    updatedTrialSet.numberOfTrials = numberOfTrials;
+    updatedTrialSet.numberOfTrials += 1;
     updatedTrialSet.experimentId = match.params.id;
 
-    // await graphql.sendMutation(trialSetMutation(updatedTrialSet));
+    await client.mutate({
+      mutation: trialSetMutation(updatedTrialSet),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          trialSetsQuery(match.params.id),
+          TRIAL_SETS_CONTENT_TYPE,
+          'addUpdateTrialSet',
+          true,
+        );
+      },
+    });
+
     this.closeForm();
   };
 

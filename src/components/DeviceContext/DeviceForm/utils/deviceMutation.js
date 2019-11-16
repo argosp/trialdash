@@ -16,7 +16,14 @@ export default (device) => {
     .replace(/"val":/g, 'val:')
 }
             ){
+            key
             id
+            name
+            deviceTypeKey
+            properties {
+              key
+              val
+            }
         }
       }`;
 };
