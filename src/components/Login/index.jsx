@@ -1,7 +1,5 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-
-// MATERIAL-UI
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,22 +12,17 @@ import LockIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-
-// APOLLO GRAPHQL
 import gql from 'graphql-tag';
-import { Graph } from '../../apolloGraphql';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 import { styles } from './styles';
 import setAuthToken from './setAuthToken';
 
-const graph = new Graph();
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+    state = {
       email: '',
       password: '',
     };
-  }
 
   onInputChange = (e) => {
     this.setState({
@@ -37,8 +30,10 @@ class Login extends React.Component {
     });
   };
 
-  login = (e) => {
+  login = async (e) => {
     e.preventDefault();
+
+    const { client, history } = this.props;
     const mutation = gql`
                   mutation {
                     login(email: "${this.state.email}",
@@ -48,20 +43,21 @@ class Login extends React.Component {
                     }
                   }
             `;
-    graph.sendMutation(mutation).then((data) => {
-      if (data.login && data.login.error) {
-        console.log('Login error', data.login.error);
-      } else {
-        localStorage.setItem('jwt', data.login.token);
-        localStorage.setItem('uid', data.login.uid);
-        setAuthToken(data.login.token);
-        this.props.history.push('/experiments');
-      }
-    });
+    const { data } = await client.mutate({ mutation });
+
+    if (data.login && data.login.error) {
+      console.log('Login error', data.login.error);
+    } else {
+      localStorage.setItem('jwt', data.login.token);
+      localStorage.setItem('uid', data.login.uid);
+      setAuthToken(data.login.token);
+      history.push('/experiments');
+    }
   };
 
   render() {
     const { classes } = this.props;
+
     if (localStorage.getItem('jwt')) {
       return <Redirect to="/" />;
     }
@@ -119,4 +115,7 @@ class Login extends React.Component {
   }
 }
 
-export default withStyles(styles)(Login);
+export default compose(
+  withApollo,
+  withStyles(styles),
+)(Login);
