@@ -14,12 +14,14 @@ import trialSetsQuery from '../components/TrialContext/utils/trialSetQuery';
 import Devices from '../components/DeviceContext/Devices';
 import DeviceForm from '../components/DeviceContext/DeviceForm';
 import {
+  DEVICE_TYPES_DASH,
   DEVICE_TYPES,
-  DEVICE_TYPES_CONTENT_TYPE,
-  DEVICES_CONTENT_TYPE,
+  DEVICES,
+  TRIAL_SETS_DASH,
   TRIAL_SETS,
-  TRIAL_SETS_CONTENT_TYPE,
-  TRIALS_CONTENT_TYPE,
+  TRIALS,
+  TRIAL_SET_MUTATION,
+  DEVICE_TYPE_MUTATION,
 } from '../constants/base';
 
 const AppRoutes = () => (
@@ -32,17 +34,17 @@ const AppRoutes = () => (
           <Redirect
             exact
             from="/experiments/:id"
-            to={`/experiments/:id/${TRIAL_SETS}`}
+            to={`/experiments/:id/${TRIAL_SETS_DASH}`}
           />
           <Redirect
             exact
-            from={`/experiments/:id/${TRIAL_SETS}/:trialSetKey`}
-            to={`/experiments/:id/${TRIAL_SETS}/:trialSetKey/trials`}
+            from={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey`}
+            to={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey/trials`}
           />
           <Redirect
             exact
-            from={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey`}
-            to={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey/devices`}
+            from={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey`}
+            to={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/devices`}
           />
           {/* TODO Add redirect for assets */}
         </Switch>
@@ -54,10 +56,10 @@ const AppRoutes = () => (
           render={props => (
             <AddSetForm
               {...props}
-              formType={TRIAL_SETS}
+              formType={TRIAL_SETS_DASH}
               cacheQuery={trialSetsQuery}
-              itemsName={TRIAL_SETS_CONTENT_TYPE}
-              mutationName="addUpdateTrialSet"
+              itemsName={TRIAL_SETS}
+              mutationName={TRIAL_SET_MUTATION}
             />
           )}
         />
@@ -67,41 +69,41 @@ const AppRoutes = () => (
           render={props => (
             <AddSetForm
               {...props}
-              formType={DEVICE_TYPES}
+              formType={DEVICE_TYPES_DASH}
               cacheQuery={deviceTypesQuery}
-              itemsName={DEVICE_TYPES_CONTENT_TYPE}
-              mutationName="addUpdateDeviceTypes"
+              itemsName={DEVICE_TYPES}
+              mutationName={DEVICE_TYPE_MUTATION}
             />
           )}
         />
         <Route
-          path={`/experiments/:id/${TRIAL_SETS}/:trialSetKey/add-trial`}
+          path={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey/add-trial`}
           exact
           component={TrialForm}
         />
         <Route
-          path={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey/add-device`}
+          path={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/add-device`}
           exact
           component={DeviceForm}
         />
         <Route
-          path={`/experiments/:id/${TRIAL_SETS}`}
+          path={`/experiments/:id/${TRIAL_SETS_DASH}`}
           component={TrialSets}
           exact
         />
         <Route
-          path={`/experiments/:id/${DEVICE_TYPES}`}
+          path={`/experiments/:id/${DEVICE_TYPES_DASH}`}
           component={DeviceTypes}
           exact
         />
         {/* <Route path={`/experiments/:id/${ASSETS}`} component={Assets} exact /> */}
         <Route
-          path={`/experiments/:id/${TRIAL_SETS}/:trialSetKey/${TRIALS_CONTENT_TYPE}`}
+          path={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey/${TRIALS}`}
           component={Trials}
           exact
         />
         <Route
-          path={`/experiments/:id/${DEVICE_TYPES}/:deviceTypeKey/${DEVICES_CONTENT_TYPE}`}
+          path={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/${DEVICES}`}
           component={Devices}
           exact
         />

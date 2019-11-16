@@ -1,7 +1,7 @@
-import { TRIAL_SETS, ASSETS, DEVICE_TYPES } from './base';
+import { TRIAL_SETS_DASH, ASSETS, DEVICE_TYPES_DASH } from './base';
 
 export const TABS = {
-  0: TRIAL_SETS,
+  0: TRIAL_SETS_DASH,
   1: ASSETS,
-  2: DEVICE_TYPES,
+  2: DEVICE_TYPES_DASH,
 };

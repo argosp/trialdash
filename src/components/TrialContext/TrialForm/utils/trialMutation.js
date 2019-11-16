@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { TRIAL_MUTATION } from '../../../../constants/base';
 
 /* function cleanEntity(entity) {
   return JSON.stringify(entity)
@@ -14,7 +15,7 @@ export default (trial) => {
   const key = trial.key ? trial.key : `${trial.experimentId}_${Date.now()}`;
 
   return gql`mutation {
-        addUpdateTrial(
+        ${TRIAL_MUTATION}(
             key:"${key}",
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${trial.experimentId}"

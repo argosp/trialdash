@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
 import uuid from 'uuid/v4';
+import { EXPERIMENT_MUTATION } from '../../../../constants/base';
 
 export default (experiment) => {
   const id = experiment.id ? experiment.id : uuid();
 
   return gql`mutation {
-        addUpdateExperiment(
+        ${EXPERIMENT_MUTATION}(
             uid:"${localStorage.getItem('uid')}"
             id:"${id}"
             name:"${experiment.name}"

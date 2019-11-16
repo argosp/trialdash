@@ -19,7 +19,7 @@ import { Query, withApollo } from 'react-apollo';
 import { styles } from './styles';
 import StyledTabs from '../StyledTabs';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
-import { TRIAL_SETS } from '../../constants/base';
+import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
 
 const UserData = ({ classes, handleProfileMenuClick }) => (
@@ -111,7 +111,7 @@ class Header extends React.Component {
 
   selectExperiment = (experimentId) => {
     const { history, client } = this.props;
-    history.push(`/experiments/${experimentId}/${TRIAL_SETS}`);
+    history.push(`/experiments/${experimentId}/${TRIAL_SETS_DASH}`);
     client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
     this.handleMenuClose('anchorExperimentsMenu');
   };

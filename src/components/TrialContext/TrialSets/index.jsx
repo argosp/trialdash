@@ -8,8 +8,9 @@ import trialSetsQuery from '../utils/trialSetQuery';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
+  TRIAL_SETS_DASH,
   TRIAL_SETS,
-  TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE,
+  TRIALS,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
@@ -35,7 +36,7 @@ class TrialSets extends React.Component {
               title="Open"
               className={classes.arrowButton}
               ariaLabel="open"
-              onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS}/${trialSet.key}/${TRIALS_CONTENT_TYPE}`)}
+              onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}
             >
               <ArrowForwardIosIcon />
             </CustomTooltip>
@@ -71,7 +72,7 @@ class TrialSets extends React.Component {
             addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-trial-set`)}
           />
           <ContentTable
-            contentType={TRIAL_SETS_CONTENT_TYPE}
+            contentType={TRIAL_SETS}
             query={trialSetsQuery(match.params.id)}
             tableHeadColumns={tableHeadColumns}
             renderRow={this.renderTableRow}

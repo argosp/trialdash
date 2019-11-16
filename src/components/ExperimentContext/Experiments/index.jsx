@@ -10,8 +10,8 @@ import ContentTable from '../../ContentTable';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
-  EXPERIMENTS_WITH_DATA_CONTENT_TYPE,
-  TRIAL_SETS,
+  EXPERIMENTS_WITH_DATA,
+  TRIAL_SETS_DASH,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
@@ -57,7 +57,7 @@ class Experiments extends React.Component {
             <Link
               to={() => {
                 client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
-                return `/experiments/${experiment.project.id}/${TRIAL_SETS}`;
+                return `/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`;
               }}
               className={classes.arrowButtonLink}
             >
@@ -101,7 +101,7 @@ class Experiments extends React.Component {
           addButtonHandler={() => this.props.history.push('/add-experiment')}
         />
         <ContentTable
-          contentType={EXPERIMENTS_WITH_DATA_CONTENT_TYPE}
+          contentType={EXPERIMENTS_WITH_DATA}
           query={experimentsQuery}
           tableHeadColumns={tableHeadColumns}
           renderRow={this.renderTableRow}

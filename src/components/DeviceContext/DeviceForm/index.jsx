@@ -7,8 +7,9 @@ import { withRouter } from 'react-router-dom';
 import deviceMutation from './utils/deviceMutation';
 import { updateCache } from '../../../apolloGraphql';
 import {
-  DEVICE_TYPES, DEVICE_TYPES_CONTENT_TYPE,
-  DEVICES_CONTENT_TYPE,
+  DEVICE_TYPES_DASH,
+  DEVICE_TYPES,
+  DEVICES, DEVICE_MUTATION, DEVICE_TYPE_MUTATION,
 } from '../../../constants/base';
 import deviceTypeMutation from '../utils/deviceTypeMutation';
 import ContentHeader from '../../ContentHeader';
@@ -82,7 +83,7 @@ class DeviceForm extends React.Component {
     const { match, history } = this.props;
 
     history.push(
-      `/experiments/${match.params.id}/${DEVICE_TYPES}/${match.params.deviceTypeKey}/${DEVICES_CONTENT_TYPE}`,
+      `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/${DEVICES}`,
     );
   };
 
@@ -97,8 +98,8 @@ class DeviceForm extends React.Component {
           cache,
           mutationResult,
           devicesQuery(match.params.id, match.params.deviceTypeKey),
-          DEVICES_CONTENT_TYPE,
-          'addUpdateDevice',
+          DEVICES,
+          DEVICE_MUTATION,
         );
       },
     });
@@ -115,8 +116,8 @@ class DeviceForm extends React.Component {
           cache,
           mutationResult,
           deviceTypesQuery(match.params.id),
-          DEVICE_TYPES_CONTENT_TYPE,
-          'addUpdateDeviceTypes',
+          DEVICE_TYPES,
+          DEVICE_TYPE_MUTATION,
           true,
         );
       },
