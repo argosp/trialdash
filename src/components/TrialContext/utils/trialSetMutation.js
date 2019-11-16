@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { TRIAL_SET_MUTATION } from '../../../constants/base';
 
 export default (trialSet) => {
   const key = trialSet.key
@@ -7,7 +8,7 @@ export default (trialSet) => {
 
   return gql`
   mutation {
-    addUpdateTrialSet(
+    ${TRIAL_SET_MUTATION}(
         uid: "${localStorage.getItem('uid')}",
         experimentId:"${trialSet.experimentId}"
         key: "${key}",

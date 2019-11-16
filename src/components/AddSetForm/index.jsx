@@ -10,8 +10,8 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import {
-  DEVICE_TYPES,
-  TRIAL_SETS,
+  DEVICE_TYPES_DASH,
+  TRIAL_SETS_DASH,
 } from '../../constants/base';
 import FieldTypesPanel from '../FieldTypesPanel';
 import deviceTypeMutation from '../DeviceContext/utils/deviceTypeMutation';
@@ -33,7 +33,7 @@ import { updateCache } from '../../apolloGraphql';
 class AddSetForm extends React.Component {
   state = {
     formObject:
-      DEVICE_TYPES === this.props.formType
+      DEVICE_TYPES_DASH === this.props.formType
         ? {
           key: uuid(),
           id: '',
@@ -125,11 +125,11 @@ class AddSetForm extends React.Component {
     const { formType, match, history, client, cacheQuery, itemsName, mutationName } = this.props;
 
     // add number of field types to the device type
-    if (DEVICE_TYPES === formType) {
+    if (DEVICE_TYPES_DASH === formType) {
       newEntity.numberOfFields = this.state.formObject.properties.length;
     }
 
-    const mutation = DEVICE_TYPES === formType
+    const mutation = DEVICE_TYPES_DASH === formType
       ? deviceTypeMutation
       : trialSetMutation;
 
@@ -278,7 +278,7 @@ class AddSetForm extends React.Component {
       >
         <ContentHeader
           title={
-            DEVICE_TYPES === formType
+            DEVICE_TYPES_DASH === formType
               ? 'Add device type'
               : 'Add trial set'
           }
@@ -320,7 +320,7 @@ class AddSetForm extends React.Component {
               />
             </Grid>
           </Grid>
-          {TRIAL_SETS === formType ? (
+          {TRIAL_SETS_DASH === formType ? (
             <Grid container spacing={4}>
               <Grid item xs={6}>
                 <CustomInput

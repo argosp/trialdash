@@ -6,8 +6,8 @@ import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import ContentHeader from '../../ContentHeader';
 import {
-  DEVICE_TYPES,
-  DEVICES_CONTENT_TYPE,
+  DEVICE_TYPES_DASH,
+  DEVICES,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
@@ -92,14 +92,14 @@ class Devices extends React.Component {
           searchPlaceholder="Search Devices"
           addButtonText="Add device"
           withBackButton
-          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES}`)}
+          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
           rightDescription={deviceType.id}
           addButtonHandler={() => history.push(
-            `/experiments/${match.params.id}/${DEVICE_TYPES}/${match.params.deviceTypeKey}/add-device`,
+            `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`,
           )}
         />
         <ContentTable
-          contentType={DEVICES_CONTENT_TYPE}
+          contentType={DEVICES}
           query={devicesQuery(match.params.id, match.params.deviceTypeKey)}
           tableHeadColumns={tableHeadColumns}
           renderRow={this.renderTableRow}

@@ -17,7 +17,7 @@ import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
 import experimentsQuery from '../utils/experimentsQuery';
-import { EXPERIMENTS_WITH_DATA_CONTENT_TYPE } from '../../../constants/base';
+import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
 
 class ExperimentForm extends React.Component {
@@ -48,8 +48,8 @@ class ExperimentForm extends React.Component {
           cache,
           mutationResult,
           experimentsQuery,
-          EXPERIMENTS_WITH_DATA_CONTENT_TYPE,
-          'addUpdateExperiment',
+          EXPERIMENTS_WITH_DATA,
+          EXPERIMENT_MUTATION,
         );
       },
     });

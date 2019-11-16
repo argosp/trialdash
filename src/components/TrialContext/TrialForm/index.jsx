@@ -19,7 +19,13 @@ import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import Footer from '../../Footer';
-import { TRIAL_SETS, TRIAL_SETS_CONTENT_TYPE, TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import {
+  TRIAL_SETS_DASH,
+  TRIAL_SETS,
+  TRIALS,
+  TRIAL_MUTATION,
+  TRIAL_SET_MUTATION,
+} from '../../../constants/base';
 import StatusBadge from '../../StatusBadge';
 import StyledTabs from '../../StyledTabs';
 import SimpleButton from '../../SimpleButton';
@@ -117,7 +123,7 @@ class TrialForm extends React.Component {
     const { match, history } = this.props;
 
     history.push(
-      `/experiments/${match.params.id}/${TRIAL_SETS}/${match.params.trialSetKey}/${TRIALS_CONTENT_TYPE}`,
+      `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/${TRIALS}`,
     );
   };
 
@@ -132,8 +138,8 @@ class TrialForm extends React.Component {
           cache,
           mutationResult,
           trialsQuery(match.params.id, match.params.trialSetKey),
-          TRIALS_CONTENT_TYPE,
-          'addUpdateTrial',
+          TRIALS,
+          TRIAL_MUTATION,
         );
       },
     });
@@ -150,8 +156,8 @@ class TrialForm extends React.Component {
           cache,
           mutationResult,
           trialSetsQuery(match.params.id),
-          TRIAL_SETS_CONTENT_TYPE,
-          'addUpdateTrialSet',
+          TRIAL_SETS,
+          TRIAL_SET_MUTATION,
           true,
         );
       },

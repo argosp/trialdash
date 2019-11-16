@@ -7,9 +7,9 @@ import ContentTable from '../../ContentTable';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
+  DEVICE_TYPES_DASH,
   DEVICE_TYPES,
-  DEVICE_TYPES_CONTENT_TYPE,
-  DEVICES_CONTENT_TYPE,
+  DEVICES,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
@@ -36,7 +36,7 @@ class DeviceTypes extends React.Component {
               title="Open"
               className={classes.arrowButton}
               ariaLabel="open"
-              onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES}/${deviceType.key}/${DEVICES_CONTENT_TYPE}`)}
+              onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}
             >
               <ArrowForwardIosIcon />
             </CustomTooltip>
@@ -72,7 +72,7 @@ class DeviceTypes extends React.Component {
             addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-device-type`)}
           />
           <ContentTable
-            contentType={DEVICE_TYPES_CONTENT_TYPE}
+            contentType={DEVICE_TYPES}
             query={deviceTypesQuery(match.params.id)}
             tableHeadColumns={tableHeadColumns}
             renderRow={this.renderTableRow}

@@ -11,7 +11,7 @@ import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import { TRIAL_SETS, TRIALS_CONTENT_TYPE } from '../../../constants/base';
+import { TRIAL_SETS_DASH, TRIALS } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
@@ -117,14 +117,14 @@ class Trials extends React.Component {
           searchPlaceholder="Search Trials"
           addButtonText="Add trial"
           withBackButton
-          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS}`)}
+          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
           rightDescription={trialSet.id}
           addButtonHandler={() => history.push(
-            `/experiments/${match.params.id}/${TRIAL_SETS}/${match.params.trialSetKey}/add-trial`,
+            `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`,
           )}
         />
         <ContentTable
-          contentType={TRIALS_CONTENT_TYPE}
+          contentType={TRIALS}
           query={trialsQuery(match.params.id, match.params.trialSetKey)}
           tableHeadColumns={tableHeadColumns}
           renderRow={this.renderTableRow}
