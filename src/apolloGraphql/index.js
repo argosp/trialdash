@@ -6,73 +6,60 @@ import { getMainDefinition } from 'apollo-utilities';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import config from '../config';
 
-export class Graph {
-  constructor() {
-    this.apiUrl = `${config.url}/graphql`;
-    this.apiWs = `${config.ws}/subscriptions`;
-    let wsLink = new WebSocketLink({
-      uri: this.apiWs,
-      options: {
-        reconnect: true,
-        headers: {
-          authorization: localStorage.getItem('jwt'),
-        },
-      },
-    });
+const middlewareLink = new ApolloLink((operation, forward) => {
+  operation.setContext({
+    headers: {
+      authorization: localStorage.getItem('jwt') || null,
+    },
+  });
 
-    let httpLink = new HttpLink({
-      uri: this.apiUrl,
-    });
+  return forward(operation);
+});
 
-    const middlewareLink = new ApolloLink((operation, forward) => {
-      operation.setContext({
-        headers: {
-          authorization: localStorage.getItem('jwt') || null,
-        },
-      });
+let httpLink = new HttpLink({
+  uri: `${config.url}/graphql`,
+});
 
-      return forward(operation);
-    });
+let wsLink = new WebSocketLink({
+  uri: `${config.ws}/subscriptions`,
+  options: {
+    reconnect: true,
+    headers: {
+      authorization: localStorage.getItem('jwt'),
+    },
+  },
+});
 
-    httpLink = middlewareLink.concat(httpLink);
-    wsLink = middlewareLink.concat(wsLink);
+httpLink = middlewareLink.concat(httpLink);
+wsLink = middlewareLink.concat(wsLink);
 
-    const link = split(
-      // split based on operation type
-      ({ query }) => {
-        const { kind, operation } = getMainDefinition(query);
+const link = split(
+  // split based on operation type
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
 
-        return kind === 'OperationDefinition' && operation === 'subscription';
-      },
-      wsLink,
-      httpLink,
-    );
+    return kind === 'OperationDefinition' && operation === 'subscription';
+  },
+  wsLink,
+  httpLink,
+);
 
-    const cache = new InMemoryCache({
-      // eslint-disable-next-line
-      dataIdFromObject: o => (o._id ? `${o.__typename}:${o._id}` : null),
-      addTypename: false,
-    });
+const cache = new InMemoryCache({
+  // eslint-disable-next-line
+  dataIdFromObject: o => (o._id ? `${o.__typename}:${o._id}` : null),
+  addTypename: false,
+});
 
-    cache.writeData({ data: { headerTabId: 0 } }); // initial values of the cache
+cache.writeData({ data: { headerTabId: 0 } }); // initial values of the cache
 
-    this.client = new ApolloClient({
-      link,
-      cache,
-      connectToDevTools: true,
-    });
-  }
-
-  sendMutation(mutation) {
-    return new Promise((resolve) => {
-      this.client.mutate({ mutation })
-        .then(data => resolve(data.data));
-    });
-  }
-}
+export const client = new ApolloClient({
+  link,
+  cache,
+  connectToDevTools: true,
+});
 
 export const updateCache = (
-  cache,
+  apolloCache,
   mutationResult,
   query,
   itemsName,
@@ -80,7 +67,7 @@ export const updateCache = (
   isExistingItem = false,
   matchField = 'key',
 ) => {
-  const items = cache.readQuery({
+  const items = apolloCache.readQuery({
     query,
   })[itemsName];
 
@@ -99,7 +86,7 @@ export const updateCache = (
   }
 
   // update the Apollo cache
-  cache.writeQuery({
+  apolloCache.writeQuery({
     query,
     data: {
       [itemsName]: updatedItems,

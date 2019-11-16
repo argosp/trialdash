@@ -9,11 +9,11 @@ import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import Graph from '../../../apolloGraphql';
-import assetMutation from './utils/assetMutation';
+// import Graph from '../../../apolloGraphql';
+// import assetMutation from './utils/assetMutation';
 import classes from './styles';
 
-const graphql = new Graph();
+// const graphql = new Graph();
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -26,48 +26,11 @@ const MenuProps = {
   },
 };
 
-// const useStyles = makeStyles(theme => ({
-//     root: {
-//         display: 'flex',
-//         flexWrap: 'wrap',
-//     },
-//     formControl: {
-//         margin: theme.spacing(1),
-//         minWidth: 300,
-//         maxWidth: 300,
-//     },
-//     chips: {
-//         display: 'flex',
-//         flexWrap: 'wrap',
-//     },
-//     chip: {
-//         margin: 2,
-//     },
-//     noLabel: {
-//         marginTop: theme.spacing(3),
-//     },
-//     button: {
-//         margin: theme.spacing(1),
-//     },
-//     input: {
-//         display: 'none',
-//     }
-// }));
-
-// function getStyles(asset, assets, theme) {
-//     return {
-//         fontWeight:
-//             assets.indexOf(asset) === -1
-//                 ? theme.typography.fontWeightRegular
-//                 : theme.typography.fontWeightMedium,
-//     };
-// }
-
 class AssetForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: this.props.id || null,
+      // id: this.props.id || null,
       name: this.props.name || '',
       notes: this.props.notes || '',
       type: this.props.type || '',
@@ -77,10 +40,6 @@ class AssetForm extends React.Component {
     };
   }
 
-  componentDidMount() {
-  }
-
-
     handleChange = key => (event) => {
       this.setState({
         [key]: event.target.value,
@@ -89,7 +48,7 @@ class AssetForm extends React.Component {
 
 
     submitAsset = () => {
-      const newAsset = {
+      /*      const newAsset = {
         id: this.state.id,
         experimentId: this.props.experimentId,
         name: this.state.name,
@@ -98,16 +57,16 @@ class AssetForm extends React.Component {
         number: this.state.number,
         entityType: this.props.entityType,
         properties: this.state.properties.map(p => ({ key: p.key, val: p.val })),
-      };
+      }; */
 
-      graphql.sendMutation(assetMutation(newAsset))
+      /*      graphql.sendMutation(assetMutation(newAsset)) // TODO change to client.mutate()
         .then((data) => {
           window.alert(`saved ${this.props.entityType} ${data.addUpdateAsset.id}`);
           this.props.showAll();
         })
         .catch((err) => {
           window.alert(`error: ${err}`);
-        });
+        }); */
     };
 
     addProperty = () => {

@@ -1,23 +1,19 @@
 import React from 'react';
-// MATERIAL UI DEPENDENCIES
 import { withTheme } from '@material-ui/core/styles';
-
-// import { withTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-
 import FormControl from '@material-ui/core/FormControl';
-import Graph from '../../../apolloGraphql';
-import dataMutation from './utils/dataMutation';
+// import Graph from '../../../apolloGraphql';
+// import dataMutation from './utils/dataMutation';
 import classes from './styles';
 
-const graphql = new Graph();
+// const graphql = new Graph();
 
 class DataForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: this.props.id || '',
+      // id: this.props.id || '',
       name: this.props.name || '',
       properties: this.props.properties || [],
     };
@@ -35,20 +31,20 @@ class DataForm extends React.Component {
 
 
     submitData = () => {
-      const newData = {
+      /*      const newData = {
         id: this.state.id,
         experimentId: this.props.experimentId,
         name: this.state.name,
-      };
+      }; */
 
-      graphql.sendMutation(dataMutation(newData))
+      /*      graphql.sendMutation(dataMutation(newData)) // TODO change to client.mutate()
         .then((data) => {
           window.alert(`saved ${this.props.entityType} ${data.addUpdateData.id}`);
           this.props.showAll();
         })
         .catch((err) => {
           window.alert(`error: ${err}`);
-        });
+        }); */
     };
 
     handleChangeProprty = (index, key) => (event) => {
