@@ -71,18 +71,38 @@ export class Graph {
   }
 }
 
-export const updateCache = (cache, mutationResult, query, itemsName, mutationName) => {
+export const updateCache = (
+  cache,
+  mutationResult,
+  query,
+  itemsName,
+  mutationName,
+  isExistingItem = false,
+  matchField = 'key',
+) => {
   const items = cache.readQuery({
     query,
   })[itemsName];
 
-  // set the new item in the Apollo cache
+  // set the new item
+  let updatedItems = items.concat([mutationResult.data[mutationName]]);
+
+  // update the existing item
+  if (isExistingItem) {
+    items.forEach((item, i) => {
+      if (item[matchField] === mutationResult.data[mutationName][matchField]) {
+        items[i] = mutationResult.data[mutationName];
+      }
+    });
+
+    updatedItems = items;
+  }
+
+  // update the Apollo cache
   cache.writeQuery({
     query,
     data: {
-      [itemsName]: items.concat([
-        mutationResult.data[mutationName],
-      ]),
+      [itemsName]: updatedItems,
     },
   });
 };

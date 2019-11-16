@@ -5,8 +5,11 @@ import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import deviceMutation from './utils/deviceMutation';
-import { Graph, updateCache } from '../../../apolloGraphql';
-import { DEVICE_TYPES, DEVICES_CONTENT_TYPE } from '../../../constants/base';
+import { updateCache } from '../../../apolloGraphql';
+import {
+  DEVICE_TYPES, DEVICE_TYPES_CONTENT_TYPE,
+  DEVICES_CONTENT_TYPE,
+} from '../../../constants/base';
 import deviceTypeMutation from '../utils/deviceTypeMutation';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
@@ -14,8 +17,6 @@ import { styles } from './styles';
 import Footer from '../../Footer';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import devicesQuery from '../Devices/utils/deviceQuery';
-
-const graphql = new Graph();
 
 class DeviceForm extends React.Component {
   state = {
@@ -104,12 +105,23 @@ class DeviceForm extends React.Component {
 
     // update number of devices of the device type
     const updatedDeviceType = { ...deviceType };
-    let { numberOfDevices } = updatedDeviceType;
-    numberOfDevices += 1;
-    updatedDeviceType.numberOfDevices = numberOfDevices;
+    updatedDeviceType.numberOfDevices += 1;
     updatedDeviceType.experimentId = match.params.id;
 
-    await graphql.sendMutation(deviceTypeMutation(updatedDeviceType));
+    await client.mutate({
+      mutation: deviceTypeMutation(updatedDeviceType),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          deviceTypesQuery(match.params.id),
+          DEVICE_TYPES_CONTENT_TYPE,
+          'addUpdateDeviceTypes',
+          true,
+        );
+      },
+    });
+
     this.closeForm();
   };
 
