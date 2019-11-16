@@ -1,53 +1,49 @@
 import React from 'react';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
-import TableContentContainer from '../../TableContentContainer';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import ContentTable from '../../ContentTable';
 import trialSetsQuery from '../utils/trialSetQuery';
-import trialSetsSubscription from '../utils/trialSetsSubscription';
 import StyledTableCell from '../../StyledTableCell';
 import { styles } from './styles';
 import {
-  TRIAL_SET_FORM_CONTENT_TYPE,
-  TRIAL_SETS_CONTENT_TYPE,
-  TRIALS_CONTENT_TYPE,
+  TRIAL_SETS_DASH,
+  TRIAL_SETS,
+  TRIALS,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 
 class TrialSets extends React.Component {
-    changeContentType = (contentType) => {
-      this.props.changeContentType(contentType);
+    renderTableRow = (trialSet) => {
+      const { history, match, classes } = this.props;
+
+      return (
+        <React.Fragment key={trialSet.key}>
+          <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
+          <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
+          <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
+          <StyledTableCell align="right">
+            <CustomTooltip title="Clone" ariaLabel="clone">
+              <CloneIcon />
+            </CustomTooltip>
+            <CustomTooltip title="Edit" ariaLabel="edit">
+              <PenIcon />
+            </CustomTooltip>
+            <CustomTooltip
+              title="Open"
+              className={classes.arrowButton}
+              ariaLabel="open"
+              onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}
+            >
+              <ArrowForwardIosIcon />
+            </CustomTooltip>
+          </StyledTableCell>
+        </React.Fragment>
+      );
     };
-
-  openTrialSet = (trialSet) => {
-    this.changeContentType(TRIALS_CONTENT_TYPE);
-    this.props.selectTrialSet(trialSet);
-  };
-
-    renderTableRow = trialSet => (
-      <React.Fragment key={trialSet.key}>
-        <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
-        <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
-        <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
-        <StyledTableCell align="right">
-          <CustomTooltip title="Clone" ariaLabel="clone">
-            <CloneIcon />
-          </CustomTooltip>
-          <CustomTooltip title="Edit" ariaLabel="edit">
-            <PenIcon />
-          </CustomTooltip>
-          <CustomTooltip
-            title="Open"
-            className={this.props.classes.arrowButton}
-            ariaLabel="open"
-            onClick={() => this.openTrialSet(trialSet)}
-          >
-            <ArrowForwardIosIcon />
-          </CustomTooltip>
-        </StyledTableCell>
-      </React.Fragment>
-    );
 
     render() {
       const tableHeadColumns = [
@@ -64,6 +60,7 @@ class TrialSets extends React.Component {
           title: '',
         },
       ];
+      const { history, match } = this.props;
 
       return (
         <>
@@ -72,15 +69,12 @@ class TrialSets extends React.Component {
             title="Trial sets"
             searchPlaceholder="Search trial sets"
             addButtonText="Add trial set"
-            addButtonHandler={() => this.changeContentType(TRIAL_SET_FORM_CONTENT_TYPE)}
+            addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-trial-set`)}
           />
-          <TableContentContainer
-            subscriptionUpdateField="trialSetsUpdated"
-            dataType={TRIAL_SETS_CONTENT_TYPE}
-            query={trialSetsQuery}
-            queryArgs={[this.props.experimentId]}
+          <ContentTable
+            contentType={TRIAL_SETS}
+            query={trialSetsQuery(match.params.id)}
             tableHeadColumns={tableHeadColumns}
-            subscription={trialSetsSubscription}
             renderRow={this.renderTableRow}
           />
         </>
@@ -88,4 +82,7 @@ class TrialSets extends React.Component {
     }
 }
 
-export default withStyles(styles)(TrialSets);
+export default compose(
+  withRouter,
+  withStyles(styles),
+)(TrialSets);

@@ -1,22 +1,20 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 import ContentHeader from '../../ContentHeader';
-import TableContentContainer from '../../TableContentContainer';
 import {
-  DEVICE_FORM_CONTENT_TYPE,
-  DEVICE_TYPES_CONTENT_TYPE,
-  DEVICES_CONTENT_TYPE,
+  DEVICE_TYPES_DASH,
+  DEVICES,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
-import devicesQuery from './utils/deviceQuery';
-import devicesSubscription from './utils/deviceSubscription';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
-import Graph from '../../../apolloGraphql';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
-
-const graphql = new Graph();
+import devicesQuery from './utils/deviceQuery';
+import ContentTable from '../../ContentTable';
 
 class Devices extends React.Component {
   state = {
@@ -24,15 +22,17 @@ class Devices extends React.Component {
   };
 
   componentDidMount() {
-    const { experimentId, deviceTypeKey } = this.props;
+    const { match, client } = this.props;
 
-    graphql.sendQuery(deviceTypesQuery(experimentId)).then((data) => {
-      this.setState({
-        deviceType: data.deviceTypes.find(
-          deviceType => deviceType.key === deviceTypeKey,
-        ),
+    client
+      .query({ query: deviceTypesQuery(match.params.id) })
+      .then((data) => {
+        this.setState({
+          deviceType: data.data.deviceTypes.find(
+            deviceType => deviceType.key === match.params.deviceTypeKey,
+          ),
+        });
       });
-    });
   }
 
   renderTableRow = device => (
@@ -80,7 +80,7 @@ class Devices extends React.Component {
   };
 
   render() {
-    const { experimentId, changeContentType } = this.props;
+    const { history, match } = this.props;
     const { deviceType } = this.state;
     const tableHeadColumns = this.generateTableColumns(deviceType);
 
@@ -92,24 +92,24 @@ class Devices extends React.Component {
           searchPlaceholder="Search Devices"
           addButtonText="Add device"
           withBackButton
-          backButtonHandler={() => changeContentType(DEVICE_TYPES_CONTENT_TYPE)}
+          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
           rightDescription={deviceType.id}
-          addButtonHandler={() => changeContentType(DEVICE_FORM_CONTENT_TYPE)}
+          addButtonHandler={() => history.push(
+            `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`,
+          )}
         />
-        {deviceType.key ? (
-          <TableContentContainer
-            subscriptionUpdateField="devicesUpdated"
-            dataType={DEVICES_CONTENT_TYPE}
-            query={devicesQuery}
-            queryArgs={[experimentId, deviceType.key]}
-            tableHeadColumns={tableHeadColumns}
-            subscription={devicesSubscription}
-            renderRow={this.renderTableRow}
-          />
-        ) : ('Loading...')}
+        <ContentTable
+          contentType={DEVICES}
+          query={devicesQuery(match.params.id, match.params.deviceTypeKey)}
+          tableHeadColumns={tableHeadColumns}
+          renderRow={this.renderTableRow}
+        />
       </>
     );
   }
 }
 
-export default Devices;
+export default compose(
+  withApollo,
+  withRouter,
+)(Devices);

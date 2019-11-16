@@ -4,24 +4,19 @@ import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import TableContentContainer from '../../TableContentContainer';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
 import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
-import trialsSubscription from '../utils/trialsSubscription';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import {
-  TRIALS_CONTENT_TYPE,
-  TRIAL_SETS_CONTENT_TYPE,
-  TRIAL_FORM_CONTENT_TYPE,
-} from '../../../constants/base';
+import { TRIAL_SETS_DASH, TRIALS } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
-import Graph from '../../../apolloGraphql';
 import trialSetsQuery from '../utils/trialSetQuery';
-
-const graphql = new Graph();
+import ContentTable from '../../ContentTable';
 
 class Trials extends React.Component {
   state = {
@@ -29,15 +24,17 @@ class Trials extends React.Component {
   };
 
   componentDidMount() {
-    const { experimentId, trialSetKey } = this.props;
+    const { match, client } = this.props;
 
-    graphql.sendQuery(trialSetsQuery(experimentId)).then((data) => {
-      this.setState({
-        trialSet: data.trialSets.find(
-          trialSet => trialSet.key === trialSetKey,
-        ),
+    client
+      .query({ query: trialSetsQuery(match.params.id) })
+      .then((data) => {
+        this.setState({
+          trialSet: data.data.trialSets.find(
+            trialSet => trialSet.key === match.params.trialSetKey,
+          ),
+        });
       });
-    });
   }
 
   renderTableRow = (trial) => {
@@ -46,9 +43,7 @@ class Trials extends React.Component {
     return (
       <React.Fragment key={trial.key}>
         <StyledTableCell align="left">{trial.name}</StyledTableCell>
-        <StyledTableCell align="left">
-          {trial.numberOfDevices}
-        </StyledTableCell>
+        <StyledTableCell align="left">{trial.numberOfDevices}</StyledTableCell>
         {trial.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
             {property.val}
@@ -70,7 +65,11 @@ class Trials extends React.Component {
           <CustomTooltip title="Edit" ariaLabel="edit">
             <PenIcon />
           </CustomTooltip>
-          <CustomTooltip title="Open" className={classes.arrowButton} ariaLabel="open">
+          <CustomTooltip
+            title="Open"
+            className={classes.arrowButton}
+            ariaLabel="open"
+          >
             <ArrowForwardIosIcon />
           </CustomTooltip>
         </StyledTableCell>
@@ -106,7 +105,7 @@ class Trials extends React.Component {
   };
 
   render() {
-    const { experimentId, changeContentType } = this.props;
+    const { history, match } = this.props;
     const { trialSet } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
@@ -118,24 +117,25 @@ class Trials extends React.Component {
           searchPlaceholder="Search Trials"
           addButtonText="Add trial"
           withBackButton
-          backButtonHandler={() => changeContentType(TRIAL_SETS_CONTENT_TYPE)}
+          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
           rightDescription={trialSet.id}
-          addButtonHandler={() => changeContentType(TRIAL_FORM_CONTENT_TYPE)}
+          addButtonHandler={() => history.push(
+            `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`,
+          )}
         />
-        {trialSet.key ? (
-          <TableContentContainer
-            subscriptionUpdateField="trialsUpdated"
-            dataType={TRIALS_CONTENT_TYPE}
-            query={trialsQuery}
-            queryArgs={[experimentId, trialSet.key]}
-            tableHeadColumns={tableHeadColumns}
-            subscription={trialsSubscription}
-            renderRow={this.renderTableRow}
-          />
-        ) : ('Loading...')}
+        <ContentTable
+          contentType={TRIALS}
+          query={trialsQuery(match.params.id, match.params.trialSetKey)}
+          tableHeadColumns={tableHeadColumns}
+          renderRow={this.renderTableRow}
+        />
       </>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Trials);
+export default compose(
+  withRouter,
+  withApollo,
+  withStyles(styles, { withTheme: true }),
+)(Trials);

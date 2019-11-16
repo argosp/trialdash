@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { DEVICE_TYPE_MUTATION } from '../../../constants/base';
 
 export default (deviceType) => {
   const key = deviceType.key
@@ -7,7 +8,7 @@ export default (deviceType) => {
 
   return gql`
     mutation {
-    addUpdateDeviceTypes(
+    ${DEVICE_TYPE_MUTATION}(
             uid: "${localStorage.getItem('uid')}",
             experimentId:"${deviceType.experimentId}",
             key: "${key}",
@@ -28,7 +29,23 @@ export default (deviceType) => {
     .replace(/"trialField":/g, 'trialField:')
 }
             ) {
+                key
+                id
                 name
+                numberOfDevices
+                properties {
+                  key
+                  type
+                  id
+                  label
+                  description
+                  prefix
+                  suffix
+                  required
+                  template
+                  multipleValues
+                  trialField
+                }
             }
         }
         `;

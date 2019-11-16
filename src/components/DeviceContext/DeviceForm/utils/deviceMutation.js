@@ -1,10 +1,11 @@
 import gql from 'graphql-tag';
+import { DEVICE_MUTATION } from '../../../../constants/base';
 
 export default (device) => {
   const key = device.key ? device.key : `${device.experimentId}_${Date.now()}`;
 
   return gql`mutation {
-        addUpdateDevice(
+        ${DEVICE_MUTATION}(
             key: "${key}",
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${device.experimentId}"
@@ -16,7 +17,14 @@ export default (device) => {
     .replace(/"val":/g, 'val:')
 }
             ){
+            key
             id
+            name
+            deviceTypeKey
+            properties {
+              key
+              val
+            }
         }
       }`;
 };

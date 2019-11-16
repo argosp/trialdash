@@ -6,10 +6,12 @@ import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import classnames from 'classnames';
 import Box from '@material-ui/core/Box';
-import Graph from '../../apolloGraphql';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
 import {
-  DEVICE_TYPES_CONTENT_TYPE,
-  TRIAL_SETS_CONTENT_TYPE,
+  DEVICE_TYPES_DASH,
+  TRIAL_SETS_DASH,
 } from '../../constants/base';
 import FieldTypesPanel from '../FieldTypesPanel';
 import deviceTypeMutation from '../DeviceContext/utils/deviceTypeMutation';
@@ -26,18 +28,17 @@ import { styles } from './styles';
 import trialSetMutation from '../TrialContext/utils/trialSetMutation';
 import EditFieldTypePanel from '../EditFieldTypePanel';
 import SimpleButton from '../SimpleButton';
-
-const graphql = new Graph();
+import { updateCache } from '../../apolloGraphql';
 
 class AddSetForm extends React.Component {
   state = {
     formObject:
-      DEVICE_TYPES_CONTENT_TYPE === this.props.type
+      DEVICE_TYPES_DASH === this.props.formType
         ? {
           key: uuid(),
           id: '',
           name: '',
-          experimentId: this.props.experimentId,
+          experimentId: this.props.match.params.id,
           numberOfDevices: 0,
           properties: [], // this field correspond to the <Droppable droppableId="droppable">
         }
@@ -46,7 +47,7 @@ class AddSetForm extends React.Component {
           id: '',
           name: '',
           description: '',
-          experimentId: this.props.experimentId,
+          experimentId: this.props.match.params.id,
           numberOfTrials: 0,
           properties: [], // this field correspond to the <Droppable droppableId="droppable">
         },
@@ -102,12 +103,6 @@ class AddSetForm extends React.Component {
     this.deactivateEditMode();
   };
 
-  cancelForm = () => {
-    const { type, changeContentType } = this.props;
-
-    changeContentType(type);
-  };
-
   fieldTypeValueChangeHandler = (e, controlType, fieldTypeKey, property) => {
     let value;
 
@@ -125,27 +120,34 @@ class AddSetForm extends React.Component {
     }));
   };
 
-  submitEntity = (entity) => {
+  submitEntity = async (entity) => {
     const newEntity = entity;
-    const { type, changeContentType } = this.props;
+    const { formType, match, history, client, cacheQuery, itemsName, mutationName } = this.props;
 
     // add number of field types to the device type
-    if (DEVICE_TYPES_CONTENT_TYPE === type) {
+    if (DEVICE_TYPES_DASH === formType) {
       newEntity.numberOfFields = this.state.formObject.properties.length;
     }
 
-    const mutation = DEVICE_TYPES_CONTENT_TYPE === type
+    const mutation = DEVICE_TYPES_DASH === formType
       ? deviceTypeMutation
       : trialSetMutation;
 
-    graphql
-      .sendMutation(mutation(newEntity))
-      .then(() => {
-        changeContentType(type);
-      })
-      .catch((err) => {
-        console.log(`error: ${err}`);
+    await client
+      .mutate({
+        mutation: mutation(newEntity),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            cacheQuery(match.params.id),
+            itemsName,
+            mutationName,
+          );
+        },
       });
+
+    history.push(`/experiments/${match.params.id}/${formType}`);
   };
 
   reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
@@ -255,7 +257,7 @@ class AddSetForm extends React.Component {
       isFieldTypesPanelOpen,
       isEditFieldTypePanelOpen,
     } = this.state;
-    const { classes, theme, type } = this.props;
+    const { classes, theme, formType, history, match } = this.props;
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {
@@ -276,7 +278,7 @@ class AddSetForm extends React.Component {
       >
         <ContentHeader
           title={
-            DEVICE_TYPES_CONTENT_TYPE === type
+            DEVICE_TYPES_DASH === formType
               ? 'Add device type'
               : 'Add trial set'
           }
@@ -318,7 +320,7 @@ class AddSetForm extends React.Component {
               />
             </Grid>
           </Grid>
-          {TRIAL_SETS_CONTENT_TYPE === type ? (
+          {TRIAL_SETS_DASH === formType ? (
             <Grid container spacing={4}>
               <Grid item xs={6}>
                 <CustomInput
@@ -398,7 +400,7 @@ class AddSetForm extends React.Component {
         </form>
         {!isEditModeEnabled ? (
           <Footer
-            cancelButtonHandler={this.cancelForm}
+            cancelButtonHandler={() => history.push(`/experiments/${match.params.id}/${formType}`)}
             saveButtonHandler={() => this.submitEntity(this.state.formObject)}
           />
         ) : null}
@@ -407,4 +409,8 @@ class AddSetForm extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(AddSetForm);
+export default compose(
+  withRouter,
+  withApollo,
+  withStyles(styles, { withTheme: true }),
+)(AddSetForm);
