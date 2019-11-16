@@ -6,9 +6,9 @@ import MomentUtils from '@date-io/moment';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import moment from 'moment';
 import { Map, Marker, TileLayer } from 'react-leaflet';
-import Graph from '../../../apolloGraphql';
+import { compose } from 'recompose';
+import { withApollo } from 'react-apollo';
 import experimentMutation from './utils/experimentMutation';
-import { EXPERIMENTS_CONTENT_TYPE } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import Footer from '../../Footer';
 import { styles } from './styles';
@@ -16,8 +16,9 @@ import CustomInput from '../../CustomInput';
 import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
-
-const graphql = new Graph();
+import experimentsQuery from '../utils/experimentsQuery';
+import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
+import { updateCache } from '../../../apolloGraphql';
 
 class ExperimentForm extends React.Component {
   state = {
@@ -37,15 +38,23 @@ class ExperimentForm extends React.Component {
 
   endDatePickerRef = React.createRef();
 
-  submitExperiment = (newExperiment) => {
-    graphql
-      .sendMutation(experimentMutation(newExperiment))
-      .then(() => {
-        this.props.changeContentType(EXPERIMENTS_CONTENT_TYPE);
-      })
-      .catch((err) => {
-        console.log(`error: ${err}`);
-      });
+  submitExperiment = async (newExperiment) => {
+    const { client, history } = this.props;
+
+    await client.mutate({
+      mutation: experimentMutation(newExperiment),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          experimentsQuery,
+          EXPERIMENTS_WITH_DATA,
+          EXPERIMENT_MUTATION,
+        );
+      },
+    });
+
+    history.push('/experiments');
   };
 
   changeFormObject = (event, field) => {
@@ -97,7 +106,7 @@ class ExperimentForm extends React.Component {
   };
 
   render() {
-    const { changeContentType, classes } = this.props;
+    const { history, classes } = this.props;
     const {
       formObject,
       isStartDatePickerOpen,
@@ -240,7 +249,7 @@ class ExperimentForm extends React.Component {
           </Grid>
         </form>
         <Footer
-          cancelButtonHandler={() => changeContentType(EXPERIMENTS_CONTENT_TYPE)}
+          cancelButtonHandler={() => history.push('/experiments')}
           saveButtonHandler={() => this.submitExperiment(formObject)}
         />
       </MuiPickersUtilsProvider>
@@ -248,4 +257,7 @@ class ExperimentForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(ExperimentForm);
+export default compose(
+  withApollo,
+  withStyles(styles),
+)(ExperimentForm);

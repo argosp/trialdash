@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Dashboard from '../Dashboard';
+import Dashboard from '../AppLayout';
 
+// TODO Remove this component
 class Home extends Component {
   constructor(props) {
     super(props);

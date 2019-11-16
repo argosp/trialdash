@@ -1,13 +1,16 @@
-export const TRIAL_SETS_CONTENT_TYPE = 'trialSets';
-export const TRIALS_CONTENT_TYPE = 'trials';
-export const TRIAL_FORM_CONTENT_TYPE = 'trialForm';
-export const TRIAL_SET_FORM_CONTENT_TYPE = 'trialSetForm';
+export const TRIAL_SETS_DASH = 'trial-sets';
+export const TRIAL_SETS = 'trialSets';
+export const TRIALS = 'trials';
+export const TRIAL_MUTATION = 'addUpdateTrial';
+export const TRIAL_SET_MUTATION = 'addUpdateTrialSet';
 
-export const DEVICE_TYPES_CONTENT_TYPE = 'deviceTypes';
-export const DEVICES_CONTENT_TYPE = 'devices';
-export const DEVICE_TYPE_FORM_CONTENT_TYPE = 'deviceTypeForm';
-export const DEVICE_FORM_CONTENT_TYPE = 'deviceForm';
+export const DEVICE_TYPES_DASH = 'device-types';
+export const DEVICE_TYPES = 'deviceTypes';
+export const DEVICES = 'devices';
+export const DEVICE_MUTATION = 'addUpdateDevice';
+export const DEVICE_TYPE_MUTATION = 'addUpdateDeviceType';
 
-export const EXPERIMENTS_CONTENT_TYPE = 'experiments';
-export const EXPERIMENTS_WITH_DATA_CONTENT_TYPE = 'experimentsWithData';
-export const EXPERIMENT_FORM_CONTENT_TYPE = 'experimentForm';
+export const EXPERIMENTS_WITH_DATA = 'experimentsWithData';
+export const EXPERIMENT_MUTATION = 'addUpdateExperiment';
+
+export const ASSETS = 'assets';
