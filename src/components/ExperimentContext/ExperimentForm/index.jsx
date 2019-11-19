@@ -8,6 +8,7 @@ import moment from 'moment';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 import experimentMutation from './utils/experimentMutation';
 import ContentHeader from '../../ContentHeader';
 import Footer from '../../Footer';
@@ -22,27 +23,65 @@ import { updateCache } from '../../../apolloGraphql';
 
 class ExperimentForm extends React.Component {
   state = {
-    formObject: {
-      name: '',
-      description: '',
-      begin: new Date().toISOString(),
-      end: new Date().toISOString(),
-      location: '0,0',
-      numberOfTrials: 0,
-    },
+    experiment: {},
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false,
+    isLoading: true,
   };
 
   startDatePickerRef = React.createRef();
 
   endDatePickerRef = React.createRef();
 
-  submitExperiment = async (newExperiment) => {
+  async componentDidMount() {
+    const { editMode } = this.props;
+    let experiment = {
+      name: '',
+      description: '',
+      begin: new Date().toISOString(),
+      end: new Date().toISOString(),
+      location: '0,0',
+      numberOfTrials: 0,
+    };
+
+    if (editMode) {
+      const { client, match } = this.props;
+      let experiments = [];
+
+      try {
+        experiments = client.readQuery({ query: experimentsQuery }).experimentsWithData;
+      } catch {
+        const { data: { experimentsWithData } } = await client.query({ query: experimentsQuery });
+
+        experiments = experimentsWithData;
+      }
+
+      const fetchedExperiment = experiments.find(
+        experimentWithData => experimentWithData.project.id === match.params.id,
+      );
+
+      experiment = {
+        name: fetchedExperiment.project.name,
+        description: fetchedExperiment.project.description,
+        begin: fetchedExperiment.begin,
+        end: fetchedExperiment.end,
+        location: fetchedExperiment.location,
+        numberOfTrials: fetchedExperiment.numberOfTrials,
+      };
+    }
+
+    this.setState({
+      isLoading: false,
+      experiment,
+    });
+  }
+
+
+  submitExperiment = async (experiment) => {
     const { client, history } = this.props;
 
     await client.mutate({
-      mutation: experimentMutation(newExperiment),
+      mutation: experimentMutation(experiment),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -57,7 +96,7 @@ class ExperimentForm extends React.Component {
     history.push('/experiments');
   };
 
-  changeFormObject = (event, field) => {
+  changeExperiment = (event, field) => {
     let value;
 
     switch (field) {
@@ -65,10 +104,10 @@ class ExperimentForm extends React.Component {
         value = moment.utc(event).format();
 
         // if the end date is earlier than the start date set end date is equal to the start date
-        if (event.isAfter(this.state.formObject.end, 'day')) {
+        if (event.isAfter(this.state.experiment.end, 'day')) {
           this.setState(state => ({
-            formObject: {
-              ...state.formObject,
+            experiment: {
+              ...state.experiment,
               end: value,
             },
           }));
@@ -94,8 +133,8 @@ class ExperimentForm extends React.Component {
     }
 
     this.setState(state => ({
-      formObject: {
-        ...state.formObject,
+      experiment: {
+        ...state.experiment,
         [field]: value,
       },
     }));
@@ -106,36 +145,42 @@ class ExperimentForm extends React.Component {
   };
 
   render() {
-    const { history, classes } = this.props;
+    const { history, classes, editMode = false } = this.props;
     const {
-      formObject,
+      experiment,
       isStartDatePickerOpen,
       isEndDatePickerOpen,
+      isLoading,
     } = this.state;
 
-    return (
+    return isLoading ? <p>Loading...</p> : (
       <MuiPickersUtilsProvider utils={MomentUtils}>
-        <ContentHeader className={classes.header} title="Add experiment" />
+        <ContentHeader
+          className={classes.header}
+          title={editMode ? 'Edit experiment' : 'Add experiment'}
+        />
         <form>
           <Grid container>
             <Grid item xs={4}>
               <CustomInput
-                onChange={e => this.changeFormObject(e, 'name')}
+                onChange={e => this.changeExperiment(e, 'name')}
                 id="experiment-name"
                 label="Name"
                 bottomDescription="a short description about the name"
                 className={classes.input}
+                value={experiment.name}
               />
             </Grid>
           </Grid>
           <Grid container>
             <Grid item xs={7}>
               <CustomInput
-                onChange={e => this.changeFormObject(e, 'description')}
+                onChange={e => this.changeExperiment(e, 'description')}
                 id="experiment-description"
                 label="Description"
                 bottomDescription="a short description about the description"
                 className={classes.input}
+                value={experiment.description}
               />
             </Grid>
           </Grid>
@@ -150,8 +195,8 @@ class ExperimentForm extends React.Component {
                     format="D/M/YYYY"
                     id="start-date-picker"
                     label="Start date"
-                    value={formObject.begin}
-                    onChange={date => this.changeFormObject(date, 'begin')}
+                    value={experiment.begin}
+                    onChange={date => this.changeExperiment(date, 'begin')}
                     open={isStartDatePickerOpen}
                     PopoverProps={{
                       anchorEl: this.startDatePickerRef.current,
@@ -183,14 +228,14 @@ class ExperimentForm extends React.Component {
                 <Grid item xs={5} ref={this.endDatePickerRef}>
                   <DatePicker
                     onClose={() => this.setIsDatePickerOpen('isEndDatePickerOpen', false)}
-                    minDate={formObject.begin} // the end date can't be earlier than the start date
+                    minDate={experiment.begin} // the end date can't be earlier than the start date
                     disableToolbar
                     variant="inline"
                     format="D/M/YYYY"
                     id="end-date-picker"
                     label="End date"
-                    value={formObject.end}
-                    onChange={date => this.changeFormObject(date, 'end')}
+                    value={experiment.end}
+                    onChange={date => this.changeExperiment(date, 'end')}
                     open={isEndDatePickerOpen}
                     PopoverProps={{
                       anchorEl: this.endDatePickerRef.current,
@@ -226,31 +271,31 @@ class ExperimentForm extends React.Component {
           <Grid container>
             <Grid item xs={4}>
               <CustomInput
-                value={formObject.location}
+                value={experiment.location}
                 className={classes.locationInput}
-                onChange={e => this.changeFormObject(e, 'location')}
+                onChange={e => this.changeExperiment(e, 'location')}
                 id="location-input"
                 label="Location"
               />
               <Map
-                center={formObject.location.split(',')}
+                center={experiment.location.split(',')}
                 zoom={13}
                 className={classes.map}
-                onClick={e => this.changeFormObject(e, 'location')}
+                onClick={e => this.changeExperiment(e, 'location')}
                 attributionControl={false}
               >
                 <TileLayer
                   url={`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${config.mapboxAccessToken}`}
                   id="mapbox.streets"
                 />
-                <Marker position={formObject.location.split(',')} />
+                <Marker position={experiment.location.split(',')} />
               </Map>
             </Grid>
           </Grid>
         </form>
         <Footer
           cancelButtonHandler={() => history.push('/experiments')}
-          saveButtonHandler={() => this.submitExperiment(formObject)}
+          saveButtonHandler={() => this.submitExperiment(experiment)}
         />
       </MuiPickersUtilsProvider>
     );
@@ -259,5 +304,6 @@ class ExperimentForm extends React.Component {
 
 export default compose(
   withApollo,
+  withRouter,
   withStyles(styles),
 )(ExperimentForm);

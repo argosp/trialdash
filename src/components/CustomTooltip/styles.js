@@ -54,7 +54,6 @@ export const styles = theme => ({
     color: theme.palette.black.dark,
 
     '&:hover': {
-      color: theme.palette.primary.main,
       backgroundColor: theme.palette.white.main,
     },
   },

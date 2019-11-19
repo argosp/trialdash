@@ -44,10 +44,15 @@ class Experiments extends React.Component {
         </StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip title="Clone" ariaLabel="clone">
-            <CloneIcon />
+            <CloneIcon className={classes.iconButton} />
           </CustomTooltip>
           <CustomTooltip title="Edit" ariaLabel="edit">
-            <PenIcon />
+            <Link
+              to={`/experiments/${experiment.project.id}/edit-experiment`}
+              className={classes.iconButton}
+            >
+              <PenIcon />
+            </Link>
           </CustomTooltip>
           <CustomTooltip
             title="Open"
@@ -59,7 +64,7 @@ class Experiments extends React.Component {
                 client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
                 return `/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`;
               }}
-              className={classes.arrowButtonLink}
+              className={classes.iconButton}
             >
               <ArrowForwardIosIcon />
             </Link>

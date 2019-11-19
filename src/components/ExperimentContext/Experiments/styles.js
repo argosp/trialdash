@@ -2,7 +2,7 @@ export const styles = theme => ({
   arrowButtonTooltip: {
     marginLeft: 20,
   },
-  arrowButtonLink: {
+  iconButton: {
     color: theme.palette.black.dark,
     display: 'flex',
 

@@ -51,6 +51,13 @@ const AppRoutes = () => (
         <Route path="/experiments" component={Experiments} exact />
         <Route path="/add-experiment" component={ExperimentForm} exact />
         <Route
+          path="/experiments/:id/edit-experiment"
+          exact
+          render={props => (
+            <ExperimentForm {...props} editMode />
+          )}
+        />
+        <Route
           path="/experiments/:id/add-trial-set"
           exact
           render={props => (

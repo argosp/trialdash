@@ -148,14 +148,13 @@ class Header extends React.Component {
   };
 
   render() {
-    const { classes, client } = this.props;
+    const { classes, client, location } = this.props;
     const { anchorExperimentsMenu, anchorProfileMenu, isLoading } = this.state;
-    const pathObj = matchPath(this.props.location.pathname, {
+    const pathObj = matchPath(location.pathname, {
       path: '/experiments/:id',
-      exact: false,
-      strict: false,
     });
-    const withExperiments = Boolean(pathObj);
+    // "Edit experiment" page is without experiments dropdown and tabs also
+    const withExperiments = Boolean(pathObj) && !location.pathname.includes('edit-experiment');
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
