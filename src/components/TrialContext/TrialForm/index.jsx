@@ -33,7 +33,7 @@ import { GridIcon, ListIcon, TreeIcon } from '../../../constants/icons';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
-
+import DevicePlanner from '../../DevicePlanner';
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
     component="div"
@@ -175,7 +175,7 @@ class TrialForm extends React.Component {
   };
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, match } = this.props;
     const {
       tabValue,
       selectedViewIndex,
@@ -297,7 +297,9 @@ class TrialForm extends React.Component {
             aria-labelledby="location-popup-title"
             open={isLocationPopupOpen}
           >
-            <DialogTitle id="location-popup-title">Location</DialogTitle>
+            <DialogTitle id="location-popup-title">
+              <DevicePlanner id={match.params.id}/>
+            </DialogTitle>
           </Dialog>
         </TabPanel>
         <Footer
