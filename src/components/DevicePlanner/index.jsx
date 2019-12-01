@@ -11,9 +11,9 @@ import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from './utils/devicesQuery';
 class DevicePlanner extends React.Component {
   state = {
-    devices:[]
+    devices: []
   };
-  componentDidMount(){
+  componentDidMount() {
     this.getDevices()
   }
   getDevices = async () => {
@@ -22,15 +22,16 @@ class DevicePlanner extends React.Component {
     const devices = []
     client.query({ query: deviceTypesQuery(experimentId) })
       .then((data) => {
-        data.data.deviceTypes.map( type => {
+        data.data.deviceTypes.map(type => {
           const deviceTypeKey = type.key
-          client.query({ query: devicesQuery(experimentId, deviceTypeKey)})
-          .then(data => {
-            devices.push(data.data.devices)
-          })
-          .then( () => {
-            this.setState(() => ({devices}))
-          })
+          client.query({ query: devicesQuery(experimentId, deviceTypeKey) })
+            .then(data => {
+              console.log(data.data)
+              devices.push(data.data.devices)
+            })
+            .then(() => {
+              this.setState(() => ({ devices }))
+            })
         })
       })
   }
@@ -39,9 +40,16 @@ class DevicePlanner extends React.Component {
   render() {
     return (
       <div>
-        { this.state.devices.length > 0 &&
-          this.state.devices.map( devicesByType => {
-            return devicesByType.map(device => (<p>id: {device.id} name: {device.name}</p>)
+        {this.state.devices.length > 0 &&
+          this.state.devices.map(devicesByType => {
+            return devicesByType.map(device => (
+              <p>
+                <span>id: {device.id}</span> <br/>
+                <span>name: {device.name}</span> <br/>
+                <span>deviceTypeKey: {device.deviceTypeKey}</span> <br/>
+                <span>key: {device.key}</span> <br/>
+                <span>properties: { device.properties.map( prop => (<span>key:{prop.key}, value: {prop.value},</span>))}</span> <br/>
+              </p>)
             )
           })
         }
