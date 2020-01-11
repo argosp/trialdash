@@ -15,12 +15,13 @@ const position = [32.081128, 34.779729];
 let lastIndex;
 let markedPoints;
 
-export const DeviceEditor = ({devices, setDevices}) => {
+export const DeviceEditor = ({ devices, setDevices }) => {
     const mapElement = useRef(null);
     const currPolyline = useRef(null);
 
+    const defType = (devices && devices.length && devices[0].type) ? devices[0].type : "";
+    const [selectedType, setSelectedType] = React.useState(defType);
     const [selection, setSelection] = React.useState([]);
-    const [selectedType, setSelectedType] = React.useState(devices[0].type);
     const [showAll, setShowAll] = React.useState(false);
     const [shape, setShape] = React.useState("Point");
     const [startPoint, setStartPoint] = React.useState(undefined);
@@ -263,14 +264,16 @@ export const DeviceEditor = ({devices, setDevices}) => {
                     >
                         <List>
                             {
-                                devices.find(d => d.type === selectedType).items.map((dev, index) =>
-                                    <DeviceRow
-                                        key={dev.name}
-                                        dev={dev}
-                                        isSelected={selection.includes(index)}
-                                        onClick={e => handleSelectionClick(index, e.shiftKey)}
-                                        onDisableLocation={e => changeLocations(selectedType, [index], [undefined])}
-                                    />
+                                devices.filter(d => d.type === selectedType).map(devItems =>
+                                    devItems.items.map((dev, index) =>
+                                        <DeviceRow
+                                            key={dev.name}
+                                            dev={dev}
+                                            isSelected={selection.includes(index)}
+                                            onClick={e => handleSelectionClick(index, e.shiftKey)}
+                                            onDisableLocation={e => changeLocations(selectedType, [index], [undefined])}
+                                        />
+                                    )
                                 )
                             }
                         </List >
