@@ -293,6 +293,7 @@ class TrialForm extends React.Component {
             </Grid>
           </Grid>
           <Dialog
+            fullScreen
             onClose={this.closeLocationPopup}
             aria-labelledby="location-popup-title"
             open={isLocationPopupOpen}
