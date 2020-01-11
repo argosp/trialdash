@@ -43,7 +43,7 @@ class DevicePlanner extends React.Component {
       <DeviceEditor
         devices={this.state.devices}
         setDevices={(newDevices) => {
-          console.log(newDevices};
+          console.log(newDevices);
         }
       >
       </DeviceEditor>
