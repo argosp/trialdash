@@ -9,6 +9,7 @@ import config from '../../config';
 import { updateCache } from '../../apolloGraphql';
 import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from './utils/devicesQuery';
+import DeviceEditor from './DeviceEditor';
 class DevicePlanner extends React.Component {
   state = {
     devices: []
@@ -39,22 +40,31 @@ class DevicePlanner extends React.Component {
 
   render() {
     return (
-      <div>
-        {this.state.devices.length > 0 &&
-          this.state.devices.map(devicesByType => {
-            return devicesByType.map(device => (
-              <p>
-                <span>id: {device.id}</span> <br/>
-                <span>name: {device.name}</span> <br/>
-                <span>deviceTypeKey: {device.deviceTypeKey}</span> <br/>
-                <span>key: {device.key}</span> <br/>
-                <span>properties: { device.properties.map( prop => (<span>key:{prop.key}, value: {prop.value},</span>))}</span> <br/>
-              </p>)
-            )
-          })
+      <DeviceEditor
+        devices={this.state.devices}
+        setDevices={(newDevices) => {
+          console.log(newDevices};
         }
-      </div>
+      >
+      </DeviceEditor>
     );
+//     return (
+//       <div>
+//         {this.state.devices.length > 0 &&
+//           this.state.devices.map(devicesByType => {
+//             return devicesByType.map(device => (
+//               <p>
+//                 <span>id: {device.id}</span> <br/>
+//                 <span>name: {device.name}</span> <br/>
+//                 <span>deviceTypeKey: {device.deviceTypeKey}</span> <br/>
+//                 <span>key: {device.key}</span> <br/>
+//                 <span>properties: { device.properties.map( prop => (<span>key:{prop.key}, value: {prop.value},</span>))}</span> <br/>
+//               </p>)
+//             )
+//           })
+//         }
+//       </div>
+//     );
   }
 }
 
