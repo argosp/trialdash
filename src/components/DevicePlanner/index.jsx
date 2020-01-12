@@ -48,7 +48,7 @@ class DevicePlanner extends React.Component {
       } else {
           return (
               <DeviceEditor
-                  devices={goodDevices}
+                  devices={this.state.devices}
                   setDevices={(newDevices) => {
                       console.log(newDevices);
                   }}
