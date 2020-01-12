@@ -23,11 +23,12 @@ class DevicePlanner extends React.Component {
     const devices = []
     client.query({ query: deviceTypesQuery(experimentId) })
       .then((data) => {
+        console.log('types: ', data);
         data.data.deviceTypes.map(type => {
           const deviceTypeKey = type.key
           client.query({ query: devicesQuery(experimentId, deviceTypeKey) })
             .then(data => {
-              console.log(data.data)
+              console.log('devices: ', data);
               devices.push(data.data.devices)
             })
             .then(() => {
