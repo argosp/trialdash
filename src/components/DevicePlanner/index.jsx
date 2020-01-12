@@ -9,6 +9,7 @@ import config from '../../config';
 import { updateCache } from '../../apolloGraphql';
 import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from './utils/devicesQuery';
+// import deviceMutation from '../DeviceContext/DeviceForm/utils/deviceMutation';
 import { DeviceEditor } from './DeviceEditor';
 class DevicePlanner extends React.Component {
   state = {
@@ -42,20 +43,31 @@ class DevicePlanner extends React.Component {
 
 
   render() {
-      const goodDevices = this.state.devices.filter(d => d.items && d.type);
-      if (goodDevices.length === 0 || this.state.devices.length !== goodDevices.length) {
-          return <CircularProgress style={{marginLeft: '50%', marginTop: '40vh'}} />;
-      } else {
-          return (
-              <DeviceEditor
-                  devices={this.state.devices}
-                  setDevices={(newDevices) => {
-                      console.log(newDevices);
-                  }}
-              >
-              </DeviceEditor>
-          );
-      }
+    const goodDevices = this.state.devices.filter(d => d.items && d.type);
+    if (goodDevices.length === 0 || this.state.devices.length !== goodDevices.length) {
+        return <CircularProgress style={{ marginLeft: '50%', marginTop: '40vh' }} />;
+    } else {
+        return (
+            <DeviceEditor
+                devices={this.state.devices}
+                setDevices={(newDevices) => {
+                    newDevices.forEach(newDevType => {
+                        const oldDevType = this.state.devices.find(ty => ty.type === newDevType.type);
+                        if (oldDevType && oldDevType.items && newDevType.items) {
+                            newDevType.items.forEach(newDev => {
+                                const oldDev = oldDevType.items.find(d => d.key === newDev.key);
+                                if (oldDev && JSON.stringify(oldDev) !== JSON.stringify(newDev)) {
+                                    console.log('change', newDev);
+                                }
+                            })
+                        }
+                    });
+                    this.setState(() => ({ devices: newDevices }));
+                }}
+            >
+            </DeviceEditor>
+        );
+    }
 //     return (
 //       <div>
 //         {this.state.devices.length > 0 &&
