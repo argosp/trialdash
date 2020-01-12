@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles, CircularProgress } from '@material-ui/core';
 
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
@@ -42,15 +42,20 @@ class DevicePlanner extends React.Component {
 
 
   render() {
-    return (
-      <DeviceEditor
-        devices={this.state.devices}
-        setDevices={(newDevices) => {
-          console.log(newDevices);
-        }}
-      >
-      </DeviceEditor>
-    );
+      const goodDevices = this.state.devices.filter(d => d.items && d.type);
+      if (goodDevices.length === 0 && this.state.devices.length !== goodDevices.length) {
+          return <CircularProgress style={{marginLeft: '50%', marginTop: '40vh'}} />;
+      } else {
+          return (
+              <DeviceEditor
+                  devices={goodDevices}
+                  setDevices={(newDevices) => {
+                      console.log(newDevices);
+                  }}
+              >
+              </DeviceEditor>
+          );
+      }
 //     return (
 //       <div>
 //         {this.state.devices.length > 0 &&
