@@ -8,8 +8,6 @@ import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve } from './Utils';
 
-console.log(new Date());
-
 const position = [32.081128, 34.779729];
 
 let lastIndex;
@@ -19,8 +17,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const mapElement = useRef(null);
     const currPolyline = useRef(null);
 
-    const defType = (devices && devices.length && devices[0].type) ? devices[0].type : "";
-    const [selectedType, setSelectedType] = React.useState(defType);
+    const [selectedType, setSelectedType] = React.useState(devices[0].type);
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
     const [shape, setShape] = React.useState("Point");
@@ -30,7 +27,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const [devicesShowName, setDevicesShowName] = React.useState(false);
 
     const changeLocations = (type, indices, newLocations) => {
-        let tempDevices = devices.slice();
+        let tempDevices = JSON.parse(JSON.stringify(devices));
         let typeDevices = tempDevices.find(d => d.type === type).items;
         for (let i = 0; i < indices.length; ++i) {
             typeDevices[indices[i]].position = newLocations[Math.min(i, newLocations.length - 1)];
@@ -61,7 +58,8 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         if (shape === 'Point') {
-            changeLocations(selectedType, selection, [[e.latlng.lat, e.latlng.lng]]);
+            setDevices(changeLocations(selectedType, selection, [[e.latlng.lat, e.latlng.lng]]));
+            setStartPoint(undefined);
             setSelection([]);
         } else {
             if (!startPoint) {
