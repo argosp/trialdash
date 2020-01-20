@@ -36,6 +36,7 @@ class FieldTypeItem extends React.Component {
       isEditModeEnabled,
       activateEditMode,
       editedFieldTypeKey,
+      onValueChange,
     } = this.props;
     const { isMouseHover } = this.state;
 
@@ -63,6 +64,8 @@ class FieldTypeItem extends React.Component {
               id={fieldType.key}
               placeholder={placeholder}
               withBorder
+              value={fieldType.value}
+              onChange={e => onValueChange(e, 'input', fieldType.key, 'value')}
               bottomDescription={fieldType.description}
               label={(
                 <Grid container alignItems="center">

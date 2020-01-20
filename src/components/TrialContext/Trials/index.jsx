@@ -11,12 +11,16 @@ import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import { TRIAL_SETS_DASH, TRIALS } from '../../../constants/base';
+import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
+import TrialForm from '../TrialForm';
+import trialMutation from '../TrialForm/utils/trialMutation';
+import { updateCache } from '../../../apolloGraphql';
+import trialSetMutation from '../utils/trialSetMutation';
 
 class Trials extends React.Component {
   state = {
@@ -59,10 +63,18 @@ class Trials extends React.Component {
           <CustomTooltip title="Devices" ariaLabel="devices">
             <GridIcon />
           </CustomTooltip>
-          <CustomTooltip title="Clone" ariaLabel="clone">
+          <CustomTooltip
+            title="Clone"
+            ariaLabel="clone"
+            onClick={() => this.clone(trial)}
+          >
             <CloneIcon />
           </CustomTooltip>
-          <CustomTooltip title="Edit" ariaLabel="edit">
+          <CustomTooltip
+            title="Edit"
+            ariaLabel="edit"
+            onClick={() => this.activateEditMode(trial)}
+          >
             <PenIcon />
           </CustomTooltip>
           <CustomTooltip
@@ -104,6 +116,68 @@ class Trials extends React.Component {
     return columns;
   };
 
+  clone = async (trial) => {
+    const clonedTrial = { ...trial };
+    clonedTrial.key = uuid();
+    clonedTrial.id = Date.now();
+    const { match, client } = this.props;
+    clonedTrial.experimentId = match.params.id;
+    clonedTrial.trialSetKey = match.params.trialSetKey;
+
+    const { trialSet } = this.state;
+
+    await client.mutate({
+      mutation: trialMutation(clonedTrial),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          trialsQuery(match.params.id, match.params.trialSetKey),
+          TRIALS,
+          TRIAL_MUTATION,
+        );
+      },
+    });
+
+    // update number of trials of the trial set
+    const updatedTrialSet = { ...trialSet };
+    updatedTrialSet.numberOfTrials += 1;
+    updatedTrialSet.experimentId = match.params.id;
+
+    await client.mutate({
+      mutation: trialSetMutation(updatedTrialSet),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          trialSetsQuery(match.params.id),
+          TRIAL_SETS,
+          TRIAL_SET_MUTATION,
+          true,
+        );
+      },
+    });
+
+    this.setState({ update: true });
+  };
+
+  setUpdated = () => {
+    this.setState({ update: false });
+  }
+
+  activateEditMode = (trial) => {
+    this.setState({
+      isEditModeEnabled: true,
+      trial,
+    });
+  };
+
+  returnFunc = () => {
+    this.setState({
+      isEditModeEnabled: false,
+    });
+  }
+
   render() {
     const { history, match } = this.props;
     const { trialSet } = this.state;
@@ -111,24 +185,37 @@ class Trials extends React.Component {
 
     return (
       <>
-        <ContentHeader
-          withSearchInput
-          title="Trials set"
-          searchPlaceholder="Search Trials"
-          addButtonText="Add trial"
-          withBackButton
-          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
-          rightDescription={trialSet.id}
-          addButtonHandler={() => history.push(
-            `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`,
-          )}
-        />
-        <ContentTable
-          contentType={TRIALS}
-          query={trialsQuery(match.params.id, match.params.trialSetKey)}
-          tableHeadColumns={tableHeadColumns}
-          renderRow={this.renderTableRow}
-        />
+        {this.state.isEditModeEnabled
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          ? <TrialForm
+            {...this.props}
+            trial={this.state.trial}
+            returnFunc={this.returnFunc}
+          />
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          : <>
+            <ContentHeader
+              withSearchInput
+              title="Trials set"
+              searchPlaceholder="Search Trials"
+              addButtonText="Add trial"
+              withBackButton
+              backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
+              rightDescription={trialSet.id}
+              addButtonHandler={() => history.push(
+                `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`,
+              )}
+            />
+            <ContentTable
+              contentType={TRIALS}
+              query={trialsQuery(match.params.id, match.params.trialSetKey)}
+              tableHeadColumns={tableHeadColumns}
+              renderRow={this.renderTableRow}
+              update={this.state.update}
+              setUpdated={this.setUpdated}
+            />
+          </>    
+        }
       </>
     );
   }

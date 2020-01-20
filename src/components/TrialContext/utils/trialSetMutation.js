@@ -27,7 +27,8 @@ export default (trialSet) => {
     .replace(/"required":/g, 'required:')
     .replace(/"template":/g, 'template:')
     .replace(/"multipleValues":/g, 'multipleValues:')
-    .replace(/"trialField":/g, 'trialField:')}
+    .replace(/"trialField":/g, 'trialField:')
+    .replace(/"value":/g, 'value:')}
         ) {
             key
             id
@@ -46,6 +47,7 @@ export default (trialSet) => {
               template
               multipleValues
               trialField
+              value
             }
         }
     }

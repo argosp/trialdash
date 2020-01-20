@@ -19,6 +19,7 @@ const deviceTypes = experimentId => gql`
            template
            multipleValues
            trialField
+           value
         }
      }
   }
