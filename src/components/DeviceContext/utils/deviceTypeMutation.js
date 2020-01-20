@@ -27,6 +27,7 @@ export default (deviceType) => {
     .replace(/"template":/g, 'template:')
     .replace(/"multipleValues":/g, 'multipleValues:')
     .replace(/"trialField":/g, 'trialField:')
+    .replace(/"value":/g, 'value:')
 }
             ) {
                 key
@@ -45,6 +46,7 @@ export default (deviceType) => {
                   template
                   multipleValues
                   trialField
+                  value
                 }
             }
         }

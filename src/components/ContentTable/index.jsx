@@ -30,15 +30,14 @@ class ContentTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match } = this.props;
-
-    if (prevProps.match.params.id !== match.params.id) {
+    const { match, update } = this.props;
+    if (prevProps.match.params.id !== match.params.id || update) {
       this.getItemsFromServer();
     }
   }
 
   getItemsFromServer = () => {
-    const { query, contentType, client } = this.props;
+    const { query, contentType, client, setUpdated, update } = this.props;
 
     client
       .query({
@@ -46,6 +45,7 @@ class ContentTable extends React.Component {
       })
       .then((data) => {
         this.setState({ [contentType]: data.data[contentType] });
+        if (setUpdated && update) setUpdated();
       });
   };
 
