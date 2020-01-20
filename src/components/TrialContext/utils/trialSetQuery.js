@@ -20,6 +20,7 @@ const trialSets = experimentId => gql`
            template
            multipleValues
            trialField
+           value
       }
      }
   }`;

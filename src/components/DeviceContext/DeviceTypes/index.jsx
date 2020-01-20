@@ -5,11 +5,13 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import ContentTable from '../../ContentTable';
 import StyledTableCell from '../../StyledTableCell';
+import AddSetForm from '../../AddSetForm';
 import { styles } from './styles';
 import {
   DEVICE_TYPES_DASH,
   DEVICE_TYPES,
   DEVICES,
+  DEVICE_TYPE_MUTATION,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
@@ -17,6 +19,8 @@ import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 
 class DeviceTypes extends React.Component {
+    state = {};
+
     renderTableRow = (deviceType) => {
       const { history, match, classes } = this.props;
 
@@ -29,7 +33,11 @@ class DeviceTypes extends React.Component {
             <CustomTooltip title="Clone" ariaLabel="clone">
               <CloneIcon />
             </CustomTooltip>
-            <CustomTooltip title="Edit" aria-label="edit">
+            <CustomTooltip
+              title="Edit"
+              ariaLabel="edit"
+              onClick={() => this.activateEditMode(deviceType)}
+            >
               <PenIcon />
             </CustomTooltip>
             <CustomTooltip
@@ -44,6 +52,19 @@ class DeviceTypes extends React.Component {
         </React.Fragment>
       );
     };
+
+    activateEditMode = (deviceType) => {
+      this.setState({
+        isEditModeEnabled: true,
+        deviceType,
+      });
+    };
+
+    returnFunc = () => {
+      this.setState({
+        isEditModeEnabled: false,
+      });
+    }
 
     render() {
       const tableHeadColumns = [
@@ -64,19 +85,34 @@ class DeviceTypes extends React.Component {
 
       return (
         <>
-          <ContentHeader
-            withSearchInput
-            title="Devices types"
-            searchPlaceholder="Search Devices types"
-            addButtonText="Add device type"
-            addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-device-type`)}
-          />
-          <ContentTable
-            contentType={DEVICE_TYPES}
-            query={deviceTypesQuery(match.params.id)}
-            tableHeadColumns={tableHeadColumns}
-            renderRow={this.renderTableRow}
-          />
+          {this.state.isEditModeEnabled
+            // eslint-disable-next-line react/jsx-wrap-multilines
+            ? <AddSetForm
+              {...this.props}
+              deviceType={this.state.deviceType}
+              formType={DEVICE_TYPES_DASH}
+              cacheQuery={deviceTypesQuery}
+              itemsName={DEVICE_TYPES}
+              mutationName={DEVICE_TYPE_MUTATION}
+              returnFunc={this.returnFunc}
+            />
+            // eslint-disable-next-line react/jsx-wrap-multilines
+            : <>
+              <ContentHeader
+                withSearchInput
+                title="Devices types"
+                searchPlaceholder="Search Devices types"
+                addButtonText="Add device type"
+                addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-device-type`)}
+              />
+              <ContentTable
+                contentType={DEVICE_TYPES}
+                query={deviceTypesQuery(match.params.id)}
+                tableHeadColumns={tableHeadColumns}
+                renderRow={this.renderTableRow}
+              />
+            </>
+          }
         </>
       );
     }

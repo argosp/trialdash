@@ -35,21 +35,21 @@ class AddSetForm extends React.Component {
     formObject:
       DEVICE_TYPES_DASH === this.props.formType
         ? {
-          key: uuid(),
-          id: '',
-          name: '',
+          key: this.props.deviceType ? this.props.deviceType.key : uuid(),
+          id: this.props.deviceType ? this.props.deviceType.id : '',
+          name: this.props.deviceType ? this.props.deviceType.name : '',
           experimentId: this.props.match.params.id,
-          numberOfDevices: 0,
-          properties: [], // this field correspond to the <Droppable droppableId="droppable">
+          numberOfDevices: this.props.deviceType ? this.props.deviceType.numberOfDevices : 0,
+          properties: this.props.deviceType ? this.props.deviceType.properties : [], // this field correspond to the <Droppable droppableId="droppable">
         }
         : {
-          key: uuid(),
-          id: '',
-          name: '',
-          description: '',
+          key: this.props.trialSet ? this.props.trialSet.key : uuid(),
+          id: this.props.trialSet ? this.props.trialSet.id : '',
+          name: this.props.trialSet ? this.props.trialSet.name : '',
+          description: this.props.trialSet ? this.props.trialSet.description : '',
           experimentId: this.props.match.params.id,
-          numberOfTrials: 0,
-          properties: [], // this field correspond to the <Droppable droppableId="droppable">
+          numberOfTrials: this.props.trialSet ? this.props.trialSet.numberOfTrials : 0,
+          properties: this.props.trialSet ? this.props.trialSet.properties : [], // this field correspond to the <Droppable droppableId="droppable">
         },
 
     // this field correspond to the <Droppable droppableId="droppable2">
@@ -122,7 +122,7 @@ class AddSetForm extends React.Component {
 
   submitEntity = async (entity) => {
     const newEntity = entity;
-    const { formType, match, history, client, cacheQuery, itemsName, mutationName } = this.props;
+    const { formType, match, history, client, cacheQuery, itemsName, mutationName, returnFunc } = this.props;
 
     // add number of field types to the device type
     if (DEVICE_TYPES_DASH === formType) {
@@ -143,11 +143,13 @@ class AddSetForm extends React.Component {
             cacheQuery(match.params.id),
             itemsName,
             mutationName,
+            returnFunc,
           );
         },
       });
-
-    history.push(`/experiments/${match.params.id}/${formType}`);
+    
+    if (returnFunc) returnFunc();
+    else history.push(`/experiments/${match.params.id}/${formType}`);
   };
 
   reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
@@ -257,7 +259,7 @@ class AddSetForm extends React.Component {
       isFieldTypesPanelOpen,
       isEditFieldTypePanelOpen,
     } = this.state;
-    const { classes, theme, formType, history, match } = this.props;
+    const { classes, theme, formType, history, match, returnFunc } = this.props;
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {
@@ -278,9 +280,10 @@ class AddSetForm extends React.Component {
       >
         <ContentHeader
           title={
+            // eslint-disable-next-line no-nested-ternary
             DEVICE_TYPES_DASH === formType
-              ? 'Add device type'
-              : 'Add trial set'
+              ? this.props.deviceType ? 'Edit device type' : 'Add device type'
+              : this.props.trialSet ? 'Edit trial set' : 'Add trial set'
           }
           bottomDescription="a short description of what it means to add an item here"
         />
@@ -309,6 +312,7 @@ class AddSetForm extends React.Component {
                 id="entity-name"
                 label="Name"
                 bottomDescription="a short description about the name"
+                value={this.state.formObject.name}
               />
             </Grid>
             <Grid item xs={3}>
@@ -317,6 +321,7 @@ class AddSetForm extends React.Component {
                 id="entity-id"
                 label="ID"
                 bottomDescription="a short description about the id"
+                value={this.state.formObject.id}
               />
             </Grid>
           </Grid>
@@ -328,6 +333,7 @@ class AddSetForm extends React.Component {
                   id="entity-description"
                   label="Description"
                   bottomDescription="a short description"
+                  value={this.state.formObject.description}
                 />
               </Grid>
             </Grid>
@@ -387,6 +393,8 @@ class AddSetForm extends React.Component {
                             fieldType={fieldType}
                             contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
                             placeholder="Value"
+                            value={editedFieldType.value}
+                            onValueChange={this.fieldTypeValueChangeHandler}
                           />
                         </div>
                       )}
@@ -400,7 +408,10 @@ class AddSetForm extends React.Component {
         </form>
         {!isEditModeEnabled ? (
           <Footer
-            cancelButtonHandler={() => history.push(`/experiments/${match.params.id}/${formType}`)}
+            cancelButtonHandler={() => {
+              if (returnFunc) returnFunc();
+              else history.push(`/experiments/${match.params.id}/${formType}`);
+            }}
             saveButtonHandler={() => this.submitEntity(this.state.formObject)}
           />
         ) : null}
