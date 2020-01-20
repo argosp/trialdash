@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React from 'react';
 import { withStyles } from '@material-ui/core';
 import update from 'immutability-helper';
@@ -50,12 +51,13 @@ const TabPanel = ({ children, value, index, ...other }) => (
 class TrialForm extends React.Component {
   state = {
     trial: {
+      key: this.props.trial ? this.props.trial.key : uuid(),
       trialSetKey: this.props.match.params.trialSetKey,
       experimentId: this.props.match.params.id,
-      id: '',
-      name: '',
-      numberOfDevices: 0,
-      properties: [],
+      id: this.props.trial ? this.props.trial.id : '',
+      name: this.props.trial ? this.props.trial.name : '',
+      numberOfDevices: this.props.trial ? this.props.trial.numberOfDevices : 0,
+      properties: this.props.trial ? this.props.trial.properties : [],
     },
     trialSet: {},
     tabValue: 0,
@@ -64,15 +66,19 @@ class TrialForm extends React.Component {
   };
 
   componentDidMount() {
-    const { client, match } = this.props;
-
+    const { client, match, trial } = this.props;
     client.query({ query: trialSetsQuery(match.params.id) }).then((data) => {
       const trialSet = data.data.trialSets.find(
         item => item.key === match.params.trialSetKey,
       );
-      const properties = [];
 
-      trialSet.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+      let properties;
+      if (!trial) {
+        properties = [];
+        trialSet.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+      } else {
+        properties = trial.properties;
+      }
 
       this.setState(state => ({
         trial: {
@@ -120,15 +126,16 @@ class TrialForm extends React.Component {
   };
 
   closeForm = () => {
-    const { match, history } = this.props;
+    const { match, history, returnFunc } = this.props;
 
-    history.push(
+    if (returnFunc) returnFunc();
+    else history.push(
       `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/${TRIALS}`,
     );
   };
 
   submitTrial = async (newTrial) => {
-    const { match, client } = this.props;
+    const { match, client, returnFunc } = this.props;
     const { trialSet } = this.state;
 
     await client.mutate({
@@ -140,28 +147,31 @@ class TrialForm extends React.Component {
           trialsQuery(match.params.id, match.params.trialSetKey),
           TRIALS,
           TRIAL_MUTATION,
+          returnFunc,
         );
       },
     });
 
     // update number of trials of the trial set
-    const updatedTrialSet = { ...trialSet };
-    updatedTrialSet.numberOfTrials += 1;
-    updatedTrialSet.experimentId = match.params.id;
+    if (!returnFunc) {
+      const updatedTrialSet = { ...trialSet };
+      updatedTrialSet.numberOfTrials += 1;
+      updatedTrialSet.experimentId = match.params.id;
 
-    await client.mutate({
-      mutation: trialSetMutation(updatedTrialSet),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          trialSetsQuery(match.params.id),
-          TRIAL_SETS,
-          TRIAL_SET_MUTATION,
-          true,
-        );
-      },
-    });
+      await client.mutate({
+        mutation: trialSetMutation(updatedTrialSet),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            trialSetsQuery(match.params.id),
+            TRIAL_SETS,
+            TRIAL_SET_MUTATION,
+            true,
+          );
+        },
+      });
+    }
 
     this.closeForm();
   };
@@ -173,6 +183,12 @@ class TrialForm extends React.Component {
   closeLocationPopup = () => {
     this.setState({ isLocationPopupOpen: false });
   };
+
+  getValue = (key) => {
+    const properties = this.state.trial.properties;
+    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
+    return (p !== -1 ? properties[p].val : '');
+  }
 
   render() {
     const { classes, theme, match } = this.props;
@@ -202,8 +218,8 @@ class TrialForm extends React.Component {
             rightComponent={(
               <StyledTabs
                 tabs={[
-                  { key: uuid(), label: 'General', id: 'trial-tab-0' },
-                  { key: uuid(), label: 'Devices', id: 'trial-tab-1' },
+                  { key: this.state.trial.key, label: 'General', id: 'trial-tab-0' },
+                  { key: this.state.trial.key, label: 'Devices', id: 'trial-tab-1' },
                 ]}
                 value={tabValue}
                 onChange={this.changeTab}
@@ -219,6 +235,7 @@ class TrialForm extends React.Component {
             onChange={e => this.onInputChange(e, 'name')}
             label="Name"
             bottomDescription="a short description"
+            value={this.state.trial.name}
           />
           <CustomInput
             id="trial-id"
@@ -226,6 +243,7 @@ class TrialForm extends React.Component {
             onChange={e => this.onInputChange(e, 'id')}
             label="ID"
             bottomDescription="a short description"
+            value={this.state.trial.id}
           />
           {trialSet.properties
             ? trialSet.properties.map(property => (
@@ -236,6 +254,7 @@ class TrialForm extends React.Component {
                 onChange={e => this.onPropertyChange(e, property.key)}
                 label={property.label}
                 bottomDescription={property.description}
+                value={this.getValue(property.key)}
               />
             ))
             : null}

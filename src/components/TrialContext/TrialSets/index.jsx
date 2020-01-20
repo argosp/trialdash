@@ -1,8 +1,10 @@
 import React from 'react';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import uuid from 'uuid/v4';
 import { withStyles } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
 import ContentTable from '../../ContentTable';
 import trialSetsQuery from '../utils/trialSetQuery';
 import StyledTableCell from '../../StyledTableCell';
@@ -11,12 +13,19 @@ import {
   TRIAL_SETS_DASH,
   TRIAL_SETS,
   TRIALS,
+  TRIAL_SET_MUTATION,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, PenIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
+import AddSetForm from '../../AddSetForm';
+import { updateCache } from '../../../apolloGraphql';
+import trialSetMutation from '../utils/trialSetMutation';
+import trialSets from '../utils/trialSetQuery';
 
 class TrialSets extends React.Component {
+    state = {};
+
     renderTableRow = (trialSet) => {
       const { history, match, classes } = this.props;
 
@@ -26,10 +35,18 @@ class TrialSets extends React.Component {
           <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
           <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
           <StyledTableCell align="right">
-            <CustomTooltip title="Clone" ariaLabel="clone">
+            <CustomTooltip
+              title="Clone"
+              ariaLabel="clone"
+              onClick={() => this.clone(trialSet)}
+            >
               <CloneIcon />
             </CustomTooltip>
-            <CustomTooltip title="Edit" ariaLabel="edit">
+            <CustomTooltip
+              title="Edit"
+              ariaLabel="edit"
+              onClick={() => this.activateEditMode(trialSet)}
+            >
               <PenIcon />
             </CustomTooltip>
             <CustomTooltip
@@ -44,6 +61,47 @@ class TrialSets extends React.Component {
         </React.Fragment>
       );
     };
+
+    clone = async (trialSet) => {
+      const clonedTrialSet = { ...trialSet };
+      clonedTrialSet.key = uuid();
+      clonedTrialSet.id = Date.now();
+      const { match, client } = this.props;
+      clonedTrialSet.experimentId = match.params.id;
+      clonedTrialSet.numberOfTrials = 0;
+
+      await client.mutate({
+        mutation: trialSetMutation(clonedTrialSet),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            trialSetsQuery(match.params.id),
+            TRIAL_SETS,
+            TRIAL_SET_MUTATION,
+          );
+        },
+      });
+  
+      this.setState({ update: true });
+    };
+  
+    setUpdated = () => {
+      this.setState({ update: false });
+    }
+
+    activateEditMode = (trialSet) => {
+      this.setState({
+        isEditModeEnabled: true,
+        trialSet,
+      });
+    };
+
+    returnFunc = () => {
+      this.setState({
+        isEditModeEnabled: false,
+      });
+    }
 
     render() {
       const tableHeadColumns = [
@@ -64,19 +122,36 @@ class TrialSets extends React.Component {
 
       return (
         <>
-          <ContentHeader
-            withSearchInput
-            title="Trial sets"
-            searchPlaceholder="Search trial sets"
-            addButtonText="Add trial set"
-            addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-trial-set`)}
-          />
-          <ContentTable
-            contentType={TRIAL_SETS}
-            query={trialSetsQuery(match.params.id)}
-            tableHeadColumns={tableHeadColumns}
-            renderRow={this.renderTableRow}
-          />
+          {this.state.isEditModeEnabled
+            // eslint-disable-next-line react/jsx-wrap-multilines
+            ? <AddSetForm
+              {...this.props}
+              trialSet={this.state.trialSet}
+              formType={TRIAL_SETS_DASH}
+              cacheQuery={trialSetsQuery}
+              itemsName={TRIAL_SETS}
+              mutationName={TRIAL_SET_MUTATION}
+              returnFunc={this.returnFunc}
+            />
+            // eslint-disable-next-line react/jsx-wrap-multilines
+            : <>
+              <ContentHeader
+                withSearchInput
+                title="Trial sets"
+                searchPlaceholder="Search trial sets"
+                addButtonText="Add trial set"
+                addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-trial-set`)}
+              />
+              <ContentTable
+                contentType={TRIAL_SETS}
+                query={trialSetsQuery(match.params.id)}
+                tableHeadColumns={tableHeadColumns}
+                renderRow={this.renderTableRow}
+                update={this.state.update}
+                setUpdated={this.setUpdated}
+              />
+            </>
+          }
         </>
       );
     }
@@ -84,5 +159,6 @@ class TrialSets extends React.Component {
 
 export default compose(
   withRouter,
+  withApollo,
   withStyles(styles),
 )(TrialSets);
