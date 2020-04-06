@@ -8,6 +8,7 @@ const trialSets = experimentId => gql`
        name
        description
        numberOfTrials
+       state
        properties{
            key
            type
