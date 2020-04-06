@@ -4,6 +4,7 @@ export const styles = theme => ({
     bottom: 0,
     left: 0,
     padding: '15px 15px 15px 25px',
+    zIndex: 20,
     boxShadow: '0px -1px 0px #ccc',
     backgroundColor: theme.palette.white.main,
   },

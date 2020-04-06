@@ -120,8 +120,9 @@ class AddSetForm extends React.Component {
     }));
   };
 
-  submitEntity = async (entity) => {
+  submitEntity = async (entity, deleted) => {
     const newEntity = entity;
+    if (deleted) newEntity.state = 'Deleted';
     const { formType, match, history, client, cacheQuery, itemsName, mutationName, returnFunc } = this.props;
 
     // add number of field types to the device type
@@ -148,7 +149,7 @@ class AddSetForm extends React.Component {
         },
       });
     
-    if (returnFunc) returnFunc();
+    if (returnFunc) returnFunc(true);
     else history.push(`/experiments/${match.params.id}/${formType}`);
   };
 
@@ -413,6 +414,8 @@ class AddSetForm extends React.Component {
               else history.push(`/experiments/${match.params.id}/${formType}`);
             }}
             saveButtonHandler={() => this.submitEntity(this.state.formObject)}
+            withDeleteButton={this.props.deviceType || this.props.trialSet}
+            deleteButtonHandler={() => this.submitEntity(this.state.formObject, true)}
           />
         ) : null}
       </DragDropContext>
