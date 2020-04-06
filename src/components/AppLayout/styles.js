@@ -1,6 +1,6 @@
 export const styles = () => ({
   contentWrapper: {
     padding: '30px',
-    height: '80%',
+    height: 'calc(100% + 20px)',
   },
 });

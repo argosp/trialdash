@@ -54,6 +54,14 @@ const EditFieldTypePanel = ({
         bottomDescription="a short description about the device name"
         className={classes.input}
       />
+      <CustomInput
+        value={fieldType.value || ''}
+        onChange={e => onValueChange(e, 'input', fieldType.key, 'value')}
+        id="field-type-value"
+        label="Value"
+        bottomDescription="a short description about the device name"
+        className={classes.input}
+      />
       <Grid container spacing={3}>
         <Grid item xs>
           <CustomInput
