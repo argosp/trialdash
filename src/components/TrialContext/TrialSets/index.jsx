@@ -16,12 +16,11 @@ import {
   TRIAL_SET_MUTATION,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { CloneIcon, PenIcon } from '../../../constants/icons';
+import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import AddSetForm from '../../AddSetForm';
 import { updateCache } from '../../../apolloGraphql';
 import trialSetMutation from '../utils/trialSetMutation';
-import trialSets from '../utils/trialSetQuery';
 
 class TrialSets extends React.Component {
     state = {};
@@ -50,6 +49,13 @@ class TrialSets extends React.Component {
               <PenIcon />
             </CustomTooltip>
             <CustomTooltip
+              title="Delete"
+              ariaLabel="delete"
+              onClick={() => this.deleteTrialSet(trialSet)}
+            >
+              <BasketIcon />
+            </CustomTooltip>
+            <CustomTooltip
               title="Open"
               className={classes.arrowButton}
               ariaLabel="open"
@@ -65,7 +71,8 @@ class TrialSets extends React.Component {
     clone = async (trialSet) => {
       const clonedTrialSet = { ...trialSet };
       clonedTrialSet.key = uuid();
-      clonedTrialSet.id = Date.now();
+      // eslint-disable-next-line prefer-template
+      clonedTrialSet.id = trialSet.id + ' clone';
       const { match, client } = this.props;
       clonedTrialSet.experimentId = match.params.id;
       clonedTrialSet.numberOfTrials = 0;
@@ -90,6 +97,32 @@ class TrialSets extends React.Component {
       this.setState({ update: false });
     }
 
+    deleteTrialSet = async (trialSet) => {
+      const newEntity = trialSet;
+      newEntity.state = 'Deleted';
+      const { match, client, mutationName } = this.props;
+      newEntity.experimentId = match.params.id;
+
+      const mutation = trialSetMutation;
+  
+      await client
+        .mutate({
+          mutation: mutation(newEntity),
+          update: (cache, mutationResult) => {
+            updateCache(
+              cache,
+              mutationResult,
+              trialSetsQuery(match.params.id),
+              TRIAL_SETS,
+              mutationName,
+              true,
+            );
+          },
+        });
+      
+      this.setState({ update: true });
+    };
+
     activateEditMode = (trialSet) => {
       this.setState({
         isEditModeEnabled: true,
@@ -97,9 +130,10 @@ class TrialSets extends React.Component {
       });
     };
 
-    returnFunc = () => {
+    returnFunc = (deleted) => {
       this.setState({
         isEditModeEnabled: false,
+        update: deleted,
       });
     }
 
