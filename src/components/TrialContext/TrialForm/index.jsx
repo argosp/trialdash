@@ -42,6 +42,7 @@ const TabPanel = ({ children, value, index, ...other }) => (
     hidden={value !== index}
     id={`trial-tabpanel-${index}`}
     aria-labelledby={`trial-tab-${index}`}
+    style={{ marginBottom: '100px' }}
     {...other}
   >
     <Box>{children}</Box>
@@ -99,11 +100,14 @@ class TrialForm extends React.Component {
   };
 
   onPropertyChange = (e, propertyKey) => {
-    const { value } = e.target;
+    if (!e.target) return;
+    let { value } = e.target;
+    if (e.target.type === 'checkbox') value = e.target.checked.toString();
     const indexOfProperty = this.state.trial.properties.findIndex(
       property => property.key === propertyKey,
     );
 
+    if (indexOfProperty === -1) return;
     this.setState(state => ({
       trial: {
         ...state.trial,
@@ -255,6 +259,8 @@ class TrialForm extends React.Component {
                 label={property.label}
                 bottomDescription={property.description}
                 value={this.getValue(property.key)}
+                values={property.value}
+                type={property.type}
               />
             ))
             : null}
