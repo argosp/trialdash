@@ -119,7 +119,8 @@ class Trials extends React.Component {
   clone = async (trial) => {
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
-    clonedTrial.id = Date.now();
+    // eslint-disable-next-line prefer-template
+    clonedTrial.id = trial.id + ' clone';
     const { match, client } = this.props;
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
