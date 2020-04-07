@@ -16,7 +16,7 @@ import {
   TRIAL_SET_MUTATION,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { CloneIcon, PenIcon } from '../../../constants/icons';
+import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import AddSetForm from '../../AddSetForm';
 import { updateCache } from '../../../apolloGraphql';
@@ -31,9 +31,9 @@ class TrialSets extends React.Component {
 
       return (
         <React.Fragment key={trialSet.key}>
-          <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
-          <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
-          <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}>{trialSet.name}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}>{trialSet.numberOfTrials}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}>{trialSet.description}</StyledTableCell>
           <StyledTableCell align="right">
             <CustomTooltip
               title="Clone"
@@ -48,6 +48,13 @@ class TrialSets extends React.Component {
               onClick={() => this.activateEditMode(trialSet)}
             >
               <PenIcon />
+            </CustomTooltip>
+            <CustomTooltip
+              title="Delete"
+              ariaLabel="delete"
+              onClick={() => this.deleteTrialSet(trialSet)}
+            >
+              <BasketIcon />
             </CustomTooltip>
             <CustomTooltip
               title="Open"
@@ -65,7 +72,8 @@ class TrialSets extends React.Component {
     clone = async (trialSet) => {
       const clonedTrialSet = { ...trialSet };
       clonedTrialSet.key = uuid();
-      clonedTrialSet.id = Date.now();
+      // eslint-disable-next-line prefer-template
+      clonedTrialSet.id = trialSet.id + ' clone';
       const { match, client } = this.props;
       clonedTrialSet.experimentId = match.params.id;
       clonedTrialSet.numberOfTrials = 0;
@@ -90,6 +98,32 @@ class TrialSets extends React.Component {
       this.setState({ update: false });
     }
 
+    deleteTrialSet = async (trialSet) => {
+      const newEntity = trialSet;
+      newEntity.state = 'Deleted';
+      const { match, client, mutationName } = this.props;
+      newEntity.experimentId = match.params.id;
+
+      const mutation = trialSetMutation;
+  
+      await client
+        .mutate({
+          mutation: mutation(newEntity),
+          update: (cache, mutationResult) => {
+            updateCache(
+              cache,
+              mutationResult,
+              trialSetsQuery(match.params.id),
+              TRIAL_SETS,
+              mutationName,
+              true,
+            );
+          },
+        });
+      
+      this.setState({ update: true });
+    };
+
     activateEditMode = (trialSet) => {
       this.setState({
         isEditModeEnabled: true,
@@ -97,9 +131,10 @@ class TrialSets extends React.Component {
       });
     };
 
-    returnFunc = () => {
+    returnFunc = (deleted) => {
       this.setState({
         isEditModeEnabled: false,
+        update: deleted,
       });
     }
 
