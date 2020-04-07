@@ -26,9 +26,9 @@ class DeviceTypes extends React.Component {
 
       return (
         <React.Fragment key={deviceType.key}>
-          <StyledTableCell align="left">{deviceType.name}</StyledTableCell>
-          <StyledTableCell align="left">{deviceType.properties.length}</StyledTableCell>
-          <StyledTableCell align="left">{deviceType.numberOfDevices}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.name}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.properties.length}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.numberOfDevices}</StyledTableCell>
           <StyledTableCell align="right">
             <CustomTooltip title="Clone" ariaLabel="clone">
               <CloneIcon />
