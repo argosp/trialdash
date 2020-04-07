@@ -77,13 +77,6 @@ class Trials extends React.Component {
           >
             <PenIcon />
           </CustomTooltip>
-          <CustomTooltip
-            title="Open"
-            className={classes.arrowButton}
-            ariaLabel="open"
-          >
-            <ArrowForwardIosIcon />
-          </CustomTooltip>
         </StyledTableCell>
       </React.Fragment>
     );
