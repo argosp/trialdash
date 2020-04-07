@@ -21,6 +21,7 @@ import CustomTooltip from '../../CustomTooltip';
 import AddSetForm from '../../AddSetForm';
 import { updateCache } from '../../../apolloGraphql';
 import trialSetMutation from '../utils/trialSetMutation';
+import trialSets from '../utils/trialSetQuery';
 
 class TrialSets extends React.Component {
     state = {};
@@ -30,9 +31,9 @@ class TrialSets extends React.Component {
 
       return (
         <React.Fragment key={trialSet.key}>
-          <StyledTableCell align="left">{trialSet.name}</StyledTableCell>
-          <StyledTableCell align="left">{trialSet.numberOfTrials}</StyledTableCell>
-          <StyledTableCell align="left">{trialSet.description}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}>{trialSet.name}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}>{trialSet.numberOfTrials}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}`)}>{trialSet.description}</StyledTableCell>
           <StyledTableCell align="right">
             <CustomTooltip
               title="Clone"
