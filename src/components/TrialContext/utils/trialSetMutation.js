@@ -23,13 +23,11 @@ export default (trialSet) => {
     .replace(/"id":/g, 'id:')
     .replace(/"label":/g, 'label:')
     .replace(/"description":/g, 'description:')
-    .replace(/"prefix":/g, 'prefix:')
-    .replace(/"suffix":/g, 'suffix:')
     .replace(/"required":/g, 'required:')
     .replace(/"template":/g, 'template:')
     .replace(/"multipleValues":/g, 'multipleValues:')
-    .replace(/"trialField":/g, 'trialField:')
-    .replace(/"value":/g, 'value:')}
+    .replace(/"value":/g, 'value:')
+    .replace(/"defaultValue":/g, 'defaultValue:')}
         ) {
             key
             id
@@ -43,13 +41,11 @@ export default (trialSet) => {
               id
               label
               description
-              prefix
-              suffix
               required
               template
               multipleValues
-              trialField
               value
+              defaultValue
             }
         }
     }

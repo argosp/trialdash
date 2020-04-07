@@ -64,9 +64,10 @@ class FieldTypeItem extends React.Component {
               id={fieldType.key}
               placeholder={placeholder}
               withBorder
-              value={fieldType.value}
-              onChange={e => onValueChange(e, 'input', fieldType.key, 'value')}
+              value={fieldType.defaultValue}
+              onChange={e => onValueChange(e, 'input', fieldType.key, 'defaultValue')}
               bottomDescription={fieldType.description}
+              type={fieldType.type}
               label={(
                 <Grid container alignItems="center">
                   {FIELD_TYPES_ICONS[fieldType.type]}
