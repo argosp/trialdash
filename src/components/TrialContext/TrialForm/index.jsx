@@ -76,7 +76,7 @@ class TrialForm extends React.Component {
       let properties;
       if (!trial) {
         properties = [];
-        trialSet.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+        trialSet.properties.forEach(property => properties.push({ key: property.key, val: property.defaultValue }));
       } else {
         properties = trial.properties;
       }
@@ -188,10 +188,10 @@ class TrialForm extends React.Component {
     this.setState({ isLocationPopupOpen: false });
   };
 
-  getValue = (key) => {
+  getValue = (key, defaultValue) => {
     const properties = this.state.trial.properties;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
-    return (p !== -1 ? properties[p].val : '');
+    return (p !== -1 ? properties[p].val : defaultValue);
   }
 
   render() {
@@ -258,7 +258,7 @@ class TrialForm extends React.Component {
                 onChange={e => this.onPropertyChange(e, property.key)}
                 label={property.label}
                 bottomDescription={property.description}
-                value={this.getValue(property.key)}
+                value={this.getValue(property.key, property.defaultValue)}
                 values={property.value}
                 type={property.type}
               />
