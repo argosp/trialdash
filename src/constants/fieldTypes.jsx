@@ -34,6 +34,7 @@ export const FIELD_TYPES = {
     key: uuid(),
     label: 'Select List',
     type: 'selectList',
+    fields: ['value', 'multipleValues'],
   },
   boolean: {
     ...FIELD_TYPE_BASE,

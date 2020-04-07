@@ -16,6 +16,7 @@ import {
 import FieldTypesPanel from '../FieldTypesPanel';
 import deviceTypeMutation from '../DeviceContext/utils/deviceTypeMutation';
 import {
+  FIELD_TYPES,
   FIELD_TYPE_ITEM_INPUT_TYPE,
   FIELD_TYPES_ARRAY,
 } from '../../constants/fieldTypes';
@@ -26,7 +27,8 @@ import FieldTypeItem from '../FieldTypeItem';
 import Footer from '../Footer';
 import { styles } from './styles';
 import trialSetMutation from '../TrialContext/utils/trialSetMutation';
-import EditFieldTypePanel from '../EditFieldTypePanel';
+import EditDeviceTypePanel from '../EditFieldTypePanel';
+import EditTrialSetPanel from '../EditTrialSetPanel';
 import SimpleButton from '../SimpleButton';
 import { updateCache } from '../../apolloGraphql';
 
@@ -124,7 +126,14 @@ class AddSetForm extends React.Component {
     const newEntity = entity;
     if (deleted) newEntity.state = 'Deleted';
     const { formType, match, history, client, cacheQuery, itemsName, mutationName, returnFunc } = this.props;
-
+    newEntity.properties.forEach((p) => {
+      delete p.fields;
+      if (DEVICE_TYPES_DASH !== formType) {
+        delete p.prefix;
+        delete p.suffix;
+        delete p.trialField;
+      }
+    });
     // add number of field types to the device type
     if (DEVICE_TYPES_DASH === formType) {
       newEntity.numberOfFields = this.state.formObject.properties.length;
@@ -261,6 +270,9 @@ class AddSetForm extends React.Component {
       isEditFieldTypePanelOpen,
     } = this.state;
     const { classes, theme, formType, history, match, returnFunc } = this.props;
+    let EditFieldTypePanel;
+    if (DEVICE_TYPES_DASH === formType) EditFieldTypePanel = EditDeviceTypePanel;
+    else EditFieldTypePanel = EditTrialSetPanel;
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {
@@ -292,9 +304,9 @@ class AddSetForm extends React.Component {
           <EditFieldTypePanel
             isPanelOpen={isEditFieldTypePanelOpen}
             deactivateEditMode={this.deactivateEditMode}
-            fieldType={formObject.properties.find(
+            fieldType={Object.assign(FIELD_TYPES[editedFieldType.type], formObject.properties.find(
               fieldType => fieldType.key === editedFieldType.key,
-            )}
+            ))}
             onValueChange={this.fieldTypeValueChangeHandler}
             cancelChanges={this.cancelFieldTypeChanges}
           />
@@ -393,8 +405,8 @@ class AddSetForm extends React.Component {
                             deleteFieldType={() => this.deleteDraggedFieldType(fieldType)}
                             fieldType={fieldType}
                             contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
-                            placeholder="Value"
-                            value={editedFieldType.value}
+                            placeholder="Default Value"
+                            value={editedFieldType.defaultValue}
                             onValueChange={this.fieldTypeValueChangeHandler}
                           />
                         </div>
