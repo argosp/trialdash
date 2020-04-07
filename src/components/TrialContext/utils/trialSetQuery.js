@@ -15,13 +15,11 @@ const trialSets = experimentId => gql`
            id
            label
            description
-           prefix
-           suffix
            required
            template
            multipleValues
-           trialField
            value
+           defaultValue
       }
      }
   }`;
