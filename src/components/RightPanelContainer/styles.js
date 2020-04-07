@@ -10,6 +10,7 @@ export const styles = theme => ({
     width: 340,
     boxShadow: '-9px 0px 14px rgba(60, 60, 60, 0.05)',
     zIndex: 10,
+    paddingBottom: '74px',
   },
   hiddenRoot: {
     display: 'none',
