@@ -10,9 +10,12 @@ import Typography from '@material-ui/core/Typography';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { styles } from './styles';
+import { switcher } from '../EditFieldTypePanel/SwitchSection/styles';
 
-const handleToggle = (e, value, onChange) => {
-  onChange({ target: { value: ((typeof value === 'string') ? value : value.join(',')) } });
+const CustomSwitch = withStyles(switcher)(Switch);
+
+const handleToggle = (e, value, onChange, multiple) => {
+  onChange({ target: { value: (multiple ? value.join(',') : value) } });
 };
 
 const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple }) => {
@@ -25,7 +28,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
         _value = value || '';
       }
       return (
-        <Grid>
+        <Grid className={className}>
           <Typography variant="h6" classes={{ root: classes.label }}>
             {label}
           </Typography>
@@ -35,8 +38,8 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             options={values ? values.split(',') : []}
             getOptionLabel={option => option}
             style={{ width: 300 }}
-            renderInput={params => <TextField {...params} label={label} variant="outlined" />}
-            onChange={((e, v) => handleToggle(e, v, onChange))}
+            renderInput={params => <TextField {...params} variant="outlined" />}
+            onChange={((e, v) => handleToggle(e, v, onChange, multiple))}
             value={_value}
           />
           <FormHelperText>{bottomDescription}</FormHelperText>
@@ -44,18 +47,18 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
       );
     case 'boolean':
       return (
-        <Grid>
+        <Grid className={className}>
           <Typography variant="h6" classes={{ root: classes.label }}>
             {label}
           </Typography>
           <FormGroup>
             <FormControlLabel
               control={(
-                <Switch
+                <CustomSwitch
                   checked={value && value !== 'false'}
-                  onChange={onChange}
-                  name="checkedB"
-                  color="primary"
+                  onChange={(e, switchName) => onChange(e, switchName)}
+                  inputProps={{ 'aria-label': 'switch' }}
+                  classes={{ root: classes.switcher }}
                 />
               )}
             />
