@@ -80,15 +80,16 @@ class DeviceForm extends React.Component {
   };
 
   closeForm = () => {
-    const { match, history } = this.props;
+    const { match, history, returnFunc } = this.props;
 
+    if (returnFunc) returnFunc();
     history.push(
       `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/${DEVICES}`,
     );
   };
 
   submitDevice = async (newDevice) => {
-    const { match, client } = this.props;
+    const { match, client, returnFunc } = this.props;
     const { deviceType } = this.state;
 
     await client.mutate({
@@ -100,31 +101,40 @@ class DeviceForm extends React.Component {
           devicesQuery(match.params.id, match.params.deviceTypeKey),
           DEVICES,
           DEVICE_MUTATION,
+          returnFunc,
         );
       },
     });
 
     // update number of devices of the device type
-    const updatedDeviceType = { ...deviceType };
-    updatedDeviceType.numberOfDevices += 1;
-    updatedDeviceType.experimentId = match.params.id;
+    if (!returnFunc) {
+      const updatedDeviceType = { ...deviceType };
+      updatedDeviceType.numberOfDevices += 1;
+      updatedDeviceType.experimentId = match.params.id;
 
-    await client.mutate({
-      mutation: deviceTypeMutation(updatedDeviceType),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          deviceTypesQuery(match.params.id),
-          DEVICE_TYPES,
-          DEVICE_TYPE_MUTATION,
-          true,
-        );
-      },
-    });
+      await client.mutate({
+        mutation: deviceTypeMutation(updatedDeviceType),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            deviceTypesQuery(match.params.id),
+            DEVICE_TYPES,
+            DEVICE_TYPE_MUTATION,
+            true,
+          );
+        },
+      });
+    }
 
     this.closeForm();
   };
+
+  getValue = (key) => {
+    const properties = this.state.device.properties;
+    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
+    return (p !== -1 ? properties[p].val : '');
+  }
 
   render() {
     const { classes } = this.props;
@@ -159,6 +169,10 @@ class DeviceForm extends React.Component {
               onChange={e => this.onPropertyChange(e, property.key)}
               label={property.label}
               bottomDescription={property.description}
+              value={this.getValue(property.key)}
+              values={property.value}
+              type={property.type}
+              multiple={property.multipleValues}
             />
           ))
           : null}
