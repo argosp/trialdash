@@ -23,7 +23,7 @@ const EditFieldTypePanel = ({
     title={(
       <div className={classes.header}>
         {FIELD_TYPES_ICONS[fieldType.type]}
-        <span className={classes.headerTitle}>{fieldType.label}</span>
+        <span className={classes.headerTitle}>{fieldType.name}</span>
       </div>
     )}
   >
@@ -74,12 +74,14 @@ const EditFieldTypePanel = ({
       )}
       <CustomInput
         value={fieldType.defaultValue || ''}
-        onChange={e => onValueChange(e, 'input', fieldType.key, 'defaultValue')}
+        onChange={e => onValueChange(e, fieldType.type === 'boolean' ? 'switch' : 'input', fieldType.key, 'defaultValue')}
         id="field-type-default-value"
         label="Default Value"
         bottomDescription="a short description about the device default value"
         className={classes.input}
         type={fieldType.type}
+        values={fieldType.value}
+        multiple={fieldType.multipleValues}
       />
       <SwitchSection
         onChange={e => onValueChange(e, 'switch', fieldType.key, 'required')}

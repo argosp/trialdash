@@ -56,7 +56,7 @@ class FieldTypesPanel extends React.Component {
                               : classes.fieldTypeWrapper
                           }
                           icon={FIELD_TYPES_ICONS[fieldType.type]}
-                          title={fieldType.label}
+                          title={fieldType.name}
                         />
                       </div>
                       {snapshot.isDragging && (
@@ -67,7 +67,7 @@ class FieldTypesPanel extends React.Component {
                             classes.fieldTypeWrapperCopy,
                           )}
                           icon={FIELD_TYPES_ICONS[fieldType.type]}
-                          title={fieldType.label}
+                          title={fieldType.name}
                         />
                       )}
                     </>

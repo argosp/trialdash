@@ -42,15 +42,16 @@ class Trials extends React.Component {
   }
 
   renderTableRow = (trial) => {
+    const { trialSet } = this.state;
     const { classes, theme } = this.props;
 
     return (
       <React.Fragment key={trial.key}>
         <StyledTableCell align="left">{trial.name}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfDevices}</StyledTableCell>
-        {trial.properties.map(property => (
+        {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
-            {property.val}
+            {trial.properties.find(p => p.key === property.key) ? trial.properties.find(p => p.key === property.key).val : ''}
           </StyledTableCell>
         ))}
         <StyledTableCell align="left">
