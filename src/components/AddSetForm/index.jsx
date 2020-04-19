@@ -110,7 +110,10 @@ class AddSetForm extends React.Component {
 
     if (controlType === 'input') {
       ({ value } = e.target);
-    } else value = e.target.checked;
+    } else {
+      value = e.target.checked;
+      if (property === 'defaultValue') value = e.target.checked.toString();
+    }
 
     this.setState(state => ({
       formObject: {
@@ -406,8 +409,10 @@ class AddSetForm extends React.Component {
                             fieldType={fieldType}
                             contentType={FIELD_TYPE_ITEM_INPUT_TYPE}
                             placeholder="Default Value"
-                            value={editedFieldType.defaultValue}
+                            defaultValue={editedFieldType.defaultValue}
                             onValueChange={this.fieldTypeValueChangeHandler}
+                            value={editedFieldType.value}
+                            multiple={editedFieldType.multipleValues}
                           />
                         </div>
                       )}

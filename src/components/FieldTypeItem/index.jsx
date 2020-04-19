@@ -65,7 +65,9 @@ class FieldTypeItem extends React.Component {
               placeholder={placeholder}
               withBorder
               value={fieldType.defaultValue}
-              onChange={e => onValueChange(e, 'input', fieldType.key, 'defaultValue')}
+              values={fieldType.value}
+              multiple={fieldType.multipleValues}
+              onChange={e => onValueChange(e, fieldType.type === 'boolean' ? 'switch' : 'input', fieldType.key, 'defaultValue')}
               bottomDescription={fieldType.description}
               type={fieldType.type}
               label={(

@@ -103,16 +103,19 @@ class TrialForm extends React.Component {
     if (!e.target) return;
     let { value } = e.target;
     if (e.target.type === 'checkbox') value = e.target.checked.toString();
-    const indexOfProperty = this.state.trial.properties.findIndex(
+    let indexOfProperty = this.state.trial.properties.findIndex(
       property => property.key === propertyKey,
     );
 
-    if (indexOfProperty === -1) return;
+    if (indexOfProperty === -1) {
+      this.state.trial.properties.push({ val: value, key: propertyKey });
+      indexOfProperty = this.state.trial.properties.length - 1;
+    }
     this.setState(state => ({
       trial: {
         ...state.trial,
         properties: update(state.trial.properties, {
-          [indexOfProperty]: { val: { $set: value } },
+          [indexOfProperty]: { val: { $set: value }, key: { $set: propertyKey } },
         }),
       },
     }));
@@ -260,6 +263,7 @@ class TrialForm extends React.Component {
                 bottomDescription={property.description}
                 value={this.getValue(property.key, property.defaultValue)}
                 values={property.value}
+                multiple={property.multipleValues}
                 type={property.type}
               />
             ))
