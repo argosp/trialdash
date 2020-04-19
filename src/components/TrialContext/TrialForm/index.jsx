@@ -61,7 +61,7 @@ class TrialForm extends React.Component {
       properties: this.props.trial ? this.props.trial.properties : [],
     },
     trialSet: {},
-    tabValue: 0,
+    tabValue: this.props.tabValue || 0,
     selectedViewIndex: 0,
     isLocationPopupOpen: false,
   };
@@ -220,7 +220,7 @@ class TrialForm extends React.Component {
                 color={theme.palette.violet.main}
               />
             )}
-            title="trial name goes here"
+            title={this.state.trial.name || 'trial name goes here'}
             className={classes.header}
             rightComponent={(
               <StyledTabs

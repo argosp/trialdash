@@ -61,7 +61,11 @@ class Trials extends React.Component {
           <StatusBadge color={theme.palette.violet.main} title={trial.status} />
         </StyledTableCell>
         <StyledTableCell align="right">
-          <CustomTooltip title="Devices" ariaLabel="devices">
+          <CustomTooltip
+            title="Devices"
+            ariaLabel="devices"
+            onClick={() => this.activateEditMode(trial, true)}
+          >
             <GridIcon />
           </CustomTooltip>
           <CustomTooltip
@@ -160,22 +164,24 @@ class Trials extends React.Component {
     this.setState({ update: false });
   }
 
-  activateEditMode = (trial) => {
+  activateEditMode = (trial, devices) => {
     this.setState({
       isEditModeEnabled: true,
       trial,
+      tabValue: devices ? 1 : 0,
     });
   };
 
   returnFunc = () => {
     this.setState({
       isEditModeEnabled: false,
+      tabValue: 0,
     });
   }
 
   render() {
     const { history, match } = this.props;
-    const { trialSet } = this.state;
+    const { trialSet, tabValue } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
     return (
@@ -186,6 +192,7 @@ class Trials extends React.Component {
             {...this.props}
             trial={this.state.trial}
             returnFunc={this.returnFunc}
+            tabValue={tabValue}
           />
           // eslint-disable-next-line react/jsx-wrap-multilines
           : <>
