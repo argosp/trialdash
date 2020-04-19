@@ -12,26 +12,32 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { styles } from './styles';
 
 const handleToggle = (e, value, onChange) => {
-  onChange({ target: { value: value.join(',') } });
+  onChange({ target: { value: ((typeof value === 'string') ? value : value.join(',')) } });
 };
 
-const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values }) => {
+const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple }) => {
+  let _value;
   switch (type) {
     case 'selectList':
+      if (multiple) {
+        _value = value ? value.split(',') : [];
+      } else {
+        _value = value || '';
+      }
       return (
         <Grid>
           <Typography variant="h6" classes={{ root: classes.label }}>
             {label}
           </Typography>
           <Autocomplete
-            multiple
+            multiple={multiple}
             id={id}
             options={values ? values.split(',') : []}
             getOptionLabel={option => option}
             style={{ width: 300 }}
             renderInput={params => <TextField {...params} label={label} variant="outlined" />}
             onChange={((e, v) => handleToggle(e, v, onChange))}
-            value={value ? value.split(',') : []}
+            value={_value}
           />
           <FormHelperText>{bottomDescription}</FormHelperText>
         </Grid>
@@ -119,6 +125,7 @@ const CustomInput = ({
   disabled,
   type,
   values,
+  multiple,
 }) => (
   <div>
     {renderSwitch({
@@ -135,6 +142,7 @@ const CustomInput = ({
       disabled,
       type,
       values,
+      multiple,
     })}
   </div>
 );
