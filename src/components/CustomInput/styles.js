@@ -28,4 +28,9 @@ export const styles = theme => ({
     marginTop: 5,
     lineHeight: '15px',
   },
+  switcher: {
+    marginLeft: 11,
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });

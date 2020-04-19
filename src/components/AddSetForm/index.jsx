@@ -131,6 +131,7 @@ class AddSetForm extends React.Component {
     const { formType, match, history, client, cacheQuery, itemsName, mutationName, returnFunc } = this.props;
     newEntity.properties.forEach((p) => {
       delete p.fields;
+      delete p.name;
       if (DEVICE_TYPES_DASH !== formType) {
         delete p.prefix;
         delete p.suffix;
