@@ -144,7 +144,22 @@ class TrialForm extends React.Component {
   submitTrial = async (newTrial) => {
     const { match, client, returnFunc } = this.props;
     const { trialSet } = this.state;
+    let property;
+    let invalid;
+    trialSet.properties.forEach((p) => {
+      property = newTrial.properties.find(ntp => ntp.key === p.key);
+      if (p.required && !property.val) {
+        invalid = true;
+        property.invalid = true;
+      } else {
+        delete property.invalid;
+      }
+    });
 
+    if (invalid) {
+      this.setState({ });
+      return;
+    }
     await client.mutate({
       mutation: trialMutation(newTrial),
       update: (cache, mutationResult) => {
@@ -195,6 +210,12 @@ class TrialForm extends React.Component {
     const properties = this.state.trial.properties;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].val : defaultValue);
+  }
+
+  getInvalid = (key) => {
+    const properties = this.state.trial.properties;
+    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
+    return (p !== -1 ? properties[p].invalid : false);
   }
 
   render() {
@@ -265,6 +286,7 @@ class TrialForm extends React.Component {
                 values={property.value}
                 multiple={property.multipleValues}
                 type={property.type}
+                invalid={this.getInvalid(property.key)}
               />
             ))
             : null}
