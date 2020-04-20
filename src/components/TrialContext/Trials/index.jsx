@@ -203,7 +203,7 @@ class Trials extends React.Component {
               addButtonText="Add trial"
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
-              rightDescription={trialSet.id}
+              rightDescription={trialSet.name}
               addButtonHandler={() => history.push(
                 `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`,
               )}

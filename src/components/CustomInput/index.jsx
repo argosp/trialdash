@@ -18,7 +18,7 @@ const handleToggle = (e, value, onChange, multiple) => {
   onChange({ target: { value: (multiple ? value.join(',') : value) } });
 };
 
-const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple }) => {
+const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple, invalid }) => {
   let _value;
   switch (type) {
     case 'selectList':
@@ -43,6 +43,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             value={_value}
           />
           <FormHelperText>{bottomDescription}</FormHelperText>
+          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
         </Grid>
       );
     case 'boolean':
@@ -64,6 +65,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             />
           </FormGroup>
           <FormHelperText>{bottomDescription}</FormHelperText>
+          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
         </Grid>
       );
     case 'textArea':
@@ -77,39 +79,43 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             rowsMin={3}
             onChange={onChange}
             value={value}
+            className={classes.textArea}
           />
           <FormHelperText>{bottomDescription}</FormHelperText>
+          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
         </Grid>
       );
     default:
       return (
-        <TextField
-          type={type}
-          disabled={disabled}
-          value={value}
-          onChange={onChange}
-          className={className}
-          label={label}
-          helperText={bottomDescription}
-          id={id}
-          fullWidth
-          FormHelperTextProps={{ classes: { root: classes.bottomDescription } }}
-          placeholder={placeholder}
-          InputLabelProps={{
-            shrink: true,
-            focused: false,
-            classes: { formControl: classes.label },
-          }}
-          InputProps={{
-            ...inputProps,
-            disableUnderline: true,
-            classes: {
-              root: withBorder ? classes.inputWithBorder : classes.input,
-              formControl: classes.formControl,
-              focused: classes.inputFocused,
-            },
-          }}
-        />
+        <Grid className={className}>
+          <TextField
+            type={type}
+            disabled={disabled}
+            value={value}
+            onChange={onChange}
+            label={label}
+            helperText={bottomDescription}
+            id={id}
+            fullWidth
+            FormHelperTextProps={{ classes: { root: classes.bottomDescription } }}
+            placeholder={placeholder}
+            InputLabelProps={{
+              shrink: true,
+              focused: false,
+              classes: { formControl: classes.label },
+            }}
+            InputProps={{
+              ...inputProps,
+              disableUnderline: true,
+              classes: {
+                root: withBorder ? classes.inputWithBorder : classes.input,
+                formControl: classes.formControl,
+                focused: classes.inputFocused,
+              },
+            }}
+          />
+          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
+        </Grid>
       );
   }
 };
@@ -129,6 +135,7 @@ const CustomInput = ({
   type,
   values,
   multiple,
+  invalid,
 }) => (
   <div>
     {renderSwitch({
@@ -146,6 +153,7 @@ const CustomInput = ({
       type,
       values,
       multiple,
+      invalid,
     })}
   </div>
 );
