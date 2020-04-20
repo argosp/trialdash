@@ -19,6 +19,11 @@ export const styles = theme => ({
     color: theme.palette.black.dark,
     fontWeight: 'bold',
   },
+  error: {
+    color: '#EB5757',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
   formControl: {
     'label + &': {
       marginTop: 20,
@@ -32,5 +37,10 @@ export const styles = theme => ({
     marginLeft: 11,
     marginTop: 10,
     marginBottom: 10,
+  },
+  textArea: {
+    padding: 15,
+    width: '100%',
+    maxWidth: '100%',
   },
 });
