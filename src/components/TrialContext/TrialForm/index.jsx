@@ -132,22 +132,24 @@ class TrialForm extends React.Component {
     }));
   };
 
-  closeForm = () => {
+  closeForm = (deleted) => {
     const { match, history, returnFunc } = this.props;
 
-    if (returnFunc) returnFunc();
+    if (returnFunc) returnFunc(deleted);
     else history.push(
       `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/${TRIALS}`,
     );
   };
 
-  submitTrial = async (newTrial) => {
+  submitTrial = async (newTrial, deleted) => {
+    const newEntity = newTrial;
     const { match, client, returnFunc } = this.props;
     const { trialSet } = this.state;
+    if (deleted) newEntity.state = 'Deleted';
     let property;
     let invalid;
     trialSet.properties.forEach((p) => {
-      property = newTrial.properties.find(ntp => ntp.key === p.key);
+      property = newEntity.properties.find(ntp => ntp.key === p.key);
       if (p.required && !property.val) {
         invalid = true;
         property.invalid = true;
@@ -161,7 +163,7 @@ class TrialForm extends React.Component {
       return;
     }
     await client.mutate({
-      mutation: trialMutation(newTrial),
+      mutation: trialMutation(newEntity),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -174,8 +176,8 @@ class TrialForm extends React.Component {
       },
     });
 
-    // update number of trials of the trial set
     if (!returnFunc) {
+      // update number of trials of the trial set
       const updatedTrialSet = { ...trialSet };
       updatedTrialSet.numberOfTrials += 1;
       updatedTrialSet.experimentId = match.params.id;
@@ -195,7 +197,7 @@ class TrialForm extends React.Component {
       });
     }
 
-    this.closeForm();
+    this.closeForm(deleted);
   };
 
   openLocationPopup = () => {
@@ -344,6 +346,7 @@ class TrialForm extends React.Component {
             </Grid>
           </Grid>
           <Dialog
+            classes={{ root: classes.dialog }}
             fullScreen
             onClose={this.closeLocationPopup}
             aria-labelledby="location-popup-title"
@@ -357,6 +360,8 @@ class TrialForm extends React.Component {
         <Footer
           cancelButtonHandler={this.closeForm}
           saveButtonHandler={() => this.submitTrial(this.state.trial)}
+          withDeleteButton={this.props.trial}
+          deleteButtonHandler={() => this.submitTrial(this.state.trial, true)}
         />
       </>
     );
