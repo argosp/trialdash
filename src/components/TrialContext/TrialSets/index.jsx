@@ -90,10 +90,10 @@ class TrialSets extends React.Component {
           );
         },
       });
-  
+
       this.setState({ update: true });
     };
-  
+
     setUpdated = () => {
       this.setState({ update: false });
     }
@@ -105,7 +105,7 @@ class TrialSets extends React.Component {
       newEntity.experimentId = match.params.id;
 
       const mutation = trialSetMutation;
-  
+
       await client
         .mutate({
           mutation: mutation(newEntity),
@@ -120,7 +120,7 @@ class TrialSets extends React.Component {
             );
           },
         });
-      
+
       this.setState({ update: true });
     };
 
@@ -185,7 +185,7 @@ class TrialSets extends React.Component {
                 update={this.state.update}
                 setUpdated={this.setUpdated}
               />
-            </>
+              </>
           }
         </>
       );
