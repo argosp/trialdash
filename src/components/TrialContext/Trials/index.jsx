@@ -13,7 +13,7 @@ import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
 import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { CloneIcon, GridIcon, PenIcon } from '../../../constants/icons';
+import { CloneIcon, GridIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
@@ -82,6 +82,13 @@ class Trials extends React.Component {
           >
             <PenIcon />
           </CustomTooltip>
+          <CustomTooltip
+            title="Delete"
+            ariaLabel="delete"
+            onClick={() => this.deleteTrial(trial)}
+          >
+            <BasketIcon />
+          </CustomTooltip>
         </StyledTableCell>
       </React.Fragment>
     );
@@ -123,8 +130,6 @@ class Trials extends React.Component {
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
 
-    const { trialSet } = this.state;
-
     await client.mutate({
       mutation: trialMutation(clonedTrial),
       update: (cache, mutationResult) => {
@@ -137,10 +142,21 @@ class Trials extends React.Component {
         );
       },
     });
+    this.updateNumberOfTrials('add');
+    this.setState({ update: true });
+  };
 
-    // update number of trials of the trial set
+  // update number of trials of the trial set
+  updateNumberOfTrials = async (operation) => {
+
+    const { trialSet } = this.state;
     const updatedTrialSet = { ...trialSet };
-    updatedTrialSet.numberOfTrials += 1;
+    if (operation === 'add') {
+      updatedTrialSet.numberOfTrials += 1;
+    } else {
+      updatedTrialSet.numberOfTrials -= 1;
+    }
+    const { match, client } = this.props;
     updatedTrialSet.experimentId = match.params.id;
 
     await client.mutate({
@@ -156,13 +172,39 @@ class Trials extends React.Component {
         );
       },
     });
-
-    this.setState({ update: true });
-  };
+  }
 
   setUpdated = () => {
     this.setState({ update: false });
   }
+
+  deleteTrial = async (trial) => {
+    const newEntity = { ...trial };
+    newEntity.state = 'Deleted';
+    const { match, client } = this.props;
+    newEntity.experimentId = match.params.id;
+    newEntity.numberOfDevices = newEntity.numberOfDevices || 0;
+    newEntity.trialSetKey = match.params.trialSetKey;
+
+    const mutation = trialMutation;
+
+    await client
+      .mutate({
+        mutation: mutation(newEntity),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            trialsQuery(match.params.id, match.params.trialSetKey),
+            TRIALS,
+            TRIAL_MUTATION,
+            true,
+          );
+        },
+      });
+    this.updateNumberOfTrials('remove');
+    this.setState({ update: true });
+  };
 
   activateEditMode = (trial, devices) => {
     this.setState({
@@ -172,10 +214,12 @@ class Trials extends React.Component {
     });
   };
 
-  returnFunc = () => {
+  returnFunc = (deleted) => {
+    if (deleted) this.updateNumberOfTrials('remove');
     this.setState({
       isEditModeEnabled: false,
       tabValue: 0,
+      update: deleted,
     });
   }
 
@@ -216,7 +260,7 @@ class Trials extends React.Component {
               update={this.state.update}
               setUpdated={this.setUpdated}
             />
-          </>    
+            </>
         }
       </>
     );

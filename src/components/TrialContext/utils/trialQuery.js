@@ -8,6 +8,7 @@ const trials = (experimentId, trialSetKey) => gql`
         name
         created
         status
+        state
         numberOfDevices
         properties {
            key

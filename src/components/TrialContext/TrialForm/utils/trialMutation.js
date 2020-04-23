@@ -23,6 +23,7 @@ export default (trial) => {
             name:"${trial.name}"
             trialSetKey:"${trial.trialSetKey}"
             numberOfDevices:${trial.numberOfDevices}
+            state: "${trial.state}",
             properties: ${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
@@ -35,6 +36,7 @@ export default (trial) => {
               name
               trialSetKey
               numberOfDevices
+              state
               properties {
                 key
                 val
