@@ -79,6 +79,7 @@ export default createMuiTheme({
     },
     white: {
       main: '#fff',
+      medium: '#FDFDFD',
       dark: '#E0E0E0',
     },
     black: {

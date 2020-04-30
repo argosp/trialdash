@@ -15,6 +15,7 @@ import CustomTooltip from '../../CustomTooltip';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import devicesQuery from './utils/deviceQuery';
 import ContentTable from '../../ContentTable';
+import DeviceForm from '../DeviceForm';
 
 class Devices extends React.Component {
   state = {
@@ -35,25 +36,37 @@ class Devices extends React.Component {
       });
   }
 
-  renderTableRow = device => (
-    <React.Fragment key={device.key}>
-      <StyledTableCell align="left">{device.name}</StyledTableCell>
-      <StyledTableCell align="left">{device.id}</StyledTableCell>
-      {device.properties.map(property => (
-        <StyledTableCell key={property.key} align="left">
-          {property.val}
+  renderTableRow = (device) => {
+    const { deviceType } = this.state;
+    return (
+      <React.Fragment key={device.key}>
+        <StyledTableCell align="left">{device.name}</StyledTableCell>
+        <StyledTableCell align="left">{device.id}</StyledTableCell>
+        {deviceType && deviceType.properties && deviceType.properties.map(property => (
+          <StyledTableCell key={property.key} align="left">
+            {device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
+          </StyledTableCell>
+        ))}
+        {/* {device.properties.map(property => (
+          <StyledTableCell key={property.key} align="left">
+            {property.val}
+          </StyledTableCell>
+        ))} */}
+        <StyledTableCell align="right">
+          <CustomTooltip title="Clone" ariaLabel="clone">
+            <CloneIcon />
+          </CustomTooltip>
+          <CustomTooltip
+            title="Edit"
+            ariaLabel="edit"
+            onClick={() => this.activateEditMode(device)}
+          >
+            <PenIcon />
+          </CustomTooltip>
         </StyledTableCell>
-      ))}
-      <StyledTableCell align="right">
-        <CustomTooltip title="Clone" ariaLabel="clone">
-          <CloneIcon />
-        </CustomTooltip>
-        <CustomTooltip title="Edit" ariaLabel="edit">
-          <PenIcon />
-        </CustomTooltip>
-      </StyledTableCell>
-    </React.Fragment>
-  );
+      </React.Fragment>
+    )
+  };
 
   generateTableColumns = (deviceType) => {
     const columns = [
@@ -79,6 +92,19 @@ class Devices extends React.Component {
     return columns;
   };
 
+  activateEditMode = (device) => {
+    this.setState({
+      isEditModeEnabled: true,
+      device,
+    });
+  };
+
+  returnFunc = () => {
+    this.setState({
+      isEditModeEnabled: false,
+    });
+  }
+
   render() {
     const { history, match } = this.props;
     const { deviceType } = this.state;
@@ -86,24 +112,35 @@ class Devices extends React.Component {
 
     return (
       <>
-        <ContentHeader
-          withSearchInput
-          title={deviceType.name}
-          searchPlaceholder="Search Devices"
-          addButtonText="Add device"
-          withBackButton
-          backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
-          rightDescription={deviceType.id}
-          addButtonHandler={() => history.push(
-            `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`,
-          )}
-        />
-        <ContentTable
-          contentType={DEVICES}
-          query={devicesQuery(match.params.id, match.params.deviceTypeKey)}
-          tableHeadColumns={tableHeadColumns}
-          renderRow={this.renderTableRow}
-        />
+        {this.state.isEditModeEnabled
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          ? <DeviceForm
+            {...this.props}
+            device={this.state.device}
+            returnFunc={this.returnFunc}
+          />
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          : <>
+            <ContentHeader
+              withSearchInput
+              title={deviceType.name}
+              searchPlaceholder="Search Devices"
+              addButtonText="Add device"
+              withBackButton
+              backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
+              rightDescription={deviceType.id}
+              addButtonHandler={() => history.push(
+                `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`,
+              )}
+            />
+            <ContentTable
+              contentType={DEVICES}
+              query={devicesQuery(match.params.id, match.params.deviceTypeKey)}
+              tableHeadColumns={tableHeadColumns}
+              renderRow={this.renderTableRow}
+            />
+          </>
+        }
       </>
     );
   }
