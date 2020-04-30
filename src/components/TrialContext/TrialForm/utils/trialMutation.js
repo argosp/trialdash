@@ -26,8 +26,13 @@ export default (trial) => {
             state: "${trial.state}",
             properties: ${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
+    .replace(/"val":/g, 'val:')},
+            entities: ${JSON.stringify(trial.entities)
+    .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
-}
+    .replace(/"type":/g, 'type:')
+    .replace(/"typeKey":/g, 'typeKey:')
+    .replace(/"properties":/g, 'properties:')}
             ){
               key
               created
@@ -40,6 +45,15 @@ export default (trial) => {
               properties {
                 key
                 val
+              }
+              entities {
+                key
+                typeKey
+                type
+                properties {
+                  key
+                  val
+                }
               }
             }
       }`;

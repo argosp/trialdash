@@ -161,7 +161,7 @@ class DeviceForm extends React.Component {
           bottomDescription="a short description"
         />
         {deviceType.properties
-          ? deviceType.properties.map(property => (
+          ? deviceType.properties.filter(property => property.trialField !== true).map(property => (
             <CustomInput
               id={`device-property-${property.key}`}
               className={classes.property}

@@ -9,8 +9,6 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import classnames from 'classnames';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
@@ -20,6 +18,8 @@ import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import Footer from '../../Footer';
+import AddDevicePanel from '../../AddDevicePanel';
+import DevicesGrid from './devicesGrid';
 import {
   TRIAL_SETS_DASH,
   TRIAL_SETS,
@@ -35,6 +35,7 @@ import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
 import DevicePlanner from '../../DevicePlanner';
+
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
     component="div"
@@ -58,12 +59,12 @@ class TrialForm extends React.Component {
       id: this.props.trial ? this.props.trial.id : '',
       name: this.props.trial ? this.props.trial.name : '',
       numberOfDevices: this.props.trial ? this.props.trial.numberOfDevices : 0,
-      properties: this.props.trial ? this.props.trial.properties : [],
+      properties: this.props.trial && this.props.trial.properties ? this.props.trial.properties : [],
+      entities: this.props.trial && this.props.trial.entities ? this.props.trial.entities : [],
     },
     trialSet: {},
     tabValue: this.props.tabValue || 0,
-    selectedViewIndex: 0,
-    isLocationPopupOpen: false,
+    selectedViewIndex: 2,
   };
 
   componentDidMount() {
@@ -121,6 +122,27 @@ class TrialForm extends React.Component {
     }));
   };
 
+  onEntityPropertyChange = (entityObj, e, propertyKey) => {
+    const { trial } = this.state;
+    if (!e.target) return;
+    let { value } = e.target;
+    if (e.target.type === 'checkbox') value = e.target.checked.toString();
+    const indexOfEntity = trial.entities.findIndex(
+      entity => entity.key === entityObj.key,
+    );
+    let indexOfProperty = trial.entities[indexOfEntity].properties.findIndex(
+      property => property.key === propertyKey,
+    );
+
+    if (indexOfProperty === -1) {
+      trial.entities[indexOfEntity].properties.push({ val: value, key: propertyKey });
+      indexOfProperty = trial.entities[indexOfEntity].properties.length - 1;
+    } else {
+      trial.entities[indexOfEntity].properties[indexOfProperty].val = value;
+    }
+    this.setState({ trial });
+  };
+
   onInputChange = (e, inputName) => {
     const { value } = e.target;
 
@@ -136,9 +158,11 @@ class TrialForm extends React.Component {
     const { match, history, returnFunc } = this.props;
 
     if (returnFunc) returnFunc(deleted);
-    else history.push(
-      `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/${TRIALS}`,
-    );
+    else {
+      history.push(
+        `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/${TRIALS}`,
+      );
+    }
   };
 
   submitTrial = async (newTrial, deleted) => {
@@ -148,19 +172,21 @@ class TrialForm extends React.Component {
     if (deleted) newEntity.state = 'Deleted';
     let property;
     let invalid;
-    trialSet.properties.forEach((p) => {
-      property = newEntity.properties.find(ntp => ntp.key === p.key);
-      if (p.required && !property.val) {
-        invalid = true;
-        property.invalid = true;
-      } else {
-        delete property.invalid;
+    if (trialSet.properties) {
+      trialSet.properties.forEach((p) => {
+        property = newEntity.properties.find(ntp => ntp.key === p.key);
+        if (!property) return;
+        if (p.required && !property.val) {
+          invalid = true;
+          property.invalid = true;
+        } else {
+          delete property.invalid;
+        }
+      });
+      if (invalid) {
+        this.setState({ });
+        return;
       }
-    });
-
-    if (invalid) {
-      this.setState({ });
-      return;
     }
     await client.mutate({
       mutation: trialMutation(newEntity),
@@ -181,6 +207,7 @@ class TrialForm extends React.Component {
       const updatedTrialSet = { ...trialSet };
       updatedTrialSet.numberOfTrials += 1;
       updatedTrialSet.experimentId = match.params.id;
+      updatedTrialSet.properties = updatedTrialSet.properties || [];
 
       await client.mutate({
         mutation: trialSetMutation(updatedTrialSet),
@@ -200,13 +227,13 @@ class TrialForm extends React.Component {
     this.closeForm(deleted);
   };
 
-  openLocationPopup = () => {
-    this.setState({ isLocationPopupOpen: true });
-  };
+  // openLocationPopup = () => {
+  //   this.setState({ isLocationPopupOpen: true });
+  // };
 
-  closeLocationPopup = () => {
-    this.setState({ isLocationPopupOpen: false });
-  };
+  // closeLocationPopup = () => {
+  //   this.setState({ isLocationPopupOpen: false });
+  // };
 
   getValue = (key, defaultValue) => {
     const properties = this.state.trial.properties;
@@ -220,13 +247,37 @@ class TrialForm extends React.Component {
     return (p !== -1 ? properties[p].invalid : false);
   }
 
+  openAddDevicesPanel = () => {
+    this.setState({ isDevicesPanelOpen: true });
+  }
+
+  closeAddDevicesPanel = () => {
+    this.setState({ isDevicesPanelOpen: false });
+  }
+
+  addEntity = (entity, type, typeKey, properties) => {
+    this.state.trial.entities = this.state.trial.entities || [];
+    this.state.trial.entities.push({
+      key: entity.key,
+      type,
+      typeKey,
+      properties,
+    });
+    this.setState({ });
+  }
+
+  removeEntity = (key) => {
+    this.state.trial.entities.splice(this.state.trial.entities.findIndex(e => e.key === key), 1);
+    this.setState({ });
+  }
+
   render() {
     const { classes, theme, match } = this.props;
     const {
       tabValue,
       selectedViewIndex,
-      isLocationPopupOpen,
       trialSet,
+      trial,
     } = this.state;
 
     return (
@@ -243,13 +294,13 @@ class TrialForm extends React.Component {
                 color={theme.palette.violet.main}
               />
             )}
-            title={this.state.trial.name || 'trial name goes here'}
+            title={trial.name || 'trial name goes here'}
             className={classes.header}
             rightComponent={(
               <StyledTabs
                 tabs={[
-                  { key: this.state.trial.key, label: 'General', id: 'trial-tab-0' },
-                  { key: this.state.trial.key, label: 'Devices', id: 'trial-tab-1' },
+                  { key: trial.key, label: 'General', id: 'trial-tab-0' },
+                  { key: trial.key, label: 'Devices', id: 'trial-tab-1' },
                 ]}
                 value={tabValue}
                 onChange={this.changeTab}
@@ -265,7 +316,7 @@ class TrialForm extends React.Component {
             onChange={e => this.onInputChange(e, 'name')}
             label="Name"
             bottomDescription="a short description"
-            value={this.state.trial.name}
+            value={trial.name}
           />
           <CustomInput
             id="trial-id"
@@ -273,7 +324,7 @@ class TrialForm extends React.Component {
             onChange={e => this.onInputChange(e, 'id')}
             label="ID"
             bottomDescription="a short description"
-            value={this.state.trial.id}
+            value={trial.id}
           />
           {trialSet.properties
             ? trialSet.properties.map(property => (
@@ -300,7 +351,7 @@ class TrialForm extends React.Component {
             className={classes.devicesPanelHeader}
           >
             <Grid item>
-              <IconButton
+              {/* <IconButton
                 disableRipple
                 className={
                   selectedViewIndex === 0
@@ -310,8 +361,8 @@ class TrialForm extends React.Component {
                 onClick={() => this.changeView(0)}
               >
                 <TreeIcon />
-              </IconButton>
-              <IconButton
+              </IconButton> */}
+              {/* <IconButton
                 disableRipple
                 className={
                   selectedViewIndex === 1
@@ -321,7 +372,7 @@ class TrialForm extends React.Component {
                 onClick={() => this.changeView(1)}
               >
                 <ListIcon />
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 disableRipple
                 className={
@@ -335,17 +386,44 @@ class TrialForm extends React.Component {
               </IconButton>
               <IconButton
                 disableRipple
-                className={classes.viewButton}
-                onClick={this.openLocationPopup}
+                className={
+                  selectedViewIndex === 3
+                    ? classnames(classes.viewButton, classes.viewButtonSelected)
+                    : classes.viewButton
+                }
+                onClick={() => this.changeView(3)}
               >
                 <EditLocationIcon className={classes.locationIcon} />
               </IconButton>
             </Grid>
             <Grid item>
-              <SimpleButton text="Add" colorVariant="primary" />
+              <SimpleButton
+                text="Add"
+                colorVariant="primary"
+                onClick={this.openAddDevicesPanel}
+              />
             </Grid>
           </Grid>
-          <Dialog
+          <AddDevicePanel
+            isPanelOpen={this.state.isDevicesPanelOpen}
+            onClose={this.closeAddDevicesPanel}
+            match={match}
+            theme={theme}
+            addEntity={this.addEntity}
+            entities={trial.entities.map(e => e.key)}
+          />
+          <TabPanel value={selectedViewIndex} index={2}>
+            <DevicesGrid
+              {...this.props}
+              trial={trial}
+              removeEntity={this.removeEntity}
+              onEntityPropertyChange={this.onEntityPropertyChange}
+            />
+          </TabPanel>
+          <TabPanel value={selectedViewIndex} index={3}>
+            <DevicePlanner id={match.params.id} />
+          </TabPanel>
+          {/* <Dialog
             classes={{ root: classes.dialog }}
             fullScreen
             onClose={this.closeLocationPopup}
@@ -355,13 +433,13 @@ class TrialForm extends React.Component {
             <DialogTitle id="location-popup-title">
               <DevicePlanner id={match.params.id}/>
             </DialogTitle>
-          </Dialog>
+          </Dialog> */}
         </TabPanel>
         <Footer
           cancelButtonHandler={this.closeForm}
-          saveButtonHandler={() => this.submitTrial(this.state.trial)}
+          saveButtonHandler={() => this.submitTrial(trial)}
           withDeleteButton={this.props.trial}
-          deleteButtonHandler={() => this.submitTrial(this.state.trial, true)}
+          deleteButtonHandler={() => this.submitTrial(trial, true)}
         />
       </>
     );
