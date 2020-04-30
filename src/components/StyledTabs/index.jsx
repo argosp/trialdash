@@ -14,6 +14,7 @@ export default withStyles(styles)(
       value={props.value}
       onChange={props.onChange}
       aria-label={props.ariaLabel}
+      className={props.className}
     >
       {props.tabs.map(tab => (
         <Tab
