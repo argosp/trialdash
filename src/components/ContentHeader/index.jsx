@@ -24,10 +24,11 @@ const ContentHeader = (props) => {
     withSearchInput,
     className,
     rightComponent,
+    onClick,
   } = props;
 
   return (
-    <Grid container justify="space-between" className={classnames(classes.header, className)}>
+    <Grid container justify="space-between" className={classnames(classes.header, className)} onClick={onClick}>
       <Box
         display="flex"
         alignItems="center"

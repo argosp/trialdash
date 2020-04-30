@@ -21,7 +21,6 @@ import CustomTooltip from '../../CustomTooltip';
 import AddSetForm from '../../AddSetForm';
 import { updateCache } from '../../../apolloGraphql';
 import trialSetMutation from '../utils/trialSetMutation';
-import trialSets from '../utils/trialSetQuery';
 
 class TrialSets extends React.Component {
     state = {};
@@ -185,7 +184,7 @@ class TrialSets extends React.Component {
                 update={this.state.update}
                 setUpdated={this.setUpdated}
               />
-              </>
+            </>
           }
         </>
       );

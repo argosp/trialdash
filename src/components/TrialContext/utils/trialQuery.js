@@ -11,8 +11,17 @@ const trials = (experimentId, trialSetKey) => gql`
         state
         numberOfDevices
         properties {
-           key
-           val
+          key
+          val
+        }
+        entities {
+          key
+          typeKey
+          type
+          properties {
+            key
+            val
+          }
         }
       }
   }`;

@@ -16,24 +16,37 @@ class ContentTable extends React.Component {
   };
 
   componentDidMount() {
-    const { client, contentType, query } = this.props;
-
+    const { client, contentType, query, items } = this.props;
+    if (items) {
+      this.setItems();
+      return;
+    }
     try {
-      const items = client.readQuery({
+      const resItems = client.readQuery({
         query,
       })[contentType];
 
-      this.setState({ [contentType]: items });
+      this.setState({ [contentType]: resItems });
     } catch {
       this.getItemsFromServer();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { match, update } = this.props;
+    const { match, update, items } = this.props;
     if (prevProps.match.params.id !== match.params.id || update) {
+      if (items) {
+        this.setItems();
+        return;
+      }
       this.getItemsFromServer();
     }
+  }
+
+  setItems = () => {
+    const { items, contentType, update, setUpdated } = this.props;
+    this.setState({ [contentType]: items });
+    if (setUpdated && update) setUpdated();
   }
 
   getItemsFromServer = () => {
@@ -60,15 +73,19 @@ class ContentTable extends React.Component {
 
     return (
       <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            {tableHeadColumns.map(({ title, key }) => (
-              <StyledTableCell align="left" key={key}>
-                {title}
-              </StyledTableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+        {tableHeadColumns
+          && (
+            <TableHead>
+              <TableRow>
+                {tableHeadColumns.map(({ title, key }) => (
+                  <StyledTableCell className={classes.headCell} align="left" key={key}>
+                    {title}
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+          )
+        }
         <TableBody>
           {this.state[contentType].map(renderRow).map(child => (
             <TableRow key={child.key} className={classes.tableBodyRow}>
