@@ -1,6 +1,9 @@
+/* eslint-disable prefer-destructuring */
 import React from 'react';
 import update from 'immutability-helper';
 import { withStyles } from '@material-ui/core';
+import uuid from 'uuid/v4';
+import Typography from '@material-ui/core/Typography';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -22,25 +25,31 @@ import devicesQuery from '../Devices/utils/deviceQuery';
 class DeviceForm extends React.Component {
   state = {
     device: {
+      key: this.props.device ? this.props.device.key : uuid(),
       deviceTypeKey: this.props.match.params.deviceTypeKey,
       experimentId: this.props.match.params.id,
-      id: '',
-      name: '',
-      properties: [],
+      id: this.props.device ? this.props.device.id : '',
+      name: this.props.device ? this.props.device.name : '',
+      properties: this.props.device && this.props.device.properties ? this.props.device.properties : [],
     },
     deviceType: {},
   };
 
   componentDidMount() {
-    const { client, match } = this.props;
+    const { client, match, device } = this.props;
 
     client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
       const deviceType = data.data.deviceTypes.find(
         item => item.key === match.params.deviceTypeKey,
       );
-      const properties = [];
 
-      deviceType.properties.forEach(property => properties.push({ key: property.key, val: '' }));
+      let properties;
+      if (!device) {
+        properties = [];
+        deviceType.properties.forEach(property => properties.push({ key: property.key, val: property.defaultValue }));
+      } else {
+        properties = device.properties;
+      }
 
       this.setState(state => ({
         device: {
@@ -53,10 +62,17 @@ class DeviceForm extends React.Component {
   }
 
   onPropertyChange = (e, propertyKey) => {
-    const { value } = e.target;
-    const indexOfProperty = this.state.device.properties.findIndex(
+    if (!e.target) return;
+    let { value } = e.target;
+    if (e.target.type === 'checkbox') value = e.target.checked.toString();
+    let indexOfProperty = this.state.device.properties.findIndex(
       property => property.key === propertyKey,
     );
+
+    if (indexOfProperty === -1) {
+      this.state.device.properties.push({ val: value, key: propertyKey });
+      indexOfProperty = this.state.device.properties.length - 1;
+    }
 
     this.setState(state => ({
       device: {
@@ -79,21 +95,23 @@ class DeviceForm extends React.Component {
     }));
   };
 
-  closeForm = () => {
+  closeForm = (deleted) => {
     const { match, history, returnFunc } = this.props;
 
-    if (returnFunc) returnFunc();
+    if (returnFunc) returnFunc(deleted);
     history.push(
       `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/${DEVICES}`,
     );
   };
 
-  submitDevice = async (newDevice) => {
+  submitDevice = async (newDevice, deleted) => {
+    const newEntity = newDevice;
     const { match, client, returnFunc } = this.props;
     const { deviceType } = this.state;
+    if (deleted) newEntity.state = 'Deleted';
 
     await client.mutate({
-      mutation: deviceMutation(newDevice),
+      mutation: deviceMutation(newEntity),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -127,18 +145,18 @@ class DeviceForm extends React.Component {
       });
     }
 
-    this.closeForm();
+    this.closeForm(deleted);
   };
 
   getValue = (key) => {
-    const properties = this.state.device.properties;
+    const { properties } = this.state.device;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].val : '');
   }
 
   render() {
     const { classes } = this.props;
-    const { deviceType } = this.state;
+    const { deviceType, device } = this.state;
 
     return (
       <>
@@ -146,39 +164,45 @@ class DeviceForm extends React.Component {
           title={`Add ${deviceType.name}`}
           className={classes.header}
         />
-        <CustomInput
-          id="device-name"
-          className={classes.property}
-          onChange={e => this.onInputChange(e, 'name')}
-          label="Name"
-          bottomDescription="a short description"
-        />
-        <CustomInput
-          id="device-id"
-          className={classes.property}
-          onChange={e => this.onInputChange(e, 'id')}
-          label="ID"
-          bottomDescription="a short description"
-        />
-        {deviceType.properties
-          ? deviceType.properties.filter(property => property.trialField !== true).map(property => (
-            <CustomInput
-              id={`device-property-${property.key}`}
-              className={classes.property}
-              key={property.key}
-              onChange={e => this.onPropertyChange(e, property.key)}
-              label={property.label}
-              bottomDescription={property.description}
-              value={this.getValue(property.key)}
-              values={property.value}
-              type={property.type}
-              multiple={property.multipleValues}
-            />
-          ))
-          : null}
+        <Typography style={{ marginBottom: '100px' }}>
+          <CustomInput
+            id="device-name"
+            className={classes.property}
+            onChange={e => this.onInputChange(e, 'name')}
+            label="Name"
+            bottomDescription="a short description"
+            value={device.name}
+          />
+          <CustomInput
+            id="device-id"
+            className={classes.property}
+            onChange={e => this.onInputChange(e, 'id')}
+            label="ID"
+            bottomDescription="a short description"
+            value={device.id}
+          />
+          {deviceType.properties
+            ? deviceType.properties.filter(p => p.trialField !== true).map(property => (
+              <CustomInput
+                id={`device-property-${property.key}`}
+                className={classes.property}
+                key={property.key}
+                onChange={e => this.onPropertyChange(e, property.key)}
+                label={property.label}
+                bottomDescription={property.description}
+                value={this.getValue(property.key)}
+                values={property.value}
+                type={property.type}
+                multiple={property.multipleValues}
+              />
+            ))
+            : null}
+        </Typography>
         <Footer
           cancelButtonHandler={this.closeForm}
           saveButtonHandler={() => this.submitDevice(this.state.device)}
+          withDeleteButton={this.props.device}
+          deleteButtonHandler={() => this.submitDevice(device, true)}
         />
       </>
     );

@@ -51,7 +51,7 @@ class FieldTypeItem extends React.Component {
         onMouseEnter={!isEditModeEnabled ? this.handleWrapperMouseEnter : null}
         onMouseLeave={!isEditModeEnabled ? this.handleWrapperMouseLeave : null}
       >
-        <Grid item container xs={6} alignItems="center" wrap="nowrap">
+        <Grid item container xs={10} alignItems="center" wrap="nowrap">
           <CrossIcon className={
             isMouseHover && !isEditModeEnabled
               ? classes.crossIcon
@@ -84,7 +84,7 @@ class FieldTypeItem extends React.Component {
             />
           )}
         </Grid>
-        <Grid item container xs={6} justify="flex-end" alignItems="center">
+        <Grid item container xs={2} justify="flex-end" alignItems="center">
           <CustomTooltip
             title="Edit"
             className={
@@ -105,16 +105,20 @@ class FieldTypeItem extends React.Component {
           >
             <CloneIcon />
           </CustomTooltip>
-          <CustomTooltip
-            title="Delete"
-            className={
-              (!isMouseHover || isEditModeEnabled) && classes.hiddenAttributeButton
-            }
-            ariaLabel="delete"
-            onClick={deleteFieldType}
-          >
-            <BasketIcon />
-          </CustomTooltip>
+          {!fieldType.defaultProperty
+            && (
+              <CustomTooltip
+                title="Delete"
+                className={
+                  (!isMouseHover || isEditModeEnabled) && classes.hiddenAttributeButton
+                }
+                ariaLabel="delete"
+                onClick={deleteFieldType}
+              >
+                <BasketIcon />
+              </CustomTooltip>
+            )
+          }
         </Grid>
       </Grid>
     );
