@@ -15,6 +15,7 @@ export default (deviceType) => {
             id: "${deviceType.id}",
             name: "${deviceType.name}",
             numberOfDevices: ${deviceType.numberOfDevices},
+            state: "${deviceType.state}",
             properties: ${JSON.stringify(deviceType.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"type":/g, 'type:')
@@ -28,12 +29,15 @@ export default (deviceType) => {
     .replace(/"multipleValues":/g, 'multipleValues:')
     .replace(/"trialField":/g, 'trialField:')
     .replace(/"value":/g, 'value:')
+    .replace(/"defaultValue":/g, 'defaultValue:')
+    .replace(/"defaultProperty":/g, 'defaultProperty:')
 }
             ) {
                 key
                 id
                 name
                 numberOfDevices
+                state
                 properties {
                   key
                   type
@@ -47,6 +51,8 @@ export default (deviceType) => {
                   multipleValues
                   trialField
                   value
+                  defaultValue
+                  defaultProperty
                 }
             }
         }

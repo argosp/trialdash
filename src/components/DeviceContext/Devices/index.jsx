@@ -8,14 +8,20 @@ import ContentHeader from '../../ContentHeader';
 import {
   DEVICE_TYPES_DASH,
   DEVICES,
+  DEVICE_MUTATION,
+  DEVICE_TYPES,
+  DEVICE_TYPE_MUTATION,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
-import { CloneIcon, PenIcon } from '../../../constants/icons';
+import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import devicesQuery from './utils/deviceQuery';
 import ContentTable from '../../ContentTable';
 import DeviceForm from '../DeviceForm';
+import deviceMutation from '../DeviceForm/utils/deviceMutation';
+import { updateCache } from '../../../apolloGraphql';
+import deviceTypeMutation from '../utils/deviceTypeMutation';
 
 class Devices extends React.Component {
   state = {
@@ -42,16 +48,11 @@ class Devices extends React.Component {
       <React.Fragment key={device.key}>
         <StyledTableCell align="left">{device.name}</StyledTableCell>
         <StyledTableCell align="left">{device.id}</StyledTableCell>
-        {deviceType && deviceType.properties && deviceType.properties.map(property => (
+        {deviceType && deviceType.properties && deviceType.properties.filter(p => !p.trialField).map(property => (
           <StyledTableCell key={property.key} align="left">
             {device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
           </StyledTableCell>
         ))}
-        {/* {device.properties.map(property => (
-          <StyledTableCell key={property.key} align="left">
-            {property.val}
-          </StyledTableCell>
-        ))} */}
         <StyledTableCell align="right">
           <CustomTooltip title="Clone" ariaLabel="clone">
             <CloneIcon />
@@ -63,9 +64,16 @@ class Devices extends React.Component {
           >
             <PenIcon />
           </CustomTooltip>
+          <CustomTooltip
+            title="Delete"
+            ariaLabel="delete"
+            onClick={() => this.deleteDevice(device)}
+          >
+            <BasketIcon />
+          </CustomTooltip>
         </StyledTableCell>
       </React.Fragment>
-    )
+    );
   };
 
   generateTableColumns = (deviceType) => {
@@ -75,21 +83,72 @@ class Devices extends React.Component {
     ];
 
     if (!isEmpty(deviceType) && !isEmpty(deviceType.properties)) {
-      deviceType.properties.forEach((property, index) => {
-        if (index === deviceType.properties.length - 1) { // the last column is static (buttons)
-          columns.push(
-            { key: uuid(), title: property.label },
-            { key: uuid(), title: '' },
-          );
-
-          return;
-        }
-
+      deviceType.properties.filter(property => !property.trialField).forEach((property) => {
         columns.push({ key: uuid(), title: property.label });
       });
+      columns.push({ key: uuid(), title: '' });
     }
 
     return columns;
+  };
+
+  // update number of devices of the device type
+  updateNumberOfDevices = async (operation) => {
+
+    const { deviceType } = this.state;
+    const updatedDeviceType = { ...deviceType };
+    if (operation === 'add') {
+      updatedDeviceType.numberOfDevices += 1;
+    } else {
+      updatedDeviceType.numberOfDevices -= 1;
+    }
+    const { match, client } = this.props;
+    updatedDeviceType.experimentId = match.params.id;
+
+    await client.mutate({
+      mutation: deviceTypeMutation(updatedDeviceType),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          deviceTypesQuery(match.params.id),
+          DEVICE_TYPES,
+          DEVICE_TYPE_MUTATION,
+          true,
+        );
+      },
+    });
+  }
+
+  setUpdated = () => {
+    this.setState({ update: false });
+  }
+
+  deleteDevice = async (device) => {
+    const newEntity = { ...device };
+    newEntity.state = 'Deleted';
+    const { match, client } = this.props;
+    newEntity.experimentId = match.params.id;
+    newEntity.deviceTypeKey = match.params.deviceTypeKey;
+
+    const mutation = deviceMutation;
+
+    await client
+      .mutate({
+        mutation: mutation(newEntity),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            devicesQuery(match.params.id, match.params.deviceTypeKey),
+            DEVICES,
+            DEVICE_MUTATION,
+            true,
+          );
+        },
+      });
+    // this.updateNumberOfTrials('remove');
+    this.setState({ update: true });
   };
 
   activateEditMode = (device) => {
@@ -99,9 +158,10 @@ class Devices extends React.Component {
     });
   };
 
-  returnFunc = () => {
+  returnFunc = (deleted) => {
     this.setState({
       isEditModeEnabled: false,
+      update: deleted,
     });
   }
 
@@ -138,6 +198,8 @@ class Devices extends React.Component {
               query={devicesQuery(match.params.id, match.params.deviceTypeKey)}
               tableHeadColumns={tableHeadColumns}
               renderRow={this.renderTableRow}
+              update={this.state.update}
+              setUpdated={this.setUpdated}
             />
           </>
         }

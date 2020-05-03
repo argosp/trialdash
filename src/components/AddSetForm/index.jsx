@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 import React from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Grid from '@material-ui/core/Grid';
@@ -42,7 +43,19 @@ class AddSetForm extends React.Component {
           name: this.props.deviceType ? this.props.deviceType.name : '',
           experimentId: this.props.match.params.id,
           numberOfDevices: this.props.deviceType ? this.props.deviceType.numberOfDevices : 0,
-          properties: this.props.deviceType ? this.props.deviceType.properties : [], // this field correspond to the <Droppable droppableId="droppable">
+          properties: this.props.deviceType ? this.props.deviceType.properties : [{
+            description: 'a short description of the field',
+            id: '',
+            prefix: '',
+            suffix: '',
+            template: '',
+            trialField: true,
+            key: uuid(),
+            label: 'Location',
+            name: 'Location',
+            type: 'location',
+            defaultProperty: true,
+          }], // this field correspond to the <Droppable droppableId="droppable">
         }
         : {
           key: this.props.trialSet ? this.props.trialSet.key : uuid(),
@@ -161,7 +174,7 @@ class AddSetForm extends React.Component {
           );
         },
       });
-    
+
     if (returnFunc) returnFunc(true);
     else history.push(`/experiments/${match.params.id}/${formType}`);
   };

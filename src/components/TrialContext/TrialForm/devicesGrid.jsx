@@ -71,13 +71,13 @@ class DevicesGrid extends React.Component {
     const { deviceTypes, devices } = this.state;
     return (
       <React.Fragment key={device.key}>
-        <StyledTableCell className={classes.tableCell} align="left">{devices[device.key][0].name}</StyledTableCell>
+        <StyledTableCell classes={{ body: classes.deviceGridTd }} className={classes.tableCell} align="left">{devices[device.key][0].name}</StyledTableCell>
         {deviceTypes[device.typeKey] && deviceTypes[device.typeKey][0] && deviceTypes[device.typeKey][0].properties
         && deviceTypes[device.typeKey][0].properties.map(property => (
           <>
             {property.trialField
               ? (
-                <StyledTableCell key={property.key} align="left">
+                <StyledTableCell classes={{ body: classes.deviceGridTd }} key={property.key} align="left">
                   <CustomInput
                     value={device.properties && device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
                     onChange={e => onEntityPropertyChange(device, e, property.key)}
@@ -89,14 +89,14 @@ class DevicesGrid extends React.Component {
                   />
                 </StyledTableCell>
               ) : (
-                <StyledTableCell key={property.key} align="left">
+                <StyledTableCell classes={{ body: classes.deviceGridTd }} key={property.key} align="left">
                   {devices[device.key][0].properties.find(p => p.key === property.key) ? devices[device.key][0].properties.find(p => p.key === property.key).val : ''}
                 </StyledTableCell>
               )
             }
           </>
         ))}
-        <StyledTableCell align="right">
+        <StyledTableCell classes={{ body: classes.deviceGridTd }} align="right">
           <CustomTooltip
             title="Delete"
             ariaLabel="delete"
@@ -128,7 +128,7 @@ class DevicesGrid extends React.Component {
     } = this.state;
     return (
       <>
-        {Object.keys(deviceTypes).length > 0 && Object.keys(entities).map(e => (
+        {Object.keys(entities).filter(e => Object.keys(deviceTypes).indexOf(e) !== -1).map(e => (
           <Grid
             className={classes.wrapper}
             key={e}
@@ -150,6 +150,10 @@ class DevicesGrid extends React.Component {
             />
             <Collapse in={open[e]} timeout="auto" unmountOnExit>
               <ContentTable
+                classes={{ table: classes.deviceGridTable,
+                  head: classes.deviceGridTableHead,
+                  tableBodyRow: classes.deviceGridTableBodyRow,
+                }}
                 items={entities[e]}
                 contentType={DEVICES}
                 tableHeadColumns={this.deviceTableHeadColumns(deviceTypes && deviceTypes[e] && deviceTypes[e][0])}
