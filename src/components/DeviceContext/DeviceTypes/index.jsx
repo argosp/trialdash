@@ -3,6 +3,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
 import ContentTable from '../../ContentTable';
 import StyledTableCell from '../../StyledTableCell';
 import AddSetForm from '../../AddSetForm';
@@ -15,8 +16,10 @@ import {
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
-import { CloneIcon, PenIcon } from '../../../constants/icons';
+import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
+import { updateCache } from '../../../apolloGraphql';
+import deviceTypeMutation from '../utils/deviceTypeMutation';
 
 class DeviceTypes extends React.Component {
     state = {};
@@ -41,6 +44,13 @@ class DeviceTypes extends React.Component {
               <PenIcon />
             </CustomTooltip>
             <CustomTooltip
+              title="Delete"
+              ariaLabel="delete"
+              onClick={() => this.deleteDeviceType(deviceType)}
+            >
+              <BasketIcon />
+            </CustomTooltip>
+            <CustomTooltip
               title="Open"
               className={classes.arrowButton}
               ariaLabel="open"
@@ -53,6 +63,36 @@ class DeviceTypes extends React.Component {
       );
     };
 
+    setUpdated = () => {
+      this.setState({ update: false });
+    }
+
+    deleteDeviceType = async (deviceType) => {
+      const newEntity = deviceType;
+      newEntity.state = 'Deleted';
+      const { match, client } = this.props;
+      newEntity.experimentId = match.params.id;
+
+      const mutation = deviceTypeMutation;
+
+      await client
+        .mutate({
+          mutation: mutation(newEntity),
+          update: (cache, mutationResult) => {
+            updateCache(
+              cache,
+              mutationResult,
+              deviceTypesQuery(match.params.id),
+              DEVICE_TYPES,
+              DEVICE_TYPE_MUTATION,
+              true,
+            );
+          },
+        });
+
+      this.setState({ update: true });
+    };
+
     activateEditMode = (deviceType) => {
       this.setState({
         isEditModeEnabled: true,
@@ -60,9 +100,10 @@ class DeviceTypes extends React.Component {
       });
     };
 
-    returnFunc = () => {
+    returnFunc = (deleted) => {
       this.setState({
         isEditModeEnabled: false,
+        update: deleted,
       });
     }
 
@@ -110,6 +151,8 @@ class DeviceTypes extends React.Component {
                 query={deviceTypesQuery(match.params.id)}
                 tableHeadColumns={tableHeadColumns}
                 renderRow={this.renderTableRow}
+                update={this.state.update}
+                setUpdated={this.setUpdated}
               />
             </>
           }
@@ -120,5 +163,6 @@ class DeviceTypes extends React.Component {
 
 export default compose(
   withRouter,
+  withApollo,
   withStyles(styles),
 )(DeviceTypes);

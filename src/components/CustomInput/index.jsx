@@ -11,6 +11,7 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { styles } from './styles';
 import { switcher } from '../EditFieldTypePanel/SwitchSection/styles';
+import CustomLocation from '../CustomLocation';
 
 const CustomSwitch = withStyles(switcher)(Switch);
 
@@ -21,6 +22,25 @@ const handleToggle = (e, value, onChange, multiple) => {
 const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple, invalid }) => {
   let _value;
   switch (type) {
+    case 'location':
+      return (
+        <Grid className={className}>
+          <Typography variant="h6" classes={{ root: classes.label }}>
+            {label}
+          </Typography>
+          <CustomLocation
+            id={id}
+            value={value}
+            classes={classes}
+            placeholder={placeholder}
+            onChange={onChange}
+            withBorder={withBorder}
+            label={label}
+          />
+          {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
+          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
+        </Grid>
+      );
     case 'selectList':
       if (multiple) {
         _value = value ? value.split(',') : [];
@@ -42,7 +62,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             onChange={((e, v) => handleToggle(e, v, onChange, multiple))}
             value={_value}
           />
-          <FormHelperText>{bottomDescription}</FormHelperText>
+          {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
           {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
         </Grid>
       );
@@ -64,7 +84,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
               )}
             />
           </FormGroup>
-          <FormHelperText>{bottomDescription}</FormHelperText>
+          {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
           {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
         </Grid>
       );
@@ -81,7 +101,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             value={value}
             className={classes.textArea}
           />
-          <FormHelperText>{bottomDescription}</FormHelperText>
+          {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
           {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
         </Grid>
       );

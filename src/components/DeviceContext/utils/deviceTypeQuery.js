@@ -20,6 +20,8 @@ const deviceTypes = experimentId => gql`
            multipleValues
            trialField
            value
+           defaultValue
+           defaultProperty
         }
      }
   }

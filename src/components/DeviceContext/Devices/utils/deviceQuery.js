@@ -6,6 +6,7 @@ const devices = (experimentId, deviceTypeKey) => gql`
         id
         key
         name
+        state
         properties {
            key
            val

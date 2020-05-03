@@ -100,7 +100,7 @@ class TrialSets extends React.Component {
     deleteTrialSet = async (trialSet) => {
       const newEntity = trialSet;
       newEntity.state = 'Deleted';
-      const { match, client, mutationName } = this.props;
+      const { match, client } = this.props;
       newEntity.experimentId = match.params.id;
 
       const mutation = trialSetMutation;
@@ -114,7 +114,7 @@ class TrialSets extends React.Component {
               mutationResult,
               trialSetsQuery(match.params.id),
               TRIAL_SETS,
-              mutationName,
+              TRIAL_SET_MUTATION,
               true,
             );
           },
