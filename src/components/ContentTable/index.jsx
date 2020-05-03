@@ -78,7 +78,7 @@ class ContentTable extends React.Component {
             <TableHead>
               <TableRow>
                 {tableHeadColumns.map(({ title, key }) => (
-                  <StyledTableCell className={classes.headCell} align="left" key={key}>
+                  <StyledTableCell classes={classes} className={classes.headCell} align="left" key={key}>
                     {title}
                   </StyledTableCell>
                 ))}
