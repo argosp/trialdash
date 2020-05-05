@@ -1,5 +1,4 @@
 import React from 'react';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
@@ -260,7 +259,7 @@ class Trials extends React.Component {
               update={this.state.update}
               setUpdated={this.setUpdated}
             />
-            </>
+          </>
         }
       </>
     );

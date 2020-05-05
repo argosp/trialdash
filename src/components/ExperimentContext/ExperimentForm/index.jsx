@@ -1,5 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core';
+import uuid from 'uuid/v4';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Grid from '@material-ui/core/Grid';
 import MomentUtils from '@date-io/moment';
@@ -16,6 +17,7 @@ import CustomInput from '../../CustomInput';
 import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
+import ConfirmDialog from '../../ConfirmDialog';
 import experimentsQuery from '../utils/experimentsQuery';
 import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
@@ -23,12 +25,14 @@ import { updateCache } from '../../../apolloGraphql';
 class ExperimentForm extends React.Component {
   state = {
     formObject: {
-      name: '',
-      description: '',
-      begin: new Date().toISOString(),
-      end: new Date().toISOString(),
-      location: '0,0',
-      numberOfTrials: 0,
+      key: this.props.experiment ? this.props.experiment.key : uuid(),
+      projectId: this.props.experiment ? this.props.experiment.project.id : '',
+      name: this.props.experiment ? this.props.experiment.name : '',
+      description: this.props.experiment ? this.props.experiment.description : '',
+      begin: this.props.experiment ? this.props.experiment.begin : new Date().toISOString(),
+      end: this.props.experiment ? this.props.experiment.end : new Date().toISOString(),
+      location: this.props.experiment ? this.props.experiment.location : '0,0',
+      numberOfTrials: this.props.experiment ? this.props.experiment.numberOfTrials : 0,
     },
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false,
@@ -38,11 +42,22 @@ class ExperimentForm extends React.Component {
 
   endDatePickerRef = React.createRef();
 
-  submitExperiment = async (newExperiment) => {
-    const { client, history } = this.props;
+  closeForm = (update) => {
+    const { history, returnFunc } = this.props;
+
+    if (returnFunc) returnFunc(update);
+    else {
+      history.push('/experiments');
+    }
+  };
+
+  submitExperiment = async (newExperiment, deleted) => {
+    const newEntity = newExperiment;
+    const { client, returnFunc } = this.props;
+    if (deleted) newEntity.state = 'Deleted';
 
     await client.mutate({
-      mutation: experimentMutation(newExperiment),
+      mutation: experimentMutation(newEntity),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -50,11 +65,12 @@ class ExperimentForm extends React.Component {
           experimentsQuery,
           EXPERIMENTS_WITH_DATA,
           EXPERIMENT_MUTATION,
+          returnFunc,
         );
       },
     });
 
-    history.push('/experiments');
+    this.closeForm(true);
   };
 
   changeFormObject = (event, field) => {
@@ -105,21 +121,27 @@ class ExperimentForm extends React.Component {
     this.setState({ [field]: isOpen });
   };
 
+  setConfirmOpen = (open) => {
+    this.setState({ confirmOpen: open });
+  }
+
   render() {
-    const { history, classes } = this.props;
+    const { classes } = this.props;
     const {
       formObject,
       isStartDatePickerOpen,
       isEndDatePickerOpen,
+      confirmOpen,
     } = this.state;
 
     return (
       <MuiPickersUtilsProvider utils={MomentUtils}>
-        <ContentHeader className={classes.header} title="Add experiment" />
+        <ContentHeader className={classes.header} title={this.props.experiment ? 'Edit experiment' : 'Add experiment'} />
         <form>
           <Grid container>
             <Grid item xs={4}>
               <CustomInput
+                value={formObject.name}
                 onChange={e => this.changeFormObject(e, 'name')}
                 id="experiment-name"
                 label="Name"
@@ -131,6 +153,7 @@ class ExperimentForm extends React.Component {
           <Grid container>
             <Grid item xs={7}>
               <CustomInput
+                value={formObject.description}
                 onChange={e => this.changeFormObject(e, 'description')}
                 id="experiment-description"
                 label="Description"
@@ -249,9 +272,19 @@ class ExperimentForm extends React.Component {
           </Grid>
         </form>
         <Footer
-          cancelButtonHandler={() => history.push('/experiments')}
+          cancelButtonHandler={this.closeForm}
           saveButtonHandler={() => this.submitExperiment(formObject)}
+          withDeleteButton={this.props.experiment}
+          deleteButtonHandler={() => this.setConfirmOpen(true)}
         />
+        <ConfirmDialog
+          title="Delete Experiment"
+          open={confirmOpen}
+          setOpen={this.setConfirmOpen}
+          onConfirm={() => this.submitExperiment(formObject, true)}
+        >
+          Are you sure you want to delete this experiment?
+        </ConfirmDialog>
       </MuiPickersUtilsProvider>
     );
   }
