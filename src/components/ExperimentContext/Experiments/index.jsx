@@ -1,5 +1,6 @@
 import React from 'react';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import uuid from 'uuid/v4';
 import { withStyles } from '@material-ui/core';
 import moment from 'moment';
 import Dotdotdot from 'react-dotdotdot';
@@ -12,24 +13,39 @@ import { styles } from './styles';
 import {
   EXPERIMENTS_WITH_DATA,
   TRIAL_SETS_DASH,
+  EXPERIMENT_MUTATION,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
 import StatusBadge from '../../StatusBadge';
-import { CloneIcon, PenIcon } from '../../../constants/icons';
+import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
+import ExperimentForm from '../ExperimentForm';
+import experimentMutation from '../ExperimentForm/utils/experimentMutation';
+import { updateCache } from '../../../apolloGraphql';
+import ConfirmDialog from '../../ConfirmDialog';
 
 class Experiments extends React.Component {
+  state = {
+
+  };
+
+  setConfirmOpen = (open, experiment) => {
+    if (experiment || open) this.state.experiment = experiment;
+    this.setState({ confirmOpen: open });
+  }
+
   renderTableRow = (experiment) => {
     const { classes, theme, client } = this.props;
+    const { confirmOpen } = this.state;
 
     return (
       <React.Fragment key={experiment.project.id}>
         <StyledTableCell align="left">
-          <p className={classes.cellTextLine}>{experiment.project.name}</p>
+          <p className={classes.cellTextLine}>{experiment.name}</p>
           <div className={classes.cellTextLine}>
             <Dotdotdot clamp={1}>
-              {experiment.project.description}
+              {experiment.description}
             </Dotdotdot>
           </div>
         </StyledTableCell>
@@ -43,12 +59,35 @@ class Experiments extends React.Component {
           />
         </StyledTableCell>
         <StyledTableCell align="right">
-          <CustomTooltip title="Clone" ariaLabel="clone">
+          <CustomTooltip
+            title="Clone"
+            ariaLabel="clone"
+            onClick={() => this.clone(experiment)}
+          >
             <CloneIcon />
           </CustomTooltip>
-          <CustomTooltip title="Edit" ariaLabel="edit">
+          <CustomTooltip
+            title="Edit"
+            ariaLabel="edit"
+            onClick={() => this.activateEditMode(experiment)}
+          >
             <PenIcon />
           </CustomTooltip>
+          <CustomTooltip
+            title="Delete"
+            ariaLabel="delete"
+            onClick={() => this.setConfirmOpen(true, experiment)}
+          >
+            <BasketIcon />
+          </CustomTooltip>
+          <ConfirmDialog
+            title="Delete Experiment"
+            open={confirmOpen}
+            setOpen={this.setConfirmOpen}
+            onConfirm={this.deleteExperiment}
+          >
+            Are you sure you want to delete this experiment?
+          </ConfirmDialog>
           <CustomTooltip
             title="Open"
             className={classes.arrowButtonTooltip}
@@ -68,6 +107,71 @@ class Experiments extends React.Component {
       </React.Fragment>
     );
   };
+
+  deleteExperiment = async () => {
+    const newEntity = this.state.experiment;
+    newEntity.state = 'Deleted';
+    newEntity.projectId = newEntity.project.id;
+    const { client } = this.props;
+
+    const mutation = experimentMutation;
+
+    await client
+      .mutate({
+        mutation: mutation(newEntity),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            experimentsQuery,
+            EXPERIMENTS_WITH_DATA,
+            EXPERIMENT_MUTATION,
+            true,
+          );
+        },
+      });
+    this.setState({ update: true, experiment: null });
+  };
+
+  activateEditMode = (experiment) => {
+    this.setState({
+      isEditModeEnabled: true,
+      experiment,
+    });
+  };
+
+  returnFunc = (update) => {
+    this.setState({
+      isEditModeEnabled: false,
+      update,
+    });
+  }
+
+  clone = async (experiment) => {
+    const clonedEXperiment = { ...experiment };
+    clonedEXperiment.key = uuid();
+    clonedEXperiment.projectId = '';
+    const { client } = this.props;
+    clonedEXperiment.numberOfTrials = 0;
+
+    await client.mutate({
+      mutation: experimentMutation(clonedEXperiment),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          experimentsQuery,
+          EXPERIMENTS_WITH_DATA,
+          EXPERIMENT_MUTATION,
+        );
+      },
+    });
+    this.setState({ update: true });
+  };
+
+  setUpdated = () => {
+    this.setState({ update: false });
+  }
 
   render() {
     const tableHeadColumns = [
@@ -93,19 +197,32 @@ class Experiments extends React.Component {
 
     return (
       <>
-        <ContentHeader
-          withSearchInput
-          title="Experiments"
-          searchPlaceholder="Search experiments"
-          addButtonText="Add experiment"
-          addButtonHandler={() => this.props.history.push('/add-experiment')}
-        />
-        <ContentTable
-          contentType={EXPERIMENTS_WITH_DATA}
-          query={experimentsQuery}
-          tableHeadColumns={tableHeadColumns}
-          renderRow={this.renderTableRow}
-        />
+        {this.state.isEditModeEnabled
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          ? <ExperimentForm
+            {...this.props}
+            experiment={this.state.experiment}
+            returnFunc={this.returnFunc}
+          />
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          : <>
+            <ContentHeader
+              withSearchInput
+              title="Experiments"
+              searchPlaceholder="Search experiments"
+              addButtonText="Add experiment"
+              addButtonHandler={() => this.props.history.push('/add-experiment')}
+            />
+            <ContentTable
+              contentType={EXPERIMENTS_WITH_DATA}
+              query={experimentsQuery}
+              tableHeadColumns={tableHeadColumns}
+              renderRow={this.renderTableRow}
+              update={this.state.update}
+              setUpdated={this.setUpdated}
+            />
+          </>
+        }
       </>
     );
   }
