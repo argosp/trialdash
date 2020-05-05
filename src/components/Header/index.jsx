@@ -128,15 +128,15 @@ class Header extends React.Component {
     const { isExperimentHovering } = this.state;
 
     if (
-      currentExperiment.project.name
+      currentExperiment.name
       && currentExperiment.project.id
       && isExperimentHovering
     ) {
-      return `${currentExperiment.project.name} (ID: ${currentExperiment.project.id})`;
+      return `${currentExperiment.name} (ID: ${currentExperiment.project.id})`;
     }
 
-    if (currentExperiment.project.name && !isExperimentHovering) {
-      return `${currentExperiment.project.name}`;
+    if (currentExperiment.name && !isExperimentHovering) {
+      return `${currentExperiment.name}`;
     }
 
     return 'Select an Experiment';
@@ -207,32 +207,35 @@ class Header extends React.Component {
                   && this.renderCurrentExperimentName(currentExperiment)}
                 <ExpandMoreIcon />
               </Button>
-              <Menu
-                id="experiments-menu"
-                open={Boolean(anchorExperimentsMenu)}
-                onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
-                anchorEl={anchorExperimentsMenu}
-                getContentAnchorEl={null}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-              >
-                {!isEmpty(experiments)
-                  && experiments.map(experiment => (
-                    <MenuItem
-                      key={experiment.project.id}
-                      onClick={() => this.selectExperiment(experiment.project.id)
-                      }
-                    >
-                      {experiment.project.name}
-                    </MenuItem>
-                  ))}
-              </Menu>
+              {!isEmpty(experiments)
+                && (
+                <Menu
+                  id="experiments-menu"
+                  open={Boolean(anchorExperimentsMenu)}
+                  onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
+                  anchorEl={anchorExperimentsMenu}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                >
+                  {!isEmpty(experiments)
+                    && experiments.map(experiment => (
+                      <MenuItem
+                        key={experiment.project.id}
+                        onClick={() => this.selectExperiment(experiment.project.id)
+                        }
+                      >
+                        {experiment.name}
+                      </MenuItem>
+                    ))}
+                </Menu>
+                )}
             </>
           ) : null}
         </Grid>

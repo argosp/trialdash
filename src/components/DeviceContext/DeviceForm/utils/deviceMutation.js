@@ -12,7 +12,7 @@ export default (device) => {
             id:"${device.id}"
             name:"${device.name}"
             deviceTypeKey: "${device.deviceTypeKey}"
-            state: "${device.state}"
+            ${device.state ? `state:"${device.state}"` : ''}
             properties: ${JSON.stringify(device.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')

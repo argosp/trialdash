@@ -16,7 +16,7 @@ export default (trialSet) => {
         name: "${trialSet.name}",
         description: "${trialSet.description}",
         numberOfTrials: ${trialSet.numberOfTrials},
-        state: "${trialSet.state}",
+        ${trialSet.state ? `state:"${trialSet.state}"` : ''}
         properties: ${JSON.stringify(trialSet.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"type":/g, 'type:')
