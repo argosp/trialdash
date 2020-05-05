@@ -15,7 +15,7 @@ export default (deviceType) => {
             id: "${deviceType.id}",
             name: "${deviceType.name}",
             numberOfDevices: ${deviceType.numberOfDevices},
-            state: "${deviceType.state}",
+            ${deviceType.state ? `state:"${deviceType.state}"` : ''}
             properties: ${JSON.stringify(deviceType.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"type":/g, 'type:')
