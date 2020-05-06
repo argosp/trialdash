@@ -100,7 +100,10 @@ export default createMuiTheme({
       main: '#56CCF2',
     },
     violet: {
-      main: '#BB6BD9',
+      main: '#9B51E0',
+    },
+    orange: {
+      main: '#F2994A',
     },
   },
 });
