@@ -32,8 +32,15 @@ export default (trial) => {
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')
     .replace(/"typeKey":/g, 'typeKey:')
+    .replace(/"properties":/g, 'properties:')},
+            deployedEntities: ${JSON.stringify(trial.deployedEntities)
+    .replace(/"key":/g, 'key:')
+    .replace(/"val":/g, 'val:')
+    .replace(/"type":/g, 'type:')
+    .replace(/"typeKey":/g, 'typeKey:')
     .replace(/"properties":/g, 'properties:')}
-            ){
+            )
+            {
               key
               created
               status
@@ -47,6 +54,15 @@ export default (trial) => {
                 val
               }
               entities {
+                key
+                typeKey
+                type
+                properties {
+                  key
+                  val
+                }
+              }
+              deployedEntities {
                 key
                 typeKey
                 type

@@ -48,14 +48,17 @@ class DevicesGrid extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.trial.entities.length !== this.state.length) {
+    const { experiment } = this.props;
+    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
+    if (prevProps.trial[entitiesField].length !== this.state.length) {
       this.orderEntities();
     }
   }
 
   orderEntities = () => {
-    const { trial } = this.props;
-    this.setState({ update: true, length: trial.entities.length, entities: groupBy(trial.entities, 'typeKey') });
+    const { trial, experiment } = this.props;
+    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
+    this.setState({ update: true, length: trial[entitiesField].length, entities: groupBy(trial[entitiesField], 'typeKey') });
   }
 
   deviceTableHeadColumns = (deviceType) => {
