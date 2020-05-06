@@ -57,7 +57,7 @@ class Trials extends React.Component {
           {moment(trial.created).format('D/M/YYYY')}
         </StyledTableCell>
         <StyledTableCell align="left">
-          <StatusBadge color={theme.palette.violet.main} title={trial.status} />
+          <StatusBadge color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main} title={trial.status} />
         </StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip
