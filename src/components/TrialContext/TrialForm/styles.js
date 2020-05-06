@@ -67,14 +67,31 @@ export const styles = theme => ({
     },
   },
   deviceGridTableHead: {
-    borderRight: `1px solid ${theme.palette.white.dark}`,
+    borderLeft: `1px solid ${theme.palette.white.dark}`,
     backgroundColor: theme.palette.white.main,
     color: theme.palette.black.dark,
     '&:last-child': {
-      borderRight: 'none',
+      borderLeft: 'none',
+    },
+    '&:first-child': {
+      borderLeft: 'none',
     },
   },
   deviceGridTableBodyRow: {
     boxShadow: 'none',
+  },
+  changeStatusButton: {
+    color: theme.palette.orange.main,
+    border: '2px solid',
+    marginBottom: '20px',
+    '&:hover': {
+      backgroundColor: theme.palette.orange.main,
+    },
+  },
+  changeStatusButtondesign: {
+    color: theme.palette.violet.main,
+    '&:hover': {
+      backgroundColor: theme.palette.violet.main,
+    },
   },
 });

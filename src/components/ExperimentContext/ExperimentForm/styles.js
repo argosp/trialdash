@@ -21,18 +21,4 @@ export const styles = theme => ({
     zIndex: 0,
     marginBottom: 100,
   },
-  changeStatusButton: {
-    color: theme.palette.orange.main,
-    border: '2px solid',
-    marginBottom: '20px',
-    '&:hover': {
-      backgroundColor: theme.palette.orange.main,
-    },
-  },
-  changeStatusButtondesign: {
-    color: theme.palette.violet.main,
-    '&:hover': {
-      backgroundColor: theme.palette.violet.main,
-    },
-  },
 });
