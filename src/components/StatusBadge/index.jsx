@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { styles } from './styles';
 
 const StatusBadge = ({ classes, className, title, color }) => (
-  <div className={classnames(classes.root, className)} style={{ color, border: `1px solid ${color}` }}>
+  <div className={classnames(classes.root, className)} style={{ color, border: `2px solid ${color}` }}>
     {title}
   </div>
 );
