@@ -33,7 +33,6 @@ import SimpleButton from '../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../constants/icons';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
-import experimentsQuery from '../../ExperimentContext/utils/experimentsQuery';
 import { updateCache } from '../../../apolloGraphql';
 import DevicePlanner from '../../DevicePlanner';
 
@@ -59,6 +58,7 @@ class TrialForm extends React.Component {
       experimentId: this.props.match.params.id,
       id: this.props.trial ? this.props.trial.id : '',
       name: this.props.trial ? this.props.trial.name : '',
+      status: this.props.trial && this.props.trial.status ? this.props.trial.status : 'design',
       numberOfDevices: this.props.trial ? this.props.trial.numberOfDevices : 0,
       properties: this.props.trial && this.props.trial.properties ? this.props.trial.properties : [],
       entities: this.props.trial && this.props.trial.entities ? this.props.trial.entities : [],
@@ -92,16 +92,6 @@ class TrialForm extends React.Component {
         trialSet,
       }));
     });
-
-    client
-      .query({ query: experimentsQuery })
-      .then((data) => {
-        this.setState({
-          experiment: data.data.experimentsWithData.find(
-            experiment => experiment.project.id === match.params.id,
-          ),
-        });
-      });
   }
 
   changeView = (selectedViewIndex) => {
@@ -135,8 +125,8 @@ class TrialForm extends React.Component {
   };
 
   onEntityPropertyChange = (entityObj, e, propertyKey) => {
-    const { trial, experiment } = this.state;
-    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
+    const { trial } = this.state;
+    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     if (!e.target) return;
     let { value } = e.target;
     if (e.target.type === 'checkbox') value = e.target.checked.toString();
@@ -197,7 +187,7 @@ class TrialForm extends React.Component {
         }
       });
       if (invalid) {
-        this.setState({ });
+        this.setState({ tabValue: 0 });
         return;
       }
     }
@@ -269,8 +259,8 @@ class TrialForm extends React.Component {
   }
 
   addEntity = (entity, type, typeKey, properties) => {
-    const { experiment } = this.state;
-    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
+    const { trial } = this.state;
+    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     this.state.trial[entitiesField] = this.state.trial[entitiesField] || [];
     this.state.trial[entitiesField].push({
       key: entity.key,
@@ -282,8 +272,8 @@ class TrialForm extends React.Component {
   }
 
   removeEntity = (key) => {
-    const { experiment } = this.state;
-    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
+    const { trial } = this.state;
+    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     this.state.trial[entitiesField].splice(this.state.trial[entitiesField].findIndex(e => e.key === key), 1);
     this.setState({ });
   }
@@ -295,7 +285,6 @@ class TrialForm extends React.Component {
       selectedViewIndex,
       trialSet,
       trial,
-      experiment,
     } = this.state;
 
     return (
@@ -308,8 +297,8 @@ class TrialForm extends React.Component {
             rightDescription={(
               <StatusBadge
                 className={classes.statusBadge}
-                title="New"
-                color={theme.palette.violet.main}
+                title={trial.status}
+                color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
               />
             )}
             title={trial.name || 'trial name goes here'}
@@ -328,6 +317,19 @@ class TrialForm extends React.Component {
           />
         </div>
         <TabPanel value={tabValue} index={0}>
+          {this.props.trial
+            && (
+              <Grid item xs={4}>
+                <SimpleButton
+                  classes={classes}
+                  className={classnames(classes.changeStatusButton, classes[`changeStatusButton${trial.status || 'design'}`])}
+                  onClick={e => this.onInputChange({ target: { value: trial.status === 'deploy' ? 'design' : 'deploy' } }, 'status')}
+                  text={`Change to ${trial.status === 'deploy' ? 'design' : 'deploy'}`}
+                  variant="outlined"
+                />
+              </Grid>
+            )
+          }
           <CustomInput
             id="trial-name"
             className={classes.property}
@@ -422,30 +424,21 @@ class TrialForm extends React.Component {
               />
             </Grid>
           </Grid>
-          {experiment
-            && (
-              <AddDevicePanel
-                isPanelOpen={this.state.isDevicesPanelOpen}
-                onClose={this.closeAddDevicesPanel}
-                match={match}
-                theme={theme}
-                addEntity={this.addEntity}
-                entities={trial[experiment.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
-              />
-            )
-          }
+          <AddDevicePanel
+            isPanelOpen={this.state.isDevicesPanelOpen}
+            onClose={this.closeAddDevicesPanel}
+            match={match}
+            theme={theme}
+            addEntity={this.addEntity}
+            entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+          />
           <TabPanel value={selectedViewIndex} index={2}>
-            {experiment
-              && (
-                <DevicesGrid
-                  {...this.props}
-                  trial={trial}
-                  experiment={experiment}
-                  removeEntity={this.removeEntity}
-                  onEntityPropertyChange={this.onEntityPropertyChange}
-                />
-              )
-            }
+            <DevicesGrid
+              {...this.props}
+              trial={trial}
+              removeEntity={this.removeEntity}
+              onEntityPropertyChange={this.onEntityPropertyChange}
+            />
           </TabPanel>
           <TabPanel value={selectedViewIndex} index={3}>
             <DevicePlanner id={match.params.id} />

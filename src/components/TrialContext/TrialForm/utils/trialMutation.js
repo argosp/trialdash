@@ -21,6 +21,7 @@ export default (trial) => {
             experimentId:"${trial.experimentId}"
             id:"${trial.id}"
             name:"${trial.name}"
+            status:"${trial.status}"
             trialSetKey:"${trial.trialSetKey}"
             numberOfDevices:${trial.numberOfDevices}
             ${trial.state ? `state:"${trial.state}"` : ''}

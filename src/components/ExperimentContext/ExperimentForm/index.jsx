@@ -19,7 +19,6 @@ import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
 import ConfirmDialog from '../../ConfirmDialog';
-import SimpleButton from '../../SimpleButton';
 import experimentsQuery from '../utils/experimentsQuery';
 import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
@@ -29,7 +28,6 @@ class ExperimentForm extends React.Component {
     formObject: {
       key: this.props.experiment ? this.props.experiment.key : uuid(),
       projectId: this.props.experiment ? this.props.experiment.project.id : '',
-      status: this.props.experiment ? this.props.experiment.status : 'design',
       name: this.props.experiment ? this.props.experiment.name : '',
       description: this.props.experiment ? this.props.experiment.description : '',
       begin: this.props.experiment ? this.props.experiment.begin : new Date().toISOString(),
@@ -80,10 +78,6 @@ class ExperimentForm extends React.Component {
     let value;
 
     switch (field) {
-      case 'status':
-        if (this.state.formObject.status === 'deploy') value = 'design';
-        else value = 'deploy';
-        break;
       case 'begin':
         value = moment.utc(event).format();
 
@@ -145,21 +139,6 @@ class ExperimentForm extends React.Component {
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <ContentHeader className={classes.header} title={this.props.experiment ? 'Edit experiment' : 'Add experiment'} />
         <form>
-          <Grid container>
-            {this.props.experiment
-              && (
-                <Grid item xs={4}>
-                  <SimpleButton
-                    classes={classes}
-                    className={classnames(classes.changeStatusButton, classes[`changeStatusButton${formObject.status || 'design'}`])}
-                    onClick={e => this.changeFormObject(e, 'status')}
-                    text={`Change to ${formObject.status === 'deploy' ? 'design' : 'deploy'}`}
-                    variant="outlined"
-                  />
-                </Grid>
-              )
-            }
-          </Grid>
           <Grid container>
             <Grid item xs={4}>
               <CustomInput

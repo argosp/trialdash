@@ -4,7 +4,7 @@ import { EXPERIMENT_MUTATION } from '../../../../constants/base';
 
 export default (experiment) => {
   const projectId = experiment.projectId ? experiment.projectId : '';
-
+  if (!experiment.key || experiment.key === 'null') experiment.key = uuid();
   return gql`mutation {
         ${EXPERIMENT_MUTATION}(
             uid:"${localStorage.getItem('uid')}"
