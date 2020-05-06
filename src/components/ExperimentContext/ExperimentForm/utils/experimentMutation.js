@@ -16,6 +16,7 @@ export default (experiment) => {
             end:"${experiment.end}"
             location:"${experiment.location}"
             numberOfTrials:${experiment.numberOfTrials}
+            ${experiment.status ? `status:"${experiment.status}"` : ''}
             ${experiment.state ? `state:"${experiment.state}"` : ''}
           ){
             name
@@ -27,11 +28,11 @@ export default (experiment) => {
             numberOfTrials
             key
             state
+            status
             project {
               id
               name
               description
-              status
              }  
         }
       }`;

@@ -33,6 +33,7 @@ import SimpleButton from '../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../constants/icons';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
+import experimentsQuery from '../../ExperimentContext/utils/experimentsQuery';
 import { updateCache } from '../../../apolloGraphql';
 import DevicePlanner from '../../DevicePlanner';
 
@@ -61,6 +62,7 @@ class TrialForm extends React.Component {
       numberOfDevices: this.props.trial ? this.props.trial.numberOfDevices : 0,
       properties: this.props.trial && this.props.trial.properties ? this.props.trial.properties : [],
       entities: this.props.trial && this.props.trial.entities ? this.props.trial.entities : [],
+      deployedEntities: this.props.trial && this.props.trial.deployedEntities ? this.props.trial.deployedEntities : [],
     },
     trialSet: {},
     tabValue: this.props.tabValue || 0,
@@ -90,6 +92,16 @@ class TrialForm extends React.Component {
         trialSet,
       }));
     });
+
+    client
+      .query({ query: experimentsQuery })
+      .then((data) => {
+        this.setState({
+          experiment: data.data.experimentsWithData.find(
+            experiment => experiment.project.id === match.params.id,
+          ),
+        });
+      });
   }
 
   changeView = (selectedViewIndex) => {
@@ -123,22 +135,23 @@ class TrialForm extends React.Component {
   };
 
   onEntityPropertyChange = (entityObj, e, propertyKey) => {
-    const { trial } = this.state;
+    const { trial, experiment } = this.state;
+    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
     if (!e.target) return;
     let { value } = e.target;
     if (e.target.type === 'checkbox') value = e.target.checked.toString();
-    const indexOfEntity = trial.entities.findIndex(
+    const indexOfEntity = trial[entitiesField].findIndex(
       entity => entity.key === entityObj.key,
     );
-    let indexOfProperty = trial.entities[indexOfEntity].properties.findIndex(
+    let indexOfProperty = trial[entitiesField][indexOfEntity].properties.findIndex(
       property => property.key === propertyKey,
     );
 
     if (indexOfProperty === -1) {
-      trial.entities[indexOfEntity].properties.push({ val: value, key: propertyKey });
-      indexOfProperty = trial.entities[indexOfEntity].properties.length - 1;
+      trial[entitiesField][indexOfEntity].properties.push({ val: value, key: propertyKey });
+      indexOfProperty = trial[entitiesField][indexOfEntity].properties.length - 1;
     } else {
-      trial.entities[indexOfEntity].properties[indexOfProperty].val = value;
+      trial[entitiesField][indexOfEntity].properties[indexOfProperty].val = value;
     }
     this.setState({ trial });
   };
@@ -256,8 +269,10 @@ class TrialForm extends React.Component {
   }
 
   addEntity = (entity, type, typeKey, properties) => {
-    this.state.trial.entities = this.state.trial.entities || [];
-    this.state.trial.entities.push({
+    const { experiment } = this.state;
+    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
+    this.state.trial[entitiesField] = this.state.trial[entitiesField] || [];
+    this.state.trial[entitiesField].push({
       key: entity.key,
       type,
       typeKey,
@@ -267,7 +282,9 @@ class TrialForm extends React.Component {
   }
 
   removeEntity = (key) => {
-    this.state.trial.entities.splice(this.state.trial.entities.findIndex(e => e.key === key), 1);
+    const { experiment } = this.state;
+    const entitiesField = experiment.status === 'deploy' ? 'deployedEntities' : 'entities';
+    this.state.trial[entitiesField].splice(this.state.trial[entitiesField].findIndex(e => e.key === key), 1);
     this.setState({ });
   }
 
@@ -278,6 +295,7 @@ class TrialForm extends React.Component {
       selectedViewIndex,
       trialSet,
       trial,
+      experiment,
     } = this.state;
 
     return (
@@ -404,21 +422,30 @@ class TrialForm extends React.Component {
               />
             </Grid>
           </Grid>
-          <AddDevicePanel
-            isPanelOpen={this.state.isDevicesPanelOpen}
-            onClose={this.closeAddDevicesPanel}
-            match={match}
-            theme={theme}
-            addEntity={this.addEntity}
-            entities={trial.entities.map(e => e.key)}
-          />
+          {experiment
+            && (
+              <AddDevicePanel
+                isPanelOpen={this.state.isDevicesPanelOpen}
+                onClose={this.closeAddDevicesPanel}
+                match={match}
+                theme={theme}
+                addEntity={this.addEntity}
+                entities={trial[experiment.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+              />
+            )
+          }
           <TabPanel value={selectedViewIndex} index={2}>
-            <DevicesGrid
-              {...this.props}
-              trial={trial}
-              removeEntity={this.removeEntity}
-              onEntityPropertyChange={this.onEntityPropertyChange}
-            />
+            {experiment
+              && (
+                <DevicesGrid
+                  {...this.props}
+                  trial={trial}
+                  experiment={experiment}
+                  removeEntity={this.removeEntity}
+                  onEntityPropertyChange={this.onEntityPropertyChange}
+                />
+              )
+            }
           </TabPanel>
           <TabPanel value={selectedViewIndex} index={3}>
             <DevicePlanner id={match.params.id} />

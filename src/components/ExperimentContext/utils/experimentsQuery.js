@@ -12,11 +12,11 @@ export default gql`
         numberOfTrials
         key
         state
+        status
         project {
           id
           name
           description
-          status
         }
     }
 }`;
