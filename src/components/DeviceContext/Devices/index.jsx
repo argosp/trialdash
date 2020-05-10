@@ -13,13 +13,14 @@ import {
   DEVICE_TYPE_MUTATION,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
-import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
+import { CloneMultipleIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import devicesQuery from './utils/deviceQuery';
 import ContentTable from '../../ContentTable';
 import DeviceForm from '../DeviceForm';
 import deviceMutation from '../DeviceForm/utils/deviceMutation';
+import CloneMultiplePanel from '../../CloneMultiplePanel';
 import { updateCache } from '../../../apolloGraphql';
 import deviceTypeMutation from '../utils/deviceTypeMutation';
 
@@ -42,6 +43,14 @@ class Devices extends React.Component {
       });
   }
 
+  openCloneMultiplePanel = (device) => {
+    this.setState({ isCloneMultiplePanelOpen: true, device });
+  }
+
+  closeCloneMultiplePanel = () => {
+    this.setState({ isCloneMultiplePanelOpen: false });
+  }
+
   renderTableRow = (device) => {
     const { deviceType } = this.state;
     return (
@@ -54,8 +63,12 @@ class Devices extends React.Component {
           </StyledTableCell>
         ))}
         <StyledTableCell align="right">
-          <CustomTooltip title="Clone" ariaLabel="clone">
-            <CloneIcon />
+          <CustomTooltip
+            title="Clone multiple"
+            ariaLabel="clone-multiple"
+            onClick={() => this.openCloneMultiplePanel(device)}
+          >
+            <CloneMultipleIcon />
           </CustomTooltip>
           <CustomTooltip
             title="Edit"
@@ -92,37 +105,46 @@ class Devices extends React.Component {
     return columns;
   };
 
-  // update number of devices of the device type
-  updateNumberOfDevices = async (operation) => {
-
-    const { deviceType } = this.state;
-    const updatedDeviceType = { ...deviceType };
-    if (operation === 'add') {
-      updatedDeviceType.numberOfDevices += 1;
-    } else {
-      updatedDeviceType.numberOfDevices -= 1;
-    }
-    const { match, client } = this.props;
-    updatedDeviceType.experimentId = match.params.id;
-
-    await client.mutate({
-      mutation: deviceTypeMutation(updatedDeviceType),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          deviceTypesQuery(match.params.id),
-          DEVICE_TYPES,
-          DEVICE_TYPE_MUTATION,
-          true,
-        );
-      },
-    });
-  }
-
   setUpdated = () => {
     this.setState({ update: false });
   }
+
+  setPattern = (number, string, i) => {
+    const numberFormat = string.split('{')[1].split('}')[0];
+    const startNumber = parseInt(numberFormat, 0);
+    const currentNumber = startNumber + i;
+    const n = currentNumber.toString();
+    return (string.split('{')[0] + (n.length >= numberFormat.length ? n : new Array(numberFormat.length - n.length + 1).join('0') + n) + string.split('}')[1]);
+  }
+
+  cloneMultiple = async (number, name, id) => {
+    const { match, client } = this.props;
+
+    for (let i = 0; i < number; i += 1) {
+      const clonedDevice = { ...this.state.device };
+      clonedDevice.key = uuid();
+      clonedDevice.id = this.setPattern(number, id, i);
+      clonedDevice.name = this.setPattern(number, name, i);
+      clonedDevice.experimentId = match.params.id;
+      clonedDevice.deviceTypeKey = match.params.deviceTypeKey;
+
+      await client.mutate({
+        mutation: deviceMutation(clonedDevice),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            devicesQuery(match.params.id, match.params.deviceTypeKey),
+            DEVICES,
+            DEVICE_MUTATION,
+          );
+        },
+      });
+    }
+
+    this.setState({ update: true, isCloneMultiplePanelOpen: false });
+  };
+
 
   deleteDevice = async (device) => {
     const newEntity = { ...device };
@@ -147,7 +169,7 @@ class Devices extends React.Component {
           );
         },
       });
-    // this.updateNumberOfTrials('remove');
+
     this.setState({ update: true });
   };
 
@@ -167,7 +189,7 @@ class Devices extends React.Component {
 
   render() {
     const { history, match } = this.props;
-    const { deviceType } = this.state;
+    const { deviceType, isCloneMultiplePanelOpen, device } = this.state;
     const tableHeadColumns = this.generateTableColumns(deviceType);
 
     return (
@@ -189,9 +211,13 @@ class Devices extends React.Component {
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
               rightDescription={deviceType.id}
-              addButtonHandler={() => history.push(
-                `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`,
-              )}
+              addButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`)}
+            />
+            <CloneMultiplePanel
+              device={device}
+              isPanelOpen={isCloneMultiplePanelOpen}
+              onClose={this.closeCloneMultiplePanel}
+              cloneMultiple={this.cloneMultiple}
             />
             <ContentTable
               contentType={DEVICES}
