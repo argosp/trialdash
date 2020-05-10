@@ -10,7 +10,7 @@ import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
+import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
@@ -19,7 +19,6 @@ import ContentTable from '../../ContentTable';
 import TrialForm from '../TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
-import trialSetMutation from '../utils/trialSetMutation';
 
 class Trials extends React.Component {
   state = {
@@ -141,37 +140,9 @@ class Trials extends React.Component {
         );
       },
     });
-    this.updateNumberOfTrials('add');
+
     this.setState({ update: true });
   };
-
-  // update number of trials of the trial set
-  updateNumberOfTrials = async (operation) => {
-
-    const { trialSet } = this.state;
-    const updatedTrialSet = { ...trialSet };
-    if (operation === 'add') {
-      updatedTrialSet.numberOfTrials += 1;
-    } else {
-      updatedTrialSet.numberOfTrials -= 1;
-    }
-    const { match, client } = this.props;
-    updatedTrialSet.experimentId = match.params.id;
-
-    await client.mutate({
-      mutation: trialSetMutation(updatedTrialSet),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          trialSetsQuery(match.params.id),
-          TRIAL_SETS,
-          TRIAL_SET_MUTATION,
-          true,
-        );
-      },
-    });
-  }
 
   setUpdated = () => {
     this.setState({ update: false });
@@ -201,7 +172,7 @@ class Trials extends React.Component {
           );
         },
       });
-    this.updateNumberOfTrials('remove');
+
     this.setState({ update: true });
   };
 
@@ -214,7 +185,6 @@ class Trials extends React.Component {
   };
 
   returnFunc = (deleted) => {
-    if (deleted) this.updateNumberOfTrials('remove');
     this.setState({
       isEditModeEnabled: false,
       tabValue: 0,

@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -19,8 +20,9 @@ const handleToggle = (e, value, onChange, multiple) => {
   onChange({ target: { value: (multiple ? value.join(',') : value) } });
 };
 
-const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple, invalid }) => {
+const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple, invalid, errorText }) => {
   let _value;
+  if (!errorText) errorText = 'Please select a value';
   switch (type) {
     case 'location':
       return (
@@ -38,7 +40,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             label={label}
           />
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
+          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
         </Grid>
       );
     case 'selectList':
@@ -63,7 +65,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             value={_value}
           />
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
+          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
         </Grid>
       );
     case 'boolean':
@@ -85,7 +87,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             />
           </FormGroup>
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
+          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
         </Grid>
       );
     case 'textArea':
@@ -102,13 +104,14 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             className={classes.textArea}
           />
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
+          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
         </Grid>
       );
     default:
       return (
-        <Grid className={className}>
+        <Grid>
           <TextField
+            className={className}
             type={type}
             disabled={disabled}
             value={value}
@@ -134,7 +137,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
               },
             }}
           />
-          {invalid && <FormHelperText classes={{ root: classes.error }}>Please select a value</FormHelperText>}
+          {invalid && <FormHelperText classes={{ root: classnames(classes.error, classes.textFieldError) }}>{errorText}</FormHelperText>}
         </Grid>
       );
   }
@@ -156,6 +159,7 @@ const CustomInput = ({
   values,
   multiple,
   invalid,
+  errorText,
 }) => (
   <div>
     {renderSwitch({
@@ -174,6 +178,7 @@ const CustomInput = ({
       values,
       multiple,
       invalid,
+      errorText,
     })}
   </div>
 );
