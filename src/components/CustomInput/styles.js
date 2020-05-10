@@ -24,6 +24,10 @@ export const styles = theme => ({
     fontWeight: 'bold',
     fontSize: 13,
   },
+  textFieldError: {
+    marginTop: '-12px',
+    marginBottom: 20,
+  },
   formControl: {
     'label + &': {
       marginTop: 20,
