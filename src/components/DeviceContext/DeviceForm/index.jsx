@@ -107,7 +107,6 @@ class DeviceForm extends React.Component {
   submitDevice = async (newDevice, deleted) => {
     const newEntity = newDevice;
     const { match, client, returnFunc } = this.props;
-    const { deviceType } = this.state;
     if (deleted) newEntity.state = 'Deleted';
 
     await client.mutate({
@@ -123,27 +122,6 @@ class DeviceForm extends React.Component {
         );
       },
     });
-
-    // update number of devices of the device type
-    if (!returnFunc) {
-      const updatedDeviceType = { ...deviceType };
-      updatedDeviceType.numberOfDevices += 1;
-      updatedDeviceType.experimentId = match.params.id;
-
-      await client.mutate({
-        mutation: deviceTypeMutation(updatedDeviceType),
-        update: (cache, mutationResult) => {
-          updateCache(
-            cache,
-            mutationResult,
-            deviceTypesQuery(match.params.id),
-            DEVICE_TYPES,
-            DEVICE_TYPE_MUTATION,
-            true,
-          );
-        },
-      });
-    }
 
     this.closeForm(deleted);
   };
