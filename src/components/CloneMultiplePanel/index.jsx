@@ -40,7 +40,7 @@ class CloneMultiplePanel extends React.Component {
     if (!name || name === '') {
       this.state.invalidName = true;
       invalid = true;
-    } else if (!name.match(/.*\{\d{1,4}\}.*/)) {
+    } else if (!name.match(/.*\{\d+\}.*/)) {
       this.state.invalidName = true;
       this.state.nameError = 'Invalid number format';
       invalid = true;
@@ -51,7 +51,7 @@ class CloneMultiplePanel extends React.Component {
     if (!id || id === '') {
       this.state.invalidId = true;
       invalid = true;
-    } else if (!id.match(/.*\{\d{1,4}\}.*/)) {
+    } else if (!id.match(/.*\{\d+\}.*/)) {
       this.state.invalidId = true;
       this.state.idError = 'Invalid number format';
       invalid = true;
