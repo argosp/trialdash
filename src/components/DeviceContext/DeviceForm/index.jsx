@@ -107,8 +107,26 @@ class DeviceForm extends React.Component {
   submitDevice = async (newDevice, deleted) => {
     const newEntity = newDevice;
     const { match, client, returnFunc } = this.props;
+    const { deviceType } = this.state;
     if (deleted) newEntity.state = 'Deleted';
-
+    let property;
+    let invalid;
+    if (deviceType.properties) {
+      deviceType.properties.forEach((p) => {
+        property = newEntity.properties.find(ntp => ntp.key === p.key);
+        if (!property) return;
+        if (p.required && !p.trialField && !property.val) {
+          invalid = true;
+          property.invalid = true;
+        } else {
+          delete property.invalid;
+        }
+      });
+      if (invalid) {
+        this.setState({ tabValue: 0 });
+        return;
+      }
+    }
     await client.mutate({
       mutation: deviceMutation(newEntity),
       update: (cache, mutationResult) => {
@@ -130,6 +148,12 @@ class DeviceForm extends React.Component {
     const { properties } = this.state.device;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].val : '');
+  }
+
+  getInvalid = (key) => {
+    const properties = this.state.device.properties;
+    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
+    return (p !== -1 ? properties[p].invalid : false);
   }
 
   render() {
@@ -172,6 +196,7 @@ class DeviceForm extends React.Component {
                 values={property.value}
                 type={property.type}
                 multiple={property.multipleValues}
+                invalid={this.getInvalid(property.key)}
               />
             ))
             : null}
