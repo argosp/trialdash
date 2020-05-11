@@ -81,7 +81,7 @@ class TrialForm extends React.Component {
         properties = [];
         trialSet.properties.forEach(property => properties.push({ key: property.key, val: property.defaultValue }));
       } else {
-        properties = trial.properties;
+        properties = trial.properties || [];
       }
 
       this.setState(state => ({
