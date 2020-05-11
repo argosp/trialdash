@@ -19,11 +19,17 @@ import ContentTable from '../../ContentTable';
 import TrialForm from '../TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
+import ConfirmDialog from '../../ConfirmDialog';
 
 class Trials extends React.Component {
   state = {
     trialSet: {},
   };
+
+  setConfirmOpen = (open, trial) => {
+    if (trial || open) this.state.trial = trial;
+    this.setState({ confirmOpen: open });
+  }
 
   componentDidMount() {
     const { match, client } = this.props;
@@ -40,7 +46,7 @@ class Trials extends React.Component {
   }
 
   renderTableRow = (trial) => {
-    const { trialSet } = this.state;
+    const { trialSet, confirmOpen } = this.state;
     const { classes, theme } = this.props;
 
     return (
@@ -84,9 +90,19 @@ class Trials extends React.Component {
             title="Delete"
             ariaLabel="delete"
             onClick={() => this.deleteTrial(trial)}
+            // onClick={() => this.setConfirmOpen(true, trial)}
           >
             <BasketIcon />
           </CustomTooltip>
+          <ConfirmDialog
+            title={'Delete Trial'}
+            open={confirmOpen}
+            setOpen={this.setConfirmOpen}
+            onConfirm={() => this.deleteTrial(trial)}
+            // inputValidation
+          >
+            Are you sure you want to delete this trial?
+          </ConfirmDialog>
         </StyledTableCell>
       </React.Fragment>
     );

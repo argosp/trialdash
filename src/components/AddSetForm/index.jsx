@@ -28,10 +28,10 @@ import FieldTypeItem from '../FieldTypeItem';
 import Footer from '../Footer';
 import { styles } from './styles';
 import trialSetMutation from '../TrialContext/utils/trialSetMutation';
-import EditDeviceTypePanel from '../EditFieldTypePanel';
-import EditTrialSetPanel from '../EditTrialSetPanel';
+import EditFieldTypePanel from '../EditFieldTypePanel';
 import SimpleButton from '../SimpleButton';
 import { updateCache } from '../../apolloGraphql';
+import ConfirmDialog from '../ConfirmDialog';
 
 class AddSetForm extends React.Component {
   state = {
@@ -275,6 +275,10 @@ class AddSetForm extends React.Component {
     }));
   };
 
+  setConfirmOpen = (open) => {
+    this.setState({ confirmOpen: open });
+  }
+
   render() {
     const {
       fieldTypes,
@@ -285,11 +289,9 @@ class AddSetForm extends React.Component {
       isDragging,
       isFieldTypesPanelOpen,
       isEditFieldTypePanelOpen,
+      confirmOpen,
     } = this.state;
     const { classes, theme, formType, history, match, returnFunc } = this.props;
-    let EditFieldTypePanel;
-    if (DEVICE_TYPES_DASH === formType) EditFieldTypePanel = EditDeviceTypePanel;
-    else EditFieldTypePanel = EditTrialSetPanel;
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {
@@ -326,6 +328,7 @@ class AddSetForm extends React.Component {
             ))}
             onValueChange={this.fieldTypeValueChangeHandler}
             cancelChanges={this.cancelFieldTypeChanges}
+            formType={formType}
           />
         ) : (
           <FieldTypesPanel
@@ -446,9 +449,19 @@ class AddSetForm extends React.Component {
             }}
             saveButtonHandler={() => this.submitEntity(this.state.formObject)}
             withDeleteButton={this.props.deviceType || this.props.trialSet}
+            // deleteButtonHandler={() => this.setConfirmOpen(true)}
             deleteButtonHandler={() => this.submitEntity(this.state.formObject, true)}
           />
         ) : null}
+          <ConfirmDialog
+            title={`Delete ${DEVICE_TYPES_DASH === formType ? 'Device Type' : 'Trial Set'}`}
+            open={confirmOpen}
+            setOpen={this.setConfirmOpen}
+            onConfirm={() => this.submitEntity(this.state.formObject, true)}
+            inputValidation
+          >
+            Are you sure you want to delete this {DEVICE_TYPES_DASH === formType ? 'device type' : 'trial set'}?
+          </ConfirmDialog>
       </DragDropContext>
     );
   }
