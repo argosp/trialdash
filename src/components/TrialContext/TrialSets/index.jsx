@@ -21,12 +21,19 @@ import CustomTooltip from '../../CustomTooltip';
 import AddSetForm from '../../AddSetForm';
 import { updateCache } from '../../../apolloGraphql';
 import trialSetMutation from '../utils/trialSetMutation';
+import ConfirmDialog from '../../ConfirmDialog';
 
 class TrialSets extends React.Component {
     state = {};
 
+    setConfirmOpen = (open, trialSet) => {
+      if (trialSet || open) this.state.trialSet = trialSet;
+      this.setState({ confirmOpen: open });
+    }
+
     renderTableRow = (trialSet) => {
       const { history, match, classes } = this.props;
+      const { confirmOpen } = this.state;
 
       return (
         <React.Fragment key={trialSet.key}>
@@ -52,9 +59,19 @@ class TrialSets extends React.Component {
               title="Delete"
               ariaLabel="delete"
               onClick={() => this.deleteTrialSet(trialSet)}
+              // onClick={() => this.setConfirmOpen(true, trialSet)}
             >
               <BasketIcon />
             </CustomTooltip>
+            <ConfirmDialog
+              title={'Delete Trial Set'}
+              open={confirmOpen}
+              setOpen={this.setConfirmOpen}
+              onConfirm={() => this.deleteTrialSet(trialSet)}
+              // inputValidation
+            >
+              Are you sure you want to delete this trial set?
+            </ConfirmDialog>
             <CustomTooltip
               title="Open"
               className={classes.arrowButton}
