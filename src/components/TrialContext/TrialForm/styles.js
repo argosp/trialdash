@@ -7,7 +7,8 @@ export const styles = theme => ({
     marginBottom: 20,
   },
   statusBadge: {
-    width: 110,
+    cursor: 'pointer',
+    maxWidth: 'unset',
   },
   viewButton: {
     padding: 10,
@@ -94,5 +95,46 @@ export const styles = theme => ({
     '&:hover': {
       backgroundColor: theme.palette.violet.main,
     },
+  },
+  penIcon: {
+    width: 16,
+    height: 15,
+    margin: '0 0 0 12px',
+  },
+  menu: {
+    boxShadow: '0px 20px 25px rgba(0, 0, 0, 0.1), 0px 10px 10px rgba(0, 0, 0, 0.04)',
+    borderRadius: 0,
+    marginTop: '6px',
+    marginLeft: '-5px',
+  },
+  menuItem: {
+    textTransform: 'Capitalize',
+    fontWeight: 'bold',
+    fontSize: 16,
+    lineHeight: '19px',
+    color: theme.palette.gray.dark,
+    padding: '13.5px 100px 13.55px 16px',
+    '&:hover': {
+      backgroundColor: theme.palette.blue.light,
+    },
+  },
+  rect: {
+    width: 24,
+    height: 24,
+    border: '2px solid',
+    boxSizing: 'border-box',
+    marginRight: 21,
+  },
+  design: {
+    border: `2px solid ${theme.palette.violet.main}`,
+  },
+  deploy: {
+    border: `2px solid ${theme.palette.orange.main}`,
+  },
+  execution: {
+    border: `2px solid ${theme.palette.orange.main}`,
+  },
+  complete: {
+    border: `2px solid ${theme.palette.gray.light}`,
   },
 });
