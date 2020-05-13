@@ -59,7 +59,7 @@ class DeviceTypes extends React.Component {
               <BasketIcon />
             </CustomTooltip>
             <ConfirmDialog
-              title={'Delete Device Type'}
+              title="Delete Device Type"
               open={confirmOpen}
               setOpen={this.setConfirmOpen}
               onConfirm={() => this.deleteDeviceType(deviceType)}

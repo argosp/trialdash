@@ -114,7 +114,13 @@ class DeviceForm extends React.Component {
     if (deviceType.properties) {
       deviceType.properties.forEach((p) => {
         property = newEntity.properties.find(ntp => ntp.key === p.key);
-        if (!property) return;
+        if (!property) {
+          property = {
+            key: p.key,
+            val: this.getValue(p.key, p.defaultValue)
+          };
+          newEntity.properties.push(property);
+        }
         if (p.required && !p.trialField && !property.val) {
           invalid = true;
           property.invalid = true;
