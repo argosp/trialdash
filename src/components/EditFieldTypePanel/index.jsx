@@ -94,12 +94,16 @@ const EditFieldTypePanel = ({
         description="a short description about the device name"
         isChecked={fieldType.required}
       />
-      {formType === DEVICE_TYPES_DASH && <SwitchSection
-        onChange={e => onValueChange(e, 'switch', fieldType.key, 'trialField')}
-        title="Trial field"
-        description="this field is set per trial"
-        isChecked={fieldType.trialField}
-      />}
+      {formType === DEVICE_TYPES_DASH
+        && (
+        <SwitchSection
+          onChange={e => onValueChange(e, 'switch', fieldType.key, 'trialField')}
+          title="Trial field"
+          description="this field is set per trial"
+          isChecked={fieldType.trialField}
+        />
+        )
+      }
       <Grid
         container
         wrap="nowrap"

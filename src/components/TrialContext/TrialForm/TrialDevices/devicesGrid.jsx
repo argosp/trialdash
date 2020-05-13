@@ -2,64 +2,21 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Collapse from '@material-ui/core/Collapse';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { groupBy, concat } from 'lodash';
-import deviceTypesQuery from '../../DeviceContext/utils/deviceTypeQuery';
-import devicesQuery from '../../DeviceContext/Devices/utils/deviceQuery';
-import ContentHeader from '../../ContentHeader';
-import ContentTable from '../../ContentTable';
-import StyledTableCell from '../../StyledTableCell';
-import CustomTooltip from '../../CustomTooltip';
-import CustomInput from '../../CustomInput';
-import { BasketIcon } from '../../../constants/icons';
+import ContentHeader from '../../../ContentHeader';
+import ContentTable from '../../../ContentTable';
+import StyledTableCell from '../../../StyledTableCell';
+import CustomTooltip from '../../../CustomTooltip';
+import CustomInput from '../../../CustomInput';
+import { BasketIcon } from '../../../../constants/icons';
 
 import {
   DEVICES,
-} from '../../../constants/base';
+} from '../../../../constants/base';
 
 class DevicesGrid extends React.Component {
   state = {
-    entities: {},
-    deviceTypes: {},
-    devices: {},
     open: {},
   };
-
-  componentWillMount() {
-    const { client, match } = this.props;
-    client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
-      const deviceTypes = groupBy(data.data.deviceTypes, 'key');
-      let devices = [];
-      Object.keys(deviceTypes).forEach((dt) => {
-        client.query({ query: devicesQuery(match.params.id, dt) }).then((devicesData) => {
-          devices = concat(devices, devicesData.data.devices);
-          this.setState({
-            devices: groupBy(devices, 'key'),
-          });
-        });
-      });
-      this.setState({
-        deviceTypes,
-      });
-    });
-  }
-
-  componentDidMount() {
-    this.orderEntities();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { trial } = this.props;
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    if (prevProps.trial[entitiesField].length !== this.state.length) {
-      this.orderEntities();
-    }
-  }
-
-  orderEntities = () => {
-    const { trial } = this.props;
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.setState({ update: true, length: trial[entitiesField].length, entities: groupBy(trial[entitiesField], 'typeKey') });
-  }
 
   deviceTableHeadColumns = (deviceType) => {
     if (!deviceType || !this) return [];
@@ -70,8 +27,7 @@ class DevicesGrid extends React.Component {
   }
 
   renderDevicesTableRow = (device) => {
-    const { classes, removeEntity, onEntityPropertyChange } = this.props;
-    const { deviceTypes, devices } = this.state;
+    const { classes, removeEntity, onEntityPropertyChange, devices, deviceTypes } = this.props;
     return (
       <React.Fragment key={device.key}>
         <StyledTableCell classes={{ body: classes.deviceGridTd }} className={classes.tableCell} align="left">{devices[device.key][0].name}</StyledTableCell>
@@ -117,17 +73,10 @@ class DevicesGrid extends React.Component {
     this.setState({ });
   }
 
-  setUpdated = () => {
-    this.setState({ update: false });
-  }
-
   render() {
-    const { classes } = this.props;
+    const { classes, entities, deviceTypes, update, setUpdated } = this.props;
     const {
       open,
-      entities,
-      deviceTypes,
-      update,
     } = this.state;
     return (
       <>
@@ -162,7 +111,7 @@ class DevicesGrid extends React.Component {
                 tableHeadColumns={this.deviceTableHeadColumns(deviceTypes && deviceTypes[e] && deviceTypes[e][0])}
                 renderRow={this.renderDevicesTableRow}
                 update={update}
-                setUpdated={this.setUpdated}
+                setUpdated={setUpdated}
               />
             </Collapse>
           </Grid>
