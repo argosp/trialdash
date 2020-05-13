@@ -46,6 +46,13 @@ const COLORS_STATUSES = {
   complete: { color: 'gray', level: 'light' },
 };
 
+const COLORS_STATUSES = {
+  design: { color: 'violet', level: 'main' },
+  deploy: { color: 'orange', level: 'main' },
+  execution: { color: 'orange', level: 'main' },
+  complete: { color: 'gray', level: 'light' },
+};
+
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
     component="div"
