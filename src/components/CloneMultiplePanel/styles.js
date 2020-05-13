@@ -4,8 +4,11 @@ export const styles = theme => ({
     alignItems: 'center',
   },
   headerTitle: {
-    marginLeft: 20,
-    fontWeight: 'bold',
+    width: '45%',
+  },
+  label: {
+    fontSize: 14,
+    color: theme.palette.black.dark,
   },
   input: {
     marginBottom: 25,

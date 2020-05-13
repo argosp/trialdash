@@ -10,7 +10,7 @@ import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
+import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
@@ -19,12 +19,17 @@ import ContentTable from '../../ContentTable';
 import TrialForm from '../TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
-import trialSetMutation from '../utils/trialSetMutation';
+import ConfirmDialog from '../../ConfirmDialog';
 
 class Trials extends React.Component {
   state = {
     trialSet: {},
   };
+
+  setConfirmOpen = (open, trial) => {
+    if (trial || open) this.state.trial = trial;
+    this.setState({ confirmOpen: open });
+  }
 
   componentDidMount() {
     const { match, client } = this.props;
@@ -41,7 +46,7 @@ class Trials extends React.Component {
   }
 
   renderTableRow = (trial) => {
-    const { trialSet } = this.state;
+    const { trialSet, confirmOpen } = this.state;
     const { classes, theme } = this.props;
 
     return (
@@ -85,9 +90,19 @@ class Trials extends React.Component {
             title="Delete"
             ariaLabel="delete"
             onClick={() => this.deleteTrial(trial)}
+            // onClick={() => this.setConfirmOpen(true, trial)}
           >
             <BasketIcon />
           </CustomTooltip>
+          <ConfirmDialog
+            title={'Delete Trial'}
+            open={confirmOpen}
+            setOpen={this.setConfirmOpen}
+            onConfirm={() => this.deleteTrial(trial)}
+            // inputValidation
+          >
+            Are you sure you want to delete this trial?
+          </ConfirmDialog>
         </StyledTableCell>
       </React.Fragment>
     );
@@ -141,43 +156,16 @@ class Trials extends React.Component {
         );
       },
     });
-    this.updateNumberOfTrials('add');
+
     this.setState({ update: true });
   };
-
-  // update number of trials of the trial set
-  updateNumberOfTrials = async (operation) => {
-
-    const { trialSet } = this.state;
-    const updatedTrialSet = { ...trialSet };
-    if (operation === 'add') {
-      updatedTrialSet.numberOfTrials += 1;
-    } else {
-      updatedTrialSet.numberOfTrials -= 1;
-    }
-    const { match, client } = this.props;
-    updatedTrialSet.experimentId = match.params.id;
-
-    await client.mutate({
-      mutation: trialSetMutation(updatedTrialSet),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          trialSetsQuery(match.params.id),
-          TRIAL_SETS,
-          TRIAL_SET_MUTATION,
-          true,
-        );
-      },
-    });
-  }
 
   setUpdated = () => {
     this.setState({ update: false });
   }
 
   deleteTrial = async (trial) => {
+    // const newEntity = this.state.trial;
     const newEntity = { ...trial };
     newEntity.state = 'Deleted';
     const { match, client } = this.props;
@@ -201,7 +189,7 @@ class Trials extends React.Component {
           );
         },
       });
-    this.updateNumberOfTrials('remove');
+
     this.setState({ update: true });
   };
 
@@ -214,7 +202,6 @@ class Trials extends React.Component {
   };
 
   returnFunc = (deleted) => {
-    if (deleted) this.updateNumberOfTrials('remove');
     this.setState({
       isEditModeEnabled: false,
       tabValue: 0,

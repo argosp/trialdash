@@ -23,7 +23,7 @@ class ConfirmDialog extends React.Component {
     }
 
     render() {
-      const { title, children, open, setOpen, onConfirm, classes } = this.props;
+      const { title, children, open, setOpen, onConfirm, classes, inputValidation } = this.props;
       const { text } = this.state;
       return (
         <Dialog
@@ -41,17 +41,17 @@ class ConfirmDialog extends React.Component {
             <DialogContentText>
               {children}
             </DialogContentText>
-            <DialogContentText>
-            Please type <strong>ARGOS</strong> to confirm.
-            </DialogContentText>
-            <TextField
+            {inputValidation && <DialogContentText>
+              Please type <strong>ARGOS</strong> to confirm.
+            </DialogContentText>}
+            {inputValidation && <TextField
               autoFocus
               margin="dense"
               id="text"
               type="text"
               fullWidth
               onChange={this.handleChange('text')}
-            />
+            />}
           </DialogContent>
           <DialogActions>
             <SimpleButton
@@ -62,7 +62,7 @@ class ConfirmDialog extends React.Component {
                 onConfirm();
               }}
               text="Delete"
-              disabled={text !== 'ARGOS'}
+              disabled={inputValidation && (text !== 'ARGOS')}
             />
           </DialogActions>
         </Dialog>
