@@ -6,6 +6,8 @@ import uuid from 'uuid/v4';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import classnames from 'classnames';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -23,6 +25,7 @@ import {
   TRIAL_MUTATION,
   TRIAL_SET_MUTATION,
 } from '../../../constants/base';
+import { PenIcon } from '../../../constants/icons';
 import StatusBadge from '../../StatusBadge';
 import StyledTabs from '../../StyledTabs';
 import SimpleButton from '../../SimpleButton';
@@ -30,6 +33,13 @@ import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
 import TrialDevices from './TrialDevices';
+
+const COLORS_STATUSES = {
+  design: { color: 'violet', level: 'main' },
+  deploy: { color: 'orange', level: 'main' },
+  execution: { color: 'orange', level: 'main' },
+  complete: { color: 'gray', level: 'light' },
+};
 
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
@@ -140,6 +150,8 @@ class TrialForm extends React.Component {
     const { value } = e.target;
 
     this.setState(state => ({
+      editableStatus: false,
+      anchorMenu: null,
       trial: {
         ...state.trial,
         [inputName]: value,
@@ -201,38 +213,8 @@ class TrialForm extends React.Component {
       },
     });
 
-    // if (!returnFunc) {
-    //   // update number of trials of the trial set
-    //   const updatedTrialSet = { ...trialSet };
-    //   updatedTrialSet.numberOfTrials += 1;
-    //   updatedTrialSet.experimentId = match.params.id;
-    //   updatedTrialSet.properties = updatedTrialSet.properties || [];
-
-    //   await client.mutate({
-    //     mutation: trialSetMutation(updatedTrialSet),
-    //     update: (cache, mutationResult) => {
-    //       updateCache(
-    //         cache,
-    //         mutationResult,
-    //         trialSetsQuery(match.params.id),
-    //         TRIAL_SETS,
-    //         TRIAL_SET_MUTATION,
-    //         true,
-    //       );
-    //     },
-    //   });
-    // }
-
     this.closeForm(deleted);
   };
-
-  // openLocationPopup = () => {
-  //   this.setState({ isLocationPopupOpen: true });
-  // };
-
-  // closeLocationPopup = () => {
-  //   this.setState({ isLocationPopupOpen: false });
-  // };
 
   getValue = (key, defaultValue) => {
     const properties = this.state.trial.properties;
@@ -266,12 +248,29 @@ class TrialForm extends React.Component {
     this.setState({ });
   }
 
+  setEditableStatus = (editableStatus) => {
+    this.setState({ editableStatus });
+  }
+
+  handleMenuClick = (event) => {
+    this.setState({
+      anchorMenu: event.currentTarget,
+    });
+  };
+
+  handleMenuClose = (anchor) => {
+    this.setState({ [anchor]: null });
+    this.setEditableStatus(false)
+  };
+
   render() {
     const { classes, theme } = this.props;
     const {
       tabValue,
       trialSet,
       trial,
+      editableStatus,
+      anchorMenu,
     } = this.state;
 
     return (
@@ -283,9 +282,23 @@ class TrialForm extends React.Component {
             withBackButton
             rightDescription={(
               <StatusBadge
+                onClick={this.handleMenuClick}
+                onMouseEnter={() => this.setEditableStatus(true)}
+                onMouseLeave={() => this.setEditableStatus(false)}
                 className={classes.statusBadge}
-                title={trial.status}
-                color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
+                title={
+                  <Grid
+                    container
+                    wrap="nowrap"
+                    justify="space-between"
+                    alignItems="center"
+                    alignContent="space-between"
+                  >
+                    <span>{trial.status}</span>
+                    {editableStatus && <PenIcon className={classes.penIcon} />}
+                  </Grid>
+                }
+                color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
               />
             )}
             title={trial.name || 'trial name goes here'}
@@ -302,21 +315,41 @@ class TrialForm extends React.Component {
               />
               )}
           />
+          <Menu
+            onMouseEnter={() => this.setEditableStatus(true)}
+            onMouseLeave={() => this.setEditableStatus(false)}
+            id="statuses-menu"
+            classes={{ paper: classes.menu}}
+            open={Boolean(anchorMenu)}
+            onClose={() => this.handleMenuClose('anchorMenu')}
+            anchorEl={anchorMenu}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            {['design', 'deploy', 'execution', 'complete'].map((i)=><MenuItem
+              key={uuid()}
+              classes={{ root: classes.menuItem }}
+              onClick={e => this.onInputChange({ target: { value: i } }, 'status')}
+            >
+              <Grid
+                container
+                wrap="nowrap"
+                alignItems="center"
+              >
+                <div className={(classnames(classes.rect, classes[i]))}></div>
+                {i}
+              </Grid>
+            </MenuItem>)}
+          </Menu>
         </div>
         <TabPanel value={tabValue} index={0}>
-          {this.props.trial
-            && (
-              <Grid item xs={4}>
-                <SimpleButton
-                  classes={classes}
-                  className={classnames(classes.changeStatusButton, classes[`changeStatusButton${trial.status || 'design'}`])}
-                  onClick={e => this.onInputChange({ target: { value: trial.status === 'deploy' ? 'design' : 'deploy' } }, 'status')}
-                  text={`Change to ${trial.status === 'deploy' ? 'design' : 'deploy'}`}
-                  variant="outlined"
-                />
-              </Grid>
-            )
-          }
           <CustomInput
             id="trial-name"
             className={classes.property}
