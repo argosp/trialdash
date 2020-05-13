@@ -12,7 +12,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
 
-app.listen(port);
+app.listen(3050);
 
 
-console.log(`Server Started on port ${port}`);
+console.log(`Server Started on port ${3050}`);

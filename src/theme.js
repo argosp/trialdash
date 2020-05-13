@@ -91,7 +91,7 @@ export default createMuiTheme({
       dark: '#4F4F4F',
       medium: '#ADADAD',
       soft: '#474747',
-      light: '#b3b3b3',
+      light: '#A1A1A1'
     },
     red: {
       main: '#EB5757',
@@ -100,7 +100,7 @@ export default createMuiTheme({
       main: '#56CCF2',
     },
     violet: {
-      main: '#9B51E0',
+      main: '#BB6BD9',
     },
     orange: {
       main: '#F2994A',

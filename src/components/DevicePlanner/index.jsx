@@ -9,7 +9,7 @@ import config from '../../config';
 import { updateCache } from '../../apolloGraphql';
 import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from './utils/devicesQuery';
-// import deviceMutation from '../DeviceContext/DeviceForm/utils/deviceMutation';
+import deviceMutation from '../DeviceContext/DeviceForm/utils/deviceMutation';
 import { DeviceEditor } from './DeviceEditor';
 class DevicePlanner extends React.Component {
   state = {

@@ -3,8 +3,14 @@ import { withStyles } from '@material-ui/core';
 import classnames from 'classnames';
 import { styles } from './styles';
 
-const StatusBadge = ({ classes, className, title, color }) => (
-  <div className={classnames(classes.root, className)} style={{ color, border: `2px solid ${color}` }}>
+const StatusBadge = ({ classes, className, title, color, onClick, onMouseEnter, onMouseLeave }) => (
+  <div
+    className={classnames(classes.root, className)}
+    style={{ color, border: `2px solid ${color}` }}
+    onClick={onClick}
+    onMouseEnter={onMouseEnter}
+    onMouseLeave={onMouseLeave}
+  >
     {title}
   </div>
 );
