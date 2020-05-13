@@ -20,4 +20,7 @@ export const styles = theme => ({
     lineHeight: '19px',
     color: theme.palette.gray.dark,
   },
+  tableCellLast: {
+    padding: '15px 15px 15px 30px',
+  },
 });
