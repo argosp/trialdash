@@ -107,7 +107,7 @@ class Devices extends React.Component {
             {device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
           </StyledTableCell>
         ))}
-        <StyledTableCell className={classnames(selectedDT ? classes.selectedRow : '')} align="right">
+        <StyledTableCell className={classnames(classes.tableCellLast, selectedDT ? classes.selectedRow : '')} align="right">
           <CustomTooltip
             title="Clone multiple"
             ariaLabel="clone-multiple"
