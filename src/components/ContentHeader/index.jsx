@@ -14,6 +14,7 @@ const ContentHeader = (props) => {
     classes,
     title,
     searchPlaceholder,
+    withAddButton,
     addButtonText,
     withBackButton,
     backButtonHandler,
@@ -25,6 +26,9 @@ const ContentHeader = (props) => {
     className,
     rightComponent,
     onClick,
+    withDeleteButton,
+    deleteButtonHandler,
+    deleteButtonText,
   } = props;
 
   return (
@@ -66,12 +70,26 @@ const ContentHeader = (props) => {
             }}
             inputProps={{ 'aria-label': searchPlaceholder }}
           />
-          <SimpleButton
-            colorVariant="primary"
-            className={classes.addButton}
-            text={addButtonText}
-            onClick={addButtonHandler}
-          />
+          {withAddButton
+            && (
+              <SimpleButton
+                colorVariant="primary"
+                className={classes.addButton}
+                text={addButtonText}
+                onClick={addButtonHandler}
+              />
+            )
+          }
+          {withDeleteButton
+            && (
+              <SimpleButton
+                colorVariant="secondary"
+                className={classes.addButton}
+                text={deleteButtonText}
+                onClick={deleteButtonHandler}
+              />
+            )
+          }
         </div>
       ) : rightComponent}
     </Grid>

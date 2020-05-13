@@ -93,3 +93,31 @@ export const DeviceIcon = props => (
     <path d="M6.90039 2.5C4.60039 4.2 3 6.9 3 10C3 12.5 4.10078 14.8 5.80078 16.5L6.80078 14.6992C5.70078 13.3992 5 11.8 5 10C5 7.7 6.20039 5.60078 7.90039 4.30078L6.90039 2.5ZM17.0996 2.59961L16.0996 4.40039C17.7996 5.60039 19 7.7 19 10C19 11.8 18.2992 13.3996 17.1992 14.5996L18.1992 16.4004C19.8992 14.8004 21 12.5004 21 9.90039C21 6.90039 19.3996 4.19961 17.0996 2.59961ZM8.90039 6.09961C7.70039 6.99961 7 8.4 7 10C7 11 7.30078 11.8992 7.80078 12.6992L9 10.5V10C9 9.2 9.30039 8.40039 9.90039 7.90039L8.90039 6.09961ZM15.0996 6.09961L14.0996 7.90039C14.6996 8.40039 15 9.2 15 10V10.5L16.1992 12.8008C16.6992 11.9008 17 11 17 10C17 8.4 16.2996 6.99961 15.0996 6.09961ZM12 9C11.7348 9 11.4804 9.10536 11.2929 9.29289C11.1054 9.48043 11 9.73478 11 10L8 22H10L12 14L14 22H16L13 10C13 9.73478 12.8946 9.48043 12.7071 9.29289C12.5196 9.10536 12.2652 9 12 9Z" />
   </SvgIcon>
 );
+
+export const CheckBoxOutlineBlankIcon = props => (
+  <SvgIcon viewBox="0 0 24 24" fontSize="small" {...props}>
+    <rect x="0.5" y="0.5" width="23" height="23" fill="white" stroke="#E0E0E0" />
+  </SvgIcon>
+);
+
+export const CheckBoxOutlinedIcon = props => (
+  <SvgIcon viewBox="0 0 24 24" fontSize="small" {...props}>
+    <rect x="0.5" y="0.5" width="23" height="23" fill="white" stroke="#E0E0E0" />
+    <rect x="0.5" y="0.5" width="23" height="23" fill="white" stroke="#E0E0E0" />
+    <path d="M16.8542 7.52075L10 14.3749L7.14583 11.5208L6.1875 12.4791L9.52083 15.8124L10 16.2708L10.4792 15.8124L17.8125 8.47909L16.8542 7.52075Z" fill="black" />
+  </SvgIcon>
+);
+
+export const IndeterminateCheckBoxOutlinedIcon = props => (
+  <SvgIcon viewBox="0 0 24 24" fontSize="small" {...props}>
+    <rect x="0.5" y="0.5" width="23" height="23" fill="white" stroke="#E0E0E0" />
+    <rect x="0.5" y="0.5" width="23" height="23" fill="white" stroke="#E0E0E0" />
+    <line x1="4" y1="12" x2="19" y2="12" stroke="#828282" strokeWidth="2" />
+  </SvgIcon>
+);
+
+export const MoreActionsIcon = props => (
+  <SvgIcon viewBox="0 0 4 18" fontSize="small" {...props}>
+    <path fillRule="evenodd" clipRule="evenodd" d="M0 2C0 3.10457 0.89543 4 2 4C3.10457 4 4 3.10457 4 2C4 0.89543 3.10457 0 2 0C0.89543 0 0 0.89543 0 2ZM2 11C0.89543 11 0 10.1046 0 9C0 7.89543 0.89543 7 2 7C3.10457 7 4 7.89543 4 9C4 10.1046 3.10457 11 2 11ZM2 18C0.89543 18 0 17.1046 0 16C0 14.8954 0.89543 14 2 14C3.10457 14 4 14.8954 4 16C4 17.1046 3.10457 18 2 18Z" fill="#181D23" />
+  </SvgIcon>
+);

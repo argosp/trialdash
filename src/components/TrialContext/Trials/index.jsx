@@ -165,6 +165,7 @@ class Trials extends React.Component {
   }
 
   deleteTrial = async (trial) => {
+    // const newEntity = this.state.trial;
     const newEntity = { ...trial };
     newEntity.state = 'Deleted';
     const { match, client } = this.props;
