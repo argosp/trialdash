@@ -109,7 +109,30 @@ class DeviceForm extends React.Component {
     const { match, client, returnFunc } = this.props;
     const { deviceType } = this.state;
     if (deleted) newEntity.state = 'Deleted';
-
+    let property;
+    let invalid;
+    if (deviceType.properties) {
+      deviceType.properties.forEach((p) => {
+        property = newEntity.properties.find(ntp => ntp.key === p.key);
+        if (!property) {
+          property = {
+            key: p.key,
+            val: this.getValue(p.key, p.defaultValue)
+          };
+          newEntity.properties.push(property);
+        }
+        if (p.required && !p.trialField && !property.val) {
+          invalid = true;
+          property.invalid = true;
+        } else {
+          delete property.invalid;
+        }
+      });
+      if (invalid) {
+        this.setState({ tabValue: 0 });
+        return;
+      }
+    }
     await client.mutate({
       mutation: deviceMutation(newEntity),
       update: (cache, mutationResult) => {
@@ -124,27 +147,6 @@ class DeviceForm extends React.Component {
       },
     });
 
-    // update number of devices of the device type
-    if (!returnFunc) {
-      const updatedDeviceType = { ...deviceType };
-      updatedDeviceType.numberOfDevices += 1;
-      updatedDeviceType.experimentId = match.params.id;
-
-      await client.mutate({
-        mutation: deviceTypeMutation(updatedDeviceType),
-        update: (cache, mutationResult) => {
-          updateCache(
-            cache,
-            mutationResult,
-            deviceTypesQuery(match.params.id),
-            DEVICE_TYPES,
-            DEVICE_TYPE_MUTATION,
-            true,
-          );
-        },
-      });
-    }
-
     this.closeForm(deleted);
   };
 
@@ -152,6 +154,12 @@ class DeviceForm extends React.Component {
     const { properties } = this.state.device;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].val : '');
+  }
+
+  getInvalid = (key) => {
+    const properties = this.state.device.properties;
+    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
+    return (p !== -1 ? properties[p].invalid : false);
   }
 
   render() {
@@ -194,6 +202,7 @@ class DeviceForm extends React.Component {
                 values={property.value}
                 type={property.type}
                 multiple={property.multipleValues}
+                invalid={this.getInvalid(property.key)}
               />
             ))
             : null}

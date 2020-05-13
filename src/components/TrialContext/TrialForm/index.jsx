@@ -6,8 +6,6 @@ import uuid from 'uuid/v4';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import classnames from 'classnames';
@@ -20,8 +18,6 @@ import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import Footer from '../../Footer';
-import AddDevicePanel from '../../AddDevicePanel';
-import DevicesGrid from './devicesGrid';
 import {
   TRIAL_SETS_DASH,
   TRIAL_SETS,
@@ -33,18 +29,10 @@ import { PenIcon } from '../../../constants/icons';
 import StatusBadge from '../../StatusBadge';
 import StyledTabs from '../../StyledTabs';
 import SimpleButton from '../../SimpleButton';
-import { GridIcon, ListIcon, TreeIcon } from '../../../constants/icons';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
-import DevicePlanner from '../../DevicePlanner';
-
-const COLORS_STATUSES = {
-  design: { color: 'violet', level: 'main' },
-  deploy: { color: 'orange', level: 'main' },
-  execution: { color: 'orange', level: 'main' },
-  complete: { color: 'gray', level: 'light' },
-};
+import TrialDevices from './TrialDevices';
 
 const COLORS_STATUSES = {
   design: { color: 'violet', level: 'main' },
@@ -83,7 +71,6 @@ class TrialForm extends React.Component {
     },
     trialSet: {},
     tabValue: this.props.tabValue || 0,
-    selectedViewIndex: 2,
   };
 
   componentDidMount() {
@@ -98,7 +85,7 @@ class TrialForm extends React.Component {
         properties = [];
         trialSet.properties.forEach(property => properties.push({ key: property.key, val: property.defaultValue }));
       } else {
-        properties = trial.properties;
+        properties = trial.properties || [];
       }
 
       this.setState(state => ({
@@ -110,10 +97,6 @@ class TrialForm extends React.Component {
       }));
     });
   }
-
-  changeView = (selectedViewIndex) => {
-    this.setState({ selectedViewIndex });
-  };
 
   changeTab = (event, tabValue) => {
     this.setState({ tabValue });
@@ -197,7 +180,13 @@ class TrialForm extends React.Component {
     if (trialSet.properties) {
       trialSet.properties.forEach((p) => {
         property = newEntity.properties.find(ntp => ntp.key === p.key);
-        if (!property) return;
+        if (!property) {
+          property = {
+            key: p.key,
+            val: this.getValue(p.key, p.defaultValue)
+          };
+          newEntity.properties.push(property);
+        }
         if (p.required && !property.val) {
           invalid = true;
           property.invalid = true;
@@ -239,14 +228,6 @@ class TrialForm extends React.Component {
     return (p !== -1 ? properties[p].invalid : false);
   }
 
-  openAddDevicesPanel = () => {
-    this.setState({ isDevicesPanelOpen: true });
-  }
-
-  closeAddDevicesPanel = () => {
-    this.setState({ isDevicesPanelOpen: false });
-  }
-
   addEntity = (entity, type, typeKey, properties) => {
     const { trial } = this.state;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
@@ -283,10 +264,9 @@ class TrialForm extends React.Component {
   };
 
   render() {
-    const { classes, theme, match } = this.props;
+    const { classes, theme } = this.props;
     const {
       tabValue,
-      selectedViewIndex,
       trialSet,
       trial,
       editableStatus,
@@ -405,95 +385,12 @@ class TrialForm extends React.Component {
             : null}
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <Grid
-            container
-            justify="space-between"
-            className={classes.devicesPanelHeader}
-          >
-            <Grid item>
-              {/* <IconButton
-                disableRipple
-                className={
-                  selectedViewIndex === 0
-                    ? classnames(classes.viewButton, classes.viewButtonSelected)
-                    : classes.viewButton
-                }
-                onClick={() => this.changeView(0)}
-              >
-                <TreeIcon />
-              </IconButton> */}
-              {/* <IconButton
-                disableRipple
-                className={
-                  selectedViewIndex === 1
-                    ? classnames(classes.viewButton, classes.viewButtonSelected)
-                    : classes.viewButton
-                }
-                onClick={() => this.changeView(1)}
-              >
-                <ListIcon />
-              </IconButton> */}
-              <IconButton
-                disableRipple
-                className={
-                  selectedViewIndex === 2
-                    ? classnames(classes.viewButton, classes.viewButtonSelected)
-                    : classes.viewButton
-                }
-                onClick={() => this.changeView(2)}
-              >
-                <GridIcon />
-              </IconButton>
-              <IconButton
-                disableRipple
-                className={
-                  selectedViewIndex === 3
-                    ? classnames(classes.viewButton, classes.viewButtonSelected)
-                    : classes.viewButton
-                }
-                onClick={() => this.changeView(3)}
-              >
-                <EditLocationIcon className={classes.locationIcon} />
-              </IconButton>
-            </Grid>
-            <Grid item>
-              <SimpleButton
-                text="Add"
-                colorVariant="primary"
-                onClick={this.openAddDevicesPanel}
-              />
-            </Grid>
-          </Grid>
-          <AddDevicePanel
-            isPanelOpen={this.state.isDevicesPanelOpen}
-            onClose={this.closeAddDevicesPanel}
-            match={match}
-            theme={theme}
+          <TrialDevices
+            trial={trial}
             addEntity={this.addEntity}
-            entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+            removeEntity={this.removeEntity}
+            onEntityPropertyChange={this.onEntityPropertyChange}
           />
-          <TabPanel value={selectedViewIndex} index={2}>
-            <DevicesGrid
-              {...this.props}
-              trial={trial}
-              removeEntity={this.removeEntity}
-              onEntityPropertyChange={this.onEntityPropertyChange}
-            />
-          </TabPanel>
-          <TabPanel value={selectedViewIndex} index={3}>
-            <DevicePlanner id={match.params.id} />
-          </TabPanel>
-          {/* <Dialog
-            classes={{ root: classes.dialog }}
-            fullScreen
-            onClose={this.closeLocationPopup}
-            aria-labelledby="location-popup-title"
-            open={isLocationPopupOpen}
-          >
-            <DialogTitle id="location-popup-title">
-              <DevicePlanner id={match.params.id}/>
-            </DialogTitle>
-          </Dialog> */}
         </TabPanel>
         <Footer
           cancelButtonHandler={this.closeForm}

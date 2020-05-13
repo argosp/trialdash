@@ -8,6 +8,9 @@ import CustomInput from '../CustomInput';
 import SwitchSection from './SwitchSection';
 import SimpleButton from '../SimpleButton';
 import { FIELD_TYPES_ICONS } from '../../constants/fieldTypes';
+import {
+  DEVICE_TYPES_DASH,
+} from '../../constants/base';
 
 const EditFieldTypePanel = ({
   classes,
@@ -16,6 +19,7 @@ const EditFieldTypePanel = ({
   onValueChange,
   cancelChanges,
   isPanelOpen,
+  formType,
 }) => (
   <RightPanelContainer
     isPanelOpen={isPanelOpen}
@@ -23,7 +27,7 @@ const EditFieldTypePanel = ({
     title={(
       <div className={classes.header}>
         {FIELD_TYPES_ICONS[fieldType.type]}
-        <span className={classes.headerTitle}>{fieldType.label}</span>
+        <span className={classes.headerTitle}>{fieldType.name}</span>
       </div>
     )}
   >
@@ -54,36 +58,35 @@ const EditFieldTypePanel = ({
         bottomDescription="a short description about the device name"
         className={classes.input}
       />
+      {fieldType.fields && fieldType.fields.indexOf('value') !== -1 && (
+        <CustomInput
+          value={fieldType.value || ''}
+          onChange={e => onValueChange(e, 'input', fieldType.key, 'value')}
+          id="field-type-value"
+          label="Value"
+          bottomDescription="a short description about the device value"
+          className={classes.input}
+        />
+      )}
+      {fieldType.fields && fieldType.fields.indexOf('multipleValues') !== -1 && (
+        <SwitchSection
+          onChange={e => onValueChange(e, 'switch', fieldType.key, 'multipleValues')}
+          title="Multiple values"
+          description="a short description about the device name"
+          isChecked={fieldType.multipleValues}
+        />
+      )}
       <CustomInput
-        value={fieldType.value || ''}
-        onChange={e => onValueChange(e, 'input', fieldType.key, 'value')}
-        id="field-type-value"
-        label="Value"
-        bottomDescription="a short description about the device name"
+        value={fieldType.defaultValue || ''}
+        onChange={e => onValueChange(e, fieldType.type === 'boolean' ? 'switch' : 'input', fieldType.key, 'defaultValue')}
+        id="field-type-default-value"
+        label="Default Value"
+        bottomDescription="a short description about the device default value"
         className={classes.input}
+        type={fieldType.type}
+        values={fieldType.value}
+        multiple={fieldType.multipleValues}
       />
-      <Grid container spacing={3}>
-        <Grid item xs>
-          <CustomInput
-            value={fieldType.prefix || ''}
-            onChange={e => onValueChange(e, 'input', fieldType.key, 'prefix')}
-            id="field-type-prefix"
-            label="Prefix"
-            bottomDescription="a short description about the device name"
-            className={classes.input}
-          />
-        </Grid>
-        <Grid item xs>
-          <CustomInput
-            value={fieldType.suffix || ''}
-            onChange={e => onValueChange(e, 'input', fieldType.key, 'suffix')}
-            id="field-type-suffix"
-            label="Suffix"
-            bottomDescription="a short description about the device name"
-            className={classes.input}
-          />
-        </Grid>
-      </Grid>
       <SwitchSection
         onChange={e => onValueChange(e, 'switch', fieldType.key, 'required')}
         className={classes.requiredSwitch}
@@ -91,35 +94,16 @@ const EditFieldTypePanel = ({
         description="a short description about the device name"
         isChecked={fieldType.required}
       />
-      <CustomInput
-        value={fieldType.template || ''}
-        onChange={e => onValueChange(e, 'input', fieldType.key, 'template')}
-        id="field-type-template"
-        className={classnames(classes.input, classes.templateInput)}
-        bottomDescription={(
-          <>
-            set template using inside {'{}'}
-            <br />
-            [N] - number counter
-            <br />
-            [A] - letter counter
-            <br />
-            {'{device[N]}'} : device1, device2, device3...
-          </>
-        )}
-      />
-      <SwitchSection
-        onChange={e => onValueChange(e, 'switch', fieldType.key, 'multipleValues')}
-        title="Multiple values"
-        description="a short description about the device name"
-        isChecked={fieldType.multipleValues}
-      />
-      <SwitchSection
-        onChange={e => onValueChange(e, 'switch', fieldType.key, 'trialField')}
-        title="Trial field"
-        description="this field is set per trial"
-        isChecked={fieldType.trialField}
-      />
+      {formType === DEVICE_TYPES_DASH
+        && (
+        <SwitchSection
+          onChange={e => onValueChange(e, 'switch', fieldType.key, 'trialField')}
+          title="Trial field"
+          description="this field is set per trial"
+          isChecked={fieldType.trialField}
+        />
+        )
+      }
       <Grid
         container
         wrap="nowrap"

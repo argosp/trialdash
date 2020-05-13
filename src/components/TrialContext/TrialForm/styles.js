@@ -55,7 +55,7 @@ export const styles = theme => ({
     borderCollapse: 'collapse',
   },
   deviceGridTd: {
-    padding: '0 0 0 30px',
+    padding: '0 15px 0 15px',
     border: `1px solid ${theme.palette.white.dark}`,
     borderRight: 'none',
     '&:first-child': {
@@ -68,6 +68,7 @@ export const styles = theme => ({
     },
   },
   deviceGridTableHead: {
+    padding: '15px',
     borderLeft: `1px solid ${theme.palette.white.dark}`,
     backgroundColor: theme.palette.white.main,
     color: theme.palette.black.dark,

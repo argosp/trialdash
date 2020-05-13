@@ -98,6 +98,7 @@ export default createMuiTheme({
     },
     blue: {
       main: '#56CCF2',
+      light: '#DDF5FC',
     },
     violet: {
       main: '#BB6BD9',

@@ -20,12 +20,19 @@ import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import { updateCache } from '../../../apolloGraphql';
 import deviceTypeMutation from '../utils/deviceTypeMutation';
+import ConfirmDialog from '../../ConfirmDialog';
 
 class DeviceTypes extends React.Component {
     state = {};
 
+    setConfirmOpen = (open, deviceType) => {
+      if (deviceType || open) this.state.deviceType = deviceType;
+      this.setState({ confirmOpen: open });
+    }
+
     renderTableRow = (deviceType) => {
       const { history, match, classes } = this.props;
+      const { confirmOpen } = this.state;
 
       return (
         <React.Fragment key={deviceType.key}>
@@ -46,10 +53,20 @@ class DeviceTypes extends React.Component {
             <CustomTooltip
               title="Delete"
               ariaLabel="delete"
-              onClick={() => this.deleteDeviceType(deviceType)}
+              // onClick={() => this.deleteDeviceType(deviceType)}
+              onClick={() => this.setConfirmOpen(true, deviceType)}
             >
               <BasketIcon />
             </CustomTooltip>
+            <ConfirmDialog
+              title="Delete Device Type"
+              open={confirmOpen}
+              setOpen={this.setConfirmOpen}
+              onConfirm={() => this.deleteDeviceType(deviceType)}
+              // inputValidation
+            >
+              Are you sure you want to delete this device type?
+            </ConfirmDialog>
             <CustomTooltip
               title="Open"
               className={classes.arrowButton}
@@ -68,7 +85,8 @@ class DeviceTypes extends React.Component {
     }
 
     deleteDeviceType = async (deviceType) => {
-      const newEntity = deviceType;
+      const newEntity = this.state.deviceType;
+      // const newEntity = deviceType;
       newEntity.state = 'Deleted';
       const { match, client } = this.props;
       newEntity.experimentId = match.params.id;

@@ -85,6 +85,7 @@ class Experiments extends React.Component {
             open={confirmOpen}
             setOpen={this.setConfirmOpen}
             onConfirm={this.deleteExperiment}
+            inputValidation
           >
             Are you sure you want to delete this experiment?
           </ConfirmDialog>

@@ -16,7 +16,7 @@ class ContentTable extends React.Component {
   };
 
   componentDidMount() {
-    const { client, contentType, query, items } = this.props;
+    const { client, contentType, query, items, getData } = this.props;
     if (items) {
       this.setItems();
       return;
@@ -27,6 +27,7 @@ class ContentTable extends React.Component {
       })[contentType];
 
       this.setState({ [contentType]: resItems });
+      if (getData) getData(resItems);
     } catch {
       this.getItemsFromServer();
     }
@@ -44,13 +45,14 @@ class ContentTable extends React.Component {
   }
 
   setItems = () => {
-    const { items, contentType, update, setUpdated } = this.props;
+    const { items, contentType, update, setUpdated, getData } = this.props;
     this.setState({ [contentType]: items });
+    if (getData) getData(items);
     if (setUpdated && update) setUpdated();
   }
 
   getItemsFromServer = () => {
-    const { query, contentType, client, setUpdated, update } = this.props;
+    const { query, contentType, client, setUpdated, update, getData } = this.props;
 
     client
       .query({
@@ -59,6 +61,7 @@ class ContentTable extends React.Component {
       .then((data) => {
         data.data[contentType] = data.data[contentType].filter(d => d.state !== 'Deleted');
         this.setState({ [contentType]: data.data[contentType] });
+        if (getData) getData(data.data[contentType]);
         if (setUpdated && update) setUpdated();
       });
   };
