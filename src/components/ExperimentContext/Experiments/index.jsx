@@ -211,6 +211,7 @@ class Experiments extends React.Component {
               withSearchInput
               title="Experiments"
               searchPlaceholder="Search experiments"
+              withAddButton
               addButtonText="Add experiment"
               addButtonHandler={() => this.props.history.push('/add-experiment')}
             />

@@ -230,6 +230,7 @@ class Trials extends React.Component {
               withSearchInput
               title="Trials set"
               searchPlaceholder="Search Trials"
+              withAddButton
               addButtonText="Add trial"
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
