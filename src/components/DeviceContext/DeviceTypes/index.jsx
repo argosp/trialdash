@@ -161,6 +161,7 @@ class DeviceTypes extends React.Component {
                 withSearchInput
                 title="Devices types"
                 searchPlaceholder="Search Devices types"
+                withAddButton
                 addButtonText="Add device type"
                 addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-device-type`)}
               />
