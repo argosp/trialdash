@@ -177,6 +177,7 @@ class TrialForm extends React.Component {
     if (deleted) newEntity.state = 'Deleted';
     let property;
     let invalid;
+    newEntity.entities.forEach(e => delete e.name);
     if (trialSet.properties) {
       trialSet.properties.forEach((p) => {
         property = newEntity.properties.find(ntp => ntp.key === p.key);

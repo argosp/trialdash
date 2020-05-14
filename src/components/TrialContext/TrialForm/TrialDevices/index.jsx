@@ -95,6 +95,24 @@ class TrialDevices extends React.Component {
     this.setState({ update: false });
   }
 
+  buildDevicesForMap = () => {
+    const {
+      entities,
+      devices,
+      deviceTypes,
+    } = this.state;
+    let res = [];
+    if (!Object.keys(deviceTypes).length || !Object.keys(devices).length || !Object.keys(entities).length) return res;
+    Object.keys(deviceTypes).forEach((dt) => {
+      let deviceType = deviceTypes[dt][0];
+      deviceType.type = deviceType.name;
+      deviceType.items = entities[dt] || [];
+      deviceType.items.forEach(i => i.name = (devices[i.key] ? devices[i.key][0].name : ''));
+      res.push(deviceType)
+    });
+    return res;
+  }
+
   render() {
     const {
       classes,
@@ -112,6 +130,8 @@ class TrialDevices extends React.Component {
       deviceTypes,
       update,
     } = this.state;
+
+    const devicesForMap = this.buildDevicesForMap();
 
     return (
       <>
@@ -196,7 +216,7 @@ class TrialDevices extends React.Component {
           />
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
-          <DevicePlanner id={match.params.id} />
+          <DevicePlanner id={match.params.id} devices={devicesForMap}/>
         </TabPanel>
       </>
     );
