@@ -196,7 +196,10 @@ class TrialDevices extends React.Component {
           />
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
-          <DevicePlanner id={match.params.id} />
+          <DevicePlanner
+            trial={trial}
+            entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+          />
         </TabPanel>
       </>
     );
