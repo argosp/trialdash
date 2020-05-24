@@ -11,6 +11,9 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import { groupBy, concat } from 'lodash';
+import trialsQuery from '../../utils/trialQuery';
+import { updateCache } from '../../../../apolloGraphql';
+import trialMutationUpdate from '../utils/trialMutationUpdate';
 import deviceTypesQuery from '../../../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from '../../../DeviceContext/Devices/utils/deviceQuery';
 import { styles } from '../styles';
@@ -19,7 +22,10 @@ import DevicesGrid from './devicesGrid';
 import SimpleButton from '../../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
 import DevicePlanner from '../../../DevicePlanner';
-
+import {
+  TRIALS,
+  TRIAL_MUTATION,
+} from '../../../../constants/base';
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
     component="div"
@@ -94,6 +100,29 @@ class TrialDevices extends React.Component {
   setUpdated = () => {
     this.setState({ update: false });
   }
+
+  updateLocation = async (entity) => {
+    const newEntity = {};
+    const { match, client, trial } = this.props;
+    newEntity.key = trial.key;
+    newEntity.experimentId = trial.experimentId;
+    newEntity.trialSetKey = trial.trialSetKey;
+    newEntity[trial.status === 'design' ? 'entities' : 'deployEntities'] = [entity];
+
+    await client.mutate({
+      mutation: trialMutationUpdate(newEntity),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          trialsQuery(match.params.id, match.params.trialSetKey),
+          TRIALS,
+          TRIAL_MUTATION,
+          true,
+        );
+      },
+    });
+  };
 
   render() {
     const {
@@ -197,6 +226,7 @@ class TrialDevices extends React.Component {
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
           <DevicePlanner
+            updateLocation={this.updateLocation}
             trial={trial}
             entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
           />
