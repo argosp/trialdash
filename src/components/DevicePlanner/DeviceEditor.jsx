@@ -191,7 +191,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
             </LeafletMap>
             <Paper
                 style={{
-                    position: 'absolute', height: '88%', overflow: 'auto', top: 0, width: '30%',
+                    position: 'absolute', height: '88%', overflow: 'auto', top: 0, width: '28%',
                     left: 0, justifyContent: 'center', alignItems: 'center', zIndex: 1000
                 }}
             >
