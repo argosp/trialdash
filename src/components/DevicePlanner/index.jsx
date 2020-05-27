@@ -31,14 +31,14 @@ class DevicePlanner extends React.Component {
                     client.query({ query: devicesQuery(experimentId, deviceTypeKey) })
                         .then(data => {
                             console.log('devices: ', data);
-                            type.items = data.data.devices;
-                            // type.items = JSON.parse(JSON.stringify(data.data.devices));
-                            // type.items.forEach(d => {
-                            //     const pos = d.properties.find(pr => pr.key === positionKey);
-                            //     if (pos) {
-                            //         d.position = pos.val;
-                            //     }
-                            // })
+                            // type.items = data.data.devices;
+                            type.items = JSON.parse(JSON.stringify(data.data.devices));
+                            type.items.forEach(d => {
+                                const pos = d.properties.find(pr => pr.key === positionKey);
+                                if (pos) {
+                                    d.position = pos.val;
+                                }
+                            })
                         })
                         .then(() => {
                             this.setState(() => ({ devices }))
