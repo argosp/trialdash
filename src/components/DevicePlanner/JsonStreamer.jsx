@@ -2,13 +2,7 @@ import React from 'react';
 import { Paper, TextField } from '@material-ui/core';
 
 export const JsonStreamer = ({ json, onChange }) => (
-    <Paper
-        style={{
-            position: 'absolute', maxHeight: '10%', overflow: 'auto',
-            height: '10%', width: '30%', left: 0, bottom: 0,
-            justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}
-    >
+    <Paper>
         <TextField
             id="outlined-multiline-static"
             // label="Json"
