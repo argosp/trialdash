@@ -33,7 +33,7 @@ class DevicePlanner extends React.Component {
                             console.log('devices: ', data);
                             type.items = JSON.parse(JSON.stringify(data.data.devices));
                             type.items.forEach(d => {
-                                const pos = d.properties.find(pr => key === positionKey);
+                                const pos = d.properties.find(pr => pr.key === positionKey);
                                 if (pos) {
                                     d.position = pos.val;
                                 }
