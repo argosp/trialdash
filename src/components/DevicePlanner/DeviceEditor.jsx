@@ -151,10 +151,10 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     };
 
     return (
-        <div className="App">
-            <LeafletMap center={position} zoom={14}
+        <div className="App" style={{ position: 'relative', height='100vh' }}>
+            <LeafletMap center={position} zoom={15}
                 ref={mapElement}
-                style={{ width: '100%', height: '100vh' }}
+                style={{ width: '100%', position: 'absolute', top: 0, bottom: 0 }}
                 onClick={handleMapClick}
                 onMouseMove={handleMouseMove}
                 onMouseOut={handleMouseOut}
