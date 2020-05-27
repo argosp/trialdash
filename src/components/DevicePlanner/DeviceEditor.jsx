@@ -278,11 +278,6 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 </div>
             </Paper>
             <JsonStreamer
-                style={{
-                    position: 'absolute', maxHeight: '10%', overflow: 'auto',
-                    height: '10%', width: '30%', left: 0, bottom: 0,
-                    justifyContent: 'center', alignItems: 'center', zIndex: 1000
-                }}
                 json={devices}
                 onChange={(val) => setDevices(val)}
             />
