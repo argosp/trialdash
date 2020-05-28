@@ -36,7 +36,7 @@ class DevicePlanner extends React.Component {
                             type.items.forEach(d => {
                                 const pos = d.properties.find(pr => pr.key === positionKey);
                                 if (pos) {
-                                    d.position = pos.val.coordinates;
+                                    d.position = pos.val;
                                 }
                             })
                         })
@@ -72,7 +72,7 @@ class DevicePlanner extends React.Component {
                                             properties: [
                                                 {
                                                     key: positionKey,
-                                                    val: JSON.stringify({ name: "OSMMap", coordinates: newDev.position })
+                                                    val: JSON.stringify(newDev.position)
                                                 }
                                             ]
                                         })
