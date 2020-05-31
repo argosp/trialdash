@@ -151,10 +151,10 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     };
 
     return (
-        <div className="App">
-            <LeafletMap center={position} zoom={14}
+        <div className="App" style={{ position: 'relative', height: '100vh' }}>
+            <LeafletMap center={position} zoom={15}
                 ref={mapElement}
-                style={{ width: '100%', height: '100vh' }}
+                style={{ width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
                 onClick={handleMapClick}
                 onMouseMove={handleMouseMove}
                 onMouseOut={handleMouseOut}
@@ -191,9 +191,8 @@ export const DeviceEditor = ({ devices, setDevices }) => {
             </LeafletMap>
             <Paper
                 style={{
-                    position: 'absolute', height: '80%', maxHeight: '75%', overflow: 'auto',
-                    top: 50, width: '30%', right: 50, bottom: 50,
-                    justifyContent: 'center', alignItems: 'center', zIndex: 1000
+                    position: 'absolute', height: '88%', overflow: 'auto', top: 0, width: '28%',
+                    left: 0, justifyContent: 'center', alignItems: 'center', zIndex: 1000
                 }}
             >
                 <div
