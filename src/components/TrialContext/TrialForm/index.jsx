@@ -71,6 +71,7 @@ class TrialForm extends React.Component {
     },
     trialSet: {},
     tabValue: this.props.tabValue || 0,
+    showFooter: true,
   };
 
   componentDidMount() {
@@ -248,6 +249,10 @@ class TrialForm extends React.Component {
     this.setState({ });
   }
 
+  showFooter = (showFooter) => {
+    this.setState({ showFooter });
+  }
+
   setEditableStatus = (editableStatus) => {
     this.setState({ editableStatus });
   }
@@ -271,6 +276,7 @@ class TrialForm extends React.Component {
       trial,
       editableStatus,
       anchorMenu,
+      showFooter,
     } = this.state;
 
     return (
@@ -390,14 +396,15 @@ class TrialForm extends React.Component {
             addEntity={this.addEntity}
             removeEntity={this.removeEntity}
             onEntityPropertyChange={this.onEntityPropertyChange}
+            showFooter={this.showFooter}
           />
         </TabPanel>
-        <Footer
+        {(tabValue === 0 || showFooter) && <Footer
           cancelButtonHandler={this.closeForm}
           saveButtonHandler={() => this.submitTrial(trial)}
           withDeleteButton={this.props.trial}
           deleteButtonHandler={() => this.submitTrial(trial, true)}
-        />
+        />}
       </>
     );
   }
