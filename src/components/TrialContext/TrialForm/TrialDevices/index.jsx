@@ -87,6 +87,7 @@ class TrialDevices extends React.Component {
 
   changeView = (selectedViewIndex) => {
     this.setState({ selectedViewIndex });
+    this.props.showFooter(selectedViewIndex !== 3);
   };
 
   openAddDevicesPanel = () => {
@@ -195,22 +196,22 @@ class TrialDevices extends React.Component {
               <EditLocationIcon className={classes.locationIcon} />
             </IconButton>
           </Grid>
-          <Grid item>
+          {selectedViewIndex !== 3 && <Grid item>
             <SimpleButton
               text="Add"
               colorVariant="primary"
               onClick={this.openAddDevicesPanel}
             />
-          </Grid>
+          </Grid>}
         </Grid>
-        <AddDevicePanel
+        {selectedViewIndex !== 3 && <AddDevicePanel
           isPanelOpen={this.state.isDevicesPanelOpen}
           onClose={this.closeAddDevicesPanel}
           match={match}
           theme={theme}
           addEntity={addEntity}
           entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
-        />
+        />}
         <TabPanel value={selectedViewIndex} index={2}>
           <DevicesGrid
             {...this.props}
