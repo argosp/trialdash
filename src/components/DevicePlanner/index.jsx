@@ -8,13 +8,6 @@ import { DeviceEditor } from './DeviceEditor';
 import { styles } from './styles';
 import devicesQuery from './utils/devicesQuery';
 
-const locationPropertyType = "location";
-const typeOfDeviceForUpdate = "device";
-
-const findLocationProp = (deviceType) => {
-    return deviceType.properties.find(prop => prop.type === locationPropertyType);
-}
-
 class DevicePlanner extends React.Component {
     state = {
         devices: []
@@ -31,7 +24,7 @@ class DevicePlanner extends React.Component {
                 console.log('types: ', data);
                 const deviceTypes = data.data.deviceTypes.filter(type => {
                     if (!type.id) return false;
-                    const locationProp = findLocationProp(type);
+                    const locationProp = type.properties.find(prop => prop.type === "location");
                     return locationProp && locationProp.key && locationProp.key !== '';
                 })
                 console.log('deviceTypes: ', deviceTypes);
@@ -78,7 +71,7 @@ class DevicePlanner extends React.Component {
                                         console.log('change', newDev);
                                         updateLocation({
                                             key: newDev.key,
-                                            type: typeOfDeviceForUpdate,
+                                            type: "device",
                                             typeKey: newDevType.key,
                                             properties: [
                                                 {
