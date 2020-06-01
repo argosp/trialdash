@@ -8,7 +8,12 @@ import { DeviceEditor } from './DeviceEditor';
 import { styles } from './styles';
 import devicesQuery from './utils/devicesQuery';
 
-const positionKey = "85ad5104-a5af-4556-b9b0-699b3798996d";
+const locationPropertyType = "location";
+const typeOfDeviceForUpdate = "device";
+
+const findLocationProp = (deviceType) => {
+    return deviceType.properties.find(prop => prop.type === locationPropertyType);
+}
 
 class DevicePlanner extends React.Component {
     state = {
@@ -24,14 +29,16 @@ class DevicePlanner extends React.Component {
         client.query({ query: deviceTypesQuery(experimentId) })
             .then((data) => {
                 console.log('types: ', data);
-                data.data.deviceTypes.map(type => {
+                data.data.deviceTypes.forEach(type => {
+                    if (!type.id) return;
+                    type.locationProp = findLocationProp(type);
+                    if (!type.locationProp || !type.locationProp.key || type.locationProp.key === "") return;
                     type.type = type.name;
                     devices.push(type);
                     const deviceTypeKey = type.key
                     client.query({ query: devicesQuery(experimentId, deviceTypeKey) })
                         .then(data => {
                             console.log('devices: ', data);
-                            // type.items = data.data.devices;
                             type.items = JSON.parse(JSON.stringify(data.data.devices));
                             type.items.forEach(d => {
                                 const pos = d.properties.find(pr => pr.key === positionKey);
@@ -67,11 +74,11 @@ class DevicePlanner extends React.Component {
                                         console.log('change', newDev);
                                         updateLocation({
                                             key: newDev.key,
-                                            type: "device",
+                                            type: typeOfDeviceForUpdate,
                                             typeKey: newDevType.key,
                                             properties: [
                                                 {
-                                                    key: positionKey,
+                                                    key: newDevType.locationProp.key,
                                                     val: JSON.stringify(newDev.position)
                                                 }
                                             ]
