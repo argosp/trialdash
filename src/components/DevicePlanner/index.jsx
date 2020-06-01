@@ -34,6 +34,7 @@ class DevicePlanner extends React.Component {
                     const locationProp = findLocationProp(type);
                     return locationProp && locationProp.key && locationProp.key !== '';
                 })
+                console.log('deviceTypes: ', deviceTypes);
                 deviceTypes.forEach(type => {
                     type.type = type.name;
                     type.locationProp = findLocationProp(type);
