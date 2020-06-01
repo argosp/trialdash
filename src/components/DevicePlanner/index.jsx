@@ -23,7 +23,6 @@ class DevicePlanner extends React.Component {
             .then((data) => {
                 console.log('types: ', data);
                 const deviceTypes = data.data.deviceTypes.filter(type => {
-                    if (!type.id) return false;
                     const locationProp = type.properties.find(prop => prop.type === "location");
                     return locationProp && locationProp.key && locationProp.key !== '';
                 })
