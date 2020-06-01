@@ -30,7 +30,7 @@ class DevicePlanner extends React.Component {
                 console.log('deviceTypes: ', deviceTypes);
                 deviceTypes.forEach(type => {
                     type.type = type.name;
-                    type.locationProp = findLocationProp(type);
+                    type.locationProp = type.properties.find(prop => prop.type === "location");
                     devices.push(type);
                     const deviceTypeKey = type.key
                     client.query({ query: devicesQuery(experimentId, deviceTypeKey) })
