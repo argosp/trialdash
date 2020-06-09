@@ -144,7 +144,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
             const leaf = currPolyline.current.leafletElement;
             if (leaf.getLayers().length !== shownPolylines.length) {
                 leaf.removeLayers();
-                shownPolylines.forEach(() => leaf.addLayer(L.Polyline()));
+                shownPolylines.forEach(() => leaf.addLayer(window.L.Polyline()));
             }
             leaf.getLayers().forEach((leafpoly, index) => {
                 leafpoly.setLatLngs(shownPolylines[index]);
