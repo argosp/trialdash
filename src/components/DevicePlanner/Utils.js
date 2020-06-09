@@ -42,6 +42,12 @@ export const polylineDistance = (latLngs) => {
     return total;
 }
 
+export const distToText = (dist) => {
+    if (dist >= 1000) return (Math.round(dist / 100) / 10) + "km";
+    if (dist >= 100) return Math.round(dist) + "m";
+    return (Math.round(dist * 10) / 10) + "m";
+}
+
 export const findPositionOnPolyline = (points, pos) => {
     let curr = 0;
     for (let i = 0; i < points.length - 1; ++i) {
