@@ -34,6 +34,14 @@ export const polylineLength = (points) => {
     return total;
 }
 
+export const polylineDistance = (latLngs) => {
+    let total = 0;
+    for (let i = 0; i < latLngs.length - 1; ++i) {
+        total += latLngs[i].distanceTo(latLngs[i + 1]);
+    }
+    return total;
+}
+
 export const findPositionOnPolyline = (points, pos) => {
     let curr = 0;
     for (let i = 0; i < points.length - 1; ++i) {
