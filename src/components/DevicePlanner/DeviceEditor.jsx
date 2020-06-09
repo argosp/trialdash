@@ -6,7 +6,7 @@ import { DeviceRow } from './DeviceRow';
 import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance } from './Utils';
+import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText } from './Utils';
 
 const position = [32.081128, 34.779729];
 
@@ -141,12 +141,12 @@ export const DeviceEditor = ({ devices, setDevices }) => {
             if (hoverPoint) {
                 points.push(hoverPoint);
             }
-            currPolyline.current.leafletElement.setLatLngs(shapeData().toLine(points));
+            const leaf = currPolyline.current.leafletElement;
+            leaf.setLatLngs(shapeData().toLine(points));
             if (shapeData().showLabel) {
-                const dist = polylineDistance(currPolyline.current.leafletElement.getLatLngs());
-                console.log(dist);
+                const dist = polylineDistance(leaf.getLatLngs());
                 if (dist > 0) {
-                    currPolyline.current.leafletElement.bindTooltip(dist + "m").openTooltip();
+                    leaf.bindTooltip(distToText(dist)).openTooltip();
                 }
             }
         }
