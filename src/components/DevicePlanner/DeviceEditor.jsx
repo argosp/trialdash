@@ -143,7 +143,8 @@ export const DeviceEditor = ({ devices, setDevices }) => {
             }
             currPolyline.current.leafletElement.setLatLngs(shapeData().toLine(points));
             if (shapeData().showLabel) {
-                const dist = polylineDistance(currPolyline.current.leafletElement.getLatLngs);
+                const dist = polylineDistance(currPolyline.current.leafletElement.getLatLngs());
+                console.log(dist);
                 if (dist > 0) {
                     currPolyline.current.leafletElement.bindTooltip(dist + "m").openTooltip();
                 }
