@@ -6,7 +6,7 @@ import { DeviceRow } from './DeviceRow';
 import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve } from './Utils';
+import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance } from './Utils';
 
 const position = [32.081128, 34.779729];
 
@@ -85,11 +85,13 @@ export const DeviceEditor = ({ devices, setDevices }) => {
         {
             name: 'Poly',
             toLine: points => points,
+            showLabel: true,
             toPositions: points => resamplePolyline(points, selection.length)
         },
         {
             name: 'Curve',
             toLine: points => splineCurve(points, 100),
+            showLabel: true,
             toPositions: points => resamplePolyline(splineCurve(points, 100), selection.length)
         },
         {
@@ -98,6 +100,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 if (points.length === 2) return points;
                 return [points[0]].concat(arcCurveFromPoints(points, 400));
             },
+            showLabel: true,
             toPositions: points => resamplePolyline(arcCurveFromPoints(points, 400), selection.length)
         },
         {
@@ -139,6 +142,12 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 points.push(hoverPoint);
             }
             currPolyline.current.leafletElement.setLatLngs(shapeData().toLine(points));
+            if (shapeData().showLabel) {
+                const dist = polylineDistance(currPolyline.current.leafletElement.getLatLngs);
+                if (dist > 0) {
+                    currPolyline.current.leafletElement.bindTooltip(dist + "m").openTooltip();
+                }
+            }
         }
     };
 
