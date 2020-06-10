@@ -96,7 +96,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
         {
             name: 'Arc',
             toLine: points => {
-                if (points.length === 2) return [points];
+                if (points.length <= 2) return [points];
                 const arc = arcCurveFromPoints(points, 400);
                 return [[points[0], arc[0]], arc];
             },
@@ -181,10 +181,10 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                         />
                     </LayersControl.BaseLayer>
                     <LayersControl.BaseLayer name="OpenStreetMap">
-                <TileLayer
-                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                        <TileLayer
+                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
                     </LayersControl.BaseLayer>
                 </LayersControl>
                 {
@@ -209,7 +209,9 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
                 {
                     !startPoint ? null :
-                        <LayerGroup ref={currPolyline} />
+                        <LayerGroup ref={currPolyline} >
+                            <Polyline positions={[startPoint, startPoint]} />
+                        </LayerGroup>
                 }
 
             </LeafletMap>
