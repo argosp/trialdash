@@ -174,7 +174,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 onMouseOut={handleMouseOut}
             >
                 <LayersControl position="topright">
-                    <LayersControl.BaseLayer name="Carto">
+                    <LayersControl.BaseLayer name="Carto" checked={true}>
                         <TileLayer
                             attribution='&copy; <a href="https://carto.com">Carto</a> contributors'
                             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png"
