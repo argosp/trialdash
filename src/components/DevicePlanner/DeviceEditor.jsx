@@ -7,7 +7,6 @@ import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText } from './Utils';
-import { LayerGroup } from 'leaflet';
 
 const position = [32.081128, 34.779729];
 
@@ -17,6 +16,7 @@ let markedPoints;
 export const DeviceEditor = ({ devices, setDevices }) => {
     const mapElement = useRef(null);
     const currPolyline = useRef(null);
+    const auxPolyline = useRef(null);
 
     const [selectedType, setSelectedType] = React.useState(devices[0].type);
     const [selection, setSelection] = React.useState([]);
@@ -106,7 +106,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
             name: 'Rect',
             toLine: (points, angle = rectAngle) => {
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
-                return [[nw, ne], [ne, se], [se, sw], [sw, nw]];
+                return [[nw, ne, se, sw, nw]];
             },
             toPositions: (points, rows = rectRows, angle = rectAngle) => {
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
@@ -134,25 +134,30 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
     const shapeData = () => shapeOptions.find(s => s.name === shape);
 
+    const collectPoints = (hoverPoint) => {
+        if (!startPoint) return undefined;
+        let points = [startPoint].concat(markedPoints);
+        if (hoverPoint) {
+            points.push(hoverPoint);
+        }
+        return points;
+    };
+
+    const setLatLngsWithDist = (leafletElement, points) => {
+        leafletElement.setLatLngs(points);
+        const dist = polylineDistance(leafletElement.getLatLngs());
+        if (dist > 0) {
+            leafletElement.bindTooltip(distToText(dist)).openTooltip();
+        }
+    };
+
     const renderShape = (hoverPoint) => {
-        if (startPoint) {
-            let points = [startPoint].concat(markedPoints);
-            if (hoverPoint) {
-                points.push(hoverPoint);
-            }
-            const shownPolylines = shapeData().toLine(points);
-            const leaf = currPolyline.current.leafletElement;
-            if (leaf.getLayers().length !== shownPolylines.length) {
-                leaf.removeLayers();
-                shownPolylines.forEach(() => leaf.addLayer(window.L.Polyline()));
-            }
-            leaf.getLayers().forEach((leafpoly, index) => {
-                leafpoly.setLatLngs(shownPolylines[index]);
-                const dist = polylineDistance(leafpoly.getLatLngs());
-                if (dist > 0) {
-                    leafpoly.bindTooltip(distToText(dist)).openTooltip();
-                }
-            });
+        const points = collectPoints(hoverPoint);
+        if (!points || !points.length) return;
+        const shownPolylines = shapeData().toLine(points);
+        setLatLngsWithDist(currPolyline.current.leafletElement, shownPolylines[0]);
+        if (shape === 'Arc') {
+            setLatLngsWithDist(auxPolyline.current.leafletElement, shownPolylines.length > 1 ? shownPolylines[1] : []);
         }
     };
 
@@ -209,9 +214,13 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
                 {
                     !startPoint ? null :
-                        <LayerGroup ref={currPolyline} >
-                            <Polyline positions={[startPoint, startPoint]} />
-                        </LayerGroup>
+                        <>
+                            <Polyline positions={[]} ref={currPolyline} />
+                            {
+                                shape !== 'Arc' ? null :
+                                    <Polyline positions={[]} ref={auxPolyline} />
+                            }
+                        </>
                 }
 
             </LeafletMap>
