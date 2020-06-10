@@ -1,6 +1,6 @@
 import { Button, InputLabel, List, Paper, Slider, Switch } from '@material-ui/core';
 import React, { useRef } from 'react';
-import { Map as LeafletMap, Polyline, TileLayer } from "react-leaflet";
+import { Map as LeafletMap, Polyline, TileLayer, LayersControl } from "react-leaflet";
 import { DeviceMarker } from './DeviceMarker';
 import { DeviceRow } from './DeviceRow';
 import { JsonStreamer } from './JsonStreamer';
@@ -173,10 +173,20 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 onMouseMove={handleMouseMove}
                 onMouseOut={handleMouseOut}
             >
+                <LayersControl position="topright">
+                    <LayersControl.BaseLayer name="Carto">
+                        <TileLayer
+                            attribution='&copy; <a href="https://carto.com">Carto</a> contributors'
+                            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png"
+                        />
+                    </LayersControl.BaseLayer>
+                    <LayersControl.BaseLayer name="OpenStreetMap">
                 <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                    </LayersControl.BaseLayer>
+                </LayersControl>
                 {
                     devices.map(devType => {
                         if (showAll || (devType.type === selectedType)) {
