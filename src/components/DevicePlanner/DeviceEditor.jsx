@@ -72,9 +72,10 @@ export const DeviceEditor = ({ devices, setDevices }) => {
         }
     };
 
+    /** @returns Rectangle as an array of its 4 points */
     const rectByAngle = (points, angle) => {
         // return [p0, [p1[0], p0[1]], p1, [p0[0], p1[1]]];
-        return points.concat([points[0], points[0], points[0], points[0]]);
+        return points.concat([points[0], points[0], points[0], points[0]]).slice(0, 4);
     }
 
     const shapeOptions = [
