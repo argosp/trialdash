@@ -4,7 +4,7 @@ import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
-import { DeviceEditor } from './DeviceEditor';
+import { DeviceEditor } from './DeviceEditor/DeviceEditor';
 import { styles } from './styles';
 import devicesQuery from './utils/devicesQuery';
 
