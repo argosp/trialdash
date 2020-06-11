@@ -67,7 +67,7 @@ export const resamplePolyline = (points, num) => {
     const total = polylineLength(points);
     let resampled = new Array(num);
     for (let i = 0; i < num; ++i) {
-        resampled[i] = findPositionOnPolyline(points, i / (num - 1) * total);
+        resampled[i] = findPositionOnPolyline(points, (num > 1 ? (i / (num - 1)) : 0.5) * total);
     }
     return resampled;
 }
