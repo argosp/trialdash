@@ -1,5 +1,5 @@
 import { Button, InputLabel, List, Paper, Slider, Switch } from '@material-ui/core';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Map as LeafletMap, Polyline, TileLayer, LayersControl } from "react-leaflet";
 import { DeviceMarker } from './DeviceMarker';
 import { DeviceRow } from './DeviceRow';
@@ -11,7 +11,6 @@ import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineD
 const position = [32.081128, 34.779729];
 
 let lastIndex;
-let markedPoints;
 
 export const DeviceEditor = ({ devices, setDevices }) => {
     const mapElement = useRef(null);
@@ -22,7 +21,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
     const [shape, setShape] = React.useState("Point");
-    const [startPoint, setStartPoint] = React.useState(undefined);
+    const [markedPoints, setMarkedPoints] = React.useState([]);
     const [rectAngle, setRectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
     const [devicesShowName, setDevicesShowName] = React.useState(false);
@@ -58,17 +57,13 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
+        const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
-            setDevices(changeLocations(selectedType, selection, [[e.latlng.lat, e.latlng.lng]]));
-            setStartPoint(undefined);
+            setDevices(changeLocations(selectedType, selection, [currPoint]));
+            setMarkedPoints([]);
             setSelection([]);
         } else {
-            if (!startPoint) {
-                setStartPoint([e.latlng.lat, e.latlng.lng]);
-                markedPoints = [];
-            } else {
-                markedPoints.push([e.latlng.lat, e.latlng.lng]);
-            }
+            setMarkedPoints(markedPoints.concat([currPoint]));
         }
     };
 
@@ -126,23 +121,13 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     ];
 
     const handlePutDevices = () => {
-        let positions = [startPoint].concat(markedPoints);
-        positions = shapeData().toPositions(positions);
+        const positions = shapeData().toPositions(markedPoints);
         setDevices(changeLocations(selectedType, selection, positions));
-        setStartPoint(undefined);
+        setMarkedPoints([]);
         setSelection([]);
     };
 
     const shapeData = () => shapeOptions.find(s => s.name === shape);
-
-    const collectPoints = (hoverPoint) => {
-        if (!startPoint) return undefined;
-        let points = [startPoint].concat(markedPoints);
-        if (hoverPoint) {
-            points.push(hoverPoint);
-        }
-        return points;
-    };
 
     const setLatLngsWithDist = (leafletElement, points) => {
         leafletElement.setLatLngs(points);
@@ -153,8 +138,8 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     };
 
     const renderShape = (hoverPoint) => {
-        const points = collectPoints(hoverPoint);
-        if (!points || !points.length) return;
+        if (!markedPoints.length) return;
+        const points = hoverPoint ? markedPoints.concat([hoverPoint]) : markedPoints;
         const shownPolylines = shapeData().toLine(points);
         setLatLngsWithDist(currPolyline.current.leafletElement, shownPolylines[0]);
         if (shape === 'Arc') {
@@ -163,12 +148,16 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     };
 
     const handleMouseMove = e => {
-        renderShape([e.latlng.lat, e.latlng.lng]);
+        renderShape(e.latlng ? [e.latlng.lat, e.latlng.lng] : undefined);
     };
 
     const handleMouseOut = () => {
         renderShape();
     };
+
+    useEffect(() => {
+        renderShape();
+    })
 
     return (
         <div className="App" style={{ position: 'relative', height: '100vh' }}>
@@ -214,7 +203,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 }
 
                 {
-                    !startPoint ? null :
+                    (!markedPoints || !markedPoints.length) ? null :
                         <>
                             <Polyline positions={[]} ref={currPolyline} />
                             {
