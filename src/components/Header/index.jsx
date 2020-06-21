@@ -21,6 +21,7 @@ import StyledTabs from '../StyledTabs';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
+import {defaultProfile} from '../../assets/images/defaultProfile.png';
 
 const UserData = ({ classes, handleProfileMenuClick }) => (
   <Query
@@ -35,12 +36,15 @@ const UserData = ({ classes, handleProfileMenuClick }) => (
         `}
   >
     {({ loading, error, data }) => {
+      console.log('loading ',loading, 'error ',error,'data ',data)
       if (loading) return <p>Loading...</p>;
+      else
       if (error) return <p> No data to show</p>;
+      // else if(Object.entries(data).length != 0)
       return (
         <>
           <Avatar
-            src={data.user.avatar}
+            src={data.user.avatar!=null?data.user.avatar:defaultProfile}
             alt="user avatar"
             className={classes.avatar}
           />
@@ -159,8 +163,8 @@ class Header extends React.Component {
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-    const currentExperiment = withExperiments
-      ? experiments.find(
+      console.log('experiments  ',experiments);
+    const currentExperiment = withExperiments&&experiments ? experiments.find(
         experiment => experiment.project.id === pathObj.params.id,
       )
       : {};
