@@ -53,10 +53,10 @@ class Experiments extends React.Component {
         <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
         <StyledTableCell align="left">{experiment.numberOfTrials}</StyledTableCell>
         <StyledTableCell align="left">
-          {/* <StatusBadge
+          <StatusBadge
             color={theme.palette[experiment.status === 'deploy' ? 'orange' : 'violet'].main}
             title={experiment.status || 'design'}
-          /> */}
+          />
         </StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip

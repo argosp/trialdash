@@ -39,7 +39,7 @@ const UserData = ({ classes, handleProfileMenuClick }) => (
       console.log('loading ',loading, 'error ',error,'data ',data)
       if (loading) return <p>Loading...</p>;
       else
-      if (error) return <p> No data to show</p>;
+      if (error) return <p> {error}</p>;//TODO check how to set data
       // else if(Object.entries(data).length != 0)
       return (
         <>
@@ -163,7 +163,6 @@ class Header extends React.Component {
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-      console.log('experiments  ',experiments);
     const currentExperiment = withExperiments&&experiments ? experiments.find(
         experiment => experiment.project.id === pathObj.params.id,
       )
