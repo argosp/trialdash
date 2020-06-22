@@ -29,6 +29,8 @@ import classnames from 'classnames';
 class Trials extends React.Component {
   state = {
     trialSet: {},
+    open: false,
+    confirmOpen:false
   };
 
   setConfirmOpen = (open, trial) => {
@@ -60,17 +62,19 @@ class Trials extends React.Component {
       anchorMenu: event.currentTarget,
     });
   };
-  handleMenuClose = (anchor) => {
+  //TODO handleMenuChange !state
+    handleMenuClose = (anchor) => {
     this.setState({ [anchor]: null });
   };
 
   renderTableRow = (trial) => {
     const { trialSet, confirmOpen,anchorMenu } = this.state;
-    const { classes, theme } = this.props;
+    const { classes, theme} = this.props;
     return (
-      <React.Fragment key={trial.key}>
+      // should be uniqe id
+      <React.Fragment key={trial.created}> 
         <StyledTableCell align="left">{trial.name}</StyledTableCell>
-        <StyledTableCell align="left">{trial.clone?'clone':''}</StyledTableCell>
+        <StyledTableCell align="left">{trial.cloneFrom ?'cloned from'+trial.cloneFrom:''}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfDevices}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
@@ -92,7 +96,7 @@ class Trials extends React.Component {
             <GridIcon />
           </CustomTooltip>
           <CustomTooltip
-            title="Clone"
+            title="Clone from"
             ariaLabel="clone"
             onClick={this.handleMenuClick}
           >
@@ -114,8 +118,8 @@ class Trials extends React.Component {
               horizontal: 'left',
             }}
           >
-            {['clone design', 'clone deploy'].map((i)=><MenuItem
-              color={theme.palette[trial.status === 'clone deploy' ? 'orange' : 'violet'].main}
+            {['design', 'deploy'].map((i)=><MenuItem
+              color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
               key={uuid()}
               classes={{ root: classes.menuItem }}
               onClick={e => this.onInputChange({ target: { value: i } }, trial)}
@@ -200,16 +204,7 @@ class Trials extends React.Component {
     const { match, client } = this.props;
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
-    // clonedTrial.name = trial.name + ' clone';
-    //TODO add clone field in schema instead--> clonedTrial.clone= true;
-    // clonedTrial.cloneFromSource= true;
-    if(cloneFrom == "clone deploy")
-      {
-        clonedTrial.entities=trial.deployedEntities;
-        clonedTrial.deployedEntities = [];
-      }
-      else
-      clonedTrial.status = "design";
+    clonedTrial.cloneFrom = cloneFrom;
     await client.mutate({
       mutation: trialMutation(clonedTrial),
       update: (cache, mutationResult) => {
