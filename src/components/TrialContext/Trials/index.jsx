@@ -20,10 +20,17 @@ import TrialForm from '../TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
+import Grid from '@material-ui/core/Grid';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import classnames from 'classnames';
 
 class Trials extends React.Component {
   state = {
     trialSet: {},
+    open: false,
+    confirmOpen:false
   };
 
   setConfirmOpen = (open, trial) => {
@@ -44,14 +51,30 @@ class Trials extends React.Component {
         });
       });
   }
+  onInputChange = (e,trial) => {
+    const { value } = e.target;
+    this.setState({ anchorMenu: null});
+    this.clone(value,trial);
+  };
+  
+  handleMenuClick = (event) => {
+    this.setState({
+      anchorMenu: event.currentTarget,
+    });
+  };
+  //TODO handleMenuChange !state
+    handleMenuClose = (anchor) => {
+    this.setState({ [anchor]: null });
+  };
 
   renderTableRow = (trial) => {
-    const { trialSet, confirmOpen } = this.state;
-    const { classes, theme } = this.props;
-
+    const { trialSet, confirmOpen,anchorMenu } = this.state;
+    const { classes, theme} = this.props;
     return (
-      <React.Fragment key={trial.key}>
+      // should be uniqe id
+      <React.Fragment key={trial.created}> 
         <StyledTableCell align="left">{trial.name}</StyledTableCell>
+        <StyledTableCell align="left">{trial.cloneFrom ?'cloned from'+trial.cloneFrom:''}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfDevices}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
@@ -73,10 +96,47 @@ class Trials extends React.Component {
             <GridIcon />
           </CustomTooltip>
           <CustomTooltip
-            title="Clone"
+            title="Clone from"
             ariaLabel="clone"
-            onClick={() => this.clone(trial)}
+            onClick={this.handleMenuClick}
           >
+            {/* <ClickAwayListener onClickAway={() => this.handleMenuClose('anchorMenu')}> */}
+
+            <Menu
+            id="clone-menu"
+            classes={{ paper: classes.menu}}
+            open={Boolean(anchorMenu)}
+            onClose={() => this.handleMenuClose('anchorMenu')}
+            anchorEl={anchorMenu}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            {['design', 'deploy'].map((i)=><MenuItem
+              color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
+              key={uuid()}
+              classes={{ root: classes.menuItem }}
+              onClick={e => this.onInputChange({ target: { value: i } }, trial)}
+            >
+              <Grid
+                container
+                wrap="nowrap"
+                alignItems="center"
+              >
+                <div className={(classnames(classes.rect, classes[i]))}></div>
+                {i}
+              </Grid>
+            </MenuItem>)}
+          </Menu>
+
+          {/* </ClickAwayListener> */}
+
             <CloneIcon />
           </CustomTooltip>
           <CustomTooltip
@@ -111,6 +171,7 @@ class Trials extends React.Component {
   generateTableColumns = (trialSet) => {
     const columns = [
       { key: uuid(), title: 'trial name' },
+      { key: uuid(), title: 'clone' },
       { key: uuid(), title: 'devices' },
     ];
 
@@ -135,15 +196,15 @@ class Trials extends React.Component {
     return columns;
   };
 
-  clone = async (trial) => {
+
+
+  clone = async (cloneFrom,trial) => {
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
-    // eslint-disable-next-line prefer-template
-    clonedTrial.id = trial.id + ' clone';
     const { match, client } = this.props;
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
-
+    clonedTrial.cloneFrom = cloneFrom;
     await client.mutate({
       mutation: trialMutation(clonedTrial),
       update: (cache, mutationResult) => {
