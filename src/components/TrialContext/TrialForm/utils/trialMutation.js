@@ -22,6 +22,7 @@ export default (trial) => {
             id:"${trial.id}"
             name:"${trial.name}"
             status:"${trial.status}"
+            cloneFrom:"${trial.cloneFrom}"
             trialSetKey:"${trial.trialSetKey}"
             numberOfDevices:${trial.numberOfDevices}
             ${trial.state ? `state:"${trial.state}"` : ''}
@@ -45,6 +46,7 @@ export default (trial) => {
               key
               created
               status
+              cloneFrom
               id
               name
               trialSetKey

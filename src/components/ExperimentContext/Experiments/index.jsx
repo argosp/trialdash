@@ -189,10 +189,7 @@ class Experiments extends React.Component {
         title: 'Trials',
       },
       { key: 4,
-        title: 'Status',
-      },
-      { key: 5,
-        title: '',
+        title: 'Actions',
       },
     ];
 
