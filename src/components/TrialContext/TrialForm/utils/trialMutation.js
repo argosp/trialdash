@@ -13,7 +13,6 @@ import { TRIAL_MUTATION } from '../../../../constants/base';
 
 export default (trial) => {
   const key = trial.key ? trial.key : `${trial.experimentId}_${Date.now()}`;
-
   return gql`mutation {
         ${TRIAL_MUTATION}(
             key:"${key}",
@@ -22,7 +21,7 @@ export default (trial) => {
             id:"${trial.id}"
             name:"${trial.name}"
             status:"${trial.status}"
-            cloneFrom:"${trial.cloneFrom}"
+            ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
             trialSetKey:"${trial.trialSetKey}"
             numberOfDevices:${trial.numberOfDevices}
             ${trial.state ? `state:"${trial.state}"` : ''}
