@@ -26,6 +26,11 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const [rectRows, setRectRows] = React.useState(3);
     const [devicesShowName, setDevicesShowName] = React.useState(false);
 
+
+    useEffect(() => {
+        setTimeout(function(){ mapElement.current.leafletElement.invalidateSize()}, 500);
+    }, [])
+
     const changeLocations = (type, indices, newLocations) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
         let typeDevices = tempDevices.find(d => d.type === type).items;
