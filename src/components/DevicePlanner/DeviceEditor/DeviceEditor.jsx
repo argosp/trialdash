@@ -12,7 +12,7 @@ const position = [32.081128, 34.779729];
 
 let lastIndex;
 
-export const DeviceEditor = ({ devices, setDevices }) => {
+ const DeviceEditor = ({ devices, setDevices }) => {
     const mapElement = useRef(null);
     const currPolyline = useRef(null);
     const auxPolyline = useRef(null);
@@ -25,7 +25,6 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const [rectAngle, setRectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
     const [devicesShowName, setDevicesShowName] = React.useState(false);
-
 
     useEffect(() => {
         setTimeout(function(){ mapElement.current.leafletElement.invalidateSize()}, 500);
@@ -166,13 +165,18 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
     return (
         <div className="App" style={{ position: 'relative', height: '100vh' }}>
-            <LeafletMap center={position} zoom={15}
+            <LeafletMap
+                center={position} 
+                zoom={15}
                 ref={mapElement}
-                style={{ width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
+                style={{ height: "100%", width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
                 onClick={handleMapClick}
                 onMouseMove={handleMouseMove}
                 onMouseOut={handleMouseOut}
+                preferCanvas={true}
             >
+
+                
                 <LayersControl position="topright">
                     <LayersControl.BaseLayer name="Carto" checked={true}>
                         <TileLayer
@@ -320,3 +324,4 @@ export const DeviceEditor = ({ devices, setDevices }) => {
         </div>
     )
 }
+export default React.memo(DeviceEditor, (prevState, nextState) => prevState.show === nextState.show) ;
