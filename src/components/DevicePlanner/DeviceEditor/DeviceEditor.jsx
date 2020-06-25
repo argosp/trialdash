@@ -26,10 +26,14 @@ let lastIndex;
     const [rectRows, setRectRows] = React.useState(3);
     const [devicesShowName, setDevicesShowName] = React.useState(false);
 
-    useEffect(() => {
-        setTimeout(function(){ mapElement.current.leafletElement.invalidateSize()}, 500);
-    }, [])
+    const [mapHeight, setMapHeight] = React.useState(98);
 
+
+    useEffect(() => { setTimeout(function(){ mapElement.current.leafletElement.invalidateSize()}, 700); }, [])
+
+
+    useEffect(() => {setTimeout(function(){  setMapHeight(100)}, 500);}, [])
+    
     const changeLocations = (type, indices, newLocations) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
         let typeDevices = tempDevices.find(d => d.type === type).items;
@@ -169,7 +173,7 @@ let lastIndex;
                 center={position} 
                 zoom={15}
                 ref={mapElement}
-                style={{ height: "100%", width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
+                style={{ height: `${mapHeight}%`, width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
                 onClick={handleMapClick}
                 onMouseMove={handleMouseMove}
                 onMouseOut={handleMouseOut}
