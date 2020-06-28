@@ -26,12 +26,14 @@ let lastIndex;
     const [rectRows, setRectRows] = React.useState(3);
     const [devicesShowName, setDevicesShowName] = React.useState(false);
 
-    const [mapHeight, setMapHeight] = React.useState(99);
-
-    useEffect(() => { mapElement.current.leafletElement.invalidateSize(true) }, [])
+    const [mapHeight, setMapHeight] = React.useState(98);
 
 
-    useEffect(() => {setTimeout(function(){  setMapHeight(100)}, 1000);}, [])
+
+    useEffect(() => {setTimeout(function(){
+          setMapHeight(100);
+          mapElement.current.leafletElement.invalidateSize(true);
+        }, 1000);}, [])
     
     const changeLocations = (type, indices, newLocations) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
