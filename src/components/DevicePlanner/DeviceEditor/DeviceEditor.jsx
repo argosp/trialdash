@@ -28,7 +28,7 @@ let lastIndex;
 
     const [mapHeight, setMapHeight] = React.useState(99);
 
-    // useEffect(() => { mapElement.current.leafletElement.invalidateSize(true) }, [])
+    useEffect(() => { mapElement.current.leafletElement.invalidateSize(true) }, [])
 
 
     useEffect(() => {setTimeout(function(){  setMapHeight(100)}, 1000);}, [])
@@ -172,7 +172,7 @@ let lastIndex;
                 center={position} 
                 zoom={15}
                 ref={mapElement}
-                style={{ height: "100%", width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
+                style={{ height: `${mapHeight}%`, width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
                 onClick={handleMapClick}
                 onMouseMove={handleMouseMove}
                 onMouseOut={handleMouseOut}
