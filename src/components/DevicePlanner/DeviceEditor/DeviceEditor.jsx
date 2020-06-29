@@ -30,10 +30,13 @@ let lastIndex;
 
 
 
-    useEffect(() => {setTimeout(function(){
-          setMapHeight(100);
-          mapElement.current.leafletElement.invalidateSize(true);
-        }, 1000);}, [])
+    useEffect(() => {
+        setTimeout(function(){
+          setMapHeight(100,()=>{
+           mapElement.current.leafletElement.invalidateSize();
+          });
+        }, 0);
+    }, [])
     
     const changeLocations = (type, indices, newLocations) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
