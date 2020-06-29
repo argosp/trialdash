@@ -27,8 +27,6 @@ let lastIndex;
     const [devicesShowName, setDevicesShowName] = React.useState(false);
 
 
-
-
     useEffect(()=>{
         mapElement.current.leafletElement.invalidateSize();
     },[mapElement])
