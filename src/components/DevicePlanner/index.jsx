@@ -9,15 +9,12 @@ import { styles } from './styles';
 import devicesQuery from './utils/devicesQuery';
 import { getTypeLocationProp, getDeviceLocationProp, sortDevices, findDevicesChanged } from './DeviceEditor/DeviceUtils';
 
-class DevicePlanner extends React.Component {
-    state = {
-        devices: []
-    };
+const DevicePlanner = ({ client, match, updateLocation }) => {
+    const [devices, setDevices] = React.useState([]);
 
-    componentDidMount() {
-        const { client, match } = this.props;
-        const experimentId = match.params.id
-        const newdevs = []
+    React.useEffect(() => {
+        const experimentId = match.params.id;
+        const newdevs = [];
         client.query({ query: deviceTypesQuery(experimentId) })
             .then((dataType) => {
                 const deviceTypes = dataType.data.deviceTypes.filter(devtype => getTypeLocationProp(devtype));
@@ -31,37 +28,34 @@ class DevicePlanner extends React.Component {
                             if (newdevs.length === deviceTypes.length) {
                                 sortDevices(newdevs);
                                 console.log('setDevices: ', newdevs);
-                                this.setState(() => ({ devices: newdevs }));
+                                setDevices(newdevs);
                             }
                         })
                 })
             })
+    }, []);
+
+    const goodDevices = devices.filter(d => d.items && d.name);
+    if (goodDevices.length === 0 || devices.length !== goodDevices.length) {
+        return <CircularProgress style={{ marginLeft: '50%', marginTop: '40vh' }} />;
     }
 
-    render() {
-        const { updateLocation } = this.props;
-        const goodDevices = this.state.devices.filter(d => d.items && d.name);
-        if (goodDevices.length === 0 || this.state.devices.length !== goodDevices.length) {
-            return <CircularProgress style={{ marginLeft: '50%', marginTop: '40vh' }} />;
-        } else {
-            return (
-                <DeviceEditor
-                    devices={this.state.devices}
-                    setDevices={(newDevices) => {
-                        findDevicesChanged(this.state.devices, newDevices).forEach(changed => {
-                            const { newDev, newDevType } = changed;
-                            console.log('change', newDev);
-                            const locationProp = getDeviceLocationProp(newDev, newDevType);
-                            const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
-                            updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
-                        });
-                        this.setState(() => ({ devices: newDevices }));
-                    }}
-                >
-                </DeviceEditor>
-            );
-        }
-    }
+    return (
+        <DeviceEditor
+            devices={devices}
+            setDevices={(newDevices) => {
+                findDevicesChanged(devices, newDevices).forEach(changed => {
+                    const { newDev, newDevType } = changed;
+                    console.log('change', newDev);
+                    const locationProp = getDeviceLocationProp(newDev, newDevType);
+                    const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
+                    updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
+                });
+                setDevices(newDevices);
+            }}
+        >
+        </DeviceEditor>
+    );
 }
 
 export default compose(
