@@ -30,10 +30,6 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
     console.log('DeviceEditor', devices)
 
-    // useEffect(() => {
-    //     mapElement.current.leafletElement.invalidateSize();
-    // }, [mapElement])
-
     const changeLocations = (type, indices, newLocations) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
         let typeDevices = tempDevices.find(d => d.name === type);
@@ -160,7 +156,11 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
     useEffect(() => {
         renderShape();
-    })
+    });
+
+    useEffect(() => {
+        mapElement.current.leafletElement.invalidateSize();
+    }, []);
 
     return (
         <div className="App" style={{ position: 'relative', height: "100vh" }}>
