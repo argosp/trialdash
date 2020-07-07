@@ -40,7 +40,7 @@ class DevicePlanner extends React.Component {
 
     render() {
         const { updateLocation } = this.props;
-        const goodDevices = this.state.devices.filter(d => d.items && d.type);
+        const goodDevices = this.state.devices.filter(d => d.items && d.name);
         if (goodDevices.length === 0 || this.state.devices.length !== goodDevices.length) {
             return <CircularProgress style={{ marginLeft: '50%', marginTop: '40vh' }} />;
         } else {
