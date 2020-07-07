@@ -7,7 +7,8 @@ import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import { DeviceEditor } from './DeviceEditor/DeviceEditor';
 import { styles } from './styles';
 import devicesQuery from './utils/devicesQuery';
-import { getTypeLocationProp, getDeviceLocation } from './DeviceEditor/DeviceUtils';
+import { getTypeLocationProp, getDeviceLocationProp, sortDevices, findDevicesChanged } from './DeviceEditor/DeviceUtils';
+import devices from './utils/devicesQuery';
 
 class DevicePlanner extends React.Component {
     state = {
@@ -30,13 +31,13 @@ class DevicePlanner extends React.Component {
                     client.query({ query: devicesQuery(experimentId, devtype.key) })
                         .then(dataDev => {
                             console.log('devices: ', dataDev);
-                            devtype.type = devtype.name;
-                            devtype.items = JSON.parse(JSON.stringify(dataDev.data.devices));
+                            devtype.items = dataDev.data.devices;
                             newdevs.push(devtype);
                         })
                         .then(() => {
+                            sortDevices(newdevs);
                             console.log('setDevices: ', newdevs);
-                            this.setState(() => ({ devices: newdevs }))
+                            this.setState(() => ({ devices: newdevs }));
                         })
                 })
             })
@@ -52,27 +53,12 @@ class DevicePlanner extends React.Component {
                 <DeviceEditor
                     devices={this.state.devices}
                     setDevices={(newDevices) => {
-                        newDevices.forEach(newDevType => {
-                            const oldDevType = this.state.devices.find(ty => ty.type === newDevType.type);
-                            if (oldDevType && oldDevType.items && newDevType.items) {
-                                newDevType.items.forEach(newDev => {
-                                    const oldDev = oldDevType.items.find(d => d.key === newDev.key);
-                                    if (oldDev && JSON.stringify(oldDev) !== JSON.stringify(newDev)) {
-                                        console.log('change', newDev);
-                                        updateLocation({
-                                            key: newDev.key,
-                                            type: "device",
-                                            typeKey: newDevType.key,
-                                            properties: [
-                                                {
-                                                    key: getTypeLocationProp(newDevType),
-                                                    val: JSON.stringify({ name: "OSMMap", coordinates: getDeviceLocation(newDev, newDevType) })
-                                                }
-                                            ]
-                                        })
-                                    }
-                                })
-                            }
+                        findDevicesChanged(this.state.devices, newDevices).forEach(changed => {
+                            const { newDev, newDevType } = changed;
+                            console.log('change', dev);
+                            const locationProp = getDeviceLocationProp(newDev, newDevType);
+                            const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
+                            updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
                         });
                         this.setState(() => ({ devices: newDevices }));
                     }}
