@@ -15,10 +15,6 @@ class DevicePlanner extends React.Component {
     };
 
     componentDidMount() {
-        this.getDevices()
-    }
-
-    getDevices = async () => {
         const { client, match } = this.props;
         const experimentId = match.params.id
         const newdevs = []
@@ -32,11 +28,11 @@ class DevicePlanner extends React.Component {
                             console.log('devices: ', dataDev);
                             devtype.items = dataDev.data.devices;
                             newdevs.push(devtype);
-                        })
-                        .then(() => {
-                            sortDevices(newdevs);
-                            console.log('setDevices: ', newdevs);
-                            this.setState(() => ({ devices: newdevs }));
+                            if (newdevs.length === deviceTypes.length) {
+                                sortDevices(newdevs);
+                                console.log('setDevices: ', newdevs);
+                                this.setState(() => ({ devices: newdevs }));
+                            }
                         })
                 })
             })
