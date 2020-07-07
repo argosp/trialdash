@@ -55,7 +55,7 @@ class DevicePlanner extends React.Component {
                     setDevices={(newDevices) => {
                         findDevicesChanged(this.state.devices, newDevices).forEach(changed => {
                             const { newDev, newDevType } = changed;
-                            console.log('change', dev);
+                            console.log('change', newDev);
                             const locationProp = getDeviceLocationProp(newDev, newDevType);
                             const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
                             updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
