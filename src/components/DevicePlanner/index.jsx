@@ -8,7 +8,6 @@ import { DeviceEditor } from './DeviceEditor/DeviceEditor';
 import { styles } from './styles';
 import devicesQuery from './utils/devicesQuery';
 import { getTypeLocationProp, getDeviceLocationProp, sortDevices, findDevicesChanged } from './DeviceEditor/DeviceUtils';
-import devices from './utils/devicesQuery';
 
 class DevicePlanner extends React.Component {
     state = {
