@@ -1,18 +1,20 @@
 import { Button, InputLabel, List, Paper, Slider, Switch } from '@material-ui/core';
 import React, { useRef, useEffect } from 'react';
-import { Map as LeafletMap, Polyline, TileLayer, LayersControl, ImageOverlay } from "react-leaflet";
+import { Map as LeafletMap, Polyline } from "react-leaflet";
 import { DeviceMarker } from './DeviceMarker';
 import { DeviceRow } from './DeviceRow';
 import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText } from './Utils';
+import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './Utils';
+import { MapLayersControl } from './MapLayersControl';
+import { setDeviceLocation, getDeviceLocation } from './DeviceUtils';
 
 const position = [32.081128, 34.779729];
 
 let lastIndex;
 
- const DeviceEditor = ({ devices, setDevices }) => {
+export const DeviceEditor = ({ devices, setDevices }) => {
     const mapElement = useRef(null);
     const currPolyline = useRef(null);
     const auxPolyline = useRef(null);
@@ -22,20 +24,22 @@ let lastIndex;
     const [showAll, setShowAll] = React.useState(false);
     const [shape, setShape] = React.useState("Point");
     const [markedPoints, setMarkedPoints] = React.useState([]);
-    const [rectAngle, setRectAngle] = React.useState(0);
+    const [rectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
     const [devicesShowName, setDevicesShowName] = React.useState(false);
 
+    console.log('DeviceEditor', devices)
 
-    useEffect(()=>{
-        mapElement.current.leafletElement.invalidateSize();
-    },[mapElement])
-    
+    // useEffect(() => {
+    //     mapElement.current.leafletElement.invalidateSize();
+    // }, [mapElement])
+
     const changeLocations = (type, indices, newLocations) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
-        let typeDevices = tempDevices.find(d => d.type === type).items;
+        let typeDevices = tempDevices.find(d => d.type === type);
         for (let i = 0; i < indices.length; ++i) {
-            typeDevices[indices[i]].position = newLocations[Math.min(i, newLocations.length - 1)];
+            const loc = newLocations[Math.min(i, newLocations.length - 1)];
+            setDeviceLocation(typeDevices.items[indices[i]], typeDevices, loc);
         }
         return tempDevices;
     };
@@ -71,12 +75,6 @@ let lastIndex;
             setMarkedPoints(markedPoints.concat([currPoint]));
         }
     };
-
-    /** @returns Rectangle as an array of its 4 points */
-    const rectByAngle = (points, angle) => {
-        // return [p0, [p1[0], p0[1]], p1, [p0[0], p1[1]]];
-        return points.concat([points[0], points[0], points[0], points[0]]).slice(0, 4);
-    }
 
     const shapeOptions = [
         {
@@ -165,9 +163,9 @@ let lastIndex;
     })
 
     return (
-        <div className="App" style={{ position: 'relative', height:"100vh"}}>
+        <div className="App" style={{ position: 'relative', height: "100vh" }}>
             <LeafletMap
-                center={position} 
+                center={position}
                 zoom={15}
                 ref={mapElement}
                 style={{ height: "100%", width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
@@ -177,40 +175,21 @@ let lastIndex;
                 preferCanvas={true}
             >
 
-                
-                <LayersControl position="topright">
-                    <LayersControl.BaseLayer name="Carto" checked={true}>
-                        <TileLayer
-                            attribution='&copy; <a href="https://carto.com">Carto</a> contributors'
-                            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png"
-                        />
-                    </LayersControl.BaseLayer>
-                    <LayersControl.BaseLayer name="OpenStreetMap">
-                        <TileLayer
-                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                    </LayersControl.BaseLayer>
-                    <LayersControl.BaseLayer name="Image">
-                        <ImageOverlay
-                            url="https://cdn.vox-cdn.com/thumbor/HKALidP1Nm7vvd6GrsLmUCSVlEw=/0x0:2048x2732/1200x800/filters:focal(540x2092:866x2418)/cdn.vox-cdn.com/uploads/chorus_image/image/52202887/super_mario_run_ipad_screenshot_01_2048.0.jpeg"
-                            bounds={[[31.8, 34.2], [32.3, 35.2]]}
-                        />
-                    </LayersControl.BaseLayer>
-                </LayersControl>
+                <MapLayersControl />
+
                 {
                     devices.map(devType => {
                         if (showAll || (devType.type === selectedType)) {
                             return devType.items.map((dev, index) => {
-                                if (dev.position) {
-                                    return <DeviceMarker key={dev.name} device={dev}
-                                        isSelected={selection.includes(index)}
-                                        isTypeSelected={devType.type === selectedType}
-                                        shouldShowName={devicesShowName}
-                                    />
-                                } else {
-                                    return null;
-                                }
+                                const loc = getDeviceLocation(dev, devType);
+                                if (!loc) return null;
+                                return <DeviceMarker
+                                    key={dev.name} device={dev}
+                                    devLocation={loc}
+                                    isSelected={selection.includes(index)}
+                                    isTypeSelected={devType.type === selectedType}
+                                    shouldShowName={devicesShowName}
+                                />
                             });
                         } else {
                             return null;
@@ -246,18 +225,6 @@ let lastIndex;
                     />
                     {shape !== 'Rect' ? null :
                         <div style={{ display: 'block' }}>
-                            {/* <div style={{ display: 'inline-block', margin: 5, width: '40%' }}>
-                                <InputLabel id="rect-angle" style={{ fontSize: 10 }}>Rect angle</InputLabel>
-                                <Slider
-                                    onChange={(e, v) => setRectAngle(v)}
-                                    value={rectAngle}
-                                    defaultValue={0}
-                                    id="rect-angle"
-                                    valueLabelDisplay="auto"
-                                    min={0}
-                                    max={90}
-                                />
-                            </div> */}
                             <div style={{ display: 'inline-block', margin: 5, width: '40%' }}>
                                 <InputLabel id="rect-rows" style={{ fontSize: 10 }}>Rect rows</InputLabel>
                                 <Slider
@@ -307,6 +274,7 @@ let lastIndex;
                                         <DeviceRow
                                             key={dev.name}
                                             dev={dev}
+                                            devLocation={getDeviceLocation(dev, devItems)}
                                             isSelected={selection.includes(index)}
                                             onClick={e => handleSelectionClick(index, e.shiftKey)}
                                             onDisableLocation={e => changeLocations(selectedType, [index], [undefined])}
@@ -325,4 +293,3 @@ let lastIndex;
         </div>
     )
 }
-export default React.memo(DeviceEditor, (prevState, nextState) => prevState.show === nextState.show) ;
