@@ -4,52 +4,43 @@ import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
-import  DeviceEditor  from './DeviceEditor/DeviceEditor';
+import DeviceEditor from './DeviceEditor/DeviceEditor';
 import { styles } from './styles';
 import devicesQuery from './utils/devicesQuery';
+import { getTypeLocationProp, getDeviceLocation } from './DeviceEditor/DeviceUtils';
 
 class DevicePlanner extends React.Component {
     state = {
         devices: []
     };
+
     componentDidMount() {
         this.getDevices()
     }
+
     getDevices = async () => {
         const { client, match } = this.props;
         const experimentId = match.params.id
-        const devices = []
+        const newdevs = []
         client.query({ query: deviceTypesQuery(experimentId) })
-            .then((data) => {
-                console.log('types: ', data);
-                const deviceTypes = data.data.deviceTypes.filter(type => {
-                    const locationProp = type.properties.find(prop => prop.type === "location");
-                    return locationProp && locationProp.key && locationProp.key !== '';
-                })
-                console.log('deviceTypes: ', deviceTypes);
-                deviceTypes.forEach(type => {
-                    type.type = type.name;
-                    type.locationProp = type.properties.find(prop => prop.type === "location");
-                    devices.push(type);
-                    const deviceTypeKey = type.key
-                    client.query({ query: devicesQuery(experimentId, deviceTypeKey) })
-                        .then(data => {
-                            console.log('devices: ', data);
-                            type.items = JSON.parse(JSON.stringify(data.data.devices));
-                            type.items.forEach(d => {
-                                const pos = d.properties.find(pr => pr.key === type.locationProp.key);
-                                if (pos && pos.val && pos.val.position) {
-                                    d.position = pos.val.position;
-                                }
-                            })
+            .then((dataType) => {
+                const deviceTypes = dataType.data.deviceTypes.filter(devtype => getTypeLocationProp(devtype));
+                console.log('deviceTypes: ', dataType, deviceTypes);
+                deviceTypes.forEach(devtype => {
+                    client.query({ query: devicesQuery(experimentId, devtype.key) })
+                        .then(dataDev => {
+                            console.log('devices: ', dataDev);
+                            devtype.type = devtype.name;
+                            devtype.items = JSON.parse(JSON.stringify(dataDev.data.devices));
+                            newdevs.push(devtype);
                         })
                         .then(() => {
-                            this.setState(() => ({ devices }))
+                            console.log('setDevices: ', newdevs);
+                            this.setState(() => ({ devices: newdevs }))
                         })
                 })
             })
     }
-
 
     render() {
         const { updateLocation } = this.props;
@@ -74,8 +65,8 @@ class DevicePlanner extends React.Component {
                                             typeKey: newDevType.key,
                                             properties: [
                                                 {
-                                                    key: newDevType.locationProp.key,
-                                                    val: JSON.stringify({ name: "OSMMap", coordinates: newDev.position })
+                                                    key: getTypeLocationProp(newDevType),
+                                                    val: JSON.stringify({ name: "OSMMap", coordinates: getDeviceLocation(newDev, newDevType) })
                                                 }
                                             ]
                                         })
@@ -89,23 +80,6 @@ class DevicePlanner extends React.Component {
                 </DeviceEditor>
             );
         }
-        //     return (
-        //       <div>
-        //         {this.state.devices.length > 0 &&
-        //           this.state.devices.map(devicesByType => {
-        //             return devicesByType.map(device => (
-        //               <p>
-        //                 <span>id: {device.id}</span> <br/>
-        //                 <span>name: {device.name}</span> <br/>
-        //                 <span>deviceTypeKey: {device.deviceTypeKey}</span> <br/>
-        //                 <span>key: {device.key}</span> <br/>
-        //                 <span>properties: { device.properties.map( prop => (<span>key:{prop.key}, value: {prop.value},</span>))}</span> <br/>
-        //               </p>)
-        //             )
-        //           })
-        //         }
-        //       </div>
-        //     );
     }
 }
 
