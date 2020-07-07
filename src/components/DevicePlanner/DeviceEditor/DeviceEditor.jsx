@@ -155,12 +155,9 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     };
 
     useEffect(() => {
+        mapElement.current.leafletElement.invalidateSize();
         renderShape();
     });
-
-    useEffect(() => {
-        mapElement.current.leafletElement.invalidateSize();
-    }, []);
 
     return (
         <div className="App" style={{ position: 'relative', height: "100vh" }}>
