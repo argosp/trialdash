@@ -26,7 +26,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [rectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
-    const [devicesShowName, setDevicesShowName] = React.useState(false);
+    const [showName, setShowName] = React.useState(false);
 
     console.log('DeviceEditor', devices)
 
@@ -188,7 +188,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                                     devLocation={loc}
                                     isSelected={selection.includes(index)}
                                     isTypeSelected={devType.name === selectedType}
-                                    shouldShowName={devicesShowName}
+                                    shouldShowName={showName}
                                 />
                             });
                         } else {
@@ -259,8 +259,8 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                     <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
                         <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
                         <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                            value={devicesShowName}
-                            onChange={e => setDevicesShowName(e.target.checked)}
+                            value={showName}
+                            onChange={e => setShowName(e.target.checked)}
                         />
                     </div>
 
