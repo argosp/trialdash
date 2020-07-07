@@ -17,12 +17,10 @@ const DevicePlanner = ({ client, match, updateLocation }) => {
         const newdevs = [];
         client.query({ query: deviceTypesQuery(experimentId) })
             .then((dataType) => {
-                const deviceTypes = dataType.data.deviceTypes.filter(devtype => getTypeLocationProp(devtype));
-                console.log('deviceTypes: ', dataType, deviceTypes);
+                const deviceTypes = dataType.data.deviceTypes.filter(devtype => devtype.name && getTypeLocationProp(devtype));
                 deviceTypes.forEach(devtype => {
                     client.query({ query: devicesQuery(experimentId, devtype.key) })
                         .then(dataDev => {
-                            console.log('devices: ', dataDev);
                             devtype.items = dataDev.data.devices;
                             newdevs.push(devtype);
                             if (newdevs.length === deviceTypes.length) {
@@ -35,26 +33,22 @@ const DevicePlanner = ({ client, match, updateLocation }) => {
             })
     }, []);
 
-    const goodDevices = devices.filter(d => d.items && d.name);
-    if (goodDevices.length === 0 || devices.length !== goodDevices.length) {
-        return <CircularProgress style={{ marginLeft: '50%', marginTop: '40vh' }} />;
-    }
-
     return (
-        <DeviceEditor
-            devices={devices}
-            setDevices={(newDevices) => {
-                findDevicesChanged(devices, newDevices).forEach(changed => {
-                    const { dev: newDev, type: newDevType } = changed;
-                    console.log('change', newDev);
-                    const locationProp = getDeviceLocationProp(newDev, newDevType);
-                    const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
-                    updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
-                });
-                setDevices(newDevices);
-            }}
-        >
-        </DeviceEditor>
+        devices.length === 0 ?
+            <CircularProgress style={{ marginLeft: '50%', marginTop: '40vh' }} /> :
+            <DeviceEditor
+                devices={devices}
+                setDevices={(newDevices) => {
+                    findDevicesChanged(devices, newDevices).forEach(changed => {
+                        const { dev: newDev, type: newDevType } = changed;
+                        console.log('change', newDev);
+                        const locationProp = getDeviceLocationProp(newDev, newDevType);
+                        const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
+                        updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
+                    });
+                    setDevices(newDevices);
+                }}
+            />
     );
 }
 
