@@ -1,4 +1,4 @@
-import { Button, InputLabel, List, Paper, Slider, Switch } from '@material-ui/core';
+import { Button, InputLabel, List, Paper, Switch } from '@material-ui/core';
 import React, { useRef, useEffect } from 'react';
 import { Map as LeafletMap, Polyline } from "react-leaflet";
 import { DeviceMarker } from './DeviceMarker';
@@ -9,6 +9,7 @@ import { TypeChooser } from './TypeChooser';
 import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './Utils';
 import { MapLayersControl } from './MapLayersControl';
 import { setDeviceLocation, getDeviceLocation } from './DeviceUtils';
+import { InputSlider } from './InputSlider';
 
 const position = [32.081128, 34.779729];
 
@@ -221,20 +222,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                         shapeOptions={shapeOptions}
                     />
                     {shape !== 'Rect' ? null :
-                        <div style={{ display: 'block' }}>
-                            <div style={{ display: 'inline-block', margin: 5, width: '40%' }}>
-                                <InputLabel id="rect-rows" style={{ fontSize: 10 }}>Rect rows</InputLabel>
-                                <Slider
-                                    onChange={(e, v) => setRectRows(v)}
-                                    value={rectRows}
-                                    defaultValue={3}
-                                    id="rect-rows"
-                                    valueLabelDisplay="auto"
-                                    min={2}
-                                    max={20}
-                                />
-                            </div>
-                        </div>
+                        <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
                     }
                     <Button variant="contained" color="primary"
                         disabled={shape === 'Point'}
