@@ -16,7 +16,7 @@ export const getDeviceLocation = (device, deviceType) => {
     if (prop) return prop.val.coordinates;
 }
 
-export const setDeviceLocation = (device, deviceType, newLocation) => {
+export const changeDeviceLocation = (device, deviceType, newLocation) => {
     const locationProp = getTypeLocationProp(deviceType);
     const pos = device.properties.findIndex(pr => pr.key === locationProp);
     if (pos !== -1) {

@@ -12,7 +12,10 @@ export const DeviceRow = ({ dev, devLocation, isSelected, onClick, onDisableLoca
         <ListItemText primary={dev.name} />
         {!devLocation ? null :
             <IconButton aria-label="Disable location" size="small"
-                onClick={onDisableLocation}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onDisableLocation();
+                }}
             >
                 <LocationOnIcon />
             </IconButton>
