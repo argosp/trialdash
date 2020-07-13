@@ -226,11 +226,13 @@ class TrialDevices extends React.Component {
           />
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
-          <DevicePlanner
-            updateLocation={this.updateLocation}
-            trial={trial}
-            entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
-          />
+          {selectedViewIndex === 3 &&
+            <DevicePlanner
+              updateLocation={this.updateLocation}
+              trial={trial}
+              entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+            />
+          }
         </TabPanel>
       </>
     );
