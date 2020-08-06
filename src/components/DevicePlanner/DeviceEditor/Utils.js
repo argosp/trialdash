@@ -134,3 +134,9 @@ export const partition = (arr, num) => {
     }
     return results;
 }
+
+/** @returns Rectangle as an array of its 4 points */
+export const rectByAngle = (points, angle) => {
+    // return [p0, [p1[0], p0[1]], p1, [p0[0], p1[1]]];
+    return points.concat([points[0], points[0], points[0], points[0]]).slice(0, 4);
+}

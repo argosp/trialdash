@@ -287,7 +287,7 @@ class TrialForm extends React.Component {
             topDescription={trialSet.name}
             withBackButton
             rightDescription={(
-              <StatusBadge
+            trial.status && <StatusBadge
                 onClick={this.handleMenuClick}
                 onMouseEnter={() => this.setEditableStatus(true)}
                 onMouseLeave={() => this.setEditableStatus(false)}

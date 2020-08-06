@@ -1,59 +1,40 @@
-import { Button, InputLabel, List, Paper, Slider, Switch } from '@material-ui/core';
+import { Button, InputLabel, Paper, Switch } from '@material-ui/core';
 import React, { useRef, useEffect } from 'react';
-import { Map as LeafletMap, Polyline, TileLayer, LayersControl, ImageOverlay } from "react-leaflet";
+import { Polyline } from "react-leaflet";
 import { DeviceMarker } from './DeviceMarker';
-import { DeviceRow } from './DeviceRow';
 import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText } from './Utils';
-
-const position = [32.081128, 34.779729];
-
-let lastIndex;
+import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './Utils';
+import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
+import { InputSlider } from './InputSlider';
+import { DeviceList } from './DeviceList';
+import { DeviceMap } from './DeviceMap';
 
 export const DeviceEditor = ({ devices, setDevices }) => {
-    const mapElement = useRef(null);
     const currPolyline = useRef(null);
     const auxPolyline = useRef(null);
 
-    const [selectedType, setSelectedType] = React.useState(devices[0].type);
+    const [selectedType, setSelectedType] = React.useState(devices[0].name);
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
     const [shape, setShape] = React.useState("Point");
     const [markedPoints, setMarkedPoints] = React.useState([]);
-    const [rectAngle, setRectAngle] = React.useState(0);
+    const [rectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
-    const [devicesShowName, setDevicesShowName] = React.useState(false);
+    const [showName, setShowName] = React.useState(false);
 
-    const changeLocations = (type, indices, newLocations) => {
+    console.log('DeviceEditor', devices)
+
+    const changeLocations = (type, indices, newLocations = [undefined]) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
-        let typeDevices = tempDevices.find(d => d.type === type).items;
+        let typeDevices = tempDevices.find(d => d.name === type);
         for (let i = 0; i < indices.length; ++i) {
-            typeDevices[indices[i]].position = newLocations[Math.min(i, newLocations.length - 1)];
+            const loc = newLocations[Math.min(i, newLocations.length - 1)];
+            changeDeviceLocation(typeDevices.items[indices[i]], typeDevices, loc);
         }
         return tempDevices;
     };
-
-    const handleSelectionClick = (index, doRange) => {
-        let sel = [];
-        if (!doRange) {
-            if (selection.includes(index)) {
-                sel = selection.filter(s => s !== index);
-            } else {
-                sel = selection.concat([index]);
-            }
-        } else if (lastIndex !== undefined) {
-            const low = Math.min(index, lastIndex), high = Math.max(index, lastIndex);
-            sel = selection.filter(s => s < low);
-            for (let i = low; i <= high; ++i) {
-                sel.push(i);
-            }
-            sel.concat(selection.filter(s => s > high));
-        }
-        setSelection(sel.sort());
-        lastIndex = index;
-    }
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
@@ -66,12 +47,6 @@ export const DeviceEditor = ({ devices, setDevices }) => {
             setMarkedPoints(markedPoints.concat([currPoint]));
         }
     };
-
-    /** @returns Rectangle as an array of its 4 points */
-    const rectByAngle = (points, angle) => {
-        // return [p0, [p1[0], p0[1]], p1, [p0[0], p1[1]]];
-        return points.concat([points[0], points[0], points[0], points[0]]).slice(0, 4);
-    }
 
     const shapeOptions = [
         {
@@ -157,50 +132,28 @@ export const DeviceEditor = ({ devices, setDevices }) => {
 
     useEffect(() => {
         renderShape();
-    })
+    });
 
     return (
-        <div className="App" style={{ position: 'relative', height: '100vh' }}>
-            <LeafletMap center={position} zoom={15}
-                ref={mapElement}
-                style={{ width: '70%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
+        <div className="App" style={{ position: 'relative', height: "100vh" }}>
+            <DeviceMap
                 onClick={handleMapClick}
                 onMouseMove={handleMouseMove}
                 onMouseOut={handleMouseOut}
             >
-                <LayersControl position="topright">
-                    <LayersControl.BaseLayer name="Carto" checked={true}>
-                        <TileLayer
-                            attribution='&copy; <a href="https://carto.com">Carto</a> contributors'
-                            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png"
-                        />
-                    </LayersControl.BaseLayer>
-                    <LayersControl.BaseLayer name="OpenStreetMap">
-                        <TileLayer
-                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                    </LayersControl.BaseLayer>
-                    <LayersControl.BaseLayer name="Image">
-                        <ImageOverlay
-                            url="https://cdn.vox-cdn.com/thumbor/HKALidP1Nm7vvd6GrsLmUCSVlEw=/0x0:2048x2732/1200x800/filters:focal(540x2092:866x2418)/cdn.vox-cdn.com/uploads/chorus_image/image/52202887/super_mario_run_ipad_screenshot_01_2048.0.jpeg"
-                            bounds={[[31.8, 34.2], [32.3, 35.2]]}
-                        />
-                    </LayersControl.BaseLayer>
-                </LayersControl>
                 {
                     devices.map(devType => {
-                        if (showAll || (devType.type === selectedType)) {
+                        if (showAll || (devType.name === selectedType)) {
                             return devType.items.map((dev, index) => {
-                                if (dev.position) {
-                                    return <DeviceMarker key={dev.name} device={dev}
-                                        isSelected={selection.includes(index)}
-                                        isTypeSelected={devType.type === selectedType}
-                                        shouldShowName={devicesShowName}
-                                    />
-                                } else {
-                                    return null;
-                                }
+                                const loc = getDeviceLocation(dev, devType);
+                                if (!loc) return null;
+                                return <DeviceMarker
+                                    key={dev.key} device={dev}
+                                    devLocation={loc}
+                                    isSelected={selection.includes(index)}
+                                    isTypeSelected={devType.name === selectedType}
+                                    shouldShowName={showName}
+                                />
                             });
                         } else {
                             return null;
@@ -219,99 +172,67 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                         </>
                 }
 
-            </LeafletMap>
-            <Paper
-                style={{
-                    position: 'absolute', height: '88%', overflow: 'auto', top: 0, width: '28%',
-                    left: 0, justifyContent: 'center', alignItems: 'center', zIndex: 1000
-                }}
-            >
-                <div
-                    style={{ margin: 10 }}
-                >
-                    <ShapeChooser
-                        shape={shape}
-                        onChange={(val) => setShape(val)}
-                        shapeOptions={shapeOptions}
-                    />
-                    {shape !== 'Rect' ? null :
-                        <div style={{ display: 'block' }}>
-                            {/* <div style={{ display: 'inline-block', margin: 5, width: '40%' }}>
-                                <InputLabel id="rect-angle" style={{ fontSize: 10 }}>Rect angle</InputLabel>
-                                <Slider
-                                    onChange={(e, v) => setRectAngle(v)}
-                                    value={rectAngle}
-                                    defaultValue={0}
-                                    id="rect-angle"
-                                    valueLabelDisplay="auto"
-                                    min={0}
-                                    max={90}
-                                />
-                            </div> */}
-                            <div style={{ display: 'inline-block', margin: 5, width: '40%' }}>
-                                <InputLabel id="rect-rows" style={{ fontSize: 10 }}>Rect rows</InputLabel>
-                                <Slider
-                                    onChange={(e, v) => setRectRows(v)}
-                                    value={rectRows}
-                                    defaultValue={3}
-                                    id="rect-rows"
-                                    valueLabelDisplay="auto"
-                                    min={2}
-                                    max={20}
-                                />
-                            </div>
-                        </div>
-                    }
-                    <Button variant="contained" color="primary"
-                        disabled={shape === 'Point'}
-                        style={{ margin: 5 }}
-                        onClick={handlePutDevices}
+            </DeviceMap>
+            <div style={{
+                position: 'absolute', width: '28%', top: 0, bottom: 0, left: 0, zIndex: 1000
+            }}>
+                <Paper style={{
+                    position: 'absolute', height: '88%', overflow: 'auto', top: 0, width: '100%'
+                }} >
+                    <div
+                        style={{ margin: 10 }}
                     >
-                        Put devices
-                    </Button>
-                    <TypeChooser
-                        selectedType={selectedType}
-                        onChange={newType => {
-                            setSelection([]);
-                            setSelectedType(newType);
-                        }}
-                        showAll={showAll}
-                        setShowAll={val => setShowAll(val)}
-                        typeOptions={devices.map(dev => { return { name: dev.type } })}
-                    />
-                    <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                        <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
-                        <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                            value={devicesShowName}
-                            onChange={e => setDevicesShowName(e.target.checked)}
+                        <ShapeChooser
+                            shape={shape}
+                            onChange={(val) => setShape(val)}
+                            shapeOptions={shapeOptions}
                         />
-                    </div>
+                        {shape !== 'Rect' ? null :
+                            <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
+                        }
+                        <Button variant="contained" color="primary"
+                            disabled={shape === 'Point'}
+                            style={{ margin: 5 }}
+                            onClick={handlePutDevices}
+                        >
+                            Put devices
+                    </Button>
+                        <TypeChooser
+                            selectedType={selectedType}
+                            onChange={newType => {
+                                setSelection([]);
+                                setSelectedType(newType);
+                            }}
+                            showAll={showAll}
+                            setShowAll={val => setShowAll(val)}
+                            typeOptions={devices.map(dev => { return { name: dev.name } })}
+                        />
+                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
+                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                value={showName}
+                                onChange={e => setShowName(e.target.checked)}
+                            />
+                        </div>
 
-                    <div style={{ overflow: 'scroll', height: 'inherit', display: 'block' }}
-                    // inputProps={{ style: { overflow: 'scroll' } }}
-                    >
-                        <List>
-                            {
-                                devices.filter(d => d.type === selectedType).map(devItems =>
-                                    devItems.items.map((dev, index) =>
-                                        <DeviceRow
-                                            key={dev.name}
-                                            dev={dev}
-                                            isSelected={selection.includes(index)}
-                                            onClick={e => handleSelectionClick(index, e.shiftKey)}
-                                            onDisableLocation={e => changeLocations(selectedType, [index], [undefined])}
-                                        />
-                                    )
-                                )
-                            }
-                        </List >
-                    </div >
-                </div>
-            </Paper>
-            <JsonStreamer
-                json={devices}
-                onChange={(val) => setDevices(val)}
-            />
+                        <DeviceList
+                            selection={selection}
+                            setSelection={setSelection}
+                            devices={devices.filter(d => d.name === selectedType)}
+                            removeDeviceLocation={(index) => setDevices(changeLocations(selectedType, [index]))}
+                        />
+
+                    </div>
+                </Paper>
+                <Paper style={{
+                    position: 'absolute', maxHeight: '10%', overflow: 'auto', bottom: 0, height: '10%', width: '100%'
+                }} >
+                    <JsonStreamer
+                        json={devices}
+                        onChange={(val) => setDevices(val)}
+                    />
+                </Paper>
+            </div>
         </div>
     )
 }
