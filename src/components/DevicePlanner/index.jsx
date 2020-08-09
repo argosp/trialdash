@@ -43,7 +43,7 @@ const DevicePlanner = ({ client, match, updateLocation }) => {
                         const { dev: newDev, type: newDevType } = changed;
                         console.log('change', newDev);
                         const locationProp = getDeviceLocationProp(newDev, newDevType);
-                        const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
+                        const changeProps = [{ key: locationProp.key, val: locationProp.val }];
                         updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
                     });
                     setDevices(newDevices);
