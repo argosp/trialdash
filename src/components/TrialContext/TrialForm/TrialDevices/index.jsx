@@ -216,17 +216,19 @@ class TrialDevices extends React.Component {
           entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
         />}
         <TabPanel value={selectedViewIndex} index={2}>
-          <DevicesGrid
-            {...this.props}
-            trial={trial}
-            removeEntity={removeEntity}
-            onEntityPropertyChange={onEntityPropertyChange}
-            entities={entities}
-            devices={devices}
-            deviceTypes={deviceTypes}
-            update={update}
-            setUpdated={this.setUpdated}
-          />
+          {selectedViewIndex === 2 &&
+            <DevicesGrid
+              {...this.props}
+              trial={trial}
+              removeEntity={removeEntity}
+              onEntityPropertyChange={onEntityPropertyChange}
+              entities={entities}
+              devices={devices}
+              deviceTypes={deviceTypes}
+              update={update}
+              setUpdated={this.setUpdated}
+            />
+          }
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
           {selectedViewIndex === 3 &&
