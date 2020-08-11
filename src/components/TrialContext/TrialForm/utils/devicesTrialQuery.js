@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-const devicesQuery = (experimentId, deviceTypeKey, trialKey) => gql`
+const devicesTrialQuery = (experimentId, deviceTypeKey, trialKey) => gql`
   {
     devices(experimentId:"${experimentId}", deviceTypeKey:"${deviceTypeKey}"${trialKey ? `, trialKey:"${trialKey}"` : ''}){
       key
@@ -14,4 +14,4 @@ const devicesQuery = (experimentId, deviceTypeKey, trialKey) => gql`
     }
   }`;
 
-export default devicesQuery;
+export default devicesTrialQuery;

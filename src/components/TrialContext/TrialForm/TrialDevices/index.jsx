@@ -14,6 +14,7 @@ import { groupBy, concat } from 'lodash';
 import trialsQuery from '../../utils/trialQuery';
 import { updateCache } from '../../../../apolloGraphql';
 import trialMutationUpdate from '../utils/trialMutationUpdate';
+import devicesTrialQuery from '../utils/devicesTrialQuery';
 import deviceTypesQuery from '../../../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from '../../../DeviceContext/Devices/utils/deviceQuery';
 import { styles } from '../styles';
@@ -125,6 +126,18 @@ class TrialDevices extends React.Component {
     });
   };
 
+ getDevicesByTrial = (experimentId, devtypeKey)=>{
+   console.log('getDevicesByTrial function ',experimentId, devtypeKey, this.props.trial);
+  const { client, trial } = this.props;  
+  // return devicesTrialQuery(experimentId, devtypeKey, trial.key);
+ return client.query({ query: devicesTrialQuery(experimentId, devtypeKey, trial.key) })
+  // .then(devicesData => {
+    // const devices = devicesData.data.devices;
+    //  console.log('devices from devicesTrialQuery',devices);
+    // //  devices: groupBy(devices, 'key'),
+    //  return devices;
+  // })
+ }
   render() {
     const {
       classes,
@@ -142,6 +155,7 @@ class TrialDevices extends React.Component {
       deviceTypes,
       update,
     } = this.state;
+    console.log('getDevicesByTrial in trialDevices comp ',this.getDevicesByTrial);
 
     return (
       <>
@@ -231,6 +245,7 @@ class TrialDevices extends React.Component {
               updateLocation={this.updateLocation}
               trial={trial}
               entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+              getDevicesByTrial= {this.getDevicesByTrial}
             />
           }
         </TabPanel>
