@@ -9,8 +9,10 @@ import { styles } from './styles';
 // import devicesQuery from '../TrialContext/TrialForm/utils/devicesTrialQuery';
 import { getTypeLocationProp, getDeviceLocationProp, sortDevices, findDevicesChanged } from './DeviceEditor/DeviceUtils';
 
-const DevicePlanner = ({ client, match, updateLocation, getDevicesByTrial }) => {
+const DevicePlanner = ({ client, trial, match, updateLocation, getDevicesByTrial }) => {
     const [devices, setDevices] = React.useState([]);
+
+    console.log('props', client, trial, match);
 
     React.useEffect(() => {
         const experimentId = match.params.id;
@@ -18,10 +20,12 @@ const DevicePlanner = ({ client, match, updateLocation, getDevicesByTrial }) => 
         client.query({ query: deviceTypesQuery(experimentId) })
             .then((dataType) => {
                 const deviceTypes = dataType.data.deviceTypes.filter(devtype => devtype.name && getTypeLocationProp(devtype));
+                console.log('deviceTypes', deviceTypes);
                 deviceTypes.forEach(devtype => {
                     getDevicesByTrial(experimentId, devtype.key)
                         .then(dataDev => {
                             devtype.items = dataDev.data.devices;
+                            console.log('devices', devtype.items);
                             newdevs.push(devtype);
                             if (newdevs.length === deviceTypes.length) {
                                 sortDevices(newdevs);
