@@ -17,13 +17,17 @@ export const getDeviceLocation = (device, deviceType) => {
 }
 
 export const changeDeviceLocation = (device, deviceType, newLocation) => {
-    const locationProp = getTypeLocationProp(deviceType);
-    const pos = device.properties.findIndex(pr => pr.key === locationProp);
+    const locationPropKey = getTypeLocationProp(deviceType);
+    changeDeviceLocationWithProp(device, locationPropKey, newLocation);
+}
+
+export const changeDeviceLocationWithProp = (device, locationPropKey, newLocation) => {
+    const pos = device.properties.findIndex(pr => pr.key === locationPropKey);
     if (pos !== -1) {
         device.properties.splice(pos, 1);
     }
     device.properties.push({
-        key: locationProp,
+        key: locationPropKey,
         val: { name: "OSMMap", coordinates: newLocation }
     });
 }

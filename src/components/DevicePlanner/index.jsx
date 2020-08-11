@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { DeviceEditor } from './DeviceEditor/DeviceEditor';
 import { styles } from './styles';
-import { getTypeLocationProp, getDeviceLocationProp, sortDevices, findDevicesChanged } from './DeviceEditor/DeviceUtils';
+import { getTypeLocationProp, getDeviceLocationProp, changeDeviceLocationWithProp, sortDevices, findDevicesChanged } from './DeviceEditor/DeviceUtils';
 import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import devicesTrialQuery from './utils/devicesTrialQuery';
 
@@ -22,13 +22,27 @@ const DevicePlanner = ({ client, trial, match, updateLocation }) => {
                 const deviceTypes = dataType.data.deviceTypes.filter(devtype => devtype.name && getTypeLocationProp(devtype));
                 console.log('deviceTypes', deviceTypes);
                 deviceTypes.forEach(devtype => {
-                    client.query({ query: devicesTrialQuery(experimentId, devtype.key, trial.key) })
-                        .then(dataDev => {
-                            console.log('devices trial', dataDev.data.devices);
-                        });
+                    const locationProp = getDeviceLocationProp(newDev, newDevType);
+                    // client.query({ query: devicesTrialQuery(experimentId, devtype.key, trial.key) })
+                    //     .then(dataDev => {
+                    //         console.log('devices trial', dataDev.data.devices);
+                    //     });
                     client.query({ query: devicesTrialQuery(experimentId, devtype.key, undefined) })
                         .then(dataDev => {
                             devtype.items = dataDev.data.devices;
+                            devtype.items.forEach(devitem => {
+                                devent = trial.entities.find(ent => ent.key === devitem.key);
+                                if (devent) {
+                                    locprop = devent.properties.find(entprop => entprop.key === locationProp);
+                                    if (locprop) {
+                                        try {
+                                            locparsed = JSON.parse(locprop.val);
+                                            changeDeviceLocationWithProp(devitem, locationProp, locparsed.coordinates);
+                                        } catch (e) {
+                                        }
+                                    }
+                                }
+                            });
                             console.log('devices undef', devtype.items);
                             newdevs.push(devtype);
                             if (newdevs.length === deviceTypes.length) {
