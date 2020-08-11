@@ -12,21 +12,14 @@ import devicesTrialQuery from './utils/devicesTrialQuery';
 const DevicePlanner = ({ client, trial, match, updateLocation }) => {
     const [devices, setDevices] = React.useState([]);
 
-    console.log('props', client, trial, match);
-
     React.useEffect(() => {
         const experimentId = match.params.id;
         const newdevs = [];
         client.query({ query: deviceTypesQuery(experimentId) })
             .then((dataType) => {
                 const deviceTypes = dataType.data.deviceTypes.filter(devtype => devtype.name && getTypeLocationProp(devtype));
-                console.log('deviceTypes', deviceTypes);
                 deviceTypes.forEach(devtype => {
                     const locationProp = getTypeLocationProp(devtype);
-                    // client.query({ query: devicesTrialQuery(experimentId, devtype.key, trial.key) })
-                    //     .then(dataDev => {
-                    //         console.log('devices trial', dataDev.data.devices);
-                    //     });
                     client.query({ query: devicesTrialQuery(experimentId, devtype.key, undefined) })
                         .then(dataDev => {
                             devtype.items = dataDev.data.devices;
@@ -43,11 +36,9 @@ const DevicePlanner = ({ client, trial, match, updateLocation }) => {
                                     }
                                 }
                             });
-                            console.log('devices undef', devtype.items);
                             newdevs.push(devtype);
                             if (newdevs.length === deviceTypes.length) {
                                 sortDevices(newdevs);
-                                console.log('setDevices: ', newdevs);
                                 setDevices(newdevs);
                             }
                         })
@@ -61,13 +52,24 @@ const DevicePlanner = ({ client, trial, match, updateLocation }) => {
             <DeviceEditor
                 devices={devices}
                 setDevices={(newDevices) => {
-                    findDevicesChanged(devices, newDevices).forEach(changed => {
+                    const changedDevices = findDevicesChanged(devices, newDevices);
+                    const changedDetails = changedDevices.map(changed => {
                         const { dev: newDev, type: newDevType } = changed;
-                        console.log('change', newDev);
                         const locationProp = getDeviceLocationProp(newDev, newDevType);
                         const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
-                        updateLocation({ key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps });
+                        return { key: newDev.key, type: "device", typeKey: newDevType.key, properties: changeProps };
                     });
+
+                    // Calling updateLocation one change at a time, otherwise it crushes.
+                    const uploc = () => {
+                        if (changedDetails.length) {
+                            const ch = changedDetails.pop();
+                            console.log('change', ch);
+                            updateLocation(ch)
+                                .then(uploc);
+                        }
+                    }
+                    uploc();
                     setDevices(newDevices);
                 }}
             />
