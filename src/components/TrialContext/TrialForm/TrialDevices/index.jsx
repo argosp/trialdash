@@ -109,7 +109,7 @@ class TrialDevices extends React.Component {
     newEntity.key = trial.key;
     newEntity.experimentId = trial.experimentId;
     newEntity.trialSetKey = trial.trialSetKey;
-    newEntity[trial.status === 'design' ? 'entities' : 'deployEntities'] = [entity];
+    newEntity[!trial.status ||trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
 
     await client.mutate({
       mutation: trialMutationUpdate(newEntity),
