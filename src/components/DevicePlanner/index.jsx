@@ -22,7 +22,7 @@ const DevicePlanner = ({ client, trial, match, updateLocation }) => {
                 const deviceTypes = dataType.data.deviceTypes.filter(devtype => devtype.name && getTypeLocationProp(devtype));
                 console.log('deviceTypes', deviceTypes);
                 deviceTypes.forEach(devtype => {
-                    const locationProp = getDeviceLocationProp(newDev, newDevType);
+                    const locationProp = getTypeLocationProp(devtype);
                     // client.query({ query: devicesTrialQuery(experimentId, devtype.key, trial.key) })
                     //     .then(dataDev => {
                     //         console.log('devices trial', dataDev.data.devices);
