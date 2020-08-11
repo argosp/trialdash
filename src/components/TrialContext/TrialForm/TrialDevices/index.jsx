@@ -43,7 +43,7 @@ const TabPanel = ({ children, value, index, ...other }) => (
 
 class TrialDevices extends React.Component {
   state = {
-    selectedViewIndex: 2,
+    selectedViewIndex: 3,
     entities: {},
     devices: {},
     deviceTypes: {},
