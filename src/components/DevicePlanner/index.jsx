@@ -31,12 +31,12 @@ const DevicePlanner = ({ client, trial, match, updateLocation }) => {
                         .then(dataDev => {
                             devtype.items = dataDev.data.devices;
                             devtype.items.forEach(devitem => {
-                                devent = trial.entities.find(ent => ent.key === devitem.key);
+                                const devent = trial.entities.find(ent => ent.key === devitem.key);
                                 if (devent) {
-                                    locprop = devent.properties.find(entprop => entprop.key === locationProp);
+                                    const locprop = devent.properties.find(entprop => entprop.key === locationProp);
                                     if (locprop) {
                                         try {
-                                            locparsed = JSON.parse(locprop.val);
+                                            const locparsed = JSON.parse(locprop.val);
                                             changeDeviceLocationWithProp(devitem, locationProp, locparsed.coordinates);
                                         } catch (e) {
                                         }
