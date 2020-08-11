@@ -7,7 +7,7 @@ export const getTypeLocationProp = (deviceType) => {
 export const getDeviceLocationProp = (device, deviceType) => {
     const key = getTypeLocationProp(deviceType);
     const prop = device.properties.find(pr => pr.key === key);
-    if (!prop || !prop.val || !prop.val.coordinates) return undefined;
+    if (!prop || !prop.val) return undefined;
     return prop;
 }
 
