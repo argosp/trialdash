@@ -22,14 +22,14 @@ const DevicePlanner = ({ client, trial, match, updateLocation }) => {
                 const deviceTypes = dataType.data.deviceTypes.filter(devtype => devtype.name && getTypeLocationProp(devtype));
                 console.log('deviceTypes', deviceTypes);
                 deviceTypes.forEach(devtype => {
-                    client.query({ query: devicesTrialQuery(experimentId, devtype.key, undefined) })
-                        .then(dataDev => {
-                            console.log('devices undef', dataDev.data.devices);
-                        });
                     client.query({ query: devicesTrialQuery(experimentId, devtype.key, trial.key) })
                         .then(dataDev => {
+                            console.log('devices trial', dataDev.data.devices);
+                        });
+                    client.query({ query: devicesTrialQuery(experimentId, devtype.key, undefined) })
+                        .then(dataDev => {
                             devtype.items = dataDev.data.devices;
-                            console.log('devices trial', devtype.items);
+                            console.log('devices undef', devtype.items);
                             newdevs.push(devtype);
                             if (newdevs.length === deviceTypes.length) {
                                 sortDevices(newdevs);
