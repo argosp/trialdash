@@ -124,8 +124,6 @@ class TrialDevices extends React.Component {
         );
       },
     });
-
-    this.setUpdated();
   };
 
   render() {
