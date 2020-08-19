@@ -6,6 +6,11 @@ const position = [32.081128, 34.779729];
 
 export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, children }) => {
     const mapElement = React.useRef(null);
+    const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
+    const mapTileUrl = process.env.REACT_APP_MAP_URL || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png';
+    if (!process.env.REACT_APP_MAP_ATTRIBUTION || !process.env.REACT_APP_MAP_URL) {
+        console.log('Getting map tileserver url from hardcoded:', mapTileUrl);
+    }
 
     React.useEffect(() => {
         mapElement.current.leafletElement.invalidateSize();
@@ -22,7 +27,11 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, children }) => {
             onMouseOut={onMouseOut}
         >
 
-            <LayersControl position="topright">
+            <TileLayer
+                attribution={mapAttrib}
+                url={mapTileUrl}
+            />
+            {/* <LayersControl position="topright">
                 <LayersControl.BaseLayer name="Carto" checked={true}>
                     <TileLayer
                         attribution='&copy; <a href="https://carto.com">Carto</a> contributors'
@@ -41,7 +50,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, children }) => {
                         bounds={[[31.8, 34.2], [32.3, 35.2]]}
                     />
                 </LayersControl.BaseLayer>
-            </LayersControl>
+            </LayersControl> */}
 
             {children}
         </LeafletMap>
