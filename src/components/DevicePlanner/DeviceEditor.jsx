@@ -5,7 +5,7 @@ import { DeviceMarker } from './DeviceMarker';
 import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './Utils';
+import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './GeometryUtils';
 import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
 import { InputSlider } from './InputSlider';
 import { DeviceList } from './DeviceList';
@@ -177,7 +177,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 position: 'absolute', width: '28%', top: 0, bottom: 0, left: 0, zIndex: 1000
             }}>
                 <Paper style={{
-                    position: 'absolute', height: '88%', overflow: 'auto', top: 0, width: '100%'
+                    position: 'absolute', height: '100%', overflow: 'auto', top: 0, width: '100%'
                 }} >
                     <div
                         style={{ margin: 10 }}
@@ -223,14 +223,6 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                         />
 
                     </div>
-                </Paper>
-                <Paper style={{
-                    position: 'absolute', maxHeight: '10%', overflow: 'auto', bottom: 0, height: '10%', width: '100%'
-                }} >
-                    <JsonStreamer
-                        json={devices}
-                        onChange={(val) => setDevices(val)}
-                    />
                 </Paper>
             </div>
         </div>

@@ -3,9 +3,9 @@ import React from 'react';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-import { DeviceEditor } from './DeviceEditor/DeviceEditor';
+import { DeviceEditor } from './DeviceEditor';
 import { styles } from './styles';
-import { getTypeLocationProp, getDeviceLocationProp, changeDeviceLocationWithProp, sortDevices, findDevicesChanged } from './DeviceEditor/DeviceUtils';
+import { getTypeLocationProp, getDeviceLocationProp, changeDeviceLocationWithProp, sortDevices, findDevicesChanged } from './DeviceUtils';
 import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import devicesTrialQuery from './utils/devicesTrialQuery';
 
