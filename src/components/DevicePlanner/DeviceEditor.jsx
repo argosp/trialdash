@@ -11,7 +11,7 @@ import { InputSlider } from './InputSlider';
 import { DeviceList } from './DeviceList';
 import { DeviceMap } from './DeviceMap';
 
-export const DeviceEditor = ({ devices, setDevices }) => {
+export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned }) => {
     const currPolyline = useRef(null);
     const auxPolyline = useRef(null);
 
@@ -24,7 +24,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
 
-    console.log('DeviceEditor', devices)
+    console.log('DeviceEditor', devices, showOnlyAssigned)
 
     const changeLocations = (type, indices, newLocations = [undefined]) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
@@ -212,6 +212,13 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                             <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
                                 value={showName}
                                 onChange={e => setShowName(e.target.checked)}
+                            />
+                        </div>
+                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show only assigned</InputLabel>
+                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                value={showOnlyAssigned}
+                                onChange={e => setShowOnlyAssigned(e.target.checked)}
                             />
                         </div>
 
