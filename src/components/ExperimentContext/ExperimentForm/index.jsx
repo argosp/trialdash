@@ -6,6 +6,11 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Grid from '@material-ui/core/Grid';
 import MomentUtils from '@date-io/moment';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableBody from '@material-ui/core/TableBody';
+import MaterialTable from 'material-table';
 import moment from 'moment';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { compose } from 'recompose';
@@ -19,6 +24,7 @@ import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
 import config from '../../../config';
 import ConfirmDialog from '../../ConfirmDialog';
+import MapsEditTable from './utils/mapsEditTable';
 import experimentsQuery from '../utils/experimentsQuery';
 import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
@@ -34,11 +40,33 @@ class ExperimentForm extends React.Component {
       end: this.props.experiment ? this.props.experiment.end : new Date().toISOString(),
       location: this.props.experiment ? this.props.experiment.location : '0,0',
       numberOfTrials: this.props.experiment ? this.props.experiment.numberOfTrials : 0,
+      maps: this.props.experiment ? this.props.experiment.maps : [],
+
     },
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false,
+    columns: [
+      { title: 'Image', field: 'image',
+       render: rowData => <img src={rowData.imageUrl} style={{width: 50, borderRadius: '50%'}}/>,
+       editComponent: props => (
+        <input
+          type="file"
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}
+        />
+      )},
+      { title: 'Image name', field: 'imageName' },
+      { title: 'Bounds (x,y)', field: 'bounds' },
+      { title: 'Scale', field: 'scale', type: 'numeric' },
+
+    ],
+    data: [
+      { imageUrl: "https://d33wubrfki0l68.cloudfront.net/ca0061c3c33c88b2b124e64ad341e15e2a17af49/c8765/images/alligator-logo3.svg",
+       imageName: 'fdsaf',bounds:'3,5', scale: 1987 }
+    ],
   };
 
+  
   startDatePickerRef = React.createRef();
 
   endDatePickerRef = React.createRef();
@@ -133,6 +161,8 @@ class ExperimentForm extends React.Component {
       isStartDatePickerOpen,
       isEndDatePickerOpen,
       confirmOpen,
+      columns,
+      data
     } = this.state;
 
     return (
@@ -248,15 +278,15 @@ class ExperimentForm extends React.Component {
             </Grid>
           </Grid>
           <Grid container>
-            <Grid item xs={4}>
-              <CustomInput
+            <Grid item xs={8}>
+              {/* <CustomInput
                 value={formObject.location}
                 className={classes.locationInput}
                 onChange={e => this.changeFormObject(e, 'location')}
                 id="location-input"
                 label="Location"
-              />
-              <Map
+              /> */}
+              {/* <Map
                 center={formObject.location.split(',')}
                 zoom={13}
                 className={classes.map}
@@ -268,7 +298,54 @@ class ExperimentForm extends React.Component {
                   id="mapbox.streets"
                 />
                 <Marker position={formObject.location.split(',')} />
-              </Map>
+              </Map> */}
+
+              {/* //display table */}
+              <MapsEditTable/>
+              {/* <div style={{ maxWidth: "100%" }}>
+              <MaterialTable
+                title="Images and locations"
+                columns={columns}
+                data={data}
+                editable={{
+                  onRowAdd: (newData) =>
+                    new Promise((resolve) => {
+                      setTimeout(() => {
+                        resolve();
+                        this.setState((prevState) => {
+                          const data = [...prevState.data];
+                          data.push(newData);
+                          return { ...prevState, data };
+                        });
+                      }, 600);
+                    }),
+                  onRowUpdate: (newData, oldData) =>
+                    new Promise((resolve) => {
+                      setTimeout(() => {
+                        resolve();
+                        if (oldData) {
+                          this.setState((prevState) => {
+                            const data = [...prevState.data];
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          });
+                        }
+                      }, 600);
+                    }),
+                  onRowDelete: (oldData) =>
+                    new Promise((resolve) => {
+                      setTimeout(() => {
+                        resolve();
+                        this.setState((prevState) => {
+                          const data = [...prevState.data];
+                          data.splice(data.indexOf(oldData), 1);
+                          return { ...prevState, data };
+                        });
+                      }, 600);
+                    }),
+                }}
+              />
+              </div> */}
             </Grid>
           </Grid>
         </form>
