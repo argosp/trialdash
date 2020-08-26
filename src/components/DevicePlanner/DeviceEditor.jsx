@@ -5,13 +5,13 @@ import { DeviceMarker } from './DeviceMarker';
 import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './Utils';
+import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './GeometryUtils';
 import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
 import { InputSlider } from './InputSlider';
 import { DeviceList } from './DeviceList';
 import { DeviceMap } from './DeviceMap';
 
-export const DeviceEditor = ({ devices, setDevices }) => {
+export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned }) => {
     const currPolyline = useRef(null);
     const auxPolyline = useRef(null);
 
@@ -24,7 +24,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
     const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
 
-    console.log('DeviceEditor', devices)
+    console.log('DeviceEditor', devices, showOnlyAssigned)
 
     const changeLocations = (type, indices, newLocations = [undefined]) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
@@ -177,7 +177,7 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                 position: 'absolute', width: '28%', top: 0, bottom: 0, left: 0, zIndex: 1000
             }}>
                 <Paper style={{
-                    position: 'absolute', height: '88%', overflow: 'auto', top: 0, width: '100%'
+                    position: 'absolute', height: '100%', overflow: 'auto', top: 0, width: '100%'
                 }} >
                     <div
                         style={{ margin: 10 }}
@@ -214,6 +214,13 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                                 onChange={e => setShowName(e.target.checked)}
                             />
                         </div>
+                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show only assigned</InputLabel>
+                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                value={showOnlyAssigned}
+                                onChange={e => setShowOnlyAssigned(e.target.checked)}
+                            />
+                        </div>
 
                         <DeviceList
                             selection={selection}
@@ -223,14 +230,6 @@ export const DeviceEditor = ({ devices, setDevices }) => {
                         />
 
                     </div>
-                </Paper>
-                <Paper style={{
-                    position: 'absolute', maxHeight: '10%', overflow: 'auto', bottom: 0, height: '10%', width: '100%'
-                }} >
-                    <JsonStreamer
-                        json={devices}
-                        onChange={(val) => setDevices(val)}
-                    />
                 </Paper>
             </div>
         </div>
