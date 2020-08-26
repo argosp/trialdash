@@ -2,34 +2,47 @@ import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
 export default function MapsEditTable() {
     //get porps
-  const [data, setData] = useState([{ imageUrl: "https://d33wubrfki0l68.cloudfront.net/ca0061c3c33c88b2b124e64ad341e15e2a17af49/c8765/images/alligator-logo3.svg",imageName: 'fdsaf',bounds:'3,5', scale: 1987 }
-  ],);
+  const [data, setData] = useState([{ imageUrl: "",imageName: 'fdsaf',bounds:'3,5', scale: 1987 }],);
   const columns = [
     { title: 'Image', field: 'image',
-     render: rowData => <img src={rowData.imageUrl} style={{width: 50, borderRadius: '50%'}}/>,
+     render: rowData => <img src={rowData.image || rowData.imageUrl || ''} style={{width: 50, borderRadius: '50%'}}/>,
      editComponent: props => (
       <input
         type="file"
         value={props.value}
-        onChange={e => props.onChange(e.target.value)}
+        onChange={e => {onChangeFile(e)}} //props.onChange(e.target.files[0])
+        //check value to save (what type?), value to display as blob
       />
     )},
     { title: 'Image name', field: 'imageName' },
     { title: 'Bounds (x,y)', field: 'bounds' },
-    { title: 'Scale', field: 'scale', type: 'numeric' },
+    { title: 'Scale', field: 'scale', type: 'numeric' }];
+  let imageToDisplay;
+  
+  // useEffect(() => {
+  //     let mounted = true;
+  //     if(mounted){
+  //   console.log('data in useEffect ',data);
+  //     }
+  //     return () => mounted = false;
 
-  ]
-  useEffect(() => {
-      let mounted =true;
-      if(mounted){
-    console.log('data in useEffect ',data);
-      }
-      return () => mounted = false;
+  // },[data]);
 
-  },[data]);
-
+  
+  const onChangeFile = (e)=> {  
+        const imageBlob = window.URL.createObjectURL(e.target.files[0]);
+        console.log('imageToDisplay ',imageBlob)
+         // URL.revokeObjectURL(imageToDisplay);
+         imageToDisplay = imageBlob;
+        // return imageToDisplay;
+        
+  }
   const handleRowUpdate = (newData, oldData)=>  {
     console.log('handleRowUpdate ',newData,oldData);
+    if(imageToDisplay != ''){
+      newData.imageUrl = imageToDisplay;
+      imageToDisplay = '';
+    }
     const dataUpdate = [...data];
     dataUpdate[data.indexOf(oldData)] = newData;
     setData([...dataUpdate]);
@@ -59,24 +72,24 @@ export default function MapsEditTable() {
         onRowAdd: (newData) =>
           new Promise((resolve) => {
             setTimeout(() => {
-              resolve();
               handleRowAdd(newData);
+              resolve();
             }, 600);
           }),
         onRowUpdate: (newData, oldData) =>
           new Promise((resolve) => {
             setTimeout(() => {
-              resolve();
               if (oldData) {
                handleRowUpdate(newData,oldData);
               }
+              resolve();
             }, 600)
           }),
         onRowDelete: (oldData) =>
           new Promise((resolve) => {
             setTimeout(() => {
-              resolve();
               handleRowDelete(oldData);
+              resolve();
             }, 600);
           }),
       }}
