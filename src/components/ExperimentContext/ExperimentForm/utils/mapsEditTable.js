@@ -3,14 +3,11 @@ import React, {
   useEffect
 } from 'react';
 import MaterialTable from 'material-table';
+import uploadFilesMutation from '../utils/uploadFilesMutation';
+
 export default function MapsEditTable( props ) {
   //get porps
-  const [data, setData] = useState([{
-    imageUrl: "",
-    imageName: 'fdsaf',
-    bounds: '3,5',
-    scale: 1987
-  }], );
+  const [data, setData] = useState([]);
   const columns = [{
       title: 'Image',
       field: 'image',
@@ -34,24 +31,32 @@ export default function MapsEditTable( props ) {
   let imageToDisplay;
 
   useEffect(() => {
-    debugger
-      let mounted = true;
-      if(mounted){
-        console.log('data in useEffect ',data);
-        // props.onConfirm();
-     }
-      return () => mounted = false;
+    console.log('data in useEffect ');
+    setData(props.data);
+    //   let mounted = true;
+    //   if(mounted){
+      
+    //  }
+    //   return () => mounted = false;
+  },[]);
 
-  },[data]);
 
-
-  const onChangeFile = (e) => {
-    const imageBlob = window.URL.createObjectURL(e.target.files[0]);
-    console.log('imageToDisplay ', imageBlob)
-    // URL.revokeObjectURL(imageToDisplay);
-    imageToDisplay = imageBlob;
+  const  onChangeFile = async (e) => {
+   const { client } = props;
+   const file = e.target.files[0],
+   pattern = /image-*/;
+   if (!file.type.match(pattern)) {
+    return;
   }
-  const setImage = (newData) =>{
+  const {data} = await client.mutate({mutation: uploadFilesMutation(file)});
+
+   const imageBlobUrl = window.URL.createObjectURL(file);
+   // URL.revokeObjectURL(imageToDisplay);
+   imageToDisplay = imageBlobUrl;
+
+  }
+  const setImage = (newData) => {
+
     let updatedObj = newData;
     if (imageToDisplay != '') {
       updatedObj.imageUrl = imageToDisplay;
@@ -59,6 +64,7 @@ export default function MapsEditTable( props ) {
     }
     return updatedObj;
   }
+
   const handleRowUpdate = (newData, oldData) => {
     const updatedObj = setImage(newData);
     console.log('handleRowUpdate ', updatedObj, oldData);
@@ -70,6 +76,7 @@ export default function MapsEditTable( props ) {
     const updatedObj = setImage(newData);
     console.log('handleRowAdd ', updatedObj);
     setData([...data, updatedObj]);
+    // props.changeFormObject('', 'maps',data);
   }
 
   const handleRowDelete = (oldData) => {
@@ -80,6 +87,8 @@ export default function MapsEditTable( props ) {
   }
 
   return ( 
+
+    //TODO: change V icon to -'OfflinePinOutlined' icon
     <div style = {{maxWidth: "100%"}} >
     < MaterialTable title = "Images and locations"
     columns = { columns }

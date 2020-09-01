@@ -13,4 +13,6 @@ export const DEVICE_TYPE_MUTATION = 'addUpdateDeviceType';
 export const EXPERIMENTS_WITH_DATA = 'experimentsWithData';
 export const EXPERIMENT_MUTATION = 'addUpdateExperiment';
 
+export const UPLOAD_FILE = 'uploadFile';
+
 export const ASSETS = 'assets';

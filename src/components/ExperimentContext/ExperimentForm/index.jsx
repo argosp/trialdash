@@ -28,6 +28,7 @@ import MapsEditTable from './utils/mapsEditTable';
 import experimentsQuery from '../utils/experimentsQuery';
 import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
+import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 
 class ExperimentForm extends React.Component {
   state = {
@@ -40,8 +41,7 @@ class ExperimentForm extends React.Component {
       end: this.props.experiment ? this.props.experiment.end : new Date().toISOString(),
       location: this.props.experiment ? this.props.experiment.location : '0,0',
       numberOfTrials: this.props.experiment ? this.props.experiment.numberOfTrials : 0,
-      maps: this.props.experiment ? this.props.experiment.maps : [],
-
+      maps: this.props.experiment ? this.props.experiment.maps : [{imageUrl: "", imageName: 'fdsaf', bounds: '3,5', scale: 1987}]
     },
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false
@@ -83,7 +83,7 @@ class ExperimentForm extends React.Component {
     this.closeForm(true);
   };
 
-  changeFormObject = (event, field) => {
+  changeFormObject = (event, field, data) => {
     let value;
 
     switch (field) {
@@ -115,6 +115,13 @@ class ExperimentForm extends React.Component {
           else return;
         } else value = `${event.latlng.lat},${event.latlng.lng}`;
         break;
+      case 'maps':
+          this.setState(state => ({
+            formObject: {
+              ...state.formObject,
+              maps: data,
+            },
+          }));
       default:
         ({ value } = event.target);
     }
@@ -136,7 +143,7 @@ class ExperimentForm extends React.Component {
   }
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, client } = this.props;
     const {
       formObject,
       isStartDatePickerOpen,
@@ -282,7 +289,11 @@ class ExperimentForm extends React.Component {
               </Map> */}
 
               {/* //display table */}
-              <MapsEditTable onConfirm = {() => this.submitExperiment(formObject)}/>
+              <MapsEditTable 
+                changeFormObject ={ this.changeFormObject }
+                data = {formObject.maps}
+                client = {client}
+              />
             </Grid>
           </Grid>
         </form>
