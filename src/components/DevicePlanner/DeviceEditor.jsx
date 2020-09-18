@@ -1,20 +1,16 @@
 import { Button, InputLabel, Paper, Switch } from '@material-ui/core';
-import React, { useRef, useEffect } from 'react';
-import { Polyline } from "react-leaflet";
+import React from 'react';
 import { DeviceMarker } from './DeviceMarker';
-import { JsonStreamer } from './JsonStreamer';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './GeometryUtils';
+import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, rectByAngle } from './GeometryUtils';
 import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
 import { InputSlider } from './InputSlider';
 import { DeviceList } from './DeviceList';
 import { DeviceMap } from './DeviceMap';
+import { MarkedShape } from './MarkedShape';
 
 export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned }) => {
-    const currPolyline = useRef(null);
-    const auxPolyline = useRef(null);
-
     const [selectedType, setSelectedType] = React.useState(devices[0].name);
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
@@ -104,42 +100,10 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
 
     const shapeData = () => shapeOptions.find(s => s.name === shape);
 
-    const setLatLngsWithDist = (leafletElement, points) => {
-        leafletElement.setLatLngs(points);
-        const dist = polylineDistance(leafletElement.getLatLngs());
-        if (dist > 0) {
-            leafletElement.bindTooltip(distToText(dist)).openTooltip();
-        }
-    };
-
-    const renderShape = (hoverPoint) => {
-        if (!markedPoints.length) return;
-        const points = hoverPoint ? markedPoints.concat([hoverPoint]) : markedPoints;
-        const shownPolylines = shapeData().toLine(points);
-        setLatLngsWithDist(currPolyline.current.leafletElement, shownPolylines[0]);
-        if (shape === 'Arc') {
-            setLatLngsWithDist(auxPolyline.current.leafletElement, shownPolylines.length > 1 ? shownPolylines[1] : []);
-        }
-    };
-
-    const handleMouseMove = e => {
-        renderShape(e.latlng ? [e.latlng.lat, e.latlng.lng] : undefined);
-    };
-
-    const handleMouseOut = () => {
-        renderShape();
-    };
-
-    useEffect(() => {
-        renderShape();
-    });
-
     return (
         <div className="App" style={{ position: 'relative', height: "100vh" }}>
             <DeviceMap
                 onClick={handleMapClick}
-                onMouseMove={handleMouseMove}
-                onMouseOut={handleMouseOut}
             >
                 {
                     devices.map(devType => {
@@ -161,16 +125,12 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                     })
                 }
 
-                {
-                    (!markedPoints || !markedPoints.length) ? null :
-                        <>
-                            <Polyline positions={[]} ref={currPolyline} />
-                            {
-                                shape !== 'Arc' ? null :
-                                    <Polyline positions={[]} ref={auxPolyline} />
-                            }
-                        </>
-                }
+                <MarkedShape
+                    markedPoints={markedPoints}
+                    setMarkedPoints={setMarkedPoints}
+                    shape={shape}
+                    shapeCreator={shapeData()}
+                />
 
             </DeviceMap>
             <div style={{
