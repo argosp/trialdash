@@ -48,17 +48,17 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
         {
             name: 'Point',
             toLine: points => [],
-            toPositions: points => [points[0]]
+            toPositions: (points, amount) => amount && points.length ? [points[0]] : []
         },
         {
             name: 'Poly',
             toLine: points => [points],
-            toPositions: points => resamplePolyline(points, selection.length)
+            toPositions: (points, amount) => resamplePolyline(points, amount)
         },
         {
             name: 'Curve',
             toLine: points => [splineCurve(points, 100)],
-            toPositions: points => resamplePolyline(splineCurve(points, 100), selection.length)
+            toPositions: (points, amount) => resamplePolyline(splineCurve(points, 100), amount)
         },
         {
             name: 'Arc',
@@ -67,7 +67,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                 const arc = arcCurveFromPoints(points, 400);
                 return [[points[0], arc[0]], arc];
             },
-            toPositions: points => resamplePolyline(arcCurveFromPoints(points, 400), selection.length)
+            toPositions: (points, amount) => resamplePolyline(arcCurveFromPoints(points, 400), amount)
         },
         {
             name: 'Rect',
@@ -75,10 +75,10 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
                 return [[nw, ne, se, sw, nw]];
             },
-            toPositions: (points, rows = rectRows, angle = rectAngle) => {
+            toPositions: (points, amount, rows = rectRows, angle = rectAngle) => {
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
                 let ret = [];
-                const cols = Math.ceil(selection.length / rows);
+                const cols = Math.ceil(amount / rows);
                 for (let y = 0; y < rows; ++y) {
                     const west = lerpPoint(nw, sw, y / (rows - 1));
                     const east = lerpPoint(ne, se, y / (rows - 1));
@@ -92,7 +92,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     ];
 
     const handlePutDevices = () => {
-        const positions = shapeData().toPositions(markedPoints);
+        const positions = shapeData().toPositions(markedPoints, selection.length);
         setDevices(changeLocations(selectedType, selection, positions));
         setMarkedPoints([]);
         setSelection([]);
@@ -130,6 +130,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                     setMarkedPoints={setMarkedPoints}
                     shape={shape}
                     shapeCreator={shapeData()}
+                    deviceNum={selection.length}
                 />
 
             </DeviceMap>
