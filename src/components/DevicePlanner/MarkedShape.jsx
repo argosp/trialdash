@@ -8,7 +8,6 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
     const auxPolyline = React.useRef(null);
 
     let candLocs = shapeCreator.toPositions(markedPoints, deviceNum).filter(x => x);
-    // const candRefs = React.useRef(candLocs.map(() => React.createRef()));
 
     const setLatLngsWithDist = (leafletElement, points) => {
         leafletElement.setLatLngs(points);
@@ -50,10 +49,6 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
                         }}
                         dragLocation={(latlng) => {
                             renderShape(replacePoint(markedPoints, i, latlng));
-                            // candLocs = shapeCreator.toPositions(markedPoints, deviceNum).filter(x => x);
-                            // candLocs.forEach((loc, index) => {
-                            //     candRefs.current[index].current.leafletElement.center = loc;
-                            // });
                         }}
                     ></MarkedPoint>
                 ))
@@ -65,8 +60,13 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
             }
             {
                 candLocs.map((loc, index) => {
-                    return <CircleMarker center={loc} key={index} // ref={candRefs.current[index]}
-                        radius={7} color={'#297A31'} opacity={0.7} dashArray={'4 4'} weight={2}
+                    return <CircleMarker
+                        center={loc} key={index}
+                        radius={7}
+                        color={'#297A31'}
+                        opacity={0.7}
+                        dashArray={'4 4'}
+                        weight={2}
                     />
                 })
             }
