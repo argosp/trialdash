@@ -28,6 +28,7 @@ import MapsEditTable from './utils/mapsEditTable';
 import experimentsQuery from '../utils/experimentsQuery';
 import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
+import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 
 class ExperimentForm extends React.Component {
   state = {
@@ -40,30 +41,10 @@ class ExperimentForm extends React.Component {
       end: this.props.experiment ? this.props.experiment.end : new Date().toISOString(),
       location: this.props.experiment ? this.props.experiment.location : '0,0',
       numberOfTrials: this.props.experiment ? this.props.experiment.numberOfTrials : 0,
-      maps: this.props.experiment ? this.props.experiment.maps : [],
-
+      maps: this.props.experiment ? this.props.experiment.maps : [{imageUrl: "", imageName: 'fdsaf', bounds: '3,5', scale: 1987}]
     },
     isStartDatePickerOpen: false,
-    isEndDatePickerOpen: false,
-    columns: [
-      { title: 'Image', field: 'image',
-       render: rowData => <img src={rowData.imageUrl} style={{width: 50, borderRadius: '50%'}}/>,
-       editComponent: props => (
-        <input
-          type="file"
-          value={props.value}
-          onChange={e => props.onChange(e.target.value)}
-        />
-      )},
-      { title: 'Image name', field: 'imageName' },
-      { title: 'Bounds (x,y)', field: 'bounds' },
-      { title: 'Scale', field: 'scale', type: 'numeric' },
-
-    ],
-    data: [
-      { imageUrl: "https://d33wubrfki0l68.cloudfront.net/ca0061c3c33c88b2b124e64ad341e15e2a17af49/c8765/images/alligator-logo3.svg",
-       imageName: 'fdsaf',bounds:'3,5', scale: 1987 }
-    ],
+    isEndDatePickerOpen: false
   };
 
   
@@ -102,7 +83,7 @@ class ExperimentForm extends React.Component {
     this.closeForm(true);
   };
 
-  changeFormObject = (event, field) => {
+  changeFormObject = (event, field, data) => {
     let value;
 
     switch (field) {
@@ -134,6 +115,13 @@ class ExperimentForm extends React.Component {
           else return;
         } else value = `${event.latlng.lat},${event.latlng.lng}`;
         break;
+      case 'maps':
+          this.setState(state => ({
+            formObject: {
+              ...state.formObject,
+              maps: data,
+            },
+          }));
       default:
         ({ value } = event.target);
     }
@@ -155,7 +143,7 @@ class ExperimentForm extends React.Component {
   }
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, client } = this.props;
     const {
       formObject,
       isStartDatePickerOpen,
@@ -301,51 +289,11 @@ class ExperimentForm extends React.Component {
               </Map> */}
 
               {/* //display table */}
-              <MapsEditTable/>
-              {/* <div style={{ maxWidth: "100%" }}>
-              <MaterialTable
-                title="Images and locations"
-                columns={columns}
-                data={data}
-                editable={{
-                  onRowAdd: (newData) =>
-                    new Promise((resolve) => {
-                      setTimeout(() => {
-                        resolve();
-                        this.setState((prevState) => {
-                          const data = [...prevState.data];
-                          data.push(newData);
-                          return { ...prevState, data };
-                        });
-                      }, 600);
-                    }),
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve) => {
-                      setTimeout(() => {
-                        resolve();
-                        if (oldData) {
-                          this.setState((prevState) => {
-                            const data = [...prevState.data];
-                            data[data.indexOf(oldData)] = newData;
-                            return { ...prevState, data };
-                          });
-                        }
-                      }, 600);
-                    }),
-                  onRowDelete: (oldData) =>
-                    new Promise((resolve) => {
-                      setTimeout(() => {
-                        resolve();
-                        this.setState((prevState) => {
-                          const data = [...prevState.data];
-                          data.splice(data.indexOf(oldData), 1);
-                          return { ...prevState, data };
-                        });
-                      }, 600);
-                    }),
-                }}
+              <MapsEditTable 
+                changeFormObject ={ this.changeFormObject }
+                data = {formObject.maps}
+                client = {client}
               />
-              </div> */}
             </Grid>
           </Grid>
         </form>
