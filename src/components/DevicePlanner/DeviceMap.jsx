@@ -35,10 +35,10 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, children }) => {
             />
             {/* </LayersControl.BaseLayer>
                 <LayersControl.Overlay name="Image"> */}
-            <ImageOverlay
+            {/* <ImageOverlay
                 url="https://cdn.vox-cdn.com/thumbor/HKALidP1Nm7vvd6GrsLmUCSVlEw=/0x0:2048x2732/1200x800/filters:focal(540x2092:866x2418)/cdn.vox-cdn.com/uploads/chorus_image/image/52202887/super_mario_run_ipad_screenshot_01_2048.0.jpeg"
                 bounds={[[32.08083, 34.77524], [32.08962, 34.78876]]}
-            />
+            /> */}
             {/* </LayersControl.Overlay>
             </LayersControl> */}
 
