@@ -1,21 +1,17 @@
 import { Button, InputLabel, Paper, Switch } from '@material-ui/core';
-import React, { useRef, useEffect } from 'react';
-import { Polyline } from "react-leaflet";
-import { DeviceMarker } from './DeviceMarker';
-import { JsonStreamer } from './JsonStreamer';
-import { ShapeChooser } from './ShapeChooser';
-import { TypeChooser } from './TypeChooser';
-import { arcCurveFromPoints, lerpPoint, resamplePolyline, splineCurve, polylineDistance, distToText, rectByAngle } from './GeometryUtils';
-import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
-import { InputSlider } from './InputSlider';
+import React from 'react';
 import { DeviceList } from './DeviceList';
 import { DeviceMap } from './DeviceMap';
+import { DeviceMarker } from './DeviceMarker';
+import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
+import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
+import { InputSlider } from './InputSlider';
+import { MarkedShape } from './MarkedShape';
+import { ShapeChooser } from './ShapeChooser';
+import { TypeChooser } from './TypeChooser';
 
 export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned }) => {
-    const currPolyline = useRef(null);
-    const auxPolyline = useRef(null);
-
-    const [selectedType, setSelectedType] = React.useState(devices[0].name);
+    const [selectedType, setSelectedType] = React.useState(devices.length ? devices[0].name : '');
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
     const [shape, setShape] = React.useState("Point");
@@ -24,7 +20,11 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
 
-    console.log('DeviceEditor', devices, showOnlyAssigned)
+    console.log('DeviceEditor', devices, showOnlyAssigned, selectedType)
+
+    if (selectedType === '' && devices.length > 0) {
+        setSelectedType(devices[0].name);
+    }
 
     const changeLocations = (type, indices, newLocations = [undefined]) => {
         let tempDevices = JSON.parse(JSON.stringify(devices));
@@ -52,17 +52,17 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
         {
             name: 'Point',
             toLine: points => [],
-            toPositions: points => [points[0]]
+            toPositions: (points, amount) => amount && points.length ? [points[0]] : []
         },
         {
             name: 'Poly',
             toLine: points => [points],
-            toPositions: points => resamplePolyline(points, selection.length)
+            toPositions: (points, amount) => resamplePolyline(points, amount)
         },
         {
             name: 'Curve',
             toLine: points => [splineCurve(points, 100)],
-            toPositions: points => resamplePolyline(splineCurve(points, 100), selection.length)
+            toPositions: (points, amount) => resamplePolyline(splineCurve(points, 100), amount)
         },
         {
             name: 'Arc',
@@ -71,7 +71,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                 const arc = arcCurveFromPoints(points, 400);
                 return [[points[0], arc[0]], arc];
             },
-            toPositions: points => resamplePolyline(arcCurveFromPoints(points, 400), selection.length)
+            toPositions: (points, amount) => resamplePolyline(arcCurveFromPoints(points, 400), amount)
         },
         {
             name: 'Rect',
@@ -79,15 +79,17 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
                 return [[nw, ne, se, sw, nw]];
             },
-            toPositions: (points, rows = rectRows, angle = rectAngle) => {
+            toPositions: (points, amount, rows = rectRows, angle = rectAngle) => {
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
                 let ret = [];
-                const cols = Math.ceil(selection.length / rows);
-                for (let y = 0; y < rows; ++y) {
-                    const west = lerpPoint(nw, sw, y / (rows - 1));
-                    const east = lerpPoint(ne, se, y / (rows - 1));
-                    for (let x = 0; x < cols; ++x) {
-                        ret.push(lerpPoint(west, east, x / (cols - 1)));
+                const cols = Math.ceil(amount / rows);
+                if (rows > 1 && cols > 1) {
+                    for (let y = 0; y < rows; ++y) {
+                        const west = lerpPoint(nw, sw, y / (rows - 1));
+                        const east = lerpPoint(ne, se, y / (rows - 1));
+                        for (let x = 0; x < cols; ++x) {
+                            ret.push(lerpPoint(west, east, x / (cols - 1)));
+                        }
                     }
                 }
                 return ret;
@@ -96,7 +98,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     ];
 
     const handlePutDevices = () => {
-        const positions = shapeData().toPositions(markedPoints);
+        const positions = shapeData().toPositions(markedPoints, selection.length);
         setDevices(changeLocations(selectedType, selection, positions));
         setMarkedPoints([]);
         setSelection([]);
@@ -104,42 +106,10 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
 
     const shapeData = () => shapeOptions.find(s => s.name === shape);
 
-    const setLatLngsWithDist = (leafletElement, points) => {
-        leafletElement.setLatLngs(points);
-        const dist = polylineDistance(leafletElement.getLatLngs());
-        if (dist > 0) {
-            leafletElement.bindTooltip(distToText(dist)).openTooltip();
-        }
-    };
-
-    const renderShape = (hoverPoint) => {
-        if (!markedPoints.length) return;
-        const points = hoverPoint ? markedPoints.concat([hoverPoint]) : markedPoints;
-        const shownPolylines = shapeData().toLine(points);
-        setLatLngsWithDist(currPolyline.current.leafletElement, shownPolylines[0]);
-        if (shape === 'Arc') {
-            setLatLngsWithDist(auxPolyline.current.leafletElement, shownPolylines.length > 1 ? shownPolylines[1] : []);
-        }
-    };
-
-    const handleMouseMove = e => {
-        renderShape(e.latlng ? [e.latlng.lat, e.latlng.lng] : undefined);
-    };
-
-    const handleMouseOut = () => {
-        renderShape();
-    };
-
-    useEffect(() => {
-        renderShape();
-    });
-
     return (
         <div className="App" style={{ position: 'relative', height: "100vh" }}>
             <DeviceMap
                 onClick={handleMapClick}
-                onMouseMove={handleMouseMove}
-                onMouseOut={handleMouseOut}
             >
                 {
                     devices.map(devType => {
@@ -161,16 +131,13 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                     })
                 }
 
-                {
-                    (!markedPoints || !markedPoints.length) ? null :
-                        <>
-                            <Polyline positions={[]} ref={currPolyline} />
-                            {
-                                shape !== 'Arc' ? null :
-                                    <Polyline positions={[]} ref={auxPolyline} />
-                            }
-                        </>
-                }
+                <MarkedShape
+                    markedPoints={markedPoints}
+                    setMarkedPoints={setMarkedPoints}
+                    shape={shape}
+                    shapeCreator={shapeData()}
+                    deviceNum={selection.length}
+                />
 
             </DeviceMap>
             <div style={{
@@ -196,39 +163,42 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                             onClick={handlePutDevices}
                         >
                             Put devices
-                    </Button>
-                        <TypeChooser
-                            selectedType={selectedType}
-                            onChange={newType => {
-                                setSelection([]);
-                                setSelectedType(newType);
-                            }}
-                            showAll={showAll}
-                            setShowAll={val => setShowAll(val)}
-                            typeOptions={devices.map(dev => { return { name: dev.name } })}
-                        />
-                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
-                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                                value={showName}
-                                onChange={e => setShowName(e.target.checked)}
-                            />
-                        </div>
-                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show only assigned</InputLabel>
-                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                                value={showOnlyAssigned}
-                                onChange={e => setShowOnlyAssigned(e.target.checked)}
-                            />
-                        </div>
+                        </Button>
+                        {!devices.length ? null :
+                            <>
+                                <TypeChooser
+                                    selectedType={selectedType}
+                                    onChange={newType => {
+                                        setSelection([]);
+                                        setSelectedType(newType);
+                                    }}
+                                    showAll={showAll}
+                                    setShowAll={val => setShowAll(val)}
+                                    typeOptions={devices.map(dev => { return { name: dev.name } })}
+                                />
+                                <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                                    <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
+                                    <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        value={showName}
+                                        onChange={e => setShowName(e.target.checked)}
+                                    />
+                                </div>
+                                <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                                    <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show only assigned</InputLabel>
+                                    <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        value={showOnlyAssigned}
+                                        onChange={e => setShowOnlyAssigned(e.target.checked)}
+                                    />
+                                </div>
 
-                        <DeviceList
-                            selection={selection}
-                            setSelection={setSelection}
-                            devices={devices.filter(d => d.name === selectedType)}
-                            removeDeviceLocation={(index) => setDevices(changeLocations(selectedType, [index]))}
-                        />
-
+                                <DeviceList
+                                    selection={selection}
+                                    setSelection={setSelection}
+                                    devices={devices.filter(d => d.name === selectedType)}
+                                    removeDeviceLocation={(index) => setDevices(changeLocations(selectedType, [index]))}
+                                />
+                            </>
+                        }
                     </div>
                 </Paper>
             </div>
