@@ -149,23 +149,23 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                     <div
                         style={{ margin: 10 }}
                     >
-                        <ShapeChooser
-                            shape={shape}
-                            onChange={(val) => setShape(val)}
-                            shapeOptions={shapeOptions}
-                        />
-                        {shape !== 'Rect' ? null :
-                            <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
-                        }
-                        <Button variant="contained" color="primary"
-                            disabled={shape === 'Point'}
-                            style={{ margin: 5 }}
-                            onClick={handlePutDevices}
-                        >
-                            Put devices
-                        </Button>
                         {!devices.length ? null :
                             <>
+                                <ShapeChooser
+                                    shape={shape}
+                                    onChange={(val) => setShape(val)}
+                                    shapeOptions={shapeOptions}
+                                />
+                                {shape !== 'Rect' ? null :
+                                    <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
+                                }
+                                <Button variant="contained" color="primary"
+                                    disabled={shape === 'Point'}
+                                    style={{ margin: 5 }}
+                                    onClick={handlePutDevices}
+                                >
+                                    Put devices
+                                </Button>
                                 <TypeChooser
                                     selectedType={selectedType}
                                     onChange={newType => {
