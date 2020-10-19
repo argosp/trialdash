@@ -109,7 +109,7 @@ class TrialDevices extends React.Component {
     newEntity.key = trial.key;
     newEntity.experimentId = trial.experimentId;
     newEntity.trialSetKey = trial.trialSetKey;
-    newEntity[!trial.status ||trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
+    newEntity[!trial.status || trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
 
     await client.mutate({
       mutation: trialMutationUpdate(newEntity),
@@ -177,10 +177,10 @@ class TrialDevices extends React.Component {
             <IconButton
               disableRipple
               className={
-                  selectedViewIndex === 2
-                    ? classnames(classes.viewButton, classes.viewButtonSelected)
-                    : classes.viewButton
-                }
+                selectedViewIndex === 2
+                  ? classnames(classes.viewButton, classes.viewButtonSelected)
+                  : classes.viewButton
+              }
               onClick={() => this.changeView(2)}
             >
               <GridIcon />
@@ -229,12 +229,15 @@ class TrialDevices extends React.Component {
           }
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
-          {selectedViewIndex === 3 &&
-            <DevicePlanner
-              updateLocation={this.updateLocation}
-              trial={trial}
-              entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
-            />
+          {
+            (selectedViewIndex === 3 && Object.keys(deviceTypes).length) ?
+              <DevicePlanner
+                updateLocation={this.updateLocation}
+                trial={trial}
+                entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+                deviceTypes={deviceTypes}
+              />
+              : null
           }
         </TabPanel>
       </>

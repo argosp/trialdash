@@ -16,7 +16,7 @@ export const MarkedPoint = ({ location, dragLocation, setLocation }) => {
                 iconSize: [20, 20],
                 html: renderToStaticMarkup(
                     <div>
-                        <i class="fas fa-crosshairs"></i>
+                        <i className="fas fa-crosshairs"></i>
                     </div>
                 ),
                 iconAnchor: [6, 9]
