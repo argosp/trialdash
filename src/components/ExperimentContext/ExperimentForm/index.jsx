@@ -267,28 +267,6 @@ class ExperimentForm extends React.Component {
           </Grid>
           <Grid container>
             <Grid item xs={8}>
-              {/* <CustomInput
-                value={formObject.location}
-                className={classes.locationInput}
-                onChange={e => this.changeFormObject(e, 'location')}
-                id="location-input"
-                label="Location"
-              /> */}
-              {/* <Map
-                center={formObject.location.split(',')}
-                zoom={13}
-                className={classes.map}
-                onClick={e => this.changeFormObject(e, 'location')}
-                attributionControl={false}
-              >
-                <TileLayer
-                  url={`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${config.mapboxAccessToken}`}
-                  id="mapbox.streets"
-                />
-                <Marker position={formObject.location.split(',')} />
-              </Map> */}
-
-              {/* //display table */}
               <MapsEditTable 
                 changeFormObject ={ this.changeFormObject }
                 data = {formObject.maps}
