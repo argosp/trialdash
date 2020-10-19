@@ -11,7 +11,7 @@ export default function MapsEditTable(props) {
       field: "image",
       render: (rowData) => (
         <img
-          src={rowData.image || rowData.imageUrl || ""}
+          src={rowData.imageUrl || ""}
           style={{ width: "100%" }}
         />
       ),
