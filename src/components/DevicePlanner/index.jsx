@@ -9,7 +9,7 @@ import { changeDeviceLocationWithProp, findDevicesChanged, getDeviceLocationProp
 import { styles } from './styles';
 import devicesTrialQuery from './utils/devicesTrialQuery';
 
-const DevicePlanner = ({ client, trial, match, updateLocation }) => {
+const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
     const [devices, setDevices] = React.useState([]);
     const [working, setWorking] = React.useState(false);
@@ -32,30 +32,27 @@ const DevicePlanner = ({ client, trial, match, updateLocation }) => {
     React.useEffect(() => {
         const experimentId = match.params.id;
         const trialKey = showOnlyAssigned ? trial.key : undefined;
-        setWorking(true);
-        client.query({ query: deviceTypesQuery(experimentId) })
-            .then((dataType) => {
-                setWorking(25);
-                const newdevs = dataType.data.deviceTypes.filter(devtype => devtype.name && getTypeLocationProp(devtype));
-                newdevs.forEach(d => d.items = []);
-                newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-                // setDevices(newdevs);
-                let done = 0;
-                newdevs.forEach(devtype => {
-                    const locationProp = getTypeLocationProp(devtype);
-                    client.query({ query: devicesTrialQuery(experimentId, devtype.key, trialKey) })
-                        .then(dataDev => {
-                            done += 1
-                            setWorking(25 + done / newdevs.length * 75);
-                            devtype.items = dataDev.data.devices.map(devitem => deviceWithTrialLocation(devitem, locationProp));
-                            devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-                            if (done === newdevs.length) {
-                                setDevices(newdevs);
-                            }
-                            setTimeout(() => setWorking(false), 500);
-                        })
+        const newdevs = Object.values(deviceTypes)
+            .map(dtlst => dtlst.filter(dt => dt.name && dt.key && getTypeLocationProp(dt)))
+            .filter(dtlst => dtlst.length)
+            .map(dtlst => dtlst[0]);
+        newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
+        setWorking(0);
+        let done = 0;
+        newdevs.forEach(devtype => {
+            const locationProp = getTypeLocationProp(devtype);
+            client.query({ query: devicesTrialQuery(experimentId, devtype.key, trialKey) })
+                .then(dataDev => {
+                    done += 1
+                    setWorking(done / newdevs.length * 100);
+                    devtype.items = dataDev.data.devices.map(devitem => deviceWithTrialLocation(devitem, locationProp));
+                    devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
+                    if (done === newdevs.length) {
+                        setDevices(newdevs);
+                    }
+                    setTimeout(() => setWorking(false), 500);
                 })
-            })
+        })
     }, [showOnlyAssigned]);
 
     const handleChangeDevices = (newDevices) => {

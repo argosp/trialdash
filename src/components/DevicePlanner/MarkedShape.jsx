@@ -43,6 +43,7 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
             {
                 markedPoints.map((p, i) => (
                     <MarkedPoint
+                        key={i}
                         location={p}
                         setLocation={(latlng) => {
                             setMarkedPoints(replacePoint(markedPoints, i, latlng));
@@ -61,7 +62,8 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
             {
                 candLocs.map((loc, index) => {
                     return <CircleMarker
-                        center={loc} key={index}
+                        key={index}
+                        center={loc}
                         radius={7}
                         color={'#297A31'}
                         opacity={0.7}

@@ -312,8 +312,8 @@ class TrialForm extends React.Component {
             rightComponent={(
               <StyledTabs
                 tabs={[
-                  { key: trial.key, label: 'General', id: 'trial-tab-0' },
-                  { key: trial.key, label: 'Devices', id: 'trial-tab-1' },
+                  { key: trial.key + '_G', label: 'General', id: 'trial-tab-0' },
+                  { key: trial.key + '_D', label: 'Devices', id: 'trial-tab-1' },
                 ]}
                 value={tabValue}
                 onChange={this.changeTab}
