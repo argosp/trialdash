@@ -13,7 +13,8 @@ import {
   Typography,
   Box,
   IconButton,
-  Icon
+  Icon,
+  Checkbox
 } from '@material-ui/core';
 
 const InputImageIcon = ({ onChangeFile }) => {
@@ -83,7 +84,10 @@ const Row = ({ row, setRow, deleteRow }) => {
           {row.upper + "," + row.left}
         </TableCell>
         <TableCell align="right">
-          {row.embedded}
+          <Checkbox disabled
+            checked={row.embedded}
+          >
+          </Checkbox>
         </TableCell>
       </TableRow>
       <TableRow>
