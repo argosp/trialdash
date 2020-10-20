@@ -28,8 +28,13 @@ const InputImageIcon = ({ onChangeFile }) => {
   }).bind(this)
   return (
     <>
-      <input type='file' id='file' ref={inputFile} style={{ display: 'none' }}
+      <input
+        type='file'
+        id='file'
+        ref={inputFile}
+        style={{ display: 'none' }}
         onChange={handleChangeFile}
+        accept='image/*'
       />
       <IconButton aria-label="expand row" size="small" onClick={onButtonClick}>
         <Icon>folder_open</Icon>
@@ -48,18 +53,24 @@ const Row = ({ row, setRow }) => {
             {open ? <Icon>keyboard_arrow_up</Icon> : <Icon>keyboard_arrow_down</Icon>}
           </IconButton>
           <InputImageIcon aria-label="expand row" size="small"
-            onChangeFile={(file) => console.log(file)}
+            onChangeFile={(file) => {
+              const newrow = JSON.parse(JSON.stringify(row));
+              newrow.imageUrl = window.URL.createObjectURL(file);
+              setRow(newrow);
+            }}
           >
           </InputImageIcon>
         </TableCell>
         <TableCell component="th" scope="row">
           {row.imageName}
         </TableCell>
-        <TableCell align="right">
-          <img
-            src={row.imageUrl || ""}
-            style={{ width: "100%" }}
-          />
+        <TableCell align="right" style={{ padding: 0 }}>
+          {!row.imageUrl ? null :
+            <img
+              src={row.imageUrl}
+              style={{ height: '50px', borderRadius: '50px' }}
+            />
+          }
         </TableCell>
         <TableCell align="right">
           {row.lower + "," + row.right}
@@ -129,7 +140,14 @@ export default function MapsEditTable({ data, setData }) {
         </TableHead>
         <TableBody>
           {data.map((row, i) => (
-            <Row row={row} key={i}></Row>
+            <Row row={row} key={i} setRow={
+              (row) => {
+                const newdata = data.slice();
+                newdata[i] = row;
+                setData(newdata);
+              }
+            }
+            ></Row>
           ))}
         </TableBody>
       </Table>
