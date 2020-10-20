@@ -74,7 +74,7 @@ const Row = ({ row, setRow, deleteRow }) => {
           {!open ? row.imageName :
             <TextField
               value={row.imageName}
-              onChange={(val) => setRow({ ...row, imageName: val })}
+              onChange={(e) => setRow({ ...row, imageName: e.target.value })}
             />
           }
         </TableCell>
@@ -91,12 +91,12 @@ const Row = ({ row, setRow, deleteRow }) => {
             <Grid container justify="space-evenly" alignItems="center">
               <TextField
                 value={row.lower}
-                onChange={(val) => setRow({ ...row, lower: val })}
+                onChange={(e) => setRow({ ...row, lower: parseFloat(e.target.value) })}
                 style={{ width: '80px' }}
               />
               <TextField
                 value={row.right}
-                onChange={(val) => setRow({ ...row, right: val })}
+                onChange={(e) => setRow({ ...row, right: parseFloat(e.target.value) })}
                 style={{ width: '80px' }}
               />
             </Grid>
@@ -107,12 +107,12 @@ const Row = ({ row, setRow, deleteRow }) => {
             <Grid container justify="space-evenly" alignItems="center">
               <TextField
                 value={row.upper}
-                onChange={(val) => setRow({ ...row, upper: val })}
+                onChange={(e) => setRow({ ...row, upper: parseFloat(e.target.value) })}
                 style={{ width: '80px' }}
               />
               <TextField
                 value={row.left}
-                onChange={(val) => setRow({ ...row, left: val })}
+                onChange={(e) => setRow({ ...row, left: parseFloat(e.target.value) })}
                 style={{ width: '80px' }}
               />
             </Grid>
