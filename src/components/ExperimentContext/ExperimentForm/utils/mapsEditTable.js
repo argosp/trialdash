@@ -140,17 +140,11 @@ const Row = ({ row, setRow, deleteRow }) => {
                 attribution={mapAttrib}
                 url={mapTileUrl}
               />
+              <ImageOverlay
+                url={row.imageUrl}
+                bounds={[[row.lower, row.right], [row.upper, row.left]]}
+              />
             </LeafletMap>
-            {/* <Box margin={1}>
-                <Typography variant="h6" gutterBottom component="div">
-                  History
-              </Typography>
-                {!row.imageUrl ? null :
-                  <img
-                    src={row.imageUrl}
-                  />
-                }
-              </Box> */}
           </Collapse>
         </TableCell>
       </TableRow>
