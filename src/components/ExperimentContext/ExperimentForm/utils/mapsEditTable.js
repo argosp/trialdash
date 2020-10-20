@@ -14,7 +14,9 @@ import {
   Box,
   IconButton,
   Icon,
-  Checkbox
+  Checkbox,
+  TextField,
+  Grid
 } from '@material-ui/core';
 
 const InputImageIcon = ({ onChangeFile }) => {
@@ -64,8 +66,13 @@ const Row = ({ row, setRow, deleteRow }) => {
           >
           </InputImageIcon>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {row.imageName}
+        <TableCell component="th" scope="row" style={{ padding: 0 }}>
+          {!open ? row.imageName :
+            <TextField
+              value={row.imageName}
+              onChange={(val) => setRow({ ...row, imageName: val })}
+            />
+          }
         </TableCell>
         <TableCell align="right" style={{ padding: 0 }}>
           {!row.imageUrl ? null :
@@ -76,10 +83,36 @@ const Row = ({ row, setRow, deleteRow }) => {
           }
         </TableCell>
         <TableCell align="right">
-          {row.lower + "," + row.right}
+          {!open ? row.lower + ',' + row.right :
+            <Grid container justify="space-evenly" alignItems="center">
+              <TextField
+                value={row.lower}
+                onChange={(val) => setRow({ ...row, lower: val })}
+                style={{ width: '50px' }}
+              />
+              <TextField
+                value={row.right}
+                onChange={(val) => setRow({ ...row, right: val })}
+                style={{ width: '50px' }}
+              />
+            </Grid>
+          }
         </TableCell>
         <TableCell align="right">
-          {row.upper + "," + row.left}
+          {!open ? row.upper + ',' + row.left :
+            <Grid container justify="space-evenly" alignItems="center">
+              <TextField
+                value={row.upper}
+                onChange={(val) => setRow({ ...row, upper: val })}
+                style={{ width: '50px' }}
+              />
+              <TextField
+                value={row.left}
+                onChange={(val) => setRow({ ...row, left: val })}
+                style={{ width: '50px' }}
+              />
+            </Grid>
+          }
         </TableCell>
         <TableCell align="right">
           <Checkbox
@@ -120,10 +153,12 @@ export default function MapsEditTable({ data, setData }) {
         <TableHead>
           <TableRow>
             <TableCell>
-              <IconButton>
-                <Icon onClick={() => {
+              <IconButton
+                onClick={() => {
                   setData(data.concat({ imageUrl: "", imageName: 'image ' + (data.length + 1), lower: '0', right: '0', upper: '10', left: '10', embedded: true }))
-                }}>add</Icon>
+                }}
+              >
+                <Icon>add</Icon>
               </IconButton>
             </TableCell>
             <TableCell>Image name</TableCell>
