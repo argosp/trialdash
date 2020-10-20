@@ -267,7 +267,7 @@ class ExperimentForm extends React.Component {
             </Grid>
           </Grid>
           <Grid container>
-            <Grid item xs={8}>
+            <Grid item xs={12}>
               <MapsEditTable
                 setData={(data) => this.changeFormObject(undefined, 'maps', data)}
                 data={formObject.maps}
