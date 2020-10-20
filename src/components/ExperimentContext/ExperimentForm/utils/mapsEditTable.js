@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import MaterialTable from "material-table";
+// import MaterialTable from "material-table";
+import { BasketIcon } from '../../../../constants/icons';
 import {
   Paper,
   Table,
@@ -36,23 +37,26 @@ const InputImageIcon = ({ onChangeFile }) => {
         onChange={handleChangeFile}
         accept='image/*'
       />
-      <IconButton aria-label="expand row" size="small" onClick={onButtonClick}>
+      <IconButton aria-label="expand row" onClick={onButtonClick}>
         <Icon>folder_open</Icon>
       </IconButton>
     </>
   )
 }
 
-const Row = ({ row, setRow }) => {
+const Row = ({ row, setRow, deleteRow }) => {
   const [open, setOpen] = useState(false);
   return (
     <>
       <TableRow>
         <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+          <IconButton aria-label="expand row" onClick={() => setOpen(!open)}>
             {open ? <Icon>keyboard_arrow_up</Icon> : <Icon>keyboard_arrow_down</Icon>}
           </IconButton>
-          <InputImageIcon aria-label="expand row" size="small"
+          <IconButton aria-label="expand row" onClick={() => deleteRow()}>
+            <BasketIcon></BasketIcon>
+          </IconButton>
+          <InputImageIcon aria-label="expand row"
             onChangeFile={(file) => {
               const newrow = JSON.parse(JSON.stringify(row));
               newrow.imageUrl = window.URL.createObjectURL(file);
@@ -126,7 +130,7 @@ export default function MapsEditTable({ data, setData }) {
     data = []
   }
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{ marginBottom: 100 }}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
@@ -146,13 +150,19 @@ export default function MapsEditTable({ data, setData }) {
         </TableHead>
         <TableBody>
           {data.map((row, i) => (
-            <Row row={row} key={i} setRow={
-              (row) => {
+            <Row
+              key={i}
+              row={row}
+              deleteRow={() => {
+                let dataUpdate = [...data];
+                dataUpdate.splice(i, 1);
+                setData([...dataUpdate]);
+              }}
+              setRow={(row) => {
                 const newdata = data.slice();
                 newdata[i] = row;
                 setData(newdata);
-              }
-            }
+              }}
             ></Row>
           ))}
         </TableBody>

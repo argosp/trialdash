@@ -3,14 +3,9 @@ import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import classnames from 'classnames';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import Grid from '@material-ui/core/Grid';
+import {Grid, Typography} from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableBody from '@material-ui/core/TableBody';
-import MaterialTable from 'material-table';
 import moment from 'moment';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { compose } from 'recompose';
@@ -264,6 +259,9 @@ class ExperimentForm extends React.Component {
           </Grid>
           <Grid container>
             <Grid item xs={12}>
+              <Typography variant="h6">
+                Images and locations
+              </Typography>
               <MapsEditTable
                 setData={(data) => this.setState(state => ({
                   formObject: {
