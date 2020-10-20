@@ -116,13 +116,7 @@ class ExperimentForm extends React.Component {
         } else value = `${event.latlng.lat},${event.latlng.lng}`;
         break;
       case 'maps':
-        this.setState(state => ({
-          formObject: {
-            ...state.formObject,
-            maps: data,
-          },
-        }));
-        break;
+        return;
       default:
         ({ value } = event.target);
     }
@@ -269,7 +263,12 @@ class ExperimentForm extends React.Component {
           <Grid container>
             <Grid item xs={12}>
               <MapsEditTable
-                setData={(data) => this.changeFormObject(undefined, 'maps', data)}
+                setData={(data) => this.setState(state => ({
+                  formObject: {
+                    ...state.formObject,
+                    maps: data,
+                  },
+                }))}
                 data={formObject.maps}
               // client = {client}
               />
