@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MaterialTable from "material-table";
 import {
   Paper,
@@ -15,6 +15,29 @@ import {
   Icon
 } from '@material-ui/core';
 
+const InputImageIcon = ({ onChangeFile }) => {
+  const inputFile = useRef(null);
+  const onButtonClick = () => {
+    // `current` points to the mounted file input element
+    inputFile.current.click();
+  };
+  const handleChangeFile = ((event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    onChangeFile(event.target.files[0]);
+  }).bind(this)
+  return (
+    <>
+      <input type='file' id='file' ref={inputFile} style={{ display: 'none' }}
+        onChange={handleChangeFile}
+      />
+      <IconButton aria-label="expand row" size="small" onClick={onButtonClick}>
+        <Icon>folder_open</Icon>
+      </IconButton>
+    </>
+  )
+}
+
 const Row = ({ row, setRow }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -24,6 +47,10 @@ const Row = ({ row, setRow }) => {
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <Icon>keyboard_arrow_up</Icon> : <Icon>keyboard_arrow_down</Icon>}
           </IconButton>
+          <InputImageIcon aria-label="expand row" size="small"
+            onChangeFile={(file) => console.log(file)}
+          >
+          </InputImageIcon>
         </TableCell>
         <TableCell component="th" scope="row">
           {row.imageName}
@@ -44,41 +71,41 @@ const Row = ({ row, setRow }) => {
           {row.embedded}
         </TableCell>
       </TableRow>
-      {/* <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                  <Collapse in={open} timeout="auto" unmountOnExit>
-                    <Box margin={1}>
-                      <Typography variant="h6" gutterBottom component="div">
-                        History
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography variant="h6" gutterBottom component="div">
+                History
                       </Typography>
-                      <Table size="small" aria-label="purchases">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Date</TableCell>
-                            <TableCell>Customer</TableCell>
-                            <TableCell align="right">Amount</TableCell>
-                            <TableCell align="right">Total price ($)</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {row.history.map((historyRow) => (
-                            <TableRow key={historyRow.date}>
-                              <TableCell component="th" scope="row">
-                                {historyRow.date}
-                              </TableCell>
-                              <TableCell>{historyRow.customerId}</TableCell>
-                              <TableCell align="right">{historyRow.amount}</TableCell>
-                              <TableCell align="right">
-                                {Math.round(historyRow.amount * row.price * 100) / 100}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow> */}
+              {/* <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Customer</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Total price ($)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.date}>
+                      <TableCell component="th" scope="row">
+                        {historyRow.date}
+                      </TableCell>
+                      <TableCell>{historyRow.customerId}</TableCell>
+                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell align="right">
+                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table> */}
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
     </>
   )
 }
