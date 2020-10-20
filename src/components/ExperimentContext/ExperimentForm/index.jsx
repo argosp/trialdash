@@ -36,9 +36,9 @@ class ExperimentForm extends React.Component {
       end: this.props.experiment ? this.props.experiment.end : new Date().toISOString(),
       location: this.props.experiment ? this.props.experiment.location : '0,0',
       numberOfTrials: this.props.experiment ? this.props.experiment.numberOfTrials : 0,
-      maps: this.props.experiment && this.props.experiment.maps ? this.props.experiment.maps : [{
-        imageUrl: "", imageName: 'fdsaf', lower: '3', right: '5', upper: '4', left: '6', embedded: true
-      }]
+      maps: this.props.experiment && this.props.experiment.maps ? this.props.experiment.maps : [
+        // {imageUrl: "", imageName: 'fdsaf', lower: '3', right: '5', upper: '4', left: '6', embedded: true}
+      ]
     },
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false
