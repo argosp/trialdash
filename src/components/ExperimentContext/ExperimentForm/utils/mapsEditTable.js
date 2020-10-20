@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 
 export default function MapsEditTable({ data, setData }) {
+  if (!data) {
+    data = []
+  }
   const columns = [
     {
       title: "Image",
@@ -44,6 +47,27 @@ export default function MapsEditTable({ data, setData }) {
         title="Images and locations"
         columns={columns}
         data={data}
+        // detailPanel={[
+        //   {
+        //     tooltip: 'Show Name',
+        //     render: rowData => {
+        //       return (
+        //         <div
+        //           style={{
+        //             fontSize: 100,
+        //             textAlign: 'center',
+        //             color: 'white',
+        //             backgroundColor: '#43A047',
+        //           }}
+        //         >
+        //           <img
+        //             src={rowData.imageUrl || ""}
+        //             style={{ width: "100%" }}
+        //           />
+        //         </div>
+        //       )
+        //     },
+        //   }]}
         editable={{
           onRowAdd: (newData) =>
             new Promise((resolve) => {
