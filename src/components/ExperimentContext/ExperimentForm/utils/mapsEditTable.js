@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 // import MaterialTable from "material-table";
 import { BasketIcon, PenIcon } from '../../../../constants/icons';
+import { Map as LeafletMap } from "react-leaflet";
+import { TileLayer, LayersControl, ImageOverlay } from "react-leaflet";
 import {
   Paper,
   Table,
@@ -25,11 +27,11 @@ const InputImageIcon = ({ onChangeFile }) => {
     // `current` points to the mounted file input element
     inputFile.current.click();
   };
-  const handleChangeFile = ((event) => {
+  const handleChangeFile = (event) => {
     event.stopPropagation();
     event.preventDefault();
     onChangeFile(event.target.files[0]);
-  }).bind(this)
+  }
   return (
     <>
       <input
@@ -49,6 +51,8 @@ const InputImageIcon = ({ onChangeFile }) => {
 
 const Row = ({ row, setRow, deleteRow }) => {
   const [open, setOpen] = useState(false);
+  const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
+  const mapTileUrl = process.env.REACT_APP_MAP_URL || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png';
   return (
     <>
       <TableRow>
@@ -88,12 +92,12 @@ const Row = ({ row, setRow, deleteRow }) => {
               <TextField
                 value={row.lower}
                 onChange={(val) => setRow({ ...row, lower: val })}
-                style={{ width: '50px' }}
+                style={{ width: '80px' }}
               />
               <TextField
                 value={row.right}
                 onChange={(val) => setRow({ ...row, right: val })}
-                style={{ width: '50px' }}
+                style={{ width: '80px' }}
               />
             </Grid>
           }
@@ -104,12 +108,12 @@ const Row = ({ row, setRow, deleteRow }) => {
               <TextField
                 value={row.upper}
                 onChange={(val) => setRow({ ...row, upper: val })}
-                style={{ width: '50px' }}
+                style={{ width: '80px' }}
               />
               <TextField
                 value={row.left}
                 onChange={(val) => setRow({ ...row, left: val })}
-                style={{ width: '50px' }}
+                style={{ width: '80px' }}
               />
             </Grid>
           }
@@ -124,18 +128,29 @@ const Row = ({ row, setRow, deleteRow }) => {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ padding: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              <Typography variant="h6" gutterBottom component="div">
-                History
+            <LeafletMap
+              center={[(row.lower + row.upper) / 2, (row.left + row.right) / 2]}
+              zoom={15}
+              // ref={mapElement}
+              style={{ height: "400px", width: '100%' }}
+            >
+              <TileLayer
+                attribution={mapAttrib}
+                url={mapTileUrl}
+              />
+            </LeafletMap>
+            {/* <Box margin={1}>
+                <Typography variant="h6" gutterBottom component="div">
+                  History
               </Typography>
-              {!row.imageUrl ? null :
-                <img
-                  src={row.imageUrl}
-                />
-              }
-            </Box>
+                {!row.imageUrl ? null :
+                  <img
+                    src={row.imageUrl}
+                  />
+                }
+              </Box> */}
           </Collapse>
         </TableCell>
       </TableRow>
@@ -155,7 +170,15 @@ export default function MapsEditTable({ data, setData }) {
             <TableCell>
               <IconButton
                 onClick={() => {
-                  setData(data.concat({ imageUrl: "", imageName: 'image ' + (data.length + 1), lower: '0', right: '0', upper: '10', left: '10', embedded: true }))
+                  setData(data.concat({
+                    imageUrl: "",
+                    imageName: 'image ' + (data.length + 1),
+                    lower: 32.08083,
+                    right: 34.77524,
+                    upper: 32.08962,
+                    left: 34.78876,
+                    embedded: true
+                  }))
                 }}
               >
                 <Icon>add</Icon>
