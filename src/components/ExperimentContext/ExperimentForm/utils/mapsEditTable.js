@@ -59,8 +59,7 @@ const Row = ({ row, setRow, deleteRow }) => {
           </IconButton>
           <InputImageIcon aria-label="expand row"
             onChangeFile={(file) => {
-              const image = window.URL.createObjectURL(file);
-              setRow(Object.assign({}, row, { imageUrl: image }));
+              setRow({ ...row, imageUrl: window.URL.createObjectURL(file) });
             }}
           >
           </InputImageIcon>
@@ -83,7 +82,9 @@ const Row = ({ row, setRow, deleteRow }) => {
           {row.upper + "," + row.left}
         </TableCell>
         <TableCell align="right">
-          <Checkbox disabled
+          <Checkbox
+            disabled={!open}
+            onChange={(e, val) => setRow({ ...row, embedded: val })}
             checked={row.embedded}
           >
           </Checkbox>
