@@ -130,7 +130,13 @@ export default function MapsEditTable({ data, setData }) {
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell />
+            <TableCell>
+              <IconButton>
+                <Icon onClick={() => {
+                  setData(data.concat({ imageUrl: "", imageName: 'image ' + (data.length + 1), lower: '0', right: '0', upper: '10', left: '10', embedded: true }))
+                }}>add</Icon>
+              </IconButton>
+            </TableCell>
             <TableCell>Image name</TableCell>
             <TableCell align="right">Image</TableCell>
             <TableCell align="right">Lower Right</TableCell>
