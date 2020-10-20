@@ -41,13 +41,13 @@ class ExperimentForm extends React.Component {
       end: this.props.experiment ? this.props.experiment.end : new Date().toISOString(),
       location: this.props.experiment ? this.props.experiment.location : '0,0',
       numberOfTrials: this.props.experiment ? this.props.experiment.numberOfTrials : 0,
-      maps: this.props.experiment ? this.props.experiment.maps : [{imageUrl: "", imageName: 'fdsaf', bounds: '3,5', scale: 1987}]
+      maps: this.props.experiment && this.props.experiment.maps ? this.props.experiment.maps : [{ imageUrl: "", imageName: 'fdsaf', bounds: '3,5', scale: 1987 }]
     },
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false
   };
 
-  
+
   startDatePickerRef = React.createRef();
 
   endDatePickerRef = React.createRef();
@@ -116,12 +116,13 @@ class ExperimentForm extends React.Component {
         } else value = `${event.latlng.lat},${event.latlng.lng}`;
         break;
       case 'maps':
-          this.setState(state => ({
-            formObject: {
-              ...state.formObject,
-              maps: data,
-            },
-          }));
+        this.setState(state => ({
+          formObject: {
+            ...state.formObject,
+            maps: data,
+          },
+        }));
+        break;
       default:
         ({ value } = event.target);
     }
@@ -267,10 +268,10 @@ class ExperimentForm extends React.Component {
           </Grid>
           <Grid container>
             <Grid item xs={8}>
-              <MapsEditTable 
-                changeFormObject ={ this.changeFormObject }
-                data = {formObject.maps}
-                client = {client}
+              <MapsEditTable
+                setData={(data) => this.changeFormObject(undefined, 'maps', data)}
+                data={formObject.maps}
+              // client = {client}
               />
             </Grid>
           </Grid>
