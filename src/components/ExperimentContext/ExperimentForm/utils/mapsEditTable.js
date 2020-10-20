@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 // import MaterialTable from "material-table";
-import { BasketIcon } from '../../../../constants/icons';
+import { BasketIcon, PenIcon } from '../../../../constants/icons';
 import {
   Paper,
   Table,
@@ -52,16 +52,15 @@ const Row = ({ row, setRow, deleteRow }) => {
       <TableRow>
         <TableCell>
           <IconButton aria-label="expand row" onClick={() => setOpen(!open)}>
-            {open ? <Icon>keyboard_arrow_up</Icon> : <Icon>keyboard_arrow_down</Icon>}
+            {open ? <Icon>keyboard_arrow_up</Icon> : <PenIcon></PenIcon>}
           </IconButton>
           <IconButton aria-label="expand row" onClick={() => deleteRow()}>
             <BasketIcon></BasketIcon>
           </IconButton>
           <InputImageIcon aria-label="expand row"
             onChangeFile={(file) => {
-              const newrow = JSON.parse(JSON.stringify(row));
-              newrow.imageUrl = window.URL.createObjectURL(file);
-              setRow(newrow);
+              const image = window.URL.createObjectURL(file);
+              setRow(Object.assign({}, row, { imageUrl: image }));
             }}
           >
           </InputImageIcon>
@@ -96,31 +95,12 @@ const Row = ({ row, setRow, deleteRow }) => {
             <Box margin={1}>
               <Typography variant="h6" gutterBottom component="div">
                 History
-                      </Typography>
-              {/* <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component="th" scope="row">
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table> */}
+              </Typography>
+              {!row.imageUrl ? null :
+                <img
+                  src={row.imageUrl}
+                />
+              }
             </Box>
           </Collapse>
         </TableCell>
