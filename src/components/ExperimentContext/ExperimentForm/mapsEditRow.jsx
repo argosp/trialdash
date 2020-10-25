@@ -60,6 +60,14 @@ const TextLatLng = ({ lat, lng, setLat, setLng, editable }) => {
   )
 }
 
+const getImageSize = (imageUrl, callbackSize) => {
+  const img = document.createElement('img');
+  img.src = imageUrl;
+  img.onload = function () {
+    callbackSize(img.width, img.height);
+  }
+}
+
 export const MapsEditRow = ({ row, setRow, deleteRow }) => {
   const [open, setOpen] = useState(false);
   const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
@@ -76,7 +84,15 @@ export const MapsEditRow = ({ row, setRow, deleteRow }) => {
           </IconButton>
           <InputImageIcon aria-label="expand row"
             onChangeFile={(file) => {
-              setRow({ ...row, imageUrl: window.URL.createObjectURL(file) });
+              const imageUrl = window.URL.createObjectURL(file);
+              getImageSize(imageUrl, (width, height) => {
+                setRow({
+                  ...row,
+                  imageUrl: window.URL.createObjectURL(file),
+                  width: width,
+                  height: height
+                });
+              });
             }}
           >
           </InputImageIcon>

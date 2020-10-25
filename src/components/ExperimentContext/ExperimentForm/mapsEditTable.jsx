@@ -28,9 +28,9 @@ export const MapsEditTable = ({ data, setData }) => {
                     imageUrl: "",
                     imageName: 'image ' + (data.length + 1),
                     lower: 32.08083,
-                    right: 34.77524,
+                    right: 34.78876,
                     upper: 32.08962,
-                    left: 34.78876,
+                    left: 34.77524,
                     embedded: true
                   }))
                 }}
