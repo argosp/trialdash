@@ -7,7 +7,8 @@ import {
   MapControl,
   withLeaflet,
   Popup,
-  CircleMarker
+  CircleMarker,
+  Polyline
 } from "react-leaflet";
 import {
   IconButton,
@@ -19,7 +20,7 @@ import {
   TextField
 } from '@material-ui/core';
 import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
-import { point } from "leaflet";
+import { latLng } from "leaflet";
 
 const defaultPosition = [32.0852, 34.782];
 
@@ -112,8 +113,6 @@ export const MapsEditDetails = ({ row, setRow }) => {
     setRow(Object.assign({}, row, box))
   }
 
-  controlPoints.forEach(p => console.log(p.x, p.y));
-
   return (
     <Grid container>
       <Grid item xs={2}>
@@ -201,6 +200,16 @@ export const MapsEditDetails = ({ row, setRow }) => {
             dashArray={'4 4'}
             weight={2}
           />
+          <Polyline
+            positions={controlPoints.map(p => [p.lat, p.lng])}
+            color={'black'}
+            weight={2}
+            dashArray={'4 4'}
+          >
+            {/* <Tooltip permanent>
+              {latLng(controlPoints[0]).distanceTo(latLng(controlPoints[1]))}
+            </Tooltip> */}
+          </Polyline>
         </LeafletMap>
       </Grid>
     </Grid>
