@@ -20,9 +20,27 @@ import {
   TextField
 } from '@material-ui/core';
 import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
-import { latLng } from "leaflet";
+import { canvas, latLng } from "leaflet";
 
 const defaultPosition = [32.0852, 34.782];
+
+// function DelayedTextField(props) {
+//   const { value, onChange } = props;
+
+//   useEffect(() => {
+//     const timeOutId = setTimeout(() => setDisplayMessage(query), 500);
+//     return () => clearTimeout(timeOutId);
+//   }, [query]);
+
+
+//   return (
+//       <TextField
+//         value={value}
+//         onChange={event => setQuery(event.target.value)}
+//         {...props}
+//       />
+//   );
+// }
 
 const ControlPointText = ({ point, setPoint }) => (
   <Grid container direction="column" justify="space-evenly" alignItems="center" spacing={1}>
@@ -111,6 +129,40 @@ export const MapsEditDetails = ({ row, setRow }) => {
       imageSize.x, imageSize.y
     )
     setRow(Object.assign({}, row, box))
+  }
+
+  const distancePixels = (cp1, cp2) => {
+    const dx = cp1.x - cp2.x;
+    const dy = cp1.y - cp2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  const distanceMeters = (cp1, cp2) => {
+    return latLng(cp1).distanceTo(latLng(cp2));
+  }
+
+  const changeDistanceMeters = (pointIndexToChange, val) => {
+    const p = controlPoints[selectedControlPoint];
+    const q = controlPoints[pointIndexToChange];
+    const dist = distanceMeters(p, q);
+    if (!Number.isFinite(val) || val < 0.001) return;
+    const factor = val / dist;
+    const qlat = p.lat + (q.lat - p.lat) * factor;
+    const qlng = p.lng + (q.lng - p.lng) * factor;
+    changeControlPoint({ ...q, lat: qlat, lng: qlng }, pointIndexToChange)
+  }
+
+  const changeDistancePixels = (pointIndexToChange, val) => {
+    const p = controlPoints[selectedControlPoint];
+    const q = controlPoints[pointIndexToChange];
+    const dist = distancePixels(p, q);
+    if (!Number.isFinite(val) || val < 0.001) return;
+    const factor = val / dist;
+    const qlat = p.lat + (q.lat - p.lat) * factor;
+    const qlng = p.lng + (q.lng - p.lng) * factor;
+    const qx = p.x + (q.x - p.x) * factor;
+    const qy = p.y + (q.y - p.y) * factor;
+    changeControlPoint({ ...q, lat: qlat, lng: qlng, x: qx, y: qy }, pointIndexToChange);
   }
 
   return (
@@ -205,10 +257,32 @@ export const MapsEditDetails = ({ row, setRow }) => {
             color={'black'}
             weight={2}
             dashArray={'4 4'}
+            renderer={canvas({ padding: 0.2, tolerance: 10 })}
           >
-            {/* <Tooltip permanent>
-              {latLng(controlPoints[0]).distanceTo(latLng(controlPoints[1]))}
-            </Tooltip> */}
+            <Popup permanent>
+              <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
+                <Grid item>
+                  <TextField
+                    value={Math.round(distanceMeters(controlPoints[0], controlPoints[1]) * 100) / 100}
+                    onChange={(e) => changeDistanceMeters(1 - selectedControlPoint, parseFloat(e.target.value))}
+                    style={{ width: '120px' }}
+                    variant="outlined"
+                    label="meters"
+                    size="small"
+                  />
+                </Grid >
+                <Grid item>
+                  <TextField
+                    value={Math.round(distancePixels(controlPoints[0], controlPoints[1]) * 100) / 100}
+                    onChange={(e) => changeDistancePixels(1 - selectedControlPoint, parseFloat(e.target.value))}
+                    style={{ width: '120px' }}
+                    variant="outlined"
+                    label="pixels"
+                    size="small"
+                  />
+                </Grid >
+              </Grid>
+            </Popup>
           </Polyline>
         </LeafletMap>
       </Grid>
