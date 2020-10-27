@@ -24,24 +24,6 @@ import { canvas, latLng } from "leaflet";
 
 const defaultPosition = [32.0852, 34.782];
 
-// function DelayedTextField(props) {
-//   const { value, onChange } = props;
-
-//   useEffect(() => {
-//     const timeOutId = setTimeout(() => setDisplayMessage(query), 500);
-//     return () => clearTimeout(timeOutId);
-//   }, [query]);
-
-
-//   return (
-//       <TextField
-//         value={value}
-//         onChange={event => setQuery(event.target.value)}
-//         {...props}
-//       />
-//   );
-// }
-
 const ControlPointText = ({ point, setPoint }) => (
   <Grid container direction="column" justify="space-evenly" alignItems="center" spacing={1}>
     <Grid item>
