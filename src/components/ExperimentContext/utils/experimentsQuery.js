@@ -18,5 +18,16 @@ export default gql`
           name
           description
         }
+        maps{
+          imageUrl
+          imageName
+          lower
+          upper
+          left
+          right
+          width
+          height
+          embedded
+        }
     }
 }`;
