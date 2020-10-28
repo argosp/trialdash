@@ -27,6 +27,7 @@ import {
   TRIALS,
   TRIAL_MUTATION,
 } from '../../../../constants/base';
+import dataQuery from '../../../DataContext/utils/dataQuery.js';
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
     component="div"
@@ -47,6 +48,7 @@ class TrialDevices extends React.Component {
     entities: {},
     devices: {},
     deviceTypes: {},
+    experimentDataMaps: []
   };
 
   componentWillMount() {
@@ -66,6 +68,7 @@ class TrialDevices extends React.Component {
         deviceTypes,
       });
     });
+    this.getExperimentById();
   }
 
   componentDidMount() {
@@ -126,6 +129,13 @@ class TrialDevices extends React.Component {
     });
   };
 
+  getExperimentById =  async () => {
+    const { client, match,trial } = this.props;
+    const experimentId =trial.experimentId;
+      await client.query({ query: dataQuery(experimentId) }).then(( data) => {
+        if(data) this.setState({experimentDataMaps:data.data.experimentData.maps});
+   });
+  }
   render() {
     const {
       classes,
@@ -236,6 +246,7 @@ class TrialDevices extends React.Component {
                 trial={trial}
                 entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
                 deviceTypes={deviceTypes}
+                experimentDataMaps = {this.state.experimentDataMaps}
               />
               : null
           }

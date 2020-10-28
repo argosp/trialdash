@@ -3,7 +3,12 @@ import gql from 'graphql-tag';
 const data = experimentId => gql`
   {
     experimentData(experimentId:"${experimentId}"){
-       project
+       project {
+        id
+        name
+        description
+        status
+       }
        id
        name
        description
@@ -11,6 +16,17 @@ const data = experimentId => gql`
        end
        location
        numberOfTrials
+       maps {
+        imageUrl
+        imageName
+        lower
+        upper
+        left
+        right
+        width
+        height
+        embedded
+      }
     }
   }`;
 
