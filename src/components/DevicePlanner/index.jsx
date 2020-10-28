@@ -9,11 +9,10 @@ import { changeDeviceLocationWithProp, findDevicesChanged, getDeviceLocationProp
 import { styles } from './styles';
 import devicesTrialQuery from './utils/devicesTrialQuery';
 
-const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes }) => {
+const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, experimentDataMaps }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
     const [devices, setDevices] = React.useState([]);
     const [working, setWorking] = React.useState(false);
-
     const deviceWithTrialLocation = (devitem, locationPropOnDevType) => {
         const deviceEntityOnTrial = trial.entities.find(ent => ent.key === devitem.key);
         if (deviceEntityOnTrial) {
