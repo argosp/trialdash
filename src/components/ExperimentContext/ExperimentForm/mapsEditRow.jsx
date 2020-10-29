@@ -21,7 +21,19 @@ const InputImageIcon = ({ onChangeFile }) => {
   const handleChangeFile = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    onChangeFile(event.target.files[0]);
+
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.height = img.naturalHeight;
+      canvas.width = img.naturalWidth;
+      ctx.drawImage(img, 0, 0);
+      const dataURL = canvas.toDataURL();
+
+      onChangeFile(dataURL, canvas.height,canvas.width);
+    };
+    img.src = window.URL.createObjectURL(event.target.files[0]);
   }
   return (
     <>
@@ -60,14 +72,6 @@ const TextLatLng = ({ lat, lng, setLat, setLng, editable }) => {
   )
 }
 
-const getImageSize = (imageUrl, callbackSize) => {
-  const img = document.createElement('img');
-  img.src = imageUrl;
-  img.onload = function () {
-    callbackSize(img.width, img.height);
-  }
-}
-
 export const MapsEditRow = ({ row, setRow, deleteRow }) => {
   const [open, setOpen] = useState(false);
   const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
@@ -83,16 +87,8 @@ export const MapsEditRow = ({ row, setRow, deleteRow }) => {
             <BasketIcon></BasketIcon>
           </IconButton>
           <InputImageIcon aria-label="expand row"
-            onChangeFile={(file) => {
-              const imageUrl = window.URL.createObjectURL(file);
-              getImageSize(imageUrl, (width, height) => {
-                setRow({
-                  ...row,
-                  imageUrl: window.URL.createObjectURL(file),
-                  width: width,
-                  height: height
-                });
-              });
+            onChangeFile={(imageUrl, height, width) => {
+              setRow({ ...row, imageUrl, width, height });
             }}
           >
           </InputImageIcon>
