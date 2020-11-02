@@ -11,8 +11,9 @@ import {
   Icon,
 } from '@material-ui/core';
 import { MapsEditRow } from "./mapsEditRow";
+import { client } from "../../../apolloGraphql";
 
-export const MapsEditTable = ({ data, setData }) => {
+export const MapsEditTable = ({ data, setData, client }) => {
   if (!data) {
     data = []
   }
@@ -60,6 +61,7 @@ export const MapsEditTable = ({ data, setData }) => {
                 newdata[i] = row;
                 setData(newdata);
               }}
+              client ={client}
             ></MapsEditRow>
           ))}
         </TableBody>
