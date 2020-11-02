@@ -270,7 +270,7 @@ class ExperimentForm extends React.Component {
                   },
                 }))}
                 data={formObject.maps}
-              // client = {client}
+               client = {client}
               />
             </Grid>
           </Grid>
