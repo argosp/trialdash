@@ -28,32 +28,30 @@ const InputImageIcon = ({ onChangeFile, client }) => {
     // `current` points to the mounted file input element
     inputFile.current.click();
   };
+
+  const getImageSize = async (imageFile) => {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        resolve([img.naturalHeight, img.naturalWidth])
+      };
+      img.src = window.URL.createObjectURL(imageFile);
+    })
+  }
+
   const handleChangeFile = async (event) => {
     event.stopPropagation();
     event.preventDefault();
 
-    // const img = new Image();
-    // img.onload = () => {
-    //   const canvas = document.createElement("canvas");
-    //   const ctx = canvas.getContext("2d");
-    //   canvas.height = img.naturalHeight;
-    //   canvas.width = img.naturalWidth;
-    //   ctx.drawImage(img, 0, 0);
-    //   const dataURL = canvas.toDataURL();
-    //   onChangeFile(dataURL, canvas.height, canvas.width);
-    // };
-    // img.src = window.URL.createObjectURL(event.target.files[0]);
-
-    const imageServerfFilename = await uploadFileToServer(event.target.files[0]);
-    const imgUrl = `${config.url}/${imageServerfFilename}`;
-    onChangeFile(imgUrl)
-    console.log('imgUrl',imgUrl);
-    //TODO: update the row by the new imgUrl
+    const file = event.target.files[0];
+    const [height, width] = await getImageSize(file);
+    const imageServerfFilename = await uploadFileToServer(file);
+    onChangeFile(imageServerfFilename, height, width)
   };
 
   const uploadFileToServer = async (file) => {
-    let res ='';
-    await client.mutate({mutation:UPLOAD_FILE,variables: { file }}).then((data) => {
+    let res = '';
+    await client.mutate({ mutation: UPLOAD_FILE, variables: { file } }).then((data) => {
       if (data && data.data.uploadFile !== "err") {
         res = data.data.uploadFile.filename
       }
@@ -128,16 +126,16 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
           {!open ? (
             row.imageName
           ) : (
-            <TextField
-              value={row.imageName}
-              onChange={(e) => setRow({ ...row, imageName: e.target.value })}
-            />
-          )}
+              <TextField
+                value={row.imageName}
+                onChange={(e) => setRow({ ...row, imageName: e.target.value })}
+              />
+            )}
         </TableCell>
         <TableCell align="right" style={{ padding: 0 }}>
           {!row.imageUrl ? null : (
             <img
-              src={row.imageUrl}
+              src={config.url + '/' + row.imageUrl}
               style={{ height: "50px", borderRadius: "50px" }}
             />
           )}

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Map as LeafletMap } from "react-leaflet";
 import { TileLayer, LayersControl, ImageOverlay } from "react-leaflet";
+import config from '../../config';
 
 const position = [32.081128, 34.779729];
 
@@ -13,9 +14,22 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
         console.log('Getting map tileserver url from hardcoded:', mapTileUrl);
     }
 
+    const [checkImages, setCheckImages] = useState(experimentDataMaps.map(() => true));
+
+    const setOverlay = (name, toOn) => {
+        setCheckImages(checkImages.map((check, i) => {
+            if (name !== experimentDataMaps[i].imageName) return check;
+            return toOn;
+        }));
+    }
+
     React.useEffect(() => {
         mapElement.current.leafletElement.invalidateSize();
+        mapElement.current.leafletElement.on('overlayadd', (e) => setOverlay(e.name, true));
+        mapElement.current.leafletElement.on('overlayremove', (e) => setOverlay(e.name, false));
     }, []);
+
+    let showMap = experimentDataMaps.length === 0 || experimentDataMaps.some(row => row.embedded);
 
     return (
         <LeafletMap
@@ -28,25 +42,27 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             onMouseOut={onMouseOut}
         >
 
-            {/* <LayersControl position="topright">
-                <LayersControl.BaseLayer name="Map" checked={true}> */}
-            <TileLayer
-                attribution={mapAttrib}
-                url={mapTileUrl}
-            />
-            {/* </LayersControl.BaseLayer>
-                <LayersControl.Overlay name="Image"> */}
             {
-                experimentDataMaps.map(row => {
-                    return (
-                        <ImageOverlay
-                            url={row.imageUrl}
-                            bounds={[[row.upper, row.left], [row.lower, row.right]]}
-                        />)
-                })
+                !showMap ? null :
+                    <TileLayer
+                        attribution={mapAttrib}
+                        url={mapTileUrl}
+                    />
             }
-            {/* </LayersControl.Overlay>
-            </LayersControl> */}
+            <LayersControl position="topright">
+                {
+                    experimentDataMaps.map((row, i) => {
+                        return (
+                            <LayersControl.Overlay name={row.imageName} checked={checkImages[i]} on>
+                                <ImageOverlay
+                                    url={config.url + '/' + row.imageUrl}
+                                    bounds={[[row.upper, row.left], [row.lower, row.right]]}
+                                />
+                            </LayersControl.Overlay>
+                        )
+                    })
+                }
+            </LayersControl>
 
             {children}
         </LeafletMap>

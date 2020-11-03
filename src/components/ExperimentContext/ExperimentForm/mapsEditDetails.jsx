@@ -21,6 +21,7 @@ import {
 } from '@material-ui/core';
 import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
 import { canvas, latLng } from "leaflet";
+import config from "../../../config";
 
 const defaultPosition = [32.0852, 34.782];
 
@@ -194,17 +195,21 @@ export const MapsEditDetails = ({ row, setRow }) => {
           style={{ height: "400px", width: '100%' }}
           ref={mapRef}
         >
-          <TileLayer
-            key='map'
-            attribution={mapAttrib}
-            url={mapTileUrl}
-          />
-          {hasNans ? null :
-            <ImageOverlay
-              key='image'
-              url={row.imageUrl}
-              bounds={[[row.upper, row.left], [row.lower, row.right]]}
-            />
+          {
+            !row.embedded ? null :
+              <TileLayer
+                key='map'
+                attribution={mapAttrib}
+                url={mapTileUrl}
+              />
+          }
+          {
+            hasNans ? null :
+              <ImageOverlay
+                key='image'
+                url={config.url + '/' + row.imageUrl}
+                bounds={[[row.upper, row.left], [row.lower, row.right]]}
+              />
           }
           {controlPoints.map((point, pointIndex) =>
             <MarkedPoint
