@@ -21,6 +21,7 @@ const UPLOAD_FILE = gql`
       filename
     }
   }`;
+
 const InputImageIcon = ({ onChangeFile, client }) => {
   const inputFile = useRef(null);
   const onButtonClick = () => {
@@ -31,20 +32,21 @@ const InputImageIcon = ({ onChangeFile, client }) => {
     event.stopPropagation();
     event.preventDefault();
 
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.height = img.naturalHeight;
-      canvas.width = img.naturalWidth;
-      ctx.drawImage(img, 0, 0);
-      const dataURL = canvas.toDataURL();
-      onChangeFile(dataURL, canvas.height, canvas.width);
-    };
-    img.src = window.URL.createObjectURL(event.target.files[0]);
-    
+    // const img = new Image();
+    // img.onload = () => {
+    //   const canvas = document.createElement("canvas");
+    //   const ctx = canvas.getContext("2d");
+    //   canvas.height = img.naturalHeight;
+    //   canvas.width = img.naturalWidth;
+    //   ctx.drawImage(img, 0, 0);
+    //   const dataURL = canvas.toDataURL();
+    //   onChangeFile(dataURL, canvas.height, canvas.width);
+    // };
+    // img.src = window.URL.createObjectURL(event.target.files[0]);
+
     const imageServerfFilename = await uploadFileToServer(event.target.files[0]);
     const imgUrl = `${config.url}/${imageServerfFilename}`;
+    onChangeFile(imgUrl)
     console.log('imgUrl',imgUrl);
     //TODO: update the row by the new imgUrl
   };

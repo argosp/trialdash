@@ -4,7 +4,8 @@ import { TileLayer, LayersControl, ImageOverlay } from "react-leaflet";
 
 const position = [32.081128, 34.779729];
 
-export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, children }) => {
+export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children }) => {
+    console.log(experimentDataMaps)
     const mapElement = React.useRef(null);
     const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
     const mapTileUrl = process.env.REACT_APP_MAP_URL || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png';
@@ -35,10 +36,15 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, children }) => {
             />
             {/* </LayersControl.BaseLayer>
                 <LayersControl.Overlay name="Image"> */}
-            {/* <ImageOverlay
-                url="https://cdn.vox-cdn.com/thumbor/HKALidP1Nm7vvd6GrsLmUCSVlEw=/0x0:2048x2732/1200x800/filters:focal(540x2092:866x2418)/cdn.vox-cdn.com/uploads/chorus_image/image/52202887/super_mario_run_ipad_screenshot_01_2048.0.jpeg"
-                bounds={[[32.08083, 34.77524], [32.08962, 34.78876]]}
-            /> */}
+            {
+                experimentDataMaps.map(row => {
+                    return (
+                        <ImageOverlay
+                            url={row.imageUrl}
+                            bounds={[[row.upper, row.left], [row.lower, row.right]]}
+                        />)
+                })
+            }
             {/* </LayersControl.Overlay>
             </LayersControl> */}
 
