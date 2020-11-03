@@ -95,6 +95,7 @@ const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, expe
                     setDevices={handleChangeDevices}
                     showOnlyAssigned={showOnlyAssigned}
                     setShowOnlyAssigned={setShowOnlyAssigned}
+                    experimentDataMaps={experimentDataMaps}
                 />
             }
         </>

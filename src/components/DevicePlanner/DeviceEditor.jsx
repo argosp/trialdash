@@ -10,7 +10,7 @@ import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 
-export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned }) => {
+export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
     const [selectedType, setSelectedType] = React.useState(devices.length ? devices[0].name : '');
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
@@ -110,6 +110,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
         <div className="App" style={{ position: 'relative', height: "100vh" }}>
             <DeviceMap
                 onClick={handleMapClick}
+                experimentDataMaps={experimentDataMaps}
             >
                 {
                     devices.map(devType => {
