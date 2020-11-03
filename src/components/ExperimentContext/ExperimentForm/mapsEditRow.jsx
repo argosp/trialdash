@@ -13,10 +13,12 @@ import {
 } from "@material-ui/core";
 import { MapsEditDetails } from "./mapsEditDetails";
 import uploadFilesMutation from "./utils/uploadFilesMutation";
+import config from '../../../config';
+
 const UPLOAD_FILE = gql`
   mutation($file: Upload!) {
     uploadFile(file: $file){
-      path
+      filename
     }
   }`;
 const InputImageIcon = ({ onChangeFile, client }) => {
@@ -25,7 +27,7 @@ const InputImageIcon = ({ onChangeFile, client }) => {
     // `current` points to the mounted file input element
     inputFile.current.click();
   };
-  const handleChangeFile = (event) => {
+  const handleChangeFile = async (event) => {
     event.stopPropagation();
     event.preventDefault();
 
@@ -40,15 +42,21 @@ const InputImageIcon = ({ onChangeFile, client }) => {
       onChangeFile(dataURL, canvas.height, canvas.width);
     };
     img.src = window.URL.createObjectURL(event.target.files[0]);
-    const imageServerPath = uploadFileToServer(event.target.files[0]);
+    
+    const imageServerfFilename = await uploadFileToServer(event.target.files[0]);
+    const imgUrl = `${config.url}/${imageServerfFilename}`;
+    console.log('imgUrl',imgUrl);
+    //TODO: update the row by the new imgUrl
   };
 
   const uploadFileToServer = async (file) => {
+    let res ='';
     await client.mutate({mutation:UPLOAD_FILE,variables: { file }}).then((data) => {
       if (data && data.data.uploadFile !== "err") {
-       return data.data.uploadFile.path;
+        res = data.data.uploadFile.filename
       }
     });
+    return res;
   };
 
   return (

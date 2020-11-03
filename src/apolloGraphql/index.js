@@ -4,7 +4,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createUploadLink } from 'apollo-upload-client'
+import { createUploadLink } from 'apollo-upload-client';
 
 import config from '../config';
 
