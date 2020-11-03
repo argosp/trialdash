@@ -4,6 +4,8 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createUploadLink } from 'apollo-upload-client';
+
 import config from '../config';
 
 const middlewareLink = new ApolloLink((operation, forward) => {
@@ -16,9 +18,10 @@ const middlewareLink = new ApolloLink((operation, forward) => {
   return forward(operation);
 });
 
-let httpLink = new HttpLink({
-  uri: `${config.url}/graphql`,
+let httpLink = createUploadLink({
+  uri:  `${config.url}/graphql`
 });
+
 
 let wsLink = new WebSocketLink({
   uri: `${config.ws}/subscriptions`,
