@@ -53,7 +53,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                 {
                     experimentDataMaps.map((row, i) => {
                         return (
-                            <LayersControl.Overlay name={row.imageName} checked={checkImages[i]} on>
+                            <LayersControl.Overlay name={row.imageName} checked={checkImages[i]}>
                                 <ImageOverlay
                                     url={config.url + '/' + row.imageUrl}
                                     bounds={[[row.upper, row.left], [row.lower, row.right]]}
