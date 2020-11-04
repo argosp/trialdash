@@ -14,13 +14,12 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
         console.log('Getting map tileserver url from hardcoded:', mapTileUrl);
     }
 
-    const [checkImages, setCheckImages] = useState(experimentDataMaps.map(() => true));
+    const [mutedImages, setMutedImages] = useState({});
 
     const setOverlay = (name, toOn) => {
-        setCheckImages(checkImages.map((check, i) => {
-            if (name !== experimentDataMaps[i].imageName) return check;
-            return toOn;
-        }));
+        const newMutedImages = Object.assign({}, mutedImages)
+        newMutedImages[name] = !toOn;
+        setMutedImages(newMutedImages);
     }
 
     React.useEffect(() => {
@@ -51,9 +50,9 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             }
             <LayersControl position="topright">
                 {
-                    experimentDataMaps.map((row, i) => {
+                    experimentDataMaps.map(row => {
                         return (
-                            <LayersControl.Overlay name={row.imageName} checked={checkImages[i]}>
+                            <LayersControl.Overlay name={row.imageName} checked={!mutedImages[row.imageName]}>
                                 <ImageOverlay
                                     url={config.url + '/' + row.imageUrl}
                                     bounds={[[row.upper, row.left], [row.lower, row.right]]}
