@@ -28,7 +28,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
         mapElement.current.leafletElement.on('overlayremove', (e) => setOverlay(e.name, false));
     }, []);
 
-    let showMap = experimentDataMaps.length === 0 || experimentDataMaps.some(row => row.embedded);
+    let showMap = !experimentDataMaps || experimentDataMaps.length === 0 || experimentDataMaps.some(row => row.embedded);
 
     return (
         <LeafletMap
@@ -50,7 +50,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             }
             <LayersControl position="topright">
                 {
-                    experimentDataMaps.map(row => {
+                    (experimentDataMaps || []).map(row => {
                         return (
                             <LayersControl.Overlay name={row.imageName} checked={!mutedImages[row.imageName]}>
                                 <ImageOverlay
