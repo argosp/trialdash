@@ -55,9 +55,9 @@ const InputImageIcon = ({ onChangeFile, client }) => {
       const imageServerfFilename = await uploadFileToServer(file);
       if (imageServerfFilename) {
         onChangeFile(imageServerfFilename.path, height, width)
-        setWorking(false);
       }
     }
+    setWorking(false);
   };
 
   const uploadFileToServer = async (file) => {
