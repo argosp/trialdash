@@ -56,14 +56,13 @@ class TrialDevices extends React.Component {
     client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
       const deviceTypes = groupBy(data.data.deviceTypes, 'key');
       let devices = [];
-      Object.keys(deviceTypes).forEach((dt) => {
-        client.query({ query: devicesQuery(match.params.id, dt) }).then((devicesData) => {
-          devices = concat(devices, devicesData.data.devices);
+        client.query({ query: devicesQuery(match.params.id)}).then((devicesData) => {
+          devices =  devicesData.data.devices;
           this.setState({
             devices: groupBy(devices, 'key'),
+
           });
         });
-      });
       this.setState({
         deviceTypes,
       });
@@ -153,7 +152,6 @@ class TrialDevices extends React.Component {
       deviceTypes,
       update,
     } = this.state;
-
     return (
       <>
         <Grid
