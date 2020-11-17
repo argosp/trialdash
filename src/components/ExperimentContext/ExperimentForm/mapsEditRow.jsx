@@ -10,10 +10,12 @@ import {
   Checkbox,
   TextField,
   Grid,
+  CircularProgress
 } from "@material-ui/core";
 import { MapsEditDetails } from "./mapsEditDetails";
 import uploadFilesMutation from "./utils/uploadFilesMutation";
 import config from '../../../config';
+import { Circle } from "react-leaflet";
 
 const UPLOAD_FILE = gql`
   mutation($file: Upload!) {
@@ -25,6 +27,8 @@ const UPLOAD_FILE = gql`
 
 const InputImageIcon = ({ onChangeFile, client }) => {
   const inputFile = useRef(null);
+  const [working, setWorking] = useState(false);
+
   const onButtonClick = () => {
     // `current` points to the mounted file input element
     inputFile.current.click();
@@ -43,6 +47,7 @@ const InputImageIcon = ({ onChangeFile, client }) => {
   const handleChangeFile = async (event) => {
     event.stopPropagation();
     event.preventDefault();
+    setWorking(true);
 
     const file = event.target.files[0];
     const [height, width] = await getImageSize(file);
@@ -50,6 +55,7 @@ const InputImageIcon = ({ onChangeFile, client }) => {
       const imageServerfFilename = await uploadFileToServer(file);
       if (imageServerfFilename) {
         onChangeFile(imageServerfFilename.path, height, width)
+        setWorking(false);
       }
     }
   };
@@ -72,8 +78,11 @@ const InputImageIcon = ({ onChangeFile, client }) => {
         onChange={handleChangeFile}
         accept="image/*"
       />
-      <IconButton aria-label="expand row" onClick={onButtonClick}>
-        <Icon>folder_open</Icon>
+      <IconButton aria-label="expand row" onClick={onButtonClick} disabled={working}>
+        {working ?
+          <CircularProgress size={20} /> :
+          <Icon>folder_open</Icon>
+        }
       </IconButton>
     </>
   );
