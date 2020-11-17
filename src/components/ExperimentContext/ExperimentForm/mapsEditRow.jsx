@@ -45,18 +45,20 @@ const InputImageIcon = ({ onChangeFile, client }) => {
 
     const file = event.target.files[0];
     const [height, width] = await getImageSize(file);
-    const imageServerfFilename = await uploadFileToServer(file);
-    onChangeFile(imageServerfFilename, height, width)
+    if (height && width) {
+      const imageServerfFilename = await uploadFileToServer(file);
+      if (imageServerfFilename) {
+        onChangeFile(imageServerfFilename, height, width)
+      }
+    }
   };
 
   const uploadFileToServer = async (file) => {
-    let res = '';
-    await client.mutate({ mutation: UPLOAD_FILE, variables: { file } }).then((data) => {
-      if (data && data.data.uploadFile !== "err") {
-        res = data.data.uploadFile.filename
-      }
-    });
-    return res;
+    const data = await client.mutate({ mutation: UPLOAD_FILE, variables: { file } });
+    if (!data || !data.data || !data.data.uploadFile || data.data.uploadFile === "err" || !data.data.uploadFile.filename) {
+      return undefined;
+    }
+    return data.data.uploadFile.filename
   };
 
   return (
