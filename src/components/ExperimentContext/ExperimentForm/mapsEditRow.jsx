@@ -19,6 +19,7 @@ const UPLOAD_FILE = gql`
   mutation($file: Upload!) {
     uploadFile(file: $file){
       filename
+      path
     }
   }`;
 
@@ -48,17 +49,17 @@ const InputImageIcon = ({ onChangeFile, client }) => {
     if (height && width) {
       const imageServerfFilename = await uploadFileToServer(file);
       if (imageServerfFilename) {
-        onChangeFile(imageServerfFilename, height, width)
+        onChangeFile(imageServerfFilename.path, height, width)
       }
     }
   };
 
   const uploadFileToServer = async (file) => {
     const data = await client.mutate({ mutation: UPLOAD_FILE, variables: { file } });
-    if (!data || !data.data || !data.data.uploadFile || data.data.uploadFile === "err" || !data.data.uploadFile.filename) {
+    if (!data || !data.data || !data.data.uploadFile || data.data.uploadFile === "err") {
       return undefined;
     }
-    return data.data.uploadFile.filename
+    return data.data.uploadFile
   };
 
   return (
