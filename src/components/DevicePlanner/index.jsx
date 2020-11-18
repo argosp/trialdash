@@ -9,10 +9,14 @@ import { changeDeviceLocationWithProp, findDevicesChanged, getDeviceLocationProp
 import { styles } from './styles';
 import devicesTrialQuery from './utils/devicesTrialQuery';
 
-const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, experimentDataMaps }) => {
+const DevicePlanner = ({ client, trial, match, updateLocation, allDevices, deviceTypes, experimentDataMaps }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
     const [devices, setDevices] = React.useState([]);
     const [working, setWorking] = React.useState(false);
+
+    console.log('deviceTypes', deviceTypes);
+    console.log('allDevices', allDevices);
+
     const deviceWithTrialLocation = (devitem, locationPropOnDevType) => {
         const deviceEntityOnTrial = trial.entities.find(ent => ent.key === devitem.key);
         if (deviceEntityOnTrial) {
@@ -28,31 +32,77 @@ const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, expe
         return devitem;
     };
 
-    React.useEffect(() => {
-        const experimentId = match.params.id;
-        const trialKey = showOnlyAssigned ? trial.key : undefined;
-        const newdevs = Object.values(deviceTypes)
+    const filterTypeWithLocation = (deviceWithOrWithoutLocation) => {
+        const newdevs = Object.values(deviceWithOrWithoutLocation)
             .map(dtlst => dtlst.filter(dt => dt.name && dt.key && getTypeLocationProp(dt)))
             .filter(dtlst => dtlst.length)
             .map(dtlst => dtlst[0]);
         newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-        setWorking(0);
-        let done = 0;
-        newdevs.forEach(devtype => {
-            const locationProp = getTypeLocationProp(devtype);
-            client.query({ query: devicesTrialQuery(experimentId, devtype.key, trialKey) })
-                .then(dataDev => {
-                    done += 1
-                    setWorking(done / newdevs.length * 100);
-                    devtype.items = dataDev.data.devices.map(devitem => deviceWithTrialLocation(devitem, locationProp));
-                    devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-                    if (done === newdevs.length) {
-                        setDevices(newdevs);
-                    }
-                    setTimeout(() => setWorking(false), 500);
-                })
-        })
-    }, [showOnlyAssigned]);
+        return newdevs;
+    }
+
+    // TODO:
+    // Use information from allDevices to instead of devicesTrialQuery
+    // No need for useEffect, the info can be calculated on every render
+    // No need useState for [devices, setDevices] as updateLocation should change allDevices
+    //
+    // After that,
+    // Show all devices of the experiment on the left list,
+    // Click on the map should attach device to trial with location
+    // Remove location from the map does not detach device from trial
+
+    const deviceTypesWithLocation = Object.fromEntries(Object.entries(deviceTypes).filter(([key, dtlst]) => getTypeLocationProp(dtlst[0])));
+    console.log('deviceTypesWithLocation', deviceTypesWithLocation)
+    const deviceTypesOneEach = Object.fromEntries(Object.entries(deviceTypesWithLocation).map(([key, dtlst]) => [key, Object.assign({}, dtlst[0], {items: []})]));
+    console.log('deviceTypesOneEach', deviceTypesOneEach);
+    Object.values(allDevices).forEach(dev => {
+
+    });
+
+    // const devicesOfType = ( devTypeKey, allDeviceItems) => {
+    //     return allDeviceItems.filter(devItem => devItem.deviceTypeKey === devTypeKey);
+    // }
+
+    // const deviceTypesWithLocation = filterTypeWithLocation(deviceTypes);
+    // const allDeviceItems = allDevices ? Object.values(allDevices) : [];
+    // const device = .map(devType => {
+    //     return Object.assign({}, devType, {items: devicesOfType(Object.values(allDevices)) });
+    // });
+    // const devices = filterTypeWithLocation(deviceTypes).map(devType => {
+    //     return Object.assign({}, devType, {items: devicesOfType(Object.values(allDevices)) });
+    // });
+
+    // React.useEffect(() => {
+    //     const newdevs = filterTypeWithLocation(deviceTypes);
+    // }, [allDevices]);
+
+
+
+    // React.useEffect(() => {
+    //     const experimentId = match.params.id;
+    //     const trialKey = showOnlyAssigned ? trial.key : undefined;
+    //     const newdevs = Object.values(deviceTypes)
+    //         .map(dtlst => dtlst.filter(dt => dt.name && dt.key && getTypeLocationProp(dt)))
+    //         .filter(dtlst => dtlst.length)
+    //         .map(dtlst => dtlst[0]);
+    //     newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
+    //     setWorking(0);
+    //     let done = 0;
+    //     newdevs.forEach(devtype => {
+    //         const locationProp = getTypeLocationProp(devtype);
+    //         client.query({ query: devicesTrialQuery(experimentId, devtype.key, trialKey) })
+    //             .then(dataDev => {
+    //                 done += 1
+    //                 setWorking(done / newdevs.length * 100);
+    //                 devtype.items = dataDev.data.devices.map(devitem => deviceWithTrialLocation(devitem, locationProp));
+    //                 devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
+    //                 if (done === newdevs.length) {
+    //                     setDevices(newdevs);
+    //                 }
+    //                 setTimeout(() => setWorking(false), 500);
+    //             })
+    //     })
+    // }, [showOnlyAssigned]);
 
     const handleChangeDevices = (newDevices) => {
         setWorking(true);
@@ -78,7 +128,7 @@ const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, expe
             }
         }
         uploc();
-        setDevices(newDevices);
+        // setDevices(newDevices);
     };
 
     return (

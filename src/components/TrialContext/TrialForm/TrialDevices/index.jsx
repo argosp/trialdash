@@ -58,7 +58,12 @@ class TrialDevices extends React.Component {
       let devices = [];
       Object.keys(deviceTypes).forEach((dt) => {
         client.query({ query: devicesQuery(match.params.id, dt) }).then((devicesData) => {
-          devices = concat(devices, devicesData.data.devices);
+          const devicesWithType = devicesData.data.devices.map(devItem => {
+            devItem.deviceTypeKey = dt;
+            return devItem;
+          })
+          devices = concat(devices, devicesWithType);
+          console.log('groupBy(devices, key):', groupBy(devices, 'key'));
           this.setState({
             devices: groupBy(devices, 'key'),
           });
@@ -246,6 +251,7 @@ class TrialDevices extends React.Component {
                 trial={trial}
                 entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
                 deviceTypes={deviceTypes}
+                allDevices={devices}
                 experimentDataMaps = {this.state.experimentDataMaps}
               />
               : null
