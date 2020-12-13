@@ -110,8 +110,9 @@ class CloneMultiplePanel extends React.Component {
               label="Name pattern"
               type="text"
               className={classes.input}
-              placeholder="[prefix]{number format}[suffix]"
-              bottomDescription="[prefix]{number format - number of digits, start and end}[suffix]"
+              placeholder="Example: deviceName{001}december test"
+              bottomDescription="[prefix]{number format}[suffix]
+              prefix - text field (optional), number format - number field (required), suffix- text field (optional)"
               invalid={this.state.invalidName}
               errorText={this.state.nameError}
             />
@@ -124,8 +125,9 @@ class CloneMultiplePanel extends React.Component {
               label="ID pattern"
               type="text"
               className={classes.input}
-              placeholder="[prefix]{number format}[suffix]"
-              bottomDescription="[prefix]{number format - number of digits, start and end}[suffix]"
+              placeholder="Example: deviceName{001}december test"
+              bottomDescription="[prefix]{number format}[suffix]
+              prefix - text field (optional), number format - number field (required), suffix- text field (optional)"
               invalid={this.state.invalidId}
               errorText={this.state.idError}
             />
