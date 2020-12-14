@@ -105,7 +105,7 @@ function CloneDevicesDialog({
     >
       <DialogTitle
         id="customized-dialog-title"
-        className={styles.root}
+        style={{"display": 'flex'}}
         disableTypography
       >
         <Typography variant="h6">{title}</Typography>
@@ -131,7 +131,9 @@ function CloneDevicesDialog({
           </List>
         </DialogContentText>
       </DialogContent>
-      <DialogActions>
+      <DialogActions 
+      style={{"justifyContent": 'end'}}
+        > 
         {selectedTrial && (
           <FormControl component="fieldset">
             <FormLabel component="legend">Copy devices from:</FormLabel>

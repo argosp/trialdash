@@ -313,9 +313,9 @@ class TrialForm extends React.Component {
             )}
             middleDescription={
               <React.Fragment>
-             <SimpleButton text={"Clone devices"} size={"small"} onClick={() => this.SetCloneDevicesDialogOpen(!CloneDevicesDialogOpen)}></SimpleButton>
+             <SimpleButton text={"Clone devices"} onClick={() => this.SetCloneDevicesDialogOpen(!CloneDevicesDialogOpen)}></SimpleButton>
               {CloneDevicesDialogOpen&&<CloneDevicesDialog
-                  title={"Select trial to clone from:"}
+                  title={"Select trial to clone from"}
                   open={CloneDevicesDialogOpen}
                   setOpen={this.SetCloneDevicesDialogOpen}
                   onConfirm={(updateTrial) => this.submitTrial(updateTrial)}
