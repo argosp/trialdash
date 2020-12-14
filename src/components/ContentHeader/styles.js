@@ -35,6 +35,10 @@ export const styles = theme => ({
     fontSize: 16,
     verticalAlign: 'bottom',
   },
+  middleDescription:{
+    margin: '0 0 0 15px',
+    verticalAlign: 'bottom',
+  },
   bottomDescription: {
     color: theme.palette.gray.dark,
     fontSize: 16,

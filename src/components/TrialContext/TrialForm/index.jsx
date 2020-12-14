@@ -33,6 +33,7 @@ import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
 import TrialDevices from './TrialDevices';
+import CloneDevicesDialog from '../../CloneDevicesDialog';
 
 const COLORS_STATUSES = {
   design: { color: 'violet', level: 'main' },
@@ -72,6 +73,7 @@ class TrialForm extends React.Component {
     trialSet: {},
     tabValue: this.props.tabValue || 0,
     showFooter: true,
+    CloneDevicesDialogOpen: false
   };
 
   componentDidMount() {
@@ -267,9 +269,11 @@ class TrialForm extends React.Component {
     this.setState({ [anchor]: null });
     this.setEditableStatus(false)
   };
-
+  SetCloneDevicesDialogOpen = (open) => {
+    this.setState({ CloneDevicesDialogOpen: open });
+  }
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme,match, client } = this.props;
     const {
       tabValue,
       trialSet,
@@ -277,8 +281,8 @@ class TrialForm extends React.Component {
       editableStatus,
       anchorMenu,
       showFooter,
+      CloneDevicesDialogOpen,
     } = this.state;
-
     return (
       <>
         <div>
@@ -307,6 +311,22 @@ class TrialForm extends React.Component {
                 color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
               />
             )}
+            middleDescription={
+              <React.Fragment>
+             <SimpleButton text={"Clone devices"} onClick={() => this.SetCloneDevicesDialogOpen(!CloneDevicesDialogOpen)}></SimpleButton>
+              {CloneDevicesDialogOpen&&<CloneDevicesDialog
+                  title={"Select trial to clone from"}
+                  open={CloneDevicesDialogOpen}
+                  setOpen={this.SetCloneDevicesDialogOpen}
+                  onConfirm={(updateTrial) => this.submitTrial(updateTrial)}
+                  currentTrial = {trial}
+                  client ={client}
+                  match ={match}
+                >
+               </CloneDevicesDialog>}
+             </React.Fragment>
+             
+            }
             title={trial.name || 'trial name goes here'}
             className={classes.header}
             rightComponent={(
