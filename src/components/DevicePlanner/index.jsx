@@ -38,7 +38,7 @@ const DevicePlanner = ({ client, trial, entities, match, updateLocation, deviceT
         let done = 0;
         newdevs.forEach(devtype => {
             const locationProp = getTypeLocationProp(devtype);
-            client.query({ query: devicesTrialQuery(experimentId, devtype.key, trialKey) })
+            client.query({ query: devicesTrialQuery(experimentId, devtype.key, undefined) })
                 .then(dataDev => {
                     done += 1
                     setWorking(done / newdevs.length * 100);
