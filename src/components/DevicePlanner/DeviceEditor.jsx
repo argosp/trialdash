@@ -3,14 +3,14 @@ import React from 'react';
 import { DeviceList } from './DeviceList';
 import { DeviceMap } from './DeviceMap';
 import { DeviceMarker } from './DeviceMarker';
-import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
+import { changeDeviceLocation } from './DeviceUtils';
 import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 
-export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
+export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps, obtainDeviceLocation }) => {
     const [selectedType, setSelectedType] = React.useState(devices.length ? devices[0].name : '');
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
@@ -116,7 +116,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                     devices.map(devType => {
                         if (showAll || (devType.name === selectedType)) {
                             return devType.items.map((dev, index) => {
-                                const loc = getDeviceLocation(dev, devType);
+                                const loc = obtainDeviceLocation(dev, devType);
                                 if (!loc) return null;
                                 return <DeviceMarker
                                     key={dev.key} device={dev}
