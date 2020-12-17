@@ -9,12 +9,12 @@ import { changeDeviceLocationWithProp, findDevicesChanged, getDeviceLocationProp
 import { styles } from './styles';
 import devicesTrialQuery from './utils/devicesTrialQuery';
 
-const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, experimentDataMaps }) => {
+const DevicePlanner = ({ client, trial, entities, match, updateLocation, deviceTypes, experimentDataMaps }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
     const [devices, setDevices] = React.useState([]);
     const [working, setWorking] = React.useState(false);
     const deviceWithTrialLocation = (devitem, locationPropOnDevType) => {
-        const deviceEntityOnTrial = trial.entities.find(ent => ent.key === devitem.key);
+        const deviceEntityOnTrial = entities.find(ent => ent.key === devitem.key);
         if (deviceEntityOnTrial) {
             const locationOnTrial = deviceEntityOnTrial.properties.find(entprop => entprop.key === locationPropOnDevType);
             if (locationOnTrial) {
@@ -31,10 +31,8 @@ const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, expe
     React.useEffect(() => {
         const experimentId = match.params.id;
         const trialKey = showOnlyAssigned ? trial.key : undefined;
-        const newdevs = Object.values(deviceTypes)
-            .map(dtlst => dtlst.filter(dt => dt.name && dt.key && getTypeLocationProp(dt)))
-            .filter(dtlst => dtlst.length)
-            .map(dtlst => dtlst[0]);
+        const deviceTypesAsList = Object.values(deviceTypes).filter(dtlst => dtlst.length).flat();
+        const newdevs = deviceTypesAsList.filter(dt => dt.name && dt.key && getTypeLocationProp(dt));
         newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
         setWorking(0);
         let done = 0;
@@ -52,7 +50,7 @@ const DevicePlanner = ({ client, trial, match, updateLocation, deviceTypes, expe
                     setTimeout(() => setWorking(false), 500);
                 })
         })
-    }, [showOnlyAssigned]);
+    }, [showOnlyAssigned, trial, entities]);
 
     const handleChangeDevices = (newDevices) => {
         setWorking(true);

@@ -242,7 +242,7 @@ class TrialDevices extends React.Component {
               <DevicePlanner
                 updateLocation={this.updateLocation}
                 trial={trial}
-                entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+                entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
                 deviceTypes={deviceTypes}
                 experimentDataMaps = {this.state.experimentDataMaps}
               />
