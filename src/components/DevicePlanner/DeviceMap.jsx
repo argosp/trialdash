@@ -7,6 +7,7 @@ import {
     LayerGroup
 } from "react-leaflet";
 import config from '../../config';
+import { L } from 'leaflet';
 
 const position = [32.081128, 34.779729];
 
@@ -34,18 +35,24 @@ const EmbeddedImageLayer = ({ image }) => (
 
 const RealMapWithImagesLayer = ({ images }) => (
     <>
-        <RealMapLayer />
+        <RealMapLayer key={'real'} />
         {
-            images.map(row => (
-                <EmbeddedImageLayer image={row} />
+            images.map((row, i) => (
+                <EmbeddedImageLayer image={row} key={'l' + i} />
             ))
         }
     </>
 )
 
-const DeviceMapLayers = ({ embedded, standalone }) => {
+const DeviceMapLayers = ({ embedded, standalone, onLayerChange }) => {
     if (!standalone.length) {
+        onLayerChange('Map');
         return <RealMapWithImagesLayer images={embedded} />
+    }
+    if (embedded.length) {
+        onLayerChange('Map');
+    } else {
+        onLayerChange(standalone[0].imageName);
     }
     return (
         <LayersControl position="topright" collapsed={false}>
@@ -60,6 +67,7 @@ const DeviceMapLayers = ({ embedded, standalone }) => {
             {
                 standalone.map((row, i) => (
                     <LayersControl.BaseLayer
+                        key={row.imageName}
                         name={row.imageName}
                         checked={embedded.length === 0 && i === 0}
                     >
@@ -71,7 +79,7 @@ const DeviceMapLayers = ({ embedded, standalone }) => {
     )
 }
 
-export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children }) => {
+export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, onLayerChange }) => {
     const mapElement = React.useRef(null);
 
     const images = experimentDataMaps || [];
@@ -80,6 +88,9 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
 
     React.useEffect(() => {
         mapElement.current.leafletElement.invalidateSize();
+        mapElement.current.leafletElement.on('baselayerchange', function (e) {
+            if (onLayerChange) onLayerChange(e.name);
+        });
     }, []);
 
     return (
@@ -92,7 +103,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             onMouseMove={onMouseMove}
             onMouseOut={onMouseOut}
         >
-            <DeviceMapLayers embedded={embedded} standalone={standalone} />
+            <DeviceMapLayers embedded={embedded} standalone={standalone} onLayerChange={onLayerChange} />
             {children}
         </LeafletMap>
     );

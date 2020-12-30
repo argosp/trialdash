@@ -111,6 +111,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
             <DeviceMap
                 onClick={handleMapClick}
                 experimentDataMaps={experimentDataMaps}
+                onLayerChange={console.log}
             >
                 {
                     devices.map(devType => {
