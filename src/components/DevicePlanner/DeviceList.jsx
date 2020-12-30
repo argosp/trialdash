@@ -3,7 +3,7 @@ import { List } from '@material-ui/core';
 import { DeviceRow } from './DeviceRow';
 import { getDeviceLocation } from './DeviceUtils';
 
-export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocation }) => {
+export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocation, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
     const handleSelectionClick = (index, doRange) => {
@@ -37,7 +37,7 @@ export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocat
                             <DeviceRow
                                 key={dev.key}
                                 dev={dev}
-                                devLocation={getDeviceLocation(dev, devType)}
+                                devLocation={getDeviceLocation(dev, devType, layerChosen)}
                                 isSelected={selection.includes(index)}
                                 onClick={e => { handleSelectionClick(index, e.shiftKey) }}
                                 onDisableLocation={() => { removeDeviceLocation(index); }}

@@ -19,8 +19,9 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     const [rectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
+    const [layerChosen, setLayerChosen] = React.useState();
 
-    console.log('DeviceEditor', devices, showOnlyAssigned, selectedType)
+    console.log('DeviceEditor', layerChosen, devices, showOnlyAssigned, selectedType)
 
     if (selectedType === '' && devices.length > 0) {
         setSelectedType(devices[0].name);
@@ -31,7 +32,8 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
         let typeDevices = tempDevices.find(d => d.name === type);
         for (let i = 0; i < indices.length; ++i) {
             const loc = newLocations[Math.min(i, newLocations.length - 1)];
-            changeDeviceLocation(typeDevices.items[indices[i]], typeDevices, loc);
+            console.log(layerChosen)
+            changeDeviceLocation(typeDevices.items[indices[i]], typeDevices, loc, layerChosen);
         }
         return tempDevices;
     };
@@ -111,13 +113,14 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
             <DeviceMap
                 onClick={handleMapClick}
                 experimentDataMaps={experimentDataMaps}
-                onLayerChange={console.log}
+                layerChosen={layerChosen}
+                setLayerChosen={setLayerChosen}
             >
                 {
                     devices.map(devType => {
                         if (showAll || (devType.name === selectedType)) {
                             return devType.items.map((dev, index) => {
-                                const loc = getDeviceLocation(dev, devType);
+                                const loc = getDeviceLocation(dev, devType, layerChosen);
                                 if (!loc) return null;
                                 return <DeviceMarker
                                     key={dev.key} device={dev}
@@ -198,6 +201,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                                     setSelection={setSelection}
                                     devices={devices.filter(d => d.name === selectedType)}
                                     removeDeviceLocation={(index) => setDevices(changeLocations(selectedType, [index]))}
+                                    layerChosen={layerChosen}
                                 />
                             </>
                         }

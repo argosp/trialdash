@@ -20,7 +20,7 @@ const DevicePlanner = ({ client, trial, entities, match, updateLocation, deviceT
             if (locationOnTrial) {
                 try {
                     const locparsed = JSON.parse(locationOnTrial.val);
-                    changeDeviceLocationWithProp(devitem, locationPropOnDevType, locparsed.coordinates);
+                    changeDeviceLocationWithProp(devitem, locationPropOnDevType, locparsed.coordinates, locparsed.name);
                 } catch (e) {
                 }
             }

@@ -11,24 +11,28 @@ export const getDeviceLocationProp = (device, deviceType) => {
     return prop;
 }
 
-export const getDeviceLocation = (device, deviceType) => {
+export const getDeviceLocation = (device, deviceType, locationKind) => {
     const prop = getDeviceLocationProp(device, deviceType);
-    if (prop) return prop.val.coordinates;
+    console.log(locationKind, prop.val);
+    if (prop && prop.val && prop.val.name === locationKind) {
+        return prop.val.coordinates;
+    }
+    return undefined;
 }
 
-export const changeDeviceLocation = (device, deviceType, newLocation) => {
+export const changeDeviceLocation = (device, deviceType, newLocation, locationKind) => {
     const locationPropKey = getTypeLocationProp(deviceType);
-    changeDeviceLocationWithProp(device, locationPropKey, newLocation);
+    changeDeviceLocationWithProp(device, locationPropKey, newLocation, locationKind);
 }
 
-export const changeDeviceLocationWithProp = (device, locationPropKey, newLocation) => {
+export const changeDeviceLocationWithProp = (device, locationPropKey, newLocation, locationKind) => {
     const pos = device.properties.findIndex(pr => pr.key === locationPropKey);
     if (pos !== -1) {
         device.properties.splice(pos, 1);
     }
     device.properties.push({
         key: locationPropKey,
-        val: { name: "OSMMap", coordinates: newLocation }
+        val: { name: locationKind, coordinates: newLocation }
     });
 }
 

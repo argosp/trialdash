@@ -44,21 +44,15 @@ const RealMapWithImagesLayer = ({ images }) => (
     </>
 )
 
-const DeviceMapLayers = ({ embedded, standalone, onLayerChange }) => {
+const DeviceMapLayers = ({ embedded, standalone }) => {
     if (!standalone.length) {
-        onLayerChange('Map');
         return <RealMapWithImagesLayer images={embedded} />
-    }
-    if (embedded.length) {
-        onLayerChange('Map');
-    } else {
-        onLayerChange(standalone[0].imageName);
     }
     return (
         <LayersControl position="topright" collapsed={false}>
             {
                 !embedded.length ? null :
-                    <LayersControl.BaseLayer name="Map" checked={true}>
+                    <LayersControl.BaseLayer name="OSMMap" checked={true}>
                         <LayerGroup>
                             <RealMapWithImagesLayer images={embedded} />
                         </LayerGroup>
@@ -79,7 +73,7 @@ const DeviceMapLayers = ({ embedded, standalone, onLayerChange }) => {
     )
 }
 
-export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, onLayerChange }) => {
+export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
     const mapElement = React.useRef(null);
 
     const images = experimentDataMaps || [];
@@ -89,8 +83,15 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     React.useEffect(() => {
         mapElement.current.leafletElement.invalidateSize();
         mapElement.current.leafletElement.on('baselayerchange', function (e) {
-            if (onLayerChange) onLayerChange(e.name);
+            setLayerChosen(e.name);
         });
+        if (!layerChosen) {
+            if (!standalone.length || embedded.length) {
+                setLayerChosen('OSMMap');
+            } else {
+                setLayerChosen(standalone[0].imageName);
+            }
+        }
     }, []);
 
     return (
@@ -103,7 +104,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             onMouseMove={onMouseMove}
             onMouseOut={onMouseOut}
         >
-            <DeviceMapLayers embedded={embedded} standalone={standalone} onLayerChange={onLayerChange} />
+            <DeviceMapLayers embedded={embedded} standalone={standalone} onLayerChange={(layerName) => setLayerChosen(layerName)} />
             {children}
         </LeafletMap>
     );
