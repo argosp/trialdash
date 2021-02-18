@@ -13,7 +13,6 @@ export const getDeviceLocationProp = (device, deviceType) => {
 
 export const getDeviceLocation = (device, deviceType, locationKind) => {
     const prop = getDeviceLocationProp(device, deviceType);
-    console.log(locationKind, prop.val);
     if (prop && prop.val && prop.val.name === locationKind) {
         return prop.val.coordinates;
     }
