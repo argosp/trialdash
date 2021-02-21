@@ -25,25 +25,36 @@ import config from "../../../config";
 
 const defaultPosition = [32.0852, 34.782];
 
+const NumberTextField = ({ value, onChange, label }) => (
+  <TextField
+    value={value}
+    onChange={(e) => {
+      const num = parseFloat(e.target.value);
+      if (!isNaN(num)) {
+        onChange(num);
+      }
+    }}
+    style={{ width: '120px' }}
+    variant="outlined"
+    label={label}
+  />
+)
+
 const ControlPointText = ({ point, setPoint }) => (
   <Grid container direction="column" justify="space-evenly" alignItems="center" spacing={1}>
     <Grid item>
       <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
         <Grid item>
-          <TextField
+          <NumberTextField
             value={point.lat}
-            onChange={(e) => setPoint({ ...point, lat: parseFloat(e.target.value) })}
-            style={{ width: '120px' }}
-            variant="outlined"
+            onChange={(num) => setPoint({ ...point, lat: num })}
             label="Lat"
           />
         </Grid >
         <Grid item>
-          <TextField
+          <NumberTextField
             value={point.lng}
-            onChange={(e) => setPoint({ ...point, lng: parseFloat(e.target.value) })}
-            style={{ width: '120px' }}
-            variant="outlined"
+            onChange={(num) => setPoint({ ...point, lng: num })}
             label="Long"
           />
         </Grid >
@@ -52,20 +63,16 @@ const ControlPointText = ({ point, setPoint }) => (
     <Grid item>
       <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
         <Grid item>
-          <TextField
+          <NumberTextField
             value={point.x}
-            onChange={(e) => setPoint({ ...point, x: parseFloat(e.target.value) })}
-            style={{ width: '120px' }}
-            variant="outlined"
+            onChange={(num) => setPoint({ ...point, x: num })}
             label="X img"
           />
         </Grid >
         <Grid item>
-          <TextField
+          <NumberTextField
             value={point.y}
-            onChange={(e) => setPoint({ ...point, y: parseFloat(e.target.value) })}
-            style={{ width: '120px' }}
-            variant="outlined"
+            onChange={(num) => setPoint({ ...point, y: num })}
             label="Y img"
           />
         </Grid >
@@ -103,6 +110,21 @@ export const MapsEditDetails = ({ row, setRow }) => {
   const changeControlPoint = (point, index) => {
     const newpoints = controlPoints.slice();
     newpoints[index] = point;
+    const dx = Math.abs(newpoints[0].x - newpoints[1].x);
+    const dy = Math.abs(newpoints[0].y - newpoints[1].y);
+    if (Math.max(dx, dy) < 15) {
+      alert("Control points are too close");
+      return false;
+    }
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    if (angle < 10) {
+      alert("Control points have similar X coord");
+      return false;
+    }
+    if (angle > 80) {
+      alert("Control points have similar Y coord");
+      return false;
+    }
     setControlPoints(newpoints);
     const box = calcBoxFromPoints(
       newpoints[0].lat, newpoints[0].lng,
@@ -111,7 +133,8 @@ export const MapsEditDetails = ({ row, setRow }) => {
       newpoints[1].x, newpoints[1].y,
       imageSize.x, imageSize.y
     )
-    setRow(Object.assign({}, row, box))
+    setRow(Object.assign({}, row, box));
+    return true;
   }
 
   const distancePixels = (cp1, cp2) => {
@@ -217,14 +240,14 @@ export const MapsEditDetails = ({ row, setRow }) => {
               location={[point.lat, point.lng]}
               // dragLocation={console.log}
               setLocation={p => {
+                setSelectedControlPoint(pointIndex);
                 if (dragOnMap) {
-                  changeControlPoint({ ...controlPoints[pointIndex], lat: p[0], lng: p[1] }, pointIndex);
+                  return changeControlPoint({ ...controlPoints[pointIndex], lat: p[0], lng: p[1] }, pointIndex);
                 } else {
                   const y = (p[0] - row.upper) / (row.lower - row.upper) * imageSize.y;
                   const x = (p[1] - row.left) / (row.right - row.left) * imageSize.x;
-                  changeControlPoint({ lat: p[0], lng: p[1], x: x, y: y }, pointIndex);
+                  return changeControlPoint({ lat: p[0], lng: p[1], x: x, y: y }, pointIndex);
                 }
-                setSelectedControlPoint(pointIndex);
               }}
               onClick={() => setSelectedControlPoint(pointIndex)}
             >
