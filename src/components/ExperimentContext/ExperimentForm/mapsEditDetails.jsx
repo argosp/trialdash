@@ -94,8 +94,8 @@ export const MapsEditDetails = ({ row, setRow }) => {
   const [dragOnMap, setDragOnMap] = useState(true);
   const imageSize = { x: row.width || 300, y: row.height || 400 };
   const [controlPoints, setControlPoints] = useState([
-    { lat: row.upper, lng: row.left, x: 0, y: 0 },
-    { lat: row.lower, lng: row.right, x: imageSize.x, y: imageSize.y },
+    { lat: row.lower, lng: row.left, x: 0, y: imageSize.y },
+    { lat: row.upper, lng: row.right, x: imageSize.x, y: 0 },
   ]);
   const [selectedControlPoint, setSelectedControlPoint] = useState(0);
 
@@ -134,6 +134,7 @@ export const MapsEditDetails = ({ row, setRow }) => {
       imageSize.x, imageSize.y
     )
     setRow(Object.assign({}, row, box));
+    mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
     return true;
   }
 
@@ -198,7 +199,7 @@ export const MapsEditDetails = ({ row, setRow }) => {
               setPoint={(point) => changeControlPoint(point, selectedControlPoint)}
             />
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             <Button
               onClick={() => {
                 mapRef.current.leafletElement.flyToBounds([[row.lower, row.left], [row.upper, row.right]]);
@@ -208,7 +209,7 @@ export const MapsEditDetails = ({ row, setRow }) => {
             >
               Center image
             </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
       <Grid item xs={10}>
