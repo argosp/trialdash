@@ -20,7 +20,7 @@ import {
   TextField
 } from '@material-ui/core';
 import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
-import { canvas, latLng } from "leaflet";
+import { canvas, latLng, latLngBounds } from "leaflet";
 import config from "../../../config";
 
 const defaultPosition = [32.0852, 34.782];
@@ -81,10 +81,97 @@ const ControlPointText = ({ point, setPoint }) => (
   </Grid>
 )
 
-export const MapsEditDetails = ({ row, setRow }) => {
+const calcBoxFromSpecificCoords = (lat0, lng0, lat1, lng1, x0, y0, x1, y1, xsize, ysize) => {
+  const dx = Math.abs(x1 - x0);
+  const dy = Math.abs(y1 - y0);
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  if (angle < 10 || angle > 80) {
+    alert("Control points have similar X or Y coord");
+    return false;
+  }
+  const right = lng0 + (lng1 - lng0) / (x1 - x0) * (xsize - x0);
+  const left = lng1 - (lng1 - lng0) / (x1 - x0) * x1;
+  const lower = lat0 + (lat1 - lat0) / (y1 - y0) * (ysize - y0);
+  const upper = lat1 - (lat1 - lat0) / (y1 - y0) * y1;
+  return { lower, right, upper, left };
+}
+
+const calcBoxFromPoints = (p0, p1, imageSize) => {
+  return calcBoxFromSpecificCoords(
+    p0.lat, p0.lng,
+    p1.lat, p1.lng,
+    p0.x, p0.y,
+    p1.x, p1.y,
+    imageSize.x, imageSize.y);
+}
+
+const distancePixels = (cp1, cp2) => {
+  const dx = cp1.x - cp2.x;
+  const dy = cp1.y - cp2.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+const distanceMeters = (cp1, cp2) => {
+  return latLng(cp1).distanceTo(latLng(cp2));
+}
+
+const ChosenMarker = ({ center }) => (
+  <CircleMarker
+    key='chosen'
+    center={center}
+    radius={9}
+    color={'red'}
+    opacity={1}
+    dashArray={'4 4'}
+    weight={2}
+  />
+)
+
+const DashedPolyline = ({ positions, children }) => (
+  <Polyline
+    positions={positions.map(p => [p.lat, p.lng])}
+    color={'black'}
+    weight={2}
+    dashArray={'4 4'}
+    renderer={canvas({ padding: 0.2, tolerance: 10 })}
+  >
+    {children}
+  </Polyline>
+)
+
+const MapWithImage = React.forwardRef(({ position, showMap, imageUrl, imageBounds, children }, mapRef) => {
   const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
   const mapTileUrl = process.env.REACT_APP_MAP_URL || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png';
 
+  return (
+    <LeafletMap
+      center={position}
+      zoom={15}
+      style={{ height: "400px", width: '100%' }}
+      ref={mapRef}
+    >
+      {
+        !showMap ? null :
+          <TileLayer
+            key='map'
+            attribution={mapAttrib}
+            url={mapTileUrl}
+          />
+      }
+      {
+        !imageBounds ? null :
+          <ImageOverlay
+            key='image'
+            url={config.url + '/' + imageUrl}
+            bounds={imageBounds}
+          />
+      }
+      {children}
+    </LeafletMap>
+  )
+})
+
+export const MapsEditDetails = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
   const hasNans = [row.lower, row.upper, row.left, row.right].findIndex(x => !Number.isFinite(x)) !== -1;
@@ -94,58 +181,26 @@ export const MapsEditDetails = ({ row, setRow }) => {
   const [dragOnMap, setDragOnMap] = useState(true);
   const imageSize = { x: row.width || 300, y: row.height || 400 };
   const [controlPoints, setControlPoints] = useState([
-    { lat: row.lower, lng: row.left, x: 0, y: imageSize.y },
-    { lat: row.upper, lng: row.right, x: imageSize.x, y: 0 },
+    { lat: row.upper, lng: row.left, x: 0, y: 0 },
+    { lat: row.lower, lng: row.right, x: imageSize.x, y: imageSize.y },
   ]);
   const [selectedControlPoint, setSelectedControlPoint] = useState(0);
 
-  const calcBoxFromPoints = (lat0, lng0, lat1, lng1, x0, y0, x1, y1, xsize, ysize) => {
-    const right = lng0 + (lng1 - lng0) / (x1 - x0) * (xsize - x0);
-    const left = lng1 - (lng1 - lng0) / (x1 - x0) * x1;
-    const lower = lat0 + (lat1 - lat0) / (y1 - y0) * (ysize - y0);
-    const upper = lat1 - (lat1 - lat0) / (y1 - y0) * y1;
-    return { lower, right, upper, left };
-  }
+  React.useEffect(() => {
+    setDragOnMap(row.embedded);
+  }, [row.embedded]);
 
   const changeControlPoint = (point, index) => {
     const newpoints = controlPoints.slice();
     newpoints[index] = point;
-    const dx = Math.abs(newpoints[0].x - newpoints[1].x);
-    const dy = Math.abs(newpoints[0].y - newpoints[1].y);
-    if (Math.max(dx, dy) < 15) {
-      alert("Control points are too close");
-      return false;
-    }
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    if (angle < 10) {
-      alert("Control points have similar X coord");
-      return false;
-    }
-    if (angle > 80) {
-      alert("Control points have similar Y coord");
-      return false;
-    }
+    const box = calcBoxFromPoints(newpoints[0], newpoints[1], imageSize);
+    if (!box) return box;
     setControlPoints(newpoints);
-    const box = calcBoxFromPoints(
-      newpoints[0].lat, newpoints[0].lng,
-      newpoints[1].lat, newpoints[1].lng,
-      newpoints[0].x, newpoints[0].y,
-      newpoints[1].x, newpoints[1].y,
-      imageSize.x, imageSize.y
-    )
     setRow(Object.assign({}, row, box));
-    mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
+    setTimeout(() => {
+      fitBounds(box);
+    }, 200);
     return true;
-  }
-
-  const distancePixels = (cp1, cp2) => {
-    const dx = cp1.x - cp2.x;
-    const dy = cp1.y - cp2.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  const distanceMeters = (cp1, cp2) => {
-    return latLng(cp1).distanceTo(latLng(cp2));
   }
 
   const changeDistanceMeters = (pointIndexToChange, val) => {
@@ -171,6 +226,10 @@ export const MapsEditDetails = ({ row, setRow }) => {
     const qy = p.y + (q.y - p.y) * factor;
     changeControlPoint({ ...q, lat: qlat, lng: qlng, x: qx, y: qy }, pointIndexToChange);
   }
+
+  const fitBounds = ((box) => {
+    mapRef.current.leafletElement.fitBounds([[box.lower, box.left], [box.upper, box.right]]);
+  });
 
   return (
     <Grid container>
@@ -199,42 +258,27 @@ export const MapsEditDetails = ({ row, setRow }) => {
               setPoint={(point) => changeControlPoint(point, selectedControlPoint)}
             />
           </Grid>
-          {/* <Grid item>
-            <Button
-              onClick={() => {
-                mapRef.current.leafletElement.flyToBounds([[row.lower, row.left], [row.upper, row.right]]);
-              }}
-              variant='contained'
-              color='primary'
-            >
-              Center image
+          {!row.embedded ? null :
+            <Grid item>
+              <Button
+                onClick={() => fitBounds(row)}
+                variant='contained'
+                color='primary'
+              >
+                Center image
             </Button>
-          </Grid> */}
+            </Grid>
+          }
         </Grid>
       </Grid>
       <Grid item xs={10}>
-        <LeafletMap
-          center={position}
-          zoom={15}
-          style={{ height: "400px", width: '100%' }}
+        <MapWithImage
+          position={position}
           ref={mapRef}
+          showMap={row.embedded}
+          imageUrl={row.imageUrl}
+          imageBounds={hasNans ? null : [[row.upper, row.left], [row.lower, row.right]]}
         >
-          {
-            !row.embedded ? null :
-              <TileLayer
-                key='map'
-                attribution={mapAttrib}
-                url={mapTileUrl}
-              />
-          }
-          {
-            hasNans ? null :
-              <ImageOverlay
-                key='image'
-                url={config.url + '/' + row.imageUrl}
-                bounds={[[row.upper, row.left], [row.lower, row.right]]}
-              />
-          }
           {controlPoints.map((point, pointIndex) =>
             <MarkedPoint
               key={pointIndex}
@@ -254,21 +298,12 @@ export const MapsEditDetails = ({ row, setRow }) => {
             >
             </MarkedPoint>
           )}
-          <CircleMarker
+          <ChosenMarker
             key='chosen'
             center={controlPoints[selectedControlPoint]}
-            radius={9}
-            color={'red'}
-            opacity={1}
-            dashArray={'4 4'}
-            weight={2}
           />
-          <Polyline
-            positions={controlPoints.map(p => [p.lat, p.lng])}
-            color={'black'}
-            weight={2}
-            dashArray={'4 4'}
-            renderer={canvas({ padding: 0.2, tolerance: 10 })}
+          <DashedPolyline
+            positions={controlPoints}
           >
             <Popup permanent>
               <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
@@ -294,8 +329,8 @@ export const MapsEditDetails = ({ row, setRow }) => {
                 </Grid >
               </Grid>
             </Popup>
-          </Polyline>
-        </LeafletMap>
+          </DashedPolyline>
+        </MapWithImage>
       </Grid>
     </Grid>
   )
