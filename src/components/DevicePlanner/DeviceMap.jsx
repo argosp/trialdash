@@ -50,20 +50,16 @@ const DeviceMapLayers = ({ embedded, standalone }) => {
     }
     return (
         <LayersControl position="topright" collapsed={false}>
-            {
-                !embedded.length ? null :
-                    <LayersControl.BaseLayer name="OSMMap" checked={true}>
-                        <LayerGroup>
-                            <RealMapWithImagesLayer images={embedded} />
-                        </LayerGroup>
-                    </LayersControl.BaseLayer>
-            }
+            <LayersControl.BaseLayer name="OSMMap" checked={true}>
+                <LayerGroup>
+                    <RealMapWithImagesLayer images={embedded} />
+                </LayerGroup>
+            </LayersControl.BaseLayer>
             {
                 standalone.map((row, i) => (
                     <LayersControl.BaseLayer
                         key={row.imageName}
                         name={row.imageName}
-                        checked={embedded.length === 0 && i === 0}
                     >
                         <EmbeddedImageLayer image={row} />
                     </LayersControl.BaseLayer>
