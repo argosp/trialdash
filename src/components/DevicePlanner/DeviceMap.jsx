@@ -7,9 +7,10 @@ import {
     LayerGroup
 } from "react-leaflet";
 import config from '../../config';
-import { L } from 'leaflet';
+import { L, latLngBounds } from 'leaflet';
 
 const position = [32.081128, 34.779729];
+const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
 
 const RealMapLayer = () => {
     const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
@@ -76,31 +77,52 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     const embedded = images.filter(row => row.embedded);
     const standalone = images.filter(row => !row.embedded);
 
+    const [layerPositions, setLayerPositions] = React.useState();
+
+    const setLayerAndPos = (name) => {
+        let pos = layerPositions ? layerPositions[name] : null;
+        if (!pos) {
+            if (name === 'OSMMap') {
+                pos = posbounds;
+            } else {
+                const row = standalone.find(r => r.imageName === name);
+                pos = [[row.upper, row.left], [row.lower, row.right]];
+            }
+            const newPositions = Object.assign({}, layerPositions);
+            newPositions[name] = pos;
+            setLayerPositions(newPositions);
+        }
+        mapElement.current.leafletElement.fitBounds(pos);
+        // mapElement.current.leafletElement.setView(pos);
+        setLayerChosen(name);
+    };
+
     React.useEffect(() => {
         mapElement.current.leafletElement.invalidateSize();
-        mapElement.current.leafletElement.on('baselayerchange', function (e) {
-            setLayerChosen(e.name);
-        });
         if (!layerChosen) {
-            if (!standalone.length || embedded.length) {
-                setLayerChosen('OSMMap');
-            } else {
-                setLayerChosen(standalone[0].imageName);
-            }
+            setLayerAndPos('OSMMap');
         }
     }, []);
+
+    React.useEffect(() => {
+        mapElement.current.leafletElement.off('baselayerchange');
+        mapElement.current.leafletElement.on('baselayerchange', (e) => {
+            setLayerAndPos(e.name);
+        });
+    }, [experimentDataMaps]);
 
     return (
         <LeafletMap
             center={position}
             zoom={15}
             ref={mapElement}
-            style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
+            style={{ height: "100%" }}
+            // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
             onClick={onClick}
             onMouseMove={onMouseMove}
             onMouseOut={onMouseOut}
         >
-            <DeviceMapLayers embedded={embedded} standalone={standalone} onLayerChange={(layerName) => setLayerChosen(layerName)} />
+            <DeviceMapLayers embedded={embedded} standalone={standalone} />
             {children}
         </LeafletMap>
     );

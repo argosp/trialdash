@@ -1,4 +1,4 @@
-import { Button, InputLabel, Paper, Switch } from '@material-ui/core';
+import { Button, InputLabel, Paper, Switch, Grid } from '@material-ui/core';
 import React from 'react';
 import { DeviceList } from './DeviceList';
 import { DeviceMap } from './DeviceMap';
@@ -109,43 +109,49 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     const shapeData = () => shapeOptions.find(s => s.name === shape);
 
     return (
-        <div className="App" style={{ position: 'relative', height: "100vh" }}>
-            <DeviceMap
-                onClick={handleMapClick}
-                experimentDataMaps={experimentDataMaps}
-                layerChosen={layerChosen}
-                setLayerChosen={setLayerChosen}
-            >
-                {
-                    devices.map(devType => {
-                        if (showAll || (devType.name === selectedType)) {
-                            return devType.items.map((dev, index) => {
-                                const loc = getDeviceLocation(dev, devType, layerChosen);
-                                if (!loc) return null;
-                                return <DeviceMarker
-                                    key={dev.key} device={dev}
-                                    devLocation={loc}
-                                    isSelected={selection.includes(index)}
-                                    isTypeSelected={devType.name === selectedType}
-                                    shouldShowName={showName}
-                                />
-                            });
-                        } else {
-                            return null;
-                        }
-                    })
-                }
+        <Grid
+            container direction="row-reverse" justify="flex-start" alignItems="stretch"
+            style={{ height: '550px' }}
+        >
+            <Grid item xs={9}>
+                <DeviceMap
+                    onClick={handleMapClick}
+                    experimentDataMaps={experimentDataMaps}
+                    layerChosen={layerChosen}
+                    setLayerChosen={setLayerChosen}
+                >
+                    {
+                        devices.map(devType => {
+                            if (showAll || (devType.name === selectedType)) {
+                                return devType.items.map((dev, index) => {
+                                    const loc = getDeviceLocation(dev, devType, layerChosen);
+                                    if (!loc) return null;
+                                    return <DeviceMarker
+                                        key={dev.key} device={dev}
+                                        devLocation={loc}
+                                        isSelected={selection.includes(index)}
+                                        isTypeSelected={devType.name === selectedType}
+                                        shouldShowName={showName}
+                                    />
+                                });
+                            } else {
+                                return null;
+                            }
+                        })
+                    }
 
-                <MarkedShape
-                    markedPoints={markedPoints}
-                    setMarkedPoints={setMarkedPoints}
-                    shape={shape}
-                    shapeCreator={shapeData()}
-                    deviceNum={selection.length}
-                />
+                    <MarkedShape
+                        markedPoints={markedPoints}
+                        setMarkedPoints={setMarkedPoints}
+                        shape={shape}
+                        shapeCreator={shapeData()}
+                        deviceNum={selection.length}
+                    />
 
-            </DeviceMap>
-            <div style={{
+                </DeviceMap>
+            </Grid>
+            <Grid item xs={3} style={{overflow: 'auto'}}>
+                {/* <div style={{
                 position: 'absolute', width: '28%', top: 0, bottom: 0, left: 0, zIndex: 1000
             }}>
                 <Paper style={{
@@ -153,61 +159,63 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                 }} >
                     <div
                         style={{ margin: 10 }}
-                    >
-                        {!devices.length ? null :
-                            <>
-                                <ShapeChooser
-                                    shape={shape}
-                                    onChange={(val) => setShape(val)}
-                                    shapeOptions={shapeOptions}
-                                />
-                                {shape !== 'Rect' ? null :
-                                    <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
-                                }
-                                <Button variant="contained" color="primary"
-                                    disabled={shape === 'Point'}
-                                    style={{ margin: 5 }}
-                                    onClick={handlePutDevices}
-                                >
-                                    Put devices
-                                </Button>
-                                <TypeChooser
-                                    selectedType={selectedType}
-                                    onChange={newType => {
-                                        setSelection([]);
-                                        setSelectedType(newType);
-                                    }}
-                                    showAll={showAll}
-                                    setShowAll={val => setShowAll(val)}
-                                    typeOptions={devices.map(dev => { return { name: dev.name } })}
-                                />
-                                <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                                    <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
-                                    <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                                        value={showName}
-                                        onChange={e => setShowName(e.target.checked)}
-                                    />
-                                </div>
-                                <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                                    <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show only assigned</InputLabel>
-                                    <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                                        value={showOnlyAssigned}
-                                        onChange={e => setShowOnlyAssigned(e.target.checked)}
-                                    />
-                                </div>
-
-                                <DeviceList
-                                    selection={selection}
-                                    setSelection={setSelection}
-                                    devices={devices.filter(d => d.name === selectedType)}
-                                    removeDeviceLocation={(index) => setDevices(changeLocations(selectedType, [index]))}
-                                    layerChosen={layerChosen}
-                                />
-                            </>
+                    > */}
+                {!devices.length ? null :
+                    <>
+                        <ShapeChooser
+                            shape={shape}
+                            onChange={(val) => setShape(val)}
+                            shapeOptions={shapeOptions}
+                        />
+                        {shape !== 'Rect' ? null :
+                            <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
                         }
-                    </div>
+                        <Button variant="contained" color="primary"
+                            disabled={shape === 'Point'}
+                            style={{ margin: 5 }}
+                            onClick={handlePutDevices}
+                        >
+                            Put devices
+                                </Button>
+                        <TypeChooser
+                            selectedType={selectedType}
+                            onChange={newType => {
+                                setSelection([]);
+                                setSelectedType(newType);
+                            }}
+                            showAll={showAll}
+                            setShowAll={val => setShowAll(val)}
+                            typeOptions={devices.map(dev => { return { name: dev.name } })}
+                        />
+                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
+                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                value={showName}
+                                onChange={e => setShowName(e.target.checked)}
+                            />
+                        </div>
+                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show only assigned</InputLabel>
+                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                value={showOnlyAssigned}
+                                onChange={e => setShowOnlyAssigned(e.target.checked)}
+                            />
+                        </div>
+
+                        <DeviceList
+                            selection={selection}
+                            setSelection={setSelection}
+                            devices={devices.filter(d => d.name === selectedType)}
+                            removeDeviceLocation={(index) => setDevices(changeLocations(selectedType, [index]))}
+                            layerChosen={layerChosen}
+                        />
+                    </>
+                }
+                {/* </div>
                 </Paper>
-            </div>
-        </div>
+            </div> */}
+                {/* </div> */}
+            </Grid>
+        </Grid>
     )
 }
