@@ -1,24 +1,39 @@
-import { IconButton, ListItem, ListItemText } from '@material-ui/core';
+import { IconButton, ListItem, ListItemText, Tooltip } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import React from 'react';
 
-export const DeviceRow = ({ dev, deviceLocation, isDeviceOnLayer, isSelected, onClick, onDisableLocation }) => (
-    <ListItem
-        key={dev.name}
-        button
-        selected={isSelected}
-        onClick={onClick}
-    >
-        <ListItemText primary={dev.name} />
-        {!deviceLocation ? null :
-            <IconButton aria-label="Disable location" size="small"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onDisableLocation();
-                }}
-            >
-                <LocationOnIcon color={isDeviceOnLayer ? "primary" : ""} />
-            </IconButton>
+const formatDeviceLocation = (loc, layer) => {
+    return;
+}
+
+export const DeviceRow = ({ dev, deviceLocation, isDeviceOnLayer, deviceLayerName, isSelected, onClick, onDisableLocation }) => {
+    let tip = null;
+    if (deviceLocation) {
+        tip = deviceLocation.map(x => Math.round(x * 1e5) / 1e5).join(', ');
+        if (!isDeviceOnLayer) {
+            tip = '(' + tip + ') on ' + deviceLayerName;
         }
-    </ListItem>
-)
+    }
+    return (
+        <ListItem
+            key={dev.name}
+            button
+            selected={isSelected}
+            onClick={onClick}
+        >
+            <ListItemText primary={dev.name} />
+            {!deviceLocation ? null :
+                <Tooltip title={tip}>
+                    <IconButton aria-label="Disable location" size="small"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDisableLocation();
+                        }}
+                    >
+                        <LocationOnIcon color={isDeviceOnLayer ? "primary" : ""} />
+                    </IconButton>
+                </Tooltip>
+            }
+        </ListItem>
+    )
+}

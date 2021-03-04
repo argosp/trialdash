@@ -37,11 +37,13 @@ export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocat
                             const prop = getDeviceLocationProp(dev, devType);
                             const deviceLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
                             const isDeviceOnLayer = deviceLocation && prop.val.name === layerChosen;
+                            const deviceLayerName = deviceLocation ? prop.val.name : null;
                             return <DeviceRow
                                 key={dev.key}
                                 dev={dev}
                                 deviceLocation={deviceLocation}
                                 isDeviceOnLayer={isDeviceOnLayer}
+                                deviceLayerName={deviceLayerName}
                                 isSelected={selection.includes(index)}
                                 onClick={e => { handleSelectionClick(index, e.shiftKey) }}
                                 onDisableLocation={() => { removeDeviceLocation(index); }}
