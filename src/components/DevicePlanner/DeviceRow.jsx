@@ -30,7 +30,7 @@ export const DeviceRow = ({ dev, deviceLocation, isDeviceOnLayer, deviceLayerNam
                             onDisableLocation();
                         }}
                     >
-                        <LocationOnIcon color={isDeviceOnLayer ? "primary" : ""} />
+                        <LocationOnIcon color={isDeviceOnLayer ? "primary" : "inherit"} />
                     </IconButton>
                 </Tooltip>
             }

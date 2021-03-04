@@ -12,6 +12,10 @@ import { L, latLngBounds } from 'leaflet';
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
 
+const bounds2arr = (bounds) => {
+    return [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
+}
+
 const RealMapLayer = () => {
     const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
     const mapTileUrl = process.env.REACT_APP_MAP_URL || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png';
@@ -80,21 +84,22 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     const [layerPositions, setLayerPositions] = React.useState();
 
     const setLayerAndPos = (name) => {
-        let pos = layerPositions ? layerPositions[name] : null;
-        if (!pos) {
-            if (name === 'OSMMap') {
-                pos = posbounds;
-            } else {
-                const row = standalone.find(r => r.imageName === name);
-                pos = [[row.upper, row.left], [row.lower, row.right]];
-            }
-            const newPositions = Object.assign({}, layerPositions);
-            newPositions[name] = pos;
-            setLayerPositions(newPositions);
-        }
-        mapElement.current.leafletElement.fitBounds(pos);
-        // mapElement.current.leafletElement.setView(pos);
         setLayerChosen(name);
+        setTimeout(() => {
+            let pos = layerPositions ? layerPositions[name] : null;
+            if (!pos) {
+                if (name === 'OSMMap') {
+                    pos = posbounds;
+                } else {
+                    const row = standalone.find(r => r.imageName === name);
+                    pos = [[row.upper, row.left], [row.lower, row.right]];
+                }
+                const newPositions = Object.assign({}, layerPositions || {});
+                newPositions[name] = pos;
+                setLayerPositions(newPositions);
+            }
+            mapElement.current.leafletElement.fitBounds(pos);
+        }, 1);
     };
 
     React.useEffect(() => {
@@ -105,11 +110,20 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     }, []);
 
     React.useEffect(() => {
-        mapElement.current.leafletElement.off('baselayerchange');
         mapElement.current.leafletElement.on('baselayerchange', (e) => {
             setLayerAndPos(e.name);
         });
-    }, [experimentDataMaps]);
+        mapElement.current.leafletElement.on('moveend', () => {
+            const newPositions = Object.assign({}, layerPositions || {});
+            newPositions[layerChosen] = bounds2arr(mapElement.current.leafletElement.getBounds());
+            setLayerPositions(newPositions);
+        });
+
+        return () => {
+            mapElement.current.leafletElement.off('baselayerchange');
+            mapElement.current.leafletElement.off('moveend');
+        }
+    });
 
     return (
         <LeafletMap
