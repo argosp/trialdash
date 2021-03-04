@@ -23,7 +23,7 @@ export const MarkedPoint = (props) => {
             ondragend={(e) => {
                 if (setLocation) {
                     const res = setLocation(Object.values(e.target.getLatLng()));
-                    if (dragStartLoc && !res) {
+                    if (dragStartLoc && res === false) { // when setLocation returns false - revert to last position
                         e.target.setLatLng(dragStartLoc);
                     }
                 }
