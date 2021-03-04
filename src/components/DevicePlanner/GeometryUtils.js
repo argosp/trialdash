@@ -98,6 +98,7 @@ export const splineCurveOne = (points, t) => {
 };
 
 export const splineCurve = (points, amount) => {
+    if (points.length <= 2) return points;
     let ret = new Array(amount);
     for (let i = 0; i < amount; ++i) {
         ret[i] = splineCurveOne(points, i / amount);
@@ -119,6 +120,7 @@ export const arcCurve = (center, radius, fromAngle, toAngle, amount) => {
 }
 
 export const arcCurveFromPoints = (points, amount) => {
+    if (points.length <= 2) return [points];
     const p = points[0], v1 = points[1], v2 = points[points.length - 1];
     const a1 = Math.atan2(v1[1] - p[1], v1[0] - p[0]);
     const a2 = Math.atan2(v2[1] - p[1], v2[0] - p[0]);
