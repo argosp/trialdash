@@ -1,7 +1,7 @@
 import React from 'react';
 import { List } from '@material-ui/core';
 import { DeviceRow } from './DeviceRow';
-import { getDeviceLocation } from './DeviceUtils';
+import { getDeviceLocation, getDeviceLocationProp } from './DeviceUtils';
 
 export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocation, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
@@ -33,16 +33,20 @@ export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocat
             <List>
                 {
                     devices.map(devType =>
-                        devType.items.map((dev, index) =>
-                            <DeviceRow
+                        devType.items.map((dev, index) => {
+                            const prop = getDeviceLocationProp(dev, devType);
+                            const deviceLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
+                            const isDeviceOnLayer = deviceLocation && prop.val.name === layerChosen;
+                            return <DeviceRow
                                 key={dev.key}
                                 dev={dev}
-                                devLocation={getDeviceLocation(dev, devType, layerChosen)}
+                                deviceLocation={deviceLocation}
+                                isDeviceOnLayer={isDeviceOnLayer}
                                 isSelected={selection.includes(index)}
                                 onClick={e => { handleSelectionClick(index, e.shiftKey) }}
                                 onDisableLocation={() => { removeDeviceLocation(index); }}
                             />
-                        )
+                        })
                     )
                 }
             </List >
