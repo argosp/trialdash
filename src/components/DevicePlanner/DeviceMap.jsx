@@ -110,19 +110,17 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     }, []);
 
     React.useEffect(() => {
+        mapElement.current.leafletElement.invalidateSize();
+        mapElement.current.leafletElement.off('baselayerchange');
         mapElement.current.leafletElement.on('baselayerchange', (e) => {
             setLayerAndPos(e.name);
         });
+        mapElement.current.leafletElement.off('moveend');
         mapElement.current.leafletElement.on('moveend', () => {
             const newPositions = Object.assign({}, layerPositions || {});
             newPositions[layerChosen] = bounds2arr(mapElement.current.leafletElement.getBounds());
             setLayerPositions(newPositions);
         });
-
-        return () => {
-            mapElement.current.leafletElement.off('baselayerchange');
-            mapElement.current.leafletElement.off('moveend');
-        }
     });
 
     return (
