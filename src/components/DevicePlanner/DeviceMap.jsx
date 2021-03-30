@@ -77,55 +77,47 @@ const DeviceMapLayers = ({ embedded, standalone }) => {
 export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
     const mapElement = React.useRef(null);
 
-    const images = experimentDataMaps || [];
-    const embedded = images.filter(row => row.embedded);
-    const standalone = images.filter(row => !row.embedded);
+    const [layerPositions, setLayerPositions] = React.useState({});
 
-    const [layerPositions, setLayerPositions] = React.useState();
+    const getLayerPosition = (layerName) => {
+        if (!layerName || layerName === '') return posbounds;
 
-    const setLayerAndPos = (name) => {
-        setLayerChosen(name);
-        setTimeout(() => {
-            let pos = layerPositions ? layerPositions[name] : null;
-            if (!pos) {
-                if (name === 'OSMMap') {
-                    pos = posbounds;
-                } else {
-                    const row = standalone.find(r => r.imageName === name);
-                    pos = [[row.upper, row.left], [row.lower, row.right]];
-                }
-                const newPositions = Object.assign({}, layerPositions || {});
-                newPositions[name] = pos;
-                setLayerPositions(newPositions);
-            }
-            mapElement.current.leafletElement.fitBounds(pos);
-        }, 1);
+        const layerPos = (layerPositions || {})[layerName];
+        if (layerPos) {
+            return layerPos;
+        }
+
+        if (layerName === 'OSMMap') {
+            return posbounds;
+        }
+
+        const row = (experimentDataMaps || []).find(r => r.imageName === layerName);
+        if (row) {
+            return [[row.upper, row.left], [row.lower, row.right]];
+        }
+
+        return posbounds;
     };
 
+    const changeLayerPosition = () => {
+        const newPositions = Object.assign({}, layerPositions);
+        newPositions[layerChosen] = bounds2arr(mapElement.current.leafletElement.getBounds());
+        setLayerPositions(newPositions);
+    }
+
     React.useEffect(() => {
-        mapElement.current.leafletElement.invalidateSize();
         if (!layerChosen) {
-            setLayerAndPos('OSMMap');
+            setLayerChosen('OSMMap');
         }
     }, []);
 
-    React.useEffect(() => {
+    if (mapElement && mapElement.current && mapElement.current.leafletElement) {
         mapElement.current.leafletElement.invalidateSize();
-        mapElement.current.leafletElement.off('baselayerchange');
-        mapElement.current.leafletElement.on('baselayerchange', (e) => {
-            setLayerAndPos(e.name);
-        });
-        mapElement.current.leafletElement.off('moveend');
-        mapElement.current.leafletElement.on('moveend', () => {
-            const newPositions = Object.assign({}, layerPositions || {});
-            newPositions[layerChosen] = bounds2arr(mapElement.current.leafletElement.getBounds());
-            setLayerPositions(newPositions);
-        });
-    });
+    }
 
     return (
         <LeafletMap
-            center={position}
+            bounds={getLayerPosition(layerChosen)}
             zoom={15}
             ref={mapElement}
             style={{ height: "100%" }}
@@ -133,8 +125,13 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             onClick={onClick}
             onMouseMove={onMouseMove}
             onMouseOut={onMouseOut}
+            onBaseLayerChange={(e) => setLayerChosen(e.name)}
+            onMoveEnd={changeLayerPosition}
         >
-            <DeviceMapLayers embedded={embedded} standalone={standalone} />
+            <DeviceMapLayers
+                embedded={(experimentDataMaps || []).filter(row => row.embedded)}
+                standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
+            />
             {children}
         </LeafletMap>
     );

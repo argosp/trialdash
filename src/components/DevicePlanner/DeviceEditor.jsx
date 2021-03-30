@@ -19,7 +19,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     const [rectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
-    const [layerChosen, setLayerChosen] = React.useState();
+    const [layerChosen, setLayerChosen] = React.useState('OSMMap');
 
     console.log('DeviceEditor', layerChosen, devices, showOnlyAssigned, selectedType)
 
