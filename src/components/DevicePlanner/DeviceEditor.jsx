@@ -108,6 +108,11 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
 
     const shapeData = () => shapeOptions.find(s => s.name === shape);
 
+    const distanceInMeters = () => {
+        const row = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
+        return row ? !row.embedded : false;
+    }
+
     return (
         <Grid
             container direction="row-reverse" justify="flex-start" alignItems="stretch"
@@ -146,11 +151,12 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                         shape={shape}
                         shapeCreator={shapeData()}
                         deviceNum={selection.length}
+                        distanceInMeters={distanceInMeters()}
                     />
 
                 </DeviceMap>
             </Grid>
-            <Grid item xs={3} style={{overflow: 'auto'}}>
+            <Grid item xs={3} style={{ overflow: 'auto' }}>
                 {/* <div style={{
                 position: 'absolute', width: '28%', top: 0, bottom: 0, left: 0, zIndex: 1000
             }}>

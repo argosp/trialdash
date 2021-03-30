@@ -1,9 +1,9 @@
 import React from 'react';
 import { Polyline, CircleMarker } from "react-leaflet";
 import { MarkedPoint } from './MarkedPoint';
-import { polylineDistance, distToText } from './GeometryUtils';
+import { polylineDistance, distToText, polylineLength } from './GeometryUtils';
 
-export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator, deviceNum }) => {
+export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator, deviceNum, distanceInMeters }) => {
     const currPolyline = React.useRef(null);
     const auxPolyline = React.useRef(null);
 
@@ -11,7 +11,15 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
 
     const setLatLngsWithDist = (leafletElement, points) => {
         leafletElement.setLatLngs(points);
-        const dist = polylineDistance(leafletElement.getLatLngs());
+        const latlngs = leafletElement.getLatLngs();
+        console.log(latlngs);
+        let dist;
+        if (distanceInMeters) {
+            const points = latlngs.map(loc => [loc.lng, loc.lat]);
+            dist = polylineLength(points);
+        } else {
+            dist = polylineDistance(latlngs);
+        }
         if (dist > 0) {
             leafletElement.bindTooltip(distToText(dist)).openTooltip();
         }
