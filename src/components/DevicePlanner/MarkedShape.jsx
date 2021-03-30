@@ -21,6 +21,7 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
         points = points || markedPoints;
         if (!points.length) return;
         const shownPolylines = shapeCreator.toLine(points);
+        if (!shownPolylines || !shownPolylines.length) return;
         setLatLngsWithDist(currPolyline.current.leafletElement, shownPolylines[0]);
         if (shape === 'Arc') {
             setLatLngsWithDist(auxPolyline.current.leafletElement, shownPolylines.length > 1 ? shownPolylines[1] : []);
