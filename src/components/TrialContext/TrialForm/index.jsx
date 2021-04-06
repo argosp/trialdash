@@ -34,6 +34,7 @@ import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
 import TrialDevices from './TrialDevices';
 import CloneDevicesDialog from '../../CloneDevicesDialog';
+import trialMutationUpdate from './utils/trialMutationUpdate';
 
 const COLORS_STATUSES = {
   design: { color: 'violet', level: 'main' },
@@ -251,6 +252,45 @@ class TrialForm extends React.Component {
     this.setState({ });
   }
 
+  updateLocation = async (entity) => {
+    const newEntity = {};
+    const { match, client } = this.props;
+    const { trial } = this.state;
+    newEntity.key = trial.key;
+    newEntity.experimentId = trial.experimentId;
+    newEntity.trialSetKey = trial.trialSetKey;
+    newEntity[!trial.status || trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
+
+    await client.mutate({
+      mutation: trialMutationUpdate(newEntity),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          trialsQuery(match.params.id, match.params.trialSetKey),
+          TRIALS,
+          TRIAL_MUTATION,
+          true,
+        );
+      },
+    });
+
+    let isNew = true;
+    let entitiesField = (!trial.status || trial.status === 'design') ? 'entities' : 'deployedEntities'
+    trial[entitiesField].forEach((item, i) => {
+      if (item.key === entity.key) {
+        trial[entitiesField][i].properties.forEach((property, j) => {
+          if (property.key === entity.properties[0].key) {
+            trial[entitiesField][i].properties[j] = entity.properties[0];
+          }
+        });
+        isNew = false;
+      }
+    });
+    if (isNew) trial[entitiesField].push(entity);
+    this.setState({ trial });
+  };
+
   showFooter = (showFooter) => {
     this.setState({ showFooter });
   }
@@ -415,6 +455,7 @@ class TrialForm extends React.Component {
             trial={trial}
             addEntity={this.addEntity}
             removeEntity={this.removeEntity}
+            updateLocation={this.updateLocation}
             onEntityPropertyChange={this.onEntityPropertyChange}
             showFooter={this.showFooter}
           />
