@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
-import { groupBy, concat } from 'lodash';
+import { groupBy } from 'lodash';
 import deviceTypesQuery from '../../../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from '../../../DeviceContext/Devices/utils/deviceQuery';
 import { styles } from '../styles';
@@ -19,7 +19,8 @@ import DevicesGrid from './devicesGrid';
 import SimpleButton from '../../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
 import DevicePlanner from '../../../DevicePlanner';
-import dataQuery from '../../../DataContext/utils/dataQuery.js';
+import experimentsQuery from '../../../ExperimentContext/utils/experimentsQuery';
+
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
     component="div"
@@ -40,7 +41,7 @@ class TrialDevices extends React.Component {
     entities: {},
     devices: {},
     deviceTypes: {},
-    experimentDataMaps: []
+    isLoading: true,
   };
 
   componentWillMount() {
@@ -48,22 +49,24 @@ class TrialDevices extends React.Component {
     client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
       const deviceTypes = groupBy(data.data.deviceTypes, 'key');
       let devices = [];
-        client.query({ query: devicesQuery(match.params.id)}).then((devicesData) => {
-          devices =  devicesData.data.devices;
-          this.setState({
-            devices: groupBy(devices, 'key'),
-
-          });
+      client.query({ query: devicesQuery(match.params.id) }).then((devicesData) => {
+        devices =  devicesData.data.devices;
+        this.setState({
+          devices: groupBy(devices, 'key'),
         });
+      });
       this.setState({
         deviceTypes,
       });
     });
-    this.getExperimentById();
   }
 
   componentDidMount() {
+    const { client } = this.props;
     this.orderEntities();
+    client
+      .query({ query: experimentsQuery })
+      .then(() => this.setState({ isLoading: false }));
   }
 
   componentDidUpdate(prevProps) {
@@ -97,13 +100,6 @@ class TrialDevices extends React.Component {
     this.setState({ update: false });
   }
 
-  getExperimentById =  async () => {
-    const { client, match,trial } = this.props;
-    const experimentId =trial.experimentId;
-      await client.query({ query: dataQuery(experimentId) }).then(( data) => {
-        if(data) this.setState({experimentDataMaps:data.data.experimentData.maps});
-   });
-  }
   render() {
     const {
       classes,
@@ -114,6 +110,7 @@ class TrialDevices extends React.Component {
       removeEntity,
       onEntityPropertyChange,
       updateLocation,
+      client,
     } = this.props;
     const {
       selectedViewIndex,
@@ -121,7 +118,12 @@ class TrialDevices extends React.Component {
       devices,
       deviceTypes,
       update,
+      isLoading,
     } = this.state;
+    const experiments = !isLoading
+      ? client.readQuery({ query: experimentsQuery }).experimentsWithData
+      : [];
+    const currentExperiment = experiments.find(experiment => experiment.project.id === trial.experimentId);
     return (
       <>
         <Grid
@@ -214,7 +216,7 @@ class TrialDevices extends React.Component {
                 trial={trial}
                 entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
                 deviceTypes={deviceTypes}
-                experimentDataMaps = {this.state.experimentDataMaps}
+                experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
               />
               : null
           }
