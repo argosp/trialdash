@@ -11,10 +11,6 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import { groupBy, concat } from 'lodash';
-import trialsQuery from '../../utils/trialQuery';
-import { updateCache } from '../../../../apolloGraphql';
-import trialMutationUpdate from '../utils/trialMutationUpdate';
-import devicesTrialQuery from '../utils/devicesTrialQuery';
 import deviceTypesQuery from '../../../DeviceContext/utils/deviceTypeQuery';
 import devicesQuery from '../../../DeviceContext/Devices/utils/deviceQuery';
 import { styles } from '../styles';
@@ -23,10 +19,6 @@ import DevicesGrid from './devicesGrid';
 import SimpleButton from '../../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
 import DevicePlanner from '../../../DevicePlanner';
-import {
-  TRIALS,
-  TRIAL_MUTATION,
-} from '../../../../constants/base';
 import dataQuery from '../../../DataContext/utils/dataQuery.js';
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
@@ -105,29 +97,6 @@ class TrialDevices extends React.Component {
     this.setState({ update: false });
   }
 
-  updateLocation = async (entity) => {
-    const newEntity = {};
-    const { match, client, trial } = this.props;
-    newEntity.key = trial.key;
-    newEntity.experimentId = trial.experimentId;
-    newEntity.trialSetKey = trial.trialSetKey;
-    newEntity[!trial.status || trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
-
-    await client.mutate({
-      mutation: trialMutationUpdate(newEntity),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          trialsQuery(match.params.id, match.params.trialSetKey),
-          TRIALS,
-          TRIAL_MUTATION,
-          true,
-        );
-      },
-    });
-  };
-
   getExperimentById =  async () => {
     const { client, match,trial } = this.props;
     const experimentId =trial.experimentId;
@@ -144,6 +113,7 @@ class TrialDevices extends React.Component {
       addEntity,
       removeEntity,
       onEntityPropertyChange,
+      updateLocation,
     } = this.props;
     const {
       selectedViewIndex,
@@ -240,7 +210,7 @@ class TrialDevices extends React.Component {
           {
             (selectedViewIndex === 3 && Object.keys(deviceTypes).length) ?
               <DevicePlanner
-                updateLocation={this.updateLocation}
+                updateLocation={updateLocation}
                 trial={trial}
                 entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
                 deviceTypes={deviceTypes}

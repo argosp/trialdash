@@ -59,7 +59,7 @@ class ContentTable extends React.Component {
         query,
       })
       .then((data) => {
-        data.data[contentType] = data.data[contentType].filter(d => d.state !== 'Deleted');
+        data.data[contentType] = data.data[contentType] ? data.data[contentType].filter(d => d.state !== 'Deleted') : [];
         this.setState({ [contentType]: data.data[contentType] });
         if (getData) getData(data.data[contentType]);
         if (setUpdated && update) setUpdated();

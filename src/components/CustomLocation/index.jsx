@@ -44,7 +44,7 @@ class CustomLocation extends React.Component {
           onChange={e => this.handleChange(e, 0, value)}
           label={label ? 'x' : null}
           placeholder="x"
-          value={value.coordinates[0]}
+          value={value.coordinates ? value.coordinates[0] : null}
           type="text"
           withBorder={withBorder}
         />
@@ -54,7 +54,7 @@ class CustomLocation extends React.Component {
           onChange={e => this.handleChange(e, 1, value)}
           label={label ? 'y' : null}
           placeholder="y"
-          value={value.coordinates[1]}
+          value={value.coordinates ? value.coordinates[1] : null}
           type="text"
           withBorder={withBorder}
         />
