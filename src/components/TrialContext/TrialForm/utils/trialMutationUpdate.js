@@ -10,7 +10,6 @@ export default (trial) => {
           key:"${key}",
           uid:"${localStorage.getItem('uid')}"
           experimentId:"${trial.experimentId}"
-          ${trial.id ? `id:"${trial.id}"` : ''},
           ${trial.name ? `name:"${trial.name}"` : ''},
           ${trial.status ? `status:"${trial.status}"` : ''},
           trialSetKey:"${trial.trialSetKey}",
@@ -36,7 +35,6 @@ export default (trial) => {
               key
               created
               status
-              id
               name
               trialSetKey
               numberOfDevices

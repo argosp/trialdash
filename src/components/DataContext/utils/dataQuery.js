@@ -9,7 +9,6 @@ const data = experimentId => gql`
         description
         status
        }
-       id
        name
        description
        begin

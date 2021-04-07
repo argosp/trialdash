@@ -7,7 +7,6 @@ export default (asset) => {
     addUpdateAsset(
         uid: "${localStorage.getItem('uid')}",
         experimentId:"${asset.experimentId}"
-        id: "${id}",
         name: "${asset.name}",
         notes: "${asset.notes}",
         type: "${asset.type}",
@@ -15,7 +14,6 @@ export default (asset) => {
         entityType: "${asset.entityType}",
         properties: ${JSON.stringify(asset.properties).replace(/"key":/g, 'key:').replace(/"val":/g, 'val:')}
         ) {
-            id
             name
             type
             number

@@ -5,11 +5,9 @@ export default data => gql`
     addUpdateData(
         uid: "${localStorage.getItem('uid')}",
         experimentId:"${data.experimentId}"
-        id: "${data.id}",
         name: "${data.name}",
         type: "${data.type}",
         ) {
-            id
             name
             type
         }

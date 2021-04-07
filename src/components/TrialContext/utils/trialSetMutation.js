@@ -12,7 +12,6 @@ export default (trialSet) => {
         uid: "${localStorage.getItem('uid')}",
         experimentId:"${trialSet.experimentId}"
         key: "${key}",
-        id: "${trialSet.id}",
         name: "${trialSet.name}",
         description: "${trialSet.description}",
         numberOfTrials: ${trialSet.numberOfTrials},
@@ -20,7 +19,6 @@ export default (trialSet) => {
         properties: ${JSON.stringify(trialSet.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"type":/g, 'type:')
-    .replace(/"id":/g, 'id:')
     .replace(/"label":/g, 'label:')
     .replace(/"description":/g, 'description:')
     .replace(/"required":/g, 'required:')
@@ -30,7 +28,6 @@ export default (trialSet) => {
     .replace(/"defaultValue":/g, 'defaultValue:')}
         ) {
             key
-            id
             name
             description
             numberOfTrials
@@ -38,7 +35,6 @@ export default (trialSet) => {
             properties {
               key
               type
-              id
               label
               description
               required

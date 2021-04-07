@@ -18,7 +18,6 @@ export default (trial) => {
             key:"${key}",
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${trial.experimentId}"
-            id:"${trial.id}"
             name:"${trial.name}"
             status:"${trial.status}"
             ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
@@ -46,7 +45,6 @@ export default (trial) => {
               created
               status
               cloneFrom
-              id
               name
               trialSetKey
               numberOfDevices

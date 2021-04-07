@@ -9,7 +9,6 @@ export default (device) => {
             key: "${key}",
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${device.experimentId}"
-            id:"${device.id}"
             name:"${device.name}"
             deviceTypeKey: "${device.deviceTypeKey}"
             ${device.state ? `state:"${device.state}"` : ''}
@@ -19,7 +18,6 @@ export default (device) => {
 }
             ){
             key
-            id
             name
             deviceTypeKey
             state

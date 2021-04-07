@@ -12,14 +12,12 @@ export default (deviceType) => {
             uid: "${localStorage.getItem('uid')}",
             experimentId:"${deviceType.experimentId}",
             key: "${key}",
-            id: "${deviceType.id}",
             name: "${deviceType.name}",
             numberOfDevices: ${deviceType.numberOfDevices},
             ${deviceType.state ? `state:"${deviceType.state}"` : ''}
             properties: ${JSON.stringify(deviceType.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"type":/g, 'type:')
-    .replace(/"id":/g, 'id:')
     .replace(/"label":/g, 'label:')
     .replace(/"description":/g, 'description:')
     .replace(/"prefix":/g, 'prefix:')
@@ -34,14 +32,12 @@ export default (deviceType) => {
 }
             ) {
                 key
-                id
                 name
                 numberOfDevices
                 state
                 properties {
                   key
                   type
-                  id
                   label
                   description
                   prefix
