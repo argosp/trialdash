@@ -12,8 +12,9 @@ import CustomInput from '../CustomInput';
 class CloneMultiplePanel extends React.Component {
   state = {
     number: null,
-    name: null,
-    id: null,
+    prefix: '',
+    numberFormat: '',
+    suffix: ''
   }
 
   onInputChange = (e, inputName) => {
@@ -22,13 +23,13 @@ class CloneMultiplePanel extends React.Component {
 
   cancel = () => {
     const { onClose } = this.props;
-    this.setState({ number: '', id: '', name: '' });
+    this.setState({ number: '', prefix: '', numberFormat: '', suffix: '' });
     onClose();
   }
 
   validateAndCreate = () => {
     const { cloneMultiple } = this.props;
-    const { number, name, id } = this.state;
+    const { number, prefix, numberFormat, suffix } = this.state;
     let invalid = false;
     if (!number || number === '') {
       this.state.invalidNumber = true;
@@ -36,39 +37,28 @@ class CloneMultiplePanel extends React.Component {
     } else {
       this.state.invalidNumber = false;
     }
-    this.state.nameError = null;
-    if (!name || name === '') {
-      this.state.invalidName = true;
+    this.state.numberFormatError = null;
+    if (!numberFormat || numberFormat === '') {
+      this.state.invalidNumberFormat = true;
       invalid = true;
-    } else if (!name.match(/.*\{\d+\}.*/)) {
-      this.state.invalidName = true;
-      this.state.nameError = 'Invalid number format';
-      invalid = true;
-    } else {
-      this.state.invalidName = false;
-    }
-    this.state.idError = null;
-    if (!id || id === '') {
-      this.state.invalidId = true;
-      invalid = true;
-    } else if (!id.match(/.*\{\d+\}.*/)) {
-      this.state.invalidId = true;
-      this.state.idError = 'Invalid number format';
+    } else if (!numberFormat.match(/^\d+$/)) {
+      this.state.invalidNumberFormat = true;
+      this.state.numberFormatError = 'Invalid number format';
       invalid = true;
     } else {
-      this.state.invalidId = false;
+      this.state.invalidNumberFormat = false;
     }
     if (invalid) {
       this.setState({ });
       return;
     }
-    this.setState({ number: '', id: '', name: '' });
-    cloneMultiple(number, name, id);
+    this.setState({ number: '', prefix: '', numberFormat: '', suffix: '' });
+    cloneMultiple(number, `${prefix}{${numberFormat}}${suffix}`);
   }
 
   render() {
     const { classes, isPanelOpen, onClose } = this.props;
-    const { number, name, id } = this.state;
+    const { number, prefix, numberFormat, suffix } = this.state;
 
     return (
       <RightPanelContainer
@@ -104,32 +94,37 @@ class CloneMultiplePanel extends React.Component {
           </Grid>
           <Grid>
             <CustomInput
-              id="name-pettern"
-              onChange={e => this.onInputChange(e, 'name')}
-              value={name}
-              label="Name pattern"
+              id="prefix"
+              onChange={e => this.onInputChange(e, 'prefix')}
+              value={prefix}
+              label="Name Prefix"
               type="text"
               className={classes.input}
-              placeholder="Example: deviceName{001}december test"
-              bottomDescription="[prefix]{number format}[suffix]
-              prefix - text field (optional), number format - number field (required), suffix- text field (optional)"
-              invalid={this.state.invalidName}
-              errorText={this.state.nameError}
+              placeholder="Example: deviceName"
             />
           </Grid>
           <Grid>
             <CustomInput
-              id="id-pettern"
-              onChange={e => this.onInputChange(e, 'id')}
-              value={id}
-              label="ID pattern"
+              id="numberFormat"
+              onChange={e => this.onInputChange(e, 'numberFormat')}
+              value={numberFormat}
+              label="Name Number format"
               type="text"
               className={classes.input}
-              placeholder="Example: deviceName{001}december test"
-              bottomDescription="[prefix]{number format}[suffix]
-              prefix - text field (optional), number format - number field (required), suffix- text field (optional)"
-              invalid={this.state.invalidId}
-              errorText={this.state.idError}
+              placeholder="Example: 000"
+              invalid={this.state.invalidNumberFormat}
+              errorText={this.state.numberFormatError}
+            />
+          </Grid>
+          <Grid>
+            <CustomInput
+              id="suffix"
+              onChange={e => this.onInputChange(e, 'suffix')}
+              value={suffix}
+              label="Name Suffix"
+              type="text"
+              className={classes.input}
+              placeholder="Example: december test"
             />
           </Grid>
           <Grid

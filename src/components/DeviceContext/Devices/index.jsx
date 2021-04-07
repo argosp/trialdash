@@ -105,7 +105,6 @@ class Devices extends React.Component {
             disableRipple
           />{device.name}
         </StyledTableCell>
-        <StyledTableCell className={classnames(classes.tableCell, (selectedDT ? classes.selectedRow : ''))} align="left">{device.id}</StyledTableCell>
         {deviceType && deviceType.properties && deviceType.properties.filter(p => !p.trialField).map(property => (
           <StyledTableCell className={classnames(classes.tableCell, (selectedDT ? classes.selectedRow : ''))} key={property.key} align="left">
             {device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
@@ -207,7 +206,6 @@ class Devices extends React.Component {
     <span>device name</span>
   </div>,
       },
-      { key: uuid(), title: 'id' },
     ];
 
     if (!isEmpty(deviceType) && !isEmpty(deviceType.properties)) {
@@ -232,13 +230,12 @@ class Devices extends React.Component {
     return (string.split('{')[0] + (n.length >= numberFormat.length ? n : new Array(numberFormat.length - n.length + 1).join('0') + n) + string.split('}')[1]);
   }
 
-  cloneMultiple = async (number, name, id) => {
+  cloneMultiple = async (number, name) => {
     const { match, client } = this.props;
 
     for (let i = 0; i < number; i += 1) {
       const clonedDevice = { ...this.state.device };
       clonedDevice.key = uuid();
-      clonedDevice.id = this.setPattern(number, id, i);
       clonedDevice.name = this.setPattern(number, name, i);
       clonedDevice.experimentId = match.params.id;
       clonedDevice.deviceTypeKey = match.params.deviceTypeKey;

@@ -28,7 +28,6 @@ class DeviceForm extends React.Component {
       key: this.props.device ? this.props.device.key : uuid(),
       deviceTypeKey: this.props.match.params.deviceTypeKey,
       experimentId: this.props.match.params.id,
-      id: this.props.device ? this.props.device.id : '',
       name: this.props.device ? this.props.device.name : '',
       properties: this.props.device && this.props.device.properties ? this.props.device.properties : [],
     },
@@ -180,14 +179,6 @@ class DeviceForm extends React.Component {
             label="Name"
             bottomDescription="a short description"
             value={device.name}
-          />
-          <CustomInput
-            id="device-id"
-            className={classes.property}
-            onChange={e => this.onInputChange(e, 'id')}
-            label="ID"
-            bottomDescription="a short description"
-            value={device.id}
           />
           {deviceType.properties
             ? deviceType.properties.filter(p => p.trialField !== true).map(property => (
