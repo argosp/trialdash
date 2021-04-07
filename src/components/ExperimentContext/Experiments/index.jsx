@@ -17,7 +17,6 @@ import {
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
-import StatusBadge from '../../StatusBadge';
 import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import ExperimentForm from '../ExperimentForm';
@@ -36,7 +35,7 @@ class Experiments extends React.Component {
   }
 
   renderTableRow = (experiment) => {
-    const { classes, theme, client } = this.props;
+    const { classes, client } = this.props;
     const { confirmOpen } = this.state;
 
     return (
@@ -52,12 +51,6 @@ class Experiments extends React.Component {
         <StyledTableCell align="left">{moment(experiment.begin).format('D/M/YYYY')}</StyledTableCell>
         <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
         <StyledTableCell align="left">{experiment.numberOfTrials}</StyledTableCell>
-        <StyledTableCell align="left">
-          <StatusBadge
-            color={theme.palette[experiment.status === 'deploy' ? 'orange' : 'violet'].main}
-            title={experiment.status || 'design'}
-          />
-        </StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip
             title="Clone"
@@ -187,9 +180,6 @@ class Experiments extends React.Component {
       },
       { key: 3,
         title: 'Trials',
-      },
-      { key: 4,
-        title: 'Actions',
       },
     ];
 
