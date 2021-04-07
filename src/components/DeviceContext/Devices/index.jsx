@@ -17,7 +17,7 @@ import {
   DEVICE_MUTATION,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
-import { CloneMultipleIcon, PenIcon, BasketIcon, CheckBoxOutlineBlankIcon, CheckBoxOutlinedIcon, IndeterminateCheckBoxOutlinedIcon, MoreActionsIcon } from '../../../constants/icons';
+import { CloneMultipleIcon, PenIcon, CheckBoxOutlineBlankIcon, CheckBoxOutlinedIcon, IndeterminateCheckBoxOutlinedIcon, MoreActionsIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import deviceTypesQuery from '../utils/deviceTypeQuery';
 import devicesQuery from './utils/deviceQuery';
@@ -61,6 +61,10 @@ class Devices extends React.Component {
   setConfirmOpen = (open, device) => {
     if (device || open) this.state.device = device;
     this.setState({ confirmOpen: open });
+  }
+
+  setConfirmMultipleOpen = (open) => {
+    this.setState({ confirmMultipleOpen: open });
   }
 
   selectRow = (key) => {
@@ -334,7 +338,7 @@ class Devices extends React.Component {
 
   render() {
     const { history, match } = this.props;
-    const { deviceType, isCloneMultiplePanelOpen, device, selected } = this.state;
+    const { deviceType, isCloneMultiplePanelOpen, device, selected, confirmMultipleOpen } = this.state;
     const tableHeadColumns = this.generateTableColumns(deviceType);
 
     return (
@@ -355,13 +359,22 @@ class Devices extends React.Component {
               addButtonText="Add device"
               withAddButton={selected.length === 0}
               withDeleteButton={selected.length > 0}
-              deleteButtonHandler={this.deleteMultiple}
+              deleteButtonHandler={() => this.setConfirmMultipleOpen(true)}
               deleteButtonText={`Delete (${selected.length})`}
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
               rightDescription={deviceType.id}
               addButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`)}
             />
+            <ConfirmDialog
+              title={`Delete multiple devices`}
+              open={confirmMultipleOpen}
+              setOpen={this.setConfirmMultipleOpen}
+              onConfirm={this.deleteMultiple}
+              inputValidation
+            >
+              Are you sure you want to delete {selected.length} devices?
+            </ConfirmDialog>
             <CloneMultiplePanel
               device={device}
               isPanelOpen={isCloneMultiplePanelOpen}
