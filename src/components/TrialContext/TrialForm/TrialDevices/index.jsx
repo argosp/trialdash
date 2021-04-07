@@ -62,11 +62,12 @@ class TrialDevices extends React.Component {
   }
 
   componentDidMount() {
-    const { client } = this.props;
+    const { client, showFooter } = this.props;
     this.orderEntities();
     client
       .query({ query: experimentsQuery })
       .then(() => this.setState({ isLoading: false }));
+    showFooter(false);
   }
 
   componentDidUpdate(prevProps) {
