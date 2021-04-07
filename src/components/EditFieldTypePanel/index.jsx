@@ -50,14 +50,6 @@ const EditFieldTypePanel = ({
         bottomDescription="a short description about the device name"
         className={classes.input}
       />
-      <CustomInput
-        value={fieldType.id || ''}
-        onChange={e => onValueChange(e, 'input', fieldType.key, 'id')}
-        id="field-type-id"
-        label="ID"
-        bottomDescription="a short description about the device name"
-        className={classes.input}
-      />
       {fieldType.fields && fieldType.fields.indexOf('value') !== -1 && (
         <CustomInput
           value={fieldType.value || ''}

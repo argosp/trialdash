@@ -18,7 +18,7 @@ export default (experiment) => {
             numberOfTrials:${experiment.numberOfTrials}
             ${experiment.status ? `status:"${experiment.status}"` : ''}
             ${experiment.state ? `state:"${experiment.state}"` : ''}
-            ${experiment.maps.length ? `maps: ${JSON.stringify(experiment.maps)
+            ${experiment.maps ? `maps: ${JSON.stringify(experiment.maps)
               .replace(/"imageUrl":/g,'imageUrl:')
               .replace(/"imageName":/g, 'imageName:')
               .replace(/"lower":/g, 'lower:')

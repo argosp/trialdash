@@ -39,13 +39,11 @@ class AddSetForm extends React.Component {
       DEVICE_TYPES_DASH === this.props.formType
         ? {
           key: this.props.deviceType ? this.props.deviceType.key : uuid(),
-          id: this.props.deviceType ? this.props.deviceType.id : '',
           name: this.props.deviceType ? this.props.deviceType.name : '',
           experimentId: this.props.match.params.id,
           numberOfDevices: this.props.deviceType ? this.props.deviceType.numberOfDevices : 0,
           properties: this.props.deviceType ? this.props.deviceType.properties : [{
             description: 'a short description of the field',
-            id: '',
             prefix: '',
             suffix: '',
             template: '',
@@ -59,7 +57,6 @@ class AddSetForm extends React.Component {
         }
         : {
           key: this.props.trialSet ? this.props.trialSet.key : uuid(),
-          id: this.props.trialSet ? this.props.trialSet.id : '',
           name: this.props.trialSet ? this.props.trialSet.name : '',
           description: this.props.trialSet ? this.props.trialSet.description : '',
           experimentId: this.props.match.params.id,
@@ -346,15 +343,6 @@ class AddSetForm extends React.Component {
                 label="Name"
                 bottomDescription="a short description about the name"
                 value={this.state.formObject.name}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <CustomInput
-                onChange={e => this.inputChangeHandler(e, 'id')}
-                id="entity-id"
-                label="ID"
-                bottomDescription="a short description about the id"
-                value={this.state.formObject.id}
               />
             </Grid>
           </Grid>

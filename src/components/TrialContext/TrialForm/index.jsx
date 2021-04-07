@@ -63,7 +63,6 @@ class TrialForm extends React.Component {
       key: this.props.trial ? this.props.trial.key : uuid(),
       trialSetKey: this.props.match.params.trialSetKey,
       experimentId: this.props.match.params.id,
-      id: this.props.trial ? this.props.trial.id : '',
       name: this.props.trial ? this.props.trial.name : '',
       status: this.props.trial && this.props.trial.status ? this.props.trial.status : 'design',
       numberOfDevices: this.props.trial ? this.props.trial.numberOfDevices : 0,
@@ -423,14 +422,6 @@ class TrialForm extends React.Component {
             label="Name"
             bottomDescription="a short description"
             value={trial.name}
-          />
-          <CustomInput
-            id="trial-id"
-            className={classes.property}
-            onChange={e => this.onInputChange(e, 'id')}
-            label="ID"
-            bottomDescription="a short description"
-            value={trial.id}
           />
           {trialSet.properties
             ? trialSet.properties.map(property => (
