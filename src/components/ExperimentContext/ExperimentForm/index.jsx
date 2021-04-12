@@ -1,13 +1,11 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
-import classnames from 'classnames';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { Grid, Typography } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import moment from 'moment';
-import { Map, Marker, TileLayer } from 'react-leaflet';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import experimentMutation from './utils/experimentMutation';
@@ -17,13 +15,11 @@ import { styles } from './styles';
 import CustomInput from '../../CustomInput';
 import CustomTooltip from '../../CustomTooltip';
 import { DateIcon } from '../../../constants/icons';
-import config from '../../../config';
 import ConfirmDialog from '../../ConfirmDialog';
 import { MapsEditTable } from './mapsEditTable';
 import experimentsQuery from '../utils/experimentsQuery';
 import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
-import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 
 class ExperimentForm extends React.Component {
   state = {

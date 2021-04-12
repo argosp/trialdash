@@ -173,6 +173,20 @@ class TrialForm extends React.Component {
     }
   };
 
+  updateTrialSetNumberOfTrials = (n, cache) => {
+    const { match } = this.props;
+    const { trialSet } = this.state;
+    trialSet.numberOfTrials = n[trialSet.key];
+    updateCache(
+      cache,
+      {data: { [TRIAL_SET_MUTATION]: trialSet } },
+      trialSetsQuery(match.params.id),
+      TRIAL_SETS,
+      TRIAL_SET_MUTATION,
+      true,
+    );
+  };
+
   submitTrial = async (newTrial, deleted) => {
     const newEntity = newTrial;
     const { match, client, returnFunc } = this.props;
@@ -212,6 +226,8 @@ class TrialForm extends React.Component {
           TRIALS,
           TRIAL_MUTATION,
           returnFunc,
+          'trialSetKey',
+          this.updateTrialSetNumberOfTrials
         );
       },
     });

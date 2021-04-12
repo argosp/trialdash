@@ -1,5 +1,4 @@
 import ApolloClient from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
@@ -68,6 +67,8 @@ export const updateCache = (
   itemsName,
   mutationName,
   isExistingItem = false,
+  parentField = null,
+  callback = null,
   matchField = 'key',
 ) => {
   const items = apolloCache.readQuery({
@@ -88,6 +89,16 @@ export const updateCache = (
     updatedItems = items;
   }
 
+  let a = {};
+
+  if (parentField) {
+    for(var i = 0; i < updatedItems.length; i++) {
+      if (updatedItems[i][parentField] && updatedItems[i].state !== 'Deleted') {
+        a[updatedItems[i][parentField]] = (a[updatedItems[i][parentField]]+1) || 1;
+      }
+    };
+  }
+
   // update the Apollo cache
   apolloCache.writeQuery({
     query,
@@ -95,4 +106,5 @@ export const updateCache = (
       [itemsName]: updatedItems,
     },
   });
+  if (callback) callback(a, apolloCache);
 };

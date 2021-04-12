@@ -10,7 +10,7 @@ import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION } from '../../../constants/base';
+import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
@@ -196,7 +196,19 @@ class Trials extends React.Component {
     return columns;
   };
 
-
+  updateTrialSetNumberOfTrials = (n, cache) => {
+    const { match } = this.props;
+    const { trialSet } = this.state;
+    trialSet.numberOfTrials = n[trialSet.key];
+    updateCache(
+      cache,
+      {data: { [TRIAL_SET_MUTATION]: trialSet } },
+      trialSetsQuery(match.params.id),
+      TRIAL_SETS,
+      TRIAL_SET_MUTATION,
+      true,
+    );
+  };
 
   clone = async (cloneFrom,trial) => {
     const clonedTrial = { ...trial };
@@ -214,6 +226,9 @@ class Trials extends React.Component {
           trialsQuery(match.params.id, match.params.trialSetKey),
           TRIALS,
           TRIAL_MUTATION,
+          false,
+          'trialSetKey',
+          this.updateTrialSetNumberOfTrials
         );
       },
     });
@@ -235,7 +250,6 @@ class Trials extends React.Component {
     newEntity.trialSetKey = match.params.trialSetKey;
 
     const mutation = trialMutation;
-
     await client
       .mutate({
         mutation: mutation(newEntity),
@@ -247,6 +261,8 @@ class Trials extends React.Component {
             TRIALS,
             TRIAL_MUTATION,
             true,
+            'trialSetKey',
+            this.updateTrialSetNumberOfTrials
           );
         },
       });
