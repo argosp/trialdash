@@ -22,11 +22,12 @@ import {
 import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
 import { canvas, latLng, latLngBounds } from "leaflet";
 import { MapWithImage } from "./MapWithImage";
+import { DebounceInput } from 'react-debounce-input';
 
 const defaultPosition = [32.0852, 34.782];
 
 const NumberTextField = ({ value, onChange, label }) => (
-  <TextField
+  <DebounceInput
     value={value}
     onChange={(e) => {
       const num = parseFloat(e.target.value);
@@ -37,6 +38,9 @@ const NumberTextField = ({ value, onChange, label }) => (
     style={{ width: '120px' }}
     variant="outlined"
     label={label}
+    minLength={2}
+    debounceTimeout={500}
+    element={TextField}
   />
 )
 
