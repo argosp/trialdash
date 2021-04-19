@@ -99,14 +99,15 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
         }
     ];
 
+    const shapeData = shapeOptions.find(s => s.name === shape);
+
     const handlePutDevices = () => {
-        const positions = shapeData().toPositions(markedPoints, selection.length);
+        const positions = shapeData.toPositions(markedPoints, selection.length);
         setDevices(changeLocations(selectedType, selection, positions));
         setMarkedPoints([]);
         setSelection([]);
     };
 
-    const shapeData = () => shapeOptions.find(s => s.name === shape);
 
     const distanceInMeters = () => {
         const row = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
@@ -149,7 +150,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                         markedPoints={markedPoints}
                         setMarkedPoints={setMarkedPoints}
                         shape={shape}
-                        shapeCreator={shapeData()}
+                        shapeCreator={shapeData}
                         deviceNum={selection.length}
                         distanceInMeters={distanceInMeters()}
                     />

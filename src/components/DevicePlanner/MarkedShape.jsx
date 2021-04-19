@@ -12,7 +12,6 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
     const setLatLngsWithDist = (leafletElement, points) => {
         leafletElement.setLatLngs(points);
         const latlngs = leafletElement.getLatLngs();
-        console.log(latlngs);
         let dist;
         if (distanceInMeters) {
             const points = latlngs.map(loc => [loc.lng, loc.lat]);
