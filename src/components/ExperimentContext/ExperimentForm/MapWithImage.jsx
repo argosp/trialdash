@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Map as LeafletMap } from "react-leaflet";
 import {
   TileLayer,
@@ -6,9 +6,20 @@ import {
 } from "react-leaflet";
 import config from "../../../config";
 
-export const MapWithImage = React.forwardRef(({ position, showMap, imageUrl, imageBounds, children }, mapRef) => {
+const defaultPosition = [32.0852, 34.782];
+
+const boundsToMiddle = (imageBounds) => {
+  if (!imageBounds) return defaultPosition;
+  const [[upper, left], [lower, right]] = imageBounds;
+  const middlePosition = [(lower + upper) / 2, (left + right) / 2];
+  return middlePosition;
+}
+
+export const MapWithImage = React.forwardRef(({ showMap, imageUrl, imageBounds, children }, mapRef) => {
   const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
   const mapTileUrl = process.env.REACT_APP_MAP_URL || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png';
+
+  const [position, setPosition] = useState(boundsToMiddle(imageBounds));
 
   return (
     <LeafletMap

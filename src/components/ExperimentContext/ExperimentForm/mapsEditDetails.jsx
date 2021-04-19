@@ -1,18 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Map as LeafletMap, Tooltip } from "react-leaflet";
+import React, { useState } from "react";
 import {
-  TileLayer,
-  LayersControl,
-  ImageOverlay,
-  MapControl,
-  withLeaflet,
   Popup,
-  CircleMarker,
-  Polyline
 } from "react-leaflet";
 import {
-  IconButton,
-  Icon,
   Button,
   Grid,
   FormControlLabel,
@@ -20,29 +10,11 @@ import {
   TextField
 } from '@material-ui/core';
 import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
-import { canvas, latLng, latLngBounds } from "leaflet";
+import { latLng } from "leaflet";
 import { MapWithImage } from "./MapWithImage";
-import { DebounceInput } from 'react-debounce-input';
-
-const defaultPosition = [32.0852, 34.782];
-
-const NumberTextField = ({ value, onChange, label }) => (
-  <DebounceInput
-    value={value}
-    onChange={(e) => {
-      const num = parseFloat(e.target.value);
-      if (!isNaN(num)) {
-        onChange(num);
-      }
-    }}
-    style={{ width: '120px' }}
-    variant="outlined"
-    label={label}
-    minLength={2}
-    debounceTimeout={500}
-    element={TextField}
-  />
-)
+import { NumberTextField } from "./NumberTextField";
+import { DashedPolyline } from "./DashedPolyline";
+import { ChosenMarker } from "./ChosenMarker";
 
 const ControlPointText = ({ point, setPoint }) => (
   <Grid container direction="column" justify="space-evenly" alignItems="center" spacing={1}>
@@ -119,43 +91,45 @@ const distanceMeters = (cp1, cp2) => {
   return latLng(cp1).distanceTo(latLng(cp2));
 }
 
-const ChosenMarker = ({ center }) => (
-  <CircleMarker
-    key='chosen'
-    center={center}
-    radius={9}
-    color={'red'}
-    opacity={1}
-    dashArray={'4 4'}
-    weight={2}
-  />
-)
-
-const DashedPolyline = ({ positions, children }) => (
-  <Polyline
-    positions={positions.map(p => [p.lat, p.lng])}
-    color={'black'}
-    weight={2}
-    dashArray={'4 4'}
-    renderer={canvas({ padding: 0.2, tolerance: 10 })}
-  >
-    {children}
-  </Polyline>
-)
+const PointsWithLine = ({ controlPoints, onPointMove, selectedControlPoint, setSelectedControlPoint, children }) => (
+  <>
+    {controlPoints.map((point, pointIndex) =>
+      <MarkedPoint
+        key={pointIndex}
+        location={[point.lat, point.lng]}
+        // dragLocation={console.log}
+        setLocation={p => {
+          setSelectedControlPoint(pointIndex);
+          onPointMove(p, pointIndex);
+        }}
+        onClick={() => setSelectedControlPoint(pointIndex)}
+      >
+      </MarkedPoint>
+    )}
+    <ChosenMarker
+      key='chosen'
+      center={controlPoints[selectedControlPoint]}
+    />
+    <DashedPolyline
+      positions={controlPoints}
+    >
+      {children}
+    </DashedPolyline>
+  </>
+);
 
 export const MapsEditDetails = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
+  const imageSize = { x: row.width || 300, y: row.height || 400 };
   const hasNans = [row.lower, row.upper, row.left, row.right].findIndex(x => !Number.isFinite(x)) !== -1;
 
-  const middlePosition = [(row.lower + row.upper) / 2, (row.left + row.right) / 2];
-  const [position, setPosition] = useState(hasNans ? defaultPosition : middlePosition);
-  const [dragOnMap, setDragOnMap] = useState(true);
-  const imageSize = { x: row.width || 300, y: row.height || 400 };
   const [controlPoints, setControlPoints] = useState([
     { lat: row.upper, lng: row.left, x: 0, y: 0 },
     { lat: row.lower, lng: row.right, x: imageSize.x, y: imageSize.y },
   ]);
+
+  const [dragOnMap, setDragOnMap] = useState(true);
   const [selectedControlPoint, setSelectedControlPoint] = useState(0);
 
   React.useEffect(() => {
@@ -245,37 +219,24 @@ export const MapsEditDetails = ({ row, setRow }) => {
       </Grid>
       <Grid item xs={10}>
         <MapWithImage
-          position={position}
           ref={mapRef}
           showMap={row.embedded}
           imageUrl={row.imageUrl}
           imageBounds={hasNans ? null : [[row.upper, row.left], [row.lower, row.right]]}
         >
-          {controlPoints.map((point, pointIndex) =>
-            <MarkedPoint
-              key={pointIndex}
-              location={[point.lat, point.lng]}
-              // dragLocation={console.log}
-              setLocation={p => {
-                setSelectedControlPoint(pointIndex);
-                if (dragOnMap) {
-                  return changeControlPoint({ ...controlPoints[pointIndex], lat: p[0], lng: p[1] }, pointIndex);
-                } else {
-                  const y = (p[0] - row.upper) / (row.lower - row.upper) * imageSize.y;
-                  const x = (p[1] - row.left) / (row.right - row.left) * imageSize.x;
-                  return changeControlPoint({ lat: p[0], lng: p[1], x: x, y: y }, pointIndex);
-                }
-              }}
-              onClick={() => setSelectedControlPoint(pointIndex)}
-            >
-            </MarkedPoint>
-          )}
-          <ChosenMarker
-            key='chosen'
-            center={controlPoints[selectedControlPoint]}
-          />
-          <DashedPolyline
-            positions={controlPoints}
+          <PointsWithLine
+            controlPoints={controlPoints}
+            selectedControlPoint={selectedControlPoint}
+            setSelectedControlPoint={setSelectedControlPoint}
+            onPointMove={(p, pointIndex) => {
+              if (dragOnMap) {
+                return changeControlPoint({ ...controlPoints[pointIndex], lat: p[0], lng: p[1] }, pointIndex);
+              } else {
+                const y = (p[0] - row.upper) / (row.lower - row.upper) * imageSize.y;
+                const x = (p[1] - row.left) / (row.right - row.left) * imageSize.x;
+                return changeControlPoint({ lat: p[0], lng: p[1], x: x, y: y }, pointIndex);
+              }
+            }}
           >
             <Popup permanent>
               <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
@@ -301,7 +262,7 @@ export const MapsEditDetails = ({ row, setRow }) => {
                 </Grid >
               </Grid>
             </Popup>
-          </DashedPolyline>
+          </PointsWithLine>
         </MapWithImage>
       </Grid>
     </Grid>
