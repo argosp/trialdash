@@ -7,7 +7,8 @@ import {
   Grid,
   FormControlLabel,
   Switch,
-  TextField
+  TextField,
+  Typography
 } from '@material-ui/core';
 import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
 import { latLng } from "leaflet";
@@ -26,14 +27,14 @@ const ControlPointText = ({ point, setPoint }) => (
             onChange={(num) => setPoint({ ...point, lat: num })}
             label="Lat"
           />
-        </Grid >
+        </Grid>
         <Grid item>
           <NumberTextField
             value={point.lng}
             onChange={(num) => setPoint({ ...point, lng: num })}
             label="Long"
           />
-        </Grid >
+        </Grid>
       </Grid>
     </Grid>
     <Grid item>
@@ -44,14 +45,14 @@ const ControlPointText = ({ point, setPoint }) => (
             onChange={(num) => setPoint({ ...point, x: num })}
             label="X img"
           />
-        </Grid >
+        </Grid>
         <Grid item>
           <NumberTextField
             value={point.y}
             onChange={(num) => setPoint({ ...point, y: num })}
             label="Y img"
           />
-        </Grid >
+        </Grid>
       </Grid>
     </Grid>
   </Grid>
@@ -118,7 +119,145 @@ const PointsWithLine = ({ controlPoints, onPointMove, selectedControlPoint, setS
   </>
 );
 
-export const MapsEditDetails = ({ row, setRow }) => {
+const MapStandalone = ({ row, setRow }) => {
+  const mapRef = React.useRef(null);
+
+  const imageSize = { x: row.width || 300, y: row.height || 400 };
+  // const hasNans = [row.lower, row.upper, row.left, row.right].findIndex(x => !Number.isFinite(x)) !== -1;
+
+  const [anchor, setAnchor] = useState({
+    lat: (row.upper + row.lower) / 2,
+    lng: (row.left + row.right) / 2,
+    x: Math.floor(imageSize.x / 2),
+    y: Math.floor(imageSize.y / 2)
+  });
+  const [distPixels, setDistPixels] = useState({
+    x: Math.floor(imageSize.x / 2),
+    y: Math.floor(imageSize.y / 2)
+  });
+  const [distMeters, setDistMeters] = useState({
+    lat: row.upper - (row.upper + row.lower) / 2,
+    lng: (row.left + row.right) / 2 - row.left
+  });
+
+  // const changeControlPoint = (point, index) => {
+  //   const newpoints = controlPoints.slice();
+  //   newpoints[index] = point;
+  //   const box = calcBoxFromPoints(newpoints[0], newpoints[1], imageSize);
+  //   if (!box) return box;
+  //   setControlPoints(newpoints);
+  //   setRow(Object.assign({}, row, box));
+  //   setTimeout(() => {
+  //     fitBounds(box);
+  //   }, 200);
+  //   return true;
+  // }
+
+  React.useEffect(() => {
+    mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
+  }, []);
+
+  const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distMeters.lng };
+  const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng };
+
+  return (
+    <Grid container>
+      <Grid item xs={2}>
+        <Grid container direction="column"
+          justify="flex-start"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item>
+            Anchor
+            <ControlPointText
+              point={anchor}
+              setPoint={(point) => setAnchor(point)}
+            />
+          </Grid>
+          <Grid item>
+            Horizontal
+            <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
+              <Grid item>
+                <NumberTextField
+                  value={distMeters.lng}
+                  onChange={(num) => setDistMeters({ ...distMeters, lng: num })}
+                  label="Meters"
+                />
+              </Grid >
+              <Grid item>
+                <NumberTextField
+                  value={distPixels.x}
+                  onChange={(num) => setDistPixels({ ...distPixels, x: num })}
+                  label="Pixels"
+                />
+              </Grid >
+            </Grid >
+          </Grid>
+          <Grid item>
+            Vertical
+            <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
+              <Grid item>
+                <NumberTextField
+                  value={distMeters.lat}
+                  onChange={(num) => setDistMeters({ ...distMeters, lat: num })}
+                  label="Meters"
+                />
+              </Grid >
+              <Grid item>
+                <NumberTextField
+                  value={distPixels.y}
+                  onChange={(num) => setDistPixels({ ...distPixels, y: num })}
+                  label="Pixels"
+                />
+              </Grid >
+            </Grid >
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={10}>
+        <MapWithImage
+          ref={mapRef}
+          showMap={false}
+          imageUrl={row.imageUrl}
+          imageBounds={[[row.upper, row.left], [row.lower, row.right]]}
+        >
+          <MarkedPoint
+            key='anchor'
+            location={[anchor.lat, anchor.lng]}
+            // dragLocation={console.log}
+            setLocation={p => {
+              // setSelectedControlPoint(pointIndex);
+              // onPointMove(p, pointIndex);
+            }}
+          // onClick={() => setSelectedControlPoint(pointIndex)}
+          >
+          </MarkedPoint>
+          <MarkedPoint
+            key='horiz'
+            location={[horizontalPoint.lat, horizontalPoint.lng]}
+            setLocation={p => {
+            }}
+          >
+          </MarkedPoint>
+          <MarkedPoint
+            key='verti'
+            location={[verticalPoint.lat, verticalPoint.lng]}
+            setLocation={p => {
+            }}
+          >
+          </MarkedPoint>
+          <DashedPolyline
+            positions={[verticalPoint, anchor, horizontalPoint]}
+          >
+          </DashedPolyline>
+        </MapWithImage>
+      </Grid>
+    </Grid>
+  )
+}
+
+const MapsEmbedded = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
   const imageSize = { x: row.width || 300, y: row.height || 400 };
@@ -131,10 +270,6 @@ export const MapsEditDetails = ({ row, setRow }) => {
 
   const [dragOnMap, setDragOnMap] = useState(true);
   const [selectedControlPoint, setSelectedControlPoint] = useState(0);
-
-  React.useEffect(() => {
-    setDragOnMap(row.embedded);
-  }, [row.embedded]);
 
   const changeControlPoint = (point, index) => {
     const newpoints = controlPoints.slice();
@@ -204,23 +339,21 @@ export const MapsEditDetails = ({ row, setRow }) => {
               setPoint={(point) => changeControlPoint(point, selectedControlPoint)}
             />
           </Grid>
-          {!row.embedded ? null :
-            <Grid item>
-              <Button
-                onClick={() => fitBounds(row)}
-                variant='contained'
-                color='primary'
-              >
-                Center image
+          <Grid item>
+            <Button
+              onClick={() => fitBounds(row)}
+              variant='contained'
+              color='primary'
+            >
+              Center image
             </Button>
-            </Grid>
-          }
+          </Grid>
         </Grid>
       </Grid>
       <Grid item xs={10}>
         <MapWithImage
           ref={mapRef}
-          showMap={row.embedded}
+          showMap={true}
           imageUrl={row.imageUrl}
           imageBounds={hasNans ? null : [[row.upper, row.left], [row.lower, row.right]]}
         >
@@ -267,4 +400,16 @@ export const MapsEditDetails = ({ row, setRow }) => {
       </Grid>
     </Grid>
   )
+}
+
+export const MapsEditDetails = ({ row, setRow }) => {
+  if (row.embedded) {
+    return (
+      <MapsEmbedded row={row} setRow={setRow} />
+    )
+  } else {
+    return (
+      <MapStandalone row={row} setRow={setRow} />
+    )
+  }
 }
