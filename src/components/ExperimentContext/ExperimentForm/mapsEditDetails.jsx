@@ -119,6 +119,11 @@ const PointsWithLine = ({ controlPoints, onPointMove, selectedControlPoint, setS
   </>
 );
 
+const pointLatLngToMeters = (p) => {
+  const fix = (n) => Math.round(n * 1e9) / 1e9;
+  return `(${fix(p.lng)}, ${fix(p.lat)}) in meters<br/>(${fix(p.x)}, ${fix(p.y)}) in pixels`;
+}
+
 const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
@@ -157,8 +162,8 @@ const MapStandalone = ({ row, setRow }) => {
     mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
   }, []);
 
-  const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distMeters.lng };
-  const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng };
+  const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distMeters.lng, x: anchor.x + distPixels.x, y: anchor.y };
+  const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng, x: anchor.x, y: anchor.y - distPixels.y };
 
   return (
     <Grid container>
@@ -204,7 +209,8 @@ const MapStandalone = ({ row, setRow }) => {
               // setSelectedControlPoint(pointIndex);
               // onPointMove(p, pointIndex);
             }}
-          // onClick={() => setSelectedControlPoint(pointIndex)}
+            // onClick={() => setSelectedControlPoint(pointIndex)}
+            locationToShow={pointLatLngToMeters(anchor)}
           >
           </MarkedPoint>
           <MarkedPoint
@@ -212,6 +218,7 @@ const MapStandalone = ({ row, setRow }) => {
             location={[horizontalPoint.lat, horizontalPoint.lng]}
             setLocation={p => {
             }}
+            locationToShow={pointLatLngToMeters(horizontalPoint)}
           >
           </MarkedPoint>
           <MarkedPoint
@@ -219,6 +226,7 @@ const MapStandalone = ({ row, setRow }) => {
             location={[verticalPoint.lat, verticalPoint.lng]}
             setLocation={p => {
             }}
+            locationToShow={pointLatLngToMeters(verticalPoint)}
           >
           </MarkedPoint>
           <DashedPolyline

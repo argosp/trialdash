@@ -6,14 +6,18 @@ import { renderToStaticMarkup } from 'react-dom/server';
 let dragStartLoc;
 
 export const MarkedPoint = (props) => {
-    const { location, dragLocation, setLocation } = props;
-    const formatLoc = (loc) => {
-        return JSON.stringify(loc.map(l => Math.round(l * 1e9) / 1e9)).replace(',', ', ');
+    const { location, dragLocation, setLocation, locationToShow } = props;
+
+    let locationToShowStr;
+    if (!locationToShow) {
+        locationToShowStr = JSON.stringify(location.map(l => Math.round(l * 1e9) / 1e9)).replace(',', ', ');
+    } else {
+        locationToShowStr = locationToShow;
     }
     return (
         <Marker
             position={location}
-            title={formatLoc(location)}
+            title={locationToShowStr}
             draggable={true}
             ondrag={(e) => {
                 if (dragLocation) {
@@ -44,7 +48,9 @@ export const MarkedPoint = (props) => {
             {...props}
         >
             <Popup permanent>
-                {formatLoc(location)}
+                {locationToShowStr.split('<br/>').map(l => (
+                    <>{l}<br /></>
+                ))}
             </Popup>
         </Marker >
     )
