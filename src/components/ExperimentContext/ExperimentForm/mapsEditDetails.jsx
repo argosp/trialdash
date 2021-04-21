@@ -169,49 +169,23 @@ const MapStandalone = ({ row, setRow }) => {
           spacing={2}
         >
           <Grid item>
-            Anchor
-            <ControlPointText
-              point={anchor}
-              setPoint={(point) => setAnchor(point)}
-            />
+            Image size: ({imageSize.x} x {imageSize.y}) <br />
           </Grid>
           <Grid item>
-            Horizontal
-            <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
-              <Grid item>
-                <NumberTextField
-                  value={distMeters.lng}
-                  onChange={(num) => setDistMeters({ ...distMeters, lng: num })}
-                  label="Meters"
-                />
-              </Grid >
-              <Grid item>
-                <NumberTextField
-                  value={distPixels.x}
-                  onChange={(num) => setDistPixels({ ...distPixels, x: num })}
-                  label="Pixels"
-                />
-              </Grid >
-            </Grid >
+            <NumberTextField value={anchor.lng} onChange={(num) => setAnchor({ ...anchor, lng: num })} label="Anchor X meters" />
+            <NumberTextField value={anchor.lat} onChange={(num) => setAnchor({ ...anchor, lat: num })} label="Anchor Y meters" />
           </Grid>
           <Grid item>
-            Vertical
-            <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
-              <Grid item>
-                <NumberTextField
-                  value={distMeters.lat}
-                  onChange={(num) => setDistMeters({ ...distMeters, lat: num })}
-                  label="Meters"
-                />
-              </Grid >
-              <Grid item>
-                <NumberTextField
-                  value={distPixels.y}
-                  onChange={(num) => setDistPixels({ ...distPixels, y: num })}
-                  label="Pixels"
-                />
-              </Grid >
-            </Grid >
+            <NumberTextField value={anchor.x} onChange={(num) => setAnchor({ ...anchor, x: num })} label="Anchor X pixels" />
+            <NumberTextField value={anchor.y} onChange={(num) => setAnchor({ ...anchor, y: num })} label="Anchor Y pixels" />
+          </Grid>
+          <Grid item>
+            <NumberTextField value={distMeters.lng} onChange={(num) => setDistMeters({ ...distMeters, lng: num })} label="Horizontal Meters" />
+            <NumberTextField value={distPixels.x} onChange={(num) => setDistPixels({ ...distPixels, x: num })} label="Horizontal Pixels" />
+          </Grid>
+          <Grid item>
+            <NumberTextField value={distMeters.lat} onChange={(num) => setDistMeters({ ...distMeters, lat: num })} label="Vertical Meters" />
+            <NumberTextField value={distPixels.y} onChange={(num) => setDistPixels({ ...distPixels, y: num })} label="Vertical Pixels" />
           </Grid>
         </Grid>
       </Grid>
@@ -253,7 +227,7 @@ const MapStandalone = ({ row, setRow }) => {
           </DashedPolyline>
         </MapWithImage>
       </Grid>
-    </Grid>
+    </Grid >
   )
 }
 

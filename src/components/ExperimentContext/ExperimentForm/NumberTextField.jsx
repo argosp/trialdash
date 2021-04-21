@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import { DebounceInput } from 'react-debounce-input';
 
-export const NumberTextField = ({ value, onChange, label }) => {
+export const NumberTextField = ({ value, onChange, label, size }) => {
     return (
         <DebounceInput
             value={value}
@@ -20,6 +20,7 @@ export const NumberTextField = ({ value, onChange, label }) => {
             minLength={1}
             debounceTimeout={500}
             element={TextField}
+            size='small'
         />
     )
 }
