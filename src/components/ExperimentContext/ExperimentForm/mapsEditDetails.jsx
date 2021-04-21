@@ -204,12 +204,11 @@ const MapStandalone = ({ row, setRow }) => {
           <MarkedPoint
             key='anchor'
             location={[anchor.lat, anchor.lng]}
-            // dragLocation={console.log}
             setLocation={p => {
-              // setSelectedControlPoint(pointIndex);
-              // onPointMove(p, pointIndex);
+              const x = (p[1] - row.left) / (row.right - row.left) * imageSize.x;
+              const y = (p[0] - row.lower) / (row.upper - row.lower) * imageSize.y;
+              setAnchor({lat: p[0], lng: p[1], x, y});
             }}
-            // onClick={() => setSelectedControlPoint(pointIndex)}
             locationToShow={pointLatLngToMeters(anchor)}
           >
           </MarkedPoint>
