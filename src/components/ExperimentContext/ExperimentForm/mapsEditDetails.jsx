@@ -213,10 +213,18 @@ const MapStandalone = ({ row, setRow }) => {
             locationToShow={pointLatLngToMeters(anchor)}
           >
           </MarkedPoint>
+          <ChosenMarker
+            key='chosen'
+            center={anchor}
+          />
           <MarkedPoint
             key='horiz'
             location={[horizontalPoint.lat, horizontalPoint.lng]}
             setLocation={p => {
+              const xmeters = p[1] - anchor.lng;
+              const x = xmeters / (row.right - row.left) * imageSize.x;
+              setDistPixels({ ...distPixels, x })
+              setDistMeters({ ...distMeters, lng: xmeters })
             }}
             locationToShow={pointLatLngToMeters(horizontalPoint)}
           >
@@ -225,6 +233,10 @@ const MapStandalone = ({ row, setRow }) => {
             key='verti'
             location={[verticalPoint.lat, verticalPoint.lng]}
             setLocation={p => {
+              const ymeters = p[0] - anchor.lat;
+              const y = ymeters / (row.upper - row.lower) * imageSize.y;
+              setDistPixels({ ...distPixels, y })
+              setDistMeters({ ...distMeters, lat: ymeters })
             }}
             locationToShow={pointLatLngToMeters(verticalPoint)}
           >
