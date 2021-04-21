@@ -164,7 +164,7 @@ const MapStandalone = ({ row, setRow }) => {
   const verticalPoint = { lat: anchor.lat + distances.lat, lng: anchor.lng, x: anchor.x, y: anchor.y + distances.y };
 
   React.useEffect(() => {
-    if (distances.x === 0 || distances.y === 0 || distances.lat === 0 || distances.lng === 0) {
+    if (Math.min(Math.abs(distances.x), Math.abs(distances.y), Math.abs(distances.lat), Math.abs(distances.lng)) < 1e-6) {
       return;
     }
 
@@ -172,10 +172,20 @@ const MapStandalone = ({ row, setRow }) => {
     const left = Math.round((horizontalPoint.lng - distances.lng / distances.x * horizontalPoint.x) * 1e9) / 1e9;
     const lower = Math.round((anchor.lat - distances.lat / distances.y * anchor.y) * 1e9) / 1e9;
     const upper = Math.round((verticalPoint.lat + distances.lat / distances.y * (imageSize.y - verticalPoint.y)) * 1e9) / 1e9;
-    console.log('right', right, row.right);
-    console.log('left', left, row.left);
-    console.log('lower', lower, row.lower);
-    console.log('upper', upper, row.upper);
+
+    if (Math.max(Math.abs(right - row.right), Math.abs(left - row.left), Math.abs(lower - row.lower), Math.abs(upper - row.upper)) < 1e-6) {
+      return;
+    }
+
+    // console.log('right', right, row.right);
+    // console.log('left', left, row.left);
+    // console.log('lower', lower, row.lower);
+    // console.log('upper', upper, row.upper);
+
+    setRow(Object.assign({}, row, { lower, right, upper, left }));
+    setTimeout(() => {
+      mapRef.current.leafletElement.fitBounds([[lower, left], [upper, right]]);
+    }, 200);
   });
 
   return (
