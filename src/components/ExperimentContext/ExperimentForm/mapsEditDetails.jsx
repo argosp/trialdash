@@ -128,7 +128,6 @@ const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
   const imageSize = { x: row.width || 300, y: row.height || 400 };
-  // const hasNans = [row.lower, row.upper, row.left, row.right].findIndex(x => !Number.isFinite(x)) !== -1;
 
   const [anchor, setAnchor] = useState({
     lat: (row.upper + row.lower) / 2,
@@ -136,25 +135,13 @@ const MapStandalone = ({ row, setRow }) => {
     x: Math.floor(imageSize.x / 2),
     y: Math.floor(imageSize.y / 2)
   });
+
   const [distances, setDistances] = useState({
     x: Math.floor(imageSize.x / 2),
     y: Math.floor(imageSize.y / 2),
     lat: row.upper - (row.upper + row.lower) / 2,
     lng: (row.left + row.right) / 2 - row.left
   });
-
-  // const changeControlPoint = (point, index) => {
-  //   const newpoints = controlPoints.slice();
-  //   newpoints[index] = point;
-  //   const box = calcBoxFromPoints(newpoints[0], newpoints[1], imageSize);
-  //   if (!box) return box;
-  //   setControlPoints(newpoints);
-  //   setRow(Object.assign({}, row, box));
-  //   setTimeout(() => {
-  //     fitBounds(box);
-  //   }, 200);
-  //   return true;
-  // }
 
   React.useEffect(() => {
     mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
