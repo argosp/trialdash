@@ -124,12 +124,6 @@ const pointLatLngToMeters = (p) => {
   return `(${fix(p.lng)}, ${fix(p.lat)}) in meters<br/>(${fix(p.x)}, ${fix(p.y)}) in pixels`;
 }
 
-// const calcAuxPoints = (anchor, distMeters, distPixels) => {
-//   const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distMeters.lng, x: anchor.x + distPixels.x, y: anchor.y };
-//   const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng, x: anchor.x, y: anchor.y - distPixels.y };
-//   return [horizontalPoint, verticalPoint];
-// }
-
 const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
@@ -142,11 +136,9 @@ const MapStandalone = ({ row, setRow }) => {
     x: Math.floor(imageSize.x / 2),
     y: Math.floor(imageSize.y / 2)
   });
-  const [distPixels, setDistPixels] = useState({
+  const [distances, setDistances] = useState({
     x: Math.floor(imageSize.x / 2),
-    y: Math.floor(imageSize.y / 2)
-  });
-  const [distMeters, setDistMeters] = useState({
+    y: Math.floor(imageSize.y / 2),
     lat: row.upper - (row.upper + row.lower) / 2,
     lng: (row.left + row.right) / 2 - row.left
   });
@@ -168,41 +160,22 @@ const MapStandalone = ({ row, setRow }) => {
     mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
   }, []);
 
-  // const [horizontalPoint, verticalPoint] = calcAuxPoints(anchor, distMeters, distPixels);
-  const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distMeters.lng, x: anchor.x + distPixels.x, y: anchor.y };
-  const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng, x: anchor.x, y: anchor.y + distPixels.y };
+  const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distances.lng, x: anchor.x + distances.x, y: anchor.y };
+  const verticalPoint = { lat: anchor.lat + distances.lat, lng: anchor.lng, x: anchor.x, y: anchor.y + distances.y };
 
   React.useEffect(() => {
-    if (distPixels.x === 0 || distPixels.y === 0 || distMeters.lat === 0 || distMeters.lng === 0) {
+    if (distances.x === 0 || distances.y === 0 || distances.lat === 0 || distances.lng === 0) {
       return;
     }
 
-    ///////// p0 = anchor,   p1 = hor/ver point
-    //
-    // const right = lng0 + (lng1 - lng0) / (x1 - x0) * (xsize - x0);
-    // const left = lng1 - (lng1 - lng0) / (x1 - x0) * x1;
-    // const lower = lat0 + (lat1 - lat0) / (y1 - y0) * (ysize - y0);
-    // const upper = lat1 - (lat1 - lat0) / (y1 - y0) * y1;
-
-
-    const right = Math.round((anchor.lng + distMeters.lng / distPixels.x * (imageSize.x - anchor.x)) * 1e9) / 1e9;
-    const left = Math.round((horizontalPoint.lng - distMeters.lng / distPixels.x * horizontalPoint.x) * 1e9) / 1e9;
-    const lower = Math.round((anchor.lat - distMeters.lat / distPixels.y * anchor.y) * 1e9) / 1e9;
-    const upper = Math.round((verticalPoint.lat + distMeters.lat / distPixels.y * (imageSize.y - verticalPoint.y)) * 1e9) / 1e9;
+    const right = Math.round((anchor.lng + distances.lng / distances.x * (imageSize.x - anchor.x)) * 1e9) / 1e9;
+    const left = Math.round((horizontalPoint.lng - distances.lng / distances.x * horizontalPoint.x) * 1e9) / 1e9;
+    const lower = Math.round((anchor.lat - distances.lat / distances.y * anchor.y) * 1e9) / 1e9;
+    const upper = Math.round((verticalPoint.lat + distances.lat / distances.y * (imageSize.y - verticalPoint.y)) * 1e9) / 1e9;
     console.log('right', right, row.right);
     console.log('left', left, row.left);
     console.log('lower', lower, row.lower);
     console.log('upper', upper, row.upper);
-
-    // const newpoints = controlPoints.slice();
-    // newpoints[index] = point;
-    // const box = calcBoxFromPoints(newpoints[0], newpoints[1], imageSize);
-    // if (!box) return box;
-    // setControlPoints(newpoints);
-    // setRow(Object.assign({}, row, box));
-    // setTimeout(() => {
-    //   fitBounds(box);
-    // }, 200);
   });
 
   return (
@@ -225,12 +198,12 @@ const MapStandalone = ({ row, setRow }) => {
             <NumberTextField value={anchor.y} onChange={(num) => setAnchor({ ...anchor, y: num })} label="Anchor Y pixels" />
           </Grid>
           <Grid item>
-            <NumberTextField value={distMeters.lng} onChange={(num) => setDistMeters({ ...distMeters, lng: num })} label="Horizontal Meters" />
-            <NumberTextField value={distPixels.x} onChange={(num) => setDistPixels({ ...distPixels, x: num })} label="Horizontal Pixels" />
+            <NumberTextField value={distances.lng} onChange={(num) => setDistances({ ...distances, lng: num })} label="Horizontal Meters" />
+            <NumberTextField value={distances.x} onChange={(num) => setDistances({ ...distances, x: num })} label="Horizontal Pixels" />
           </Grid>
           <Grid item>
-            <NumberTextField value={distMeters.lat} onChange={(num) => setDistMeters({ ...distMeters, lat: num })} label="Vertical Meters" />
-            <NumberTextField value={distPixels.y} onChange={(num) => setDistPixels({ ...distPixels, y: num })} label="Vertical Pixels" />
+            <NumberTextField value={distances.lat} onChange={(num) => setDistances({ ...distances, lat: num })} label="Vertical Meters" />
+            <NumberTextField value={distances.y} onChange={(num) => setDistances({ ...distances, y: num })} label="Vertical Pixels" />
           </Grid>
         </Grid>
       </Grid>
@@ -262,8 +235,7 @@ const MapStandalone = ({ row, setRow }) => {
             setLocation={p => {
               const xmeters = p[1] - anchor.lng;
               const x = xmeters / (row.right - row.left) * imageSize.x;
-              setDistPixels({ ...distPixels, x })
-              setDistMeters({ ...distMeters, lng: xmeters })
+              setDistances({ ...distances, x, lng: xmeters })
             }}
             locationToShow={pointLatLngToMeters(horizontalPoint)}
           >
@@ -274,8 +246,7 @@ const MapStandalone = ({ row, setRow }) => {
             setLocation={p => {
               const ymeters = p[0] - anchor.lat;
               const y = ymeters / (row.upper - row.lower) * imageSize.y;
-              setDistPixels({ ...distPixels, y })
-              setDistMeters({ ...distMeters, lat: ymeters })
+              setDistances({ ...distances, y, lat: ymeters })
             }}
             locationToShow={pointLatLngToMeters(verticalPoint)}
           >
