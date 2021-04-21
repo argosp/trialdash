@@ -124,6 +124,12 @@ const pointLatLngToMeters = (p) => {
   return `(${fix(p.lng)}, ${fix(p.lat)}) in meters<br/>(${fix(p.x)}, ${fix(p.y)}) in pixels`;
 }
 
+// const calcAuxPoints = (anchor, distMeters, distPixels) => {
+//   const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distMeters.lng, x: anchor.x + distPixels.x, y: anchor.y };
+//   const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng, x: anchor.x, y: anchor.y - distPixels.y };
+//   return [horizontalPoint, verticalPoint];
+// }
+
 const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
@@ -162,8 +168,42 @@ const MapStandalone = ({ row, setRow }) => {
     mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
   }, []);
 
+  // const [horizontalPoint, verticalPoint] = calcAuxPoints(anchor, distMeters, distPixels);
   const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distMeters.lng, x: anchor.x + distPixels.x, y: anchor.y };
-  const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng, x: anchor.x, y: anchor.y - distPixels.y };
+  const verticalPoint = { lat: anchor.lat + distMeters.lat, lng: anchor.lng, x: anchor.x, y: anchor.y + distPixels.y };
+
+  React.useEffect(() => {
+    if (distPixels.x === 0 || distPixels.y === 0 || distMeters.lat === 0 || distMeters.lng === 0) {
+      return;
+    }
+
+    ///////// p0 = anchor,   p1 = hor/ver point
+    //
+    // const right = lng0 + (lng1 - lng0) / (x1 - x0) * (xsize - x0);
+    // const left = lng1 - (lng1 - lng0) / (x1 - x0) * x1;
+    // const lower = lat0 + (lat1 - lat0) / (y1 - y0) * (ysize - y0);
+    // const upper = lat1 - (lat1 - lat0) / (y1 - y0) * y1;
+
+
+    const right = Math.round((anchor.lng + distMeters.lng / distPixels.x * (imageSize.x - anchor.x)) * 1e9) / 1e9;
+    const left = Math.round((horizontalPoint.lng - distMeters.lng / distPixels.x * horizontalPoint.x) * 1e9) / 1e9;
+    const lower = Math.round((anchor.lat - distMeters.lat / distPixels.y * anchor.y) * 1e9) / 1e9;
+    const upper = Math.round((verticalPoint.lat + distMeters.lat / distPixels.y * (imageSize.y - verticalPoint.y)) * 1e9) / 1e9;
+    console.log('right', right, row.right);
+    console.log('left', left, row.left);
+    console.log('lower', lower, row.lower);
+    console.log('upper', upper, row.upper);
+
+    // const newpoints = controlPoints.slice();
+    // newpoints[index] = point;
+    // const box = calcBoxFromPoints(newpoints[0], newpoints[1], imageSize);
+    // if (!box) return box;
+    // setControlPoints(newpoints);
+    // setRow(Object.assign({}, row, box));
+    // setTimeout(() => {
+    //   fitBounds(box);
+    // }, 200);
+  });
 
   return (
     <Grid container>
@@ -207,7 +247,7 @@ const MapStandalone = ({ row, setRow }) => {
             setLocation={p => {
               const x = (p[1] - row.left) / (row.right - row.left) * imageSize.x;
               const y = (p[0] - row.lower) / (row.upper - row.lower) * imageSize.y;
-              setAnchor({lat: p[0], lng: p[1], x, y});
+              setAnchor({ lat: p[0], lng: p[1], x, y });
             }}
             locationToShow={pointLatLngToMeters(anchor)}
           >
