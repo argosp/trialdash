@@ -19,17 +19,17 @@ export const MapStandalone = ({ row, setRow }) => {
   const imageSize = { x: row.width || 300, y: row.height || 400 };
 
   const [anchor, setAnchor] = useState({
-    lat: (row.upper + row.lower) / 2,
-    lng: (row.left + row.right) / 2,
-    x: Math.floor(imageSize.x / 2),
-    y: Math.floor(imageSize.y / 2)
+    lat: row.lower,
+    lng: row.left,
+    x: 0,
+    y: 0
   });
 
   const [distances, setDistances] = useState({
-    x: Math.floor(imageSize.x / 2),
-    y: Math.floor(imageSize.y / 2),
-    lat: row.upper - (row.upper + row.lower) / 2,
-    lng: (row.left + row.right) / 2 - row.left
+    x: imageSize.x,
+    y: imageSize.y,
+    lat: row.upper - row.lower,
+    lng: row.right - row.left
   });
 
   React.useEffect(() => {
