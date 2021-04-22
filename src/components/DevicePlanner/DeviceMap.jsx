@@ -4,7 +4,8 @@ import {
     TileLayer,
     LayersControl,
     ImageOverlay,
-    LayerGroup
+    LayerGroup,
+    Polyline
 } from "react-leaflet";
 import config from '../../config';
 import { L, latLngBounds } from 'leaflet';
@@ -49,6 +50,40 @@ const RealMapWithImagesLayer = ({ images }) => (
     </>
 )
 
+const createRangeArray = (from, to, delta) => {
+    const ret = [];
+    for (let x = from; x < to; x += delta) {
+        ret.push(x);
+    }
+    ret.push(to);
+    return ret;
+}
+
+const GridlinesLayer = ({ from, to, delta = 1 }) => {
+    const lats = createRangeArray(from[0], to[0], delta);
+    const lngs = createRangeArray(from[1], to[1], delta);
+    return (<>
+        {lats.map(lat => (
+            <Polyline
+                weight={0.5}
+                positions={[
+                    [lat, from[1]],
+                    [lat, to[1]],
+                ]}
+            />
+        ))}
+        {lngs.map(lng => (
+            <Polyline
+                weight={0.5}
+                positions={[
+                    [from[1], lng],
+                    [to[1], lng],
+                ]}
+            />
+        ))}
+    </>)
+}
+
 const DeviceMapLayers = ({ embedded, standalone }) => {
     if (!standalone.length) {
         return <RealMapWithImagesLayer images={embedded} />
@@ -66,7 +101,13 @@ const DeviceMapLayers = ({ embedded, standalone }) => {
                         key={row.imageName}
                         name={row.imageName}
                     >
-                        <EmbeddedImageLayer image={row} />
+                        <LayerGroup>
+                            <EmbeddedImageLayer image={row} />
+                            <GridlinesLayer
+                                from={[row.lower, row.left]}
+                                to={[row.upper, row.right]}
+                            />
+                        </LayerGroup>
                     </LayersControl.BaseLayer>
                 ))
             }
