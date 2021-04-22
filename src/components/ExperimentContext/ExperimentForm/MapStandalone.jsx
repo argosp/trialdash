@@ -66,7 +66,7 @@ export const MapStandalone = ({ row, setRow }) => {
 
   return (
     <Grid container>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
         <Grid container direction="column"
           justify="flex-start"
           alignItems="center"
@@ -76,24 +76,48 @@ export const MapStandalone = ({ row, setRow }) => {
             Image size: ({imageSize.x} x {imageSize.y}) <br />
           </Grid>
           <Grid item>
-            <NumberTextField value={anchor.lng} onChange={(num) => setAnchor({ ...anchor, lng: num })} label="Anchor X meters" />
-            <NumberTextField value={anchor.lat} onChange={(num) => setAnchor({ ...anchor, lat: num })} label="Anchor Y meters" />
+            <Grid container spacing={2}>
+              <Grid item>
+                <NumberTextField value={anchor.lng} onChange={(num) => setAnchor({ ...anchor, lng: num })} label="Anchor X meters" width='150px' />
+              </Grid>
+              <Grid item>
+                <NumberTextField value={anchor.lat} onChange={(num) => setAnchor({ ...anchor, lat: num })} label="Anchor Y meters" width='150px' />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item>
-            <NumberTextField value={anchor.x} onChange={(num) => setAnchor({ ...anchor, x: num })} label="Anchor X pixels" />
-            <NumberTextField value={anchor.y} onChange={(num) => setAnchor({ ...anchor, y: num })} label="Anchor Y pixels" />
+            <Grid container spacing={2}>
+              <Grid item>
+                <NumberTextField value={anchor.x} onChange={(num) => setAnchor({ ...anchor, x: num })} label="Anchor X pixels" width='150px' />
+              </Grid>
+              <Grid item>
+                <NumberTextField value={anchor.y} onChange={(num) => setAnchor({ ...anchor, y: num })} label="Anchor Y pixels" width='150px' />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item>
-            <NumberTextField value={distances.lng} onChange={(num) => setDistances({ ...distances, lng: num })} label="Horizontal Meters" />
-            <NumberTextField value={distances.x} onChange={(num) => setDistances({ ...distances, x: num })} label="Horizontal Pixels" />
+            <Grid container spacing={2}>
+              <Grid item>
+                <NumberTextField value={distances.lng} onChange={(num) => setDistances({ ...distances, lng: num })} label="Horizontal Meters" width='150px' />
+              </Grid>
+              <Grid item>
+                <NumberTextField value={distances.x} onChange={(num) => setDistances({ ...distances, x: num })} label="Horizontal Pixels" width='150px' />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item>
-            <NumberTextField value={distances.lat} onChange={(num) => setDistances({ ...distances, lat: num })} label="Vertical Meters" />
-            <NumberTextField value={distances.y} onChange={(num) => setDistances({ ...distances, y: num })} label="Vertical Pixels" />
+            <Grid container spacing={2}>
+              <Grid item>
+                <NumberTextField value={distances.lat} onChange={(num) => setDistances({ ...distances, lat: num })} label="Vertical Meters" width='150px' />
+              </Grid>
+              <Grid item>
+                <NumberTextField value={distances.y} onChange={(num) => setDistances({ ...distances, y: num })} label="Vertical Pixels" width='150px' />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={9}>
         <MapWithImage
           ref={mapRef}
           showMap={false}
