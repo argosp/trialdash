@@ -82,6 +82,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                 return [[nw, ne, se, sw, nw]];
             },
             toPositions: (points, amount, rows = rectRows, angle = rectAngle) => {
+                if (points.length === 0) return [];
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
                 let ret = [];
                 const cols = Math.ceil(amount / rows);
