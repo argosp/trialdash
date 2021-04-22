@@ -8,6 +8,7 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
     const auxPolyline = React.useRef(null);
 
     let candLocs = shapeCreator.toPositions(markedPoints, deviceNum).filter(x => x);
+    // console.log(candLocs);
 
     const setLatLngsWithDist = (leafletElement, points) => {
         leafletElement.setLatLngs(points);

@@ -158,15 +158,6 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                 </DeviceMap>
             </Grid>
             <Grid item xs={3} style={{ overflow: 'auto' }}>
-                {/* <div style={{
-                position: 'absolute', width: '28%', top: 0, bottom: 0, left: 0, zIndex: 1000
-            }}>
-                <Paper style={{
-                    position: 'absolute', height: '100%', overflow: 'auto', top: 0, width: '100%'
-                }} >
-                    <div
-                        style={{ margin: 10 }}
-                    > */}
                 {!devices.length ? null :
                     <>
                         <ShapeChooser
@@ -218,10 +209,6 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                         />
                     </>
                 }
-                {/* </div>
-                </Paper>
-            </div> */}
-                {/* </div> */}
             </Grid>
         </Grid>
     )
