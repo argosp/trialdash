@@ -10,6 +10,16 @@ import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 
+const SimplifiedSwitch = ({ label, value, setValue }) => (
+    <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+        <InputLabel style={{ fontSize: 10 }}>{label}</InputLabel>
+        <Switch color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+            value={value}
+            onChange={e => setValue(e.target.checked)}
+        />
+    </div>
+)
+
 export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
     const [selectedType, setSelectedType] = React.useState(devices.length ? devices[0].name : '');
     const [selection, setSelection] = React.useState([]);
@@ -20,6 +30,8 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
+    const [showGrid, setShowGrid] = React.useState(true);
+    const [showGridMeters, setShowGridMeters] = React.useState(1);
 
     console.log('DeviceEditor', layerChosen, devices, showOnlyAssigned, selectedType)
 
@@ -186,21 +198,25 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                             setShowAll={val => setShowAll(val)}
                             typeOptions={devices.map(dev => { return { name: dev.name } })}
                         />
-                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Devices show name</InputLabel>
-                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                                value={showName}
-                                onChange={e => setShowName(e.target.checked)}
-                            />
-                        </div>
-                        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                            <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show only assigned</InputLabel>
-                            <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                                value={showOnlyAssigned}
-                                onChange={e => setShowOnlyAssigned(e.target.checked)}
-                            />
-                        </div>
-
+                        <SimplifiedSwitch
+                            label='Devices show name'
+                            value={showName}
+                            setValue={v => setShowName(v)}
+                        />
+                        <SimplifiedSwitch
+                            label='Show only assigned'
+                            value={showOnlyAssigned}
+                            setValue={v => setShowOnlyAssigned(v)}
+                        />
+                        {/* {layerChosen === 'OSMMap' ? null :
+                            <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+                                <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show grid</InputLabel>
+                                <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
+                                    value={showOnlyAssigned}
+                                    onChange={e => setShowOnlyAssigned(e.target.checked)}
+                                />
+                            </div>
+                        } */}
                         <DeviceList
                             selection={selection}
                             setSelection={setSelection}
