@@ -1,5 +1,6 @@
 import { Button, InputLabel, Paper, Switch, Grid } from '@material-ui/core';
 import React from 'react';
+import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
 import { DeviceList } from './DeviceList';
 import { DeviceMap } from './DeviceMap';
 import { DeviceMarker } from './DeviceMarker';
@@ -11,7 +12,7 @@ import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 
 const SimplifiedSwitch = ({ label, value, setValue }) => (
-    <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+    <div style={{ display: 'inline-block', margin: 5 }}>
         <InputLabel style={{ fontSize: 10 }}>{label}</InputLabel>
         <Switch color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
             value={value}
@@ -30,10 +31,10 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
-    const [showGrid, setShowGrid] = React.useState(true);
+    const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
 
-    console.log('DeviceEditor', layerChosen, devices, showOnlyAssigned, selectedType)
+    console.log('DeviceEditor', layerChosen, devices, showOnlyAssigned, selectedType, showGrid)
 
     if (selectedType === '' && devices.length > 0) {
         setSelectedType(devices[0].name);
@@ -138,6 +139,8 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                     experimentDataMaps={experimentDataMaps}
                     layerChosen={layerChosen}
                     setLayerChosen={setLayerChosen}
+                    showGrid={showGrid}
+                    showGridMeters={showGridMeters}
                 >
                     {
                         devices.map(devType => {
@@ -208,15 +211,20 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                             value={showOnlyAssigned}
                             setValue={v => setShowOnlyAssigned(v)}
                         />
-                        {/* {layerChosen === 'OSMMap' ? null :
-                            <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-                                <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show grid</InputLabel>
-                                <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-                                    value={showOnlyAssigned}
-                                    onChange={e => setShowOnlyAssigned(e.target.checked)}
+                        {layerChosen === 'OSMMap' ? null :
+                            <div style={{ verticalAlign: 'baseline' }}>
+                                <SimplifiedSwitch
+                                    label='Show grid'
+                                    value={showGrid}
+                                    setValue={v => setShowGrid(v)}
+                                />
+                                <NumberTextField
+                                    label='Grid Meters'
+                                    value={showGridMeters}
+                                    onChange={v => setShowGridMeters(v)}
                                 />
                             </div>
-                        } */}
+                        }
                         <DeviceList
                             selection={selection}
                             setSelection={setSelection}

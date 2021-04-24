@@ -84,7 +84,7 @@ const GridlinesLayer = ({ from, to, delta = 1 }) => {
     </>)
 }
 
-const DeviceMapLayers = ({ embedded, standalone }) => {
+const DeviceMapLayers = ({ embedded, standalone, showGrid, showGridMeters }) => {
     if (!standalone.length) {
         return <RealMapWithImagesLayer images={embedded} />
     }
@@ -103,10 +103,11 @@ const DeviceMapLayers = ({ embedded, standalone }) => {
                     >
                         <LayerGroup>
                             <EmbeddedImageLayer image={row} />
-                            <GridlinesLayer
+                            {showGrid ? <GridlinesLayer
                                 from={[row.lower, row.left]}
                                 to={[row.upper, row.right]}
-                            />
+                                delta={showGridMeters}
+                            /> : null}
                         </LayerGroup>
                     </LayersControl.BaseLayer>
                 ))
@@ -115,7 +116,7 @@ const DeviceMapLayers = ({ embedded, standalone }) => {
     )
 }
 
-export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
+export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen, showGrid, showGridMeters }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
@@ -172,6 +173,8 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             <DeviceMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
                 standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
+                showGrid={showGrid}
+                showGridMeters={showGridMeters}
             />
             {children}
         </LeafletMap>
