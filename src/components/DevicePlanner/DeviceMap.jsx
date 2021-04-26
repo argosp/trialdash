@@ -9,6 +9,7 @@ import {
 } from "react-leaflet";
 import config from '../../config';
 import { L, latLngBounds } from 'leaflet';
+import { CRS } from 'leaflet';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -157,6 +158,8 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
         mapElement.current.leafletElement.invalidateSize();
     }
 
+    const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
+
     return (
         <LeafletMap
             bounds={getLayerPosition(layerChosen)}
@@ -169,6 +172,8 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             onMouseOut={onMouseOut}
             onBaseLayerChange={(e) => setLayerChosen(e.name)}
             onMoveEnd={changeLayerPosition}
+            crs={showMap ? CRS.EPSG3857 : CRS.Simple}
+            minZoom={-10}
         >
             <DeviceMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}

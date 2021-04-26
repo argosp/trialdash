@@ -5,6 +5,7 @@ import {
   ImageOverlay,
 } from "react-leaflet";
 import config from "../../../config";
+import { CRS } from 'leaflet';
 
 const defaultPosition = [32.0852, 34.782];
 
@@ -27,6 +28,8 @@ export const MapWithImage = React.forwardRef(({ showMap, imageUrl, imageBounds, 
       zoom={15}
       style={{ height: "400px", width: '100%' }}
       ref={mapRef}
+      crs={showMap ? CRS.EPSG3857 : CRS.Simple}
+      minZoom={-10}
     >
       {
         !showMap ? null :
