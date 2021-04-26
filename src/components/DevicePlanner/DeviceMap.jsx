@@ -61,15 +61,19 @@ const createRangeArray = (from, to, delta) => {
 }
 
 const GridlinesLayer = ({ from, to, delta = 1 }) => {
-    const lats = createRangeArray(from[0], to[0], delta);
-    const lngs = createRangeArray(from[1], to[1], delta);
+    const lat0 = Math.min(from[0], to[0]);
+    const lat1 = Math.max(from[0], to[0]);
+    const lng0 = Math.min(from[1], to[1]);
+    const lng1 = Math.max(from[1], to[1]);
+    const lats = createRangeArray(lat0, lat1, delta);
+    const lngs = createRangeArray(lng0, lng1, delta);
     return (<>
         {lats.map(lat => (
             <Polyline
                 weight={0.5}
                 positions={[
-                    [lat, from[1]],
-                    [lat, to[1]],
+                    [lat, lng0],
+                    [lat, lng1],
                 ]}
             />
         ))}
@@ -77,8 +81,8 @@ const GridlinesLayer = ({ from, to, delta = 1 }) => {
             <Polyline
                 weight={0.5}
                 positions={[
-                    [from[1], lng],
-                    [to[1], lng],
+                    [lat0, lng],
+                    [lat1, lng],
                 ]}
             />
         ))}
@@ -154,11 +158,12 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
         }
     }, []);
 
+    const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
+
     if (mapElement && mapElement.current && mapElement.current.leafletElement) {
+        mapElement.current.leafletElement.options.crs = showMap ? CRS.EPSG3857 : CRS.Simple;
         mapElement.current.leafletElement.invalidateSize();
     }
-
-    const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
 
     return (
         <LeafletMap
@@ -173,6 +178,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             onBaseLayerChange={(e) => setLayerChosen(e.name)}
             onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
+            // crs={ CRS.Simple}
             minZoom={-10}
         >
             <DeviceMapLayers
