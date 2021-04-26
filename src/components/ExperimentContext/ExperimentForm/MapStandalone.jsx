@@ -8,6 +8,8 @@ import { NumberTextField } from "./NumberTextField";
 import { DashedPolyline } from "./DashedPolyline";
 import { ChosenMarker } from "./ChosenMarker";
 
+const mapFactor = 1e3;
+
 const pointLatLngToMeters = (p) => {
   const fix = (n) => Math.round(n * 1e9) / 1e9;
   return `(${fix(p.lng)}, ${fix(p.lat)}) in meters<br/>(${fix(p.x)}, ${fix(p.y)}) in pixels`;
@@ -32,8 +34,13 @@ export const MapStandalone = ({ row, setRow }) => {
     lng: row.right - row.left
   });
 
+  const fitBounds = (box) => {
+    const newBounds = [[box.lower / mapFactor, box.left / mapFactor], [box.upper / mapFactor, box.right / mapFactor]];
+    mapRef.current.leafletElement.fitBounds(newBounds);
+  };
+
   React.useEffect(() => {
-    mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
+    fitBounds(row);
   }, []);
 
   const horizontalPoint = { lat: anchor.lat, lng: anchor.lng + distances.lng, x: anchor.x + distances.x, y: anchor.y };
@@ -60,7 +67,7 @@ export const MapStandalone = ({ row, setRow }) => {
 
     setRow(Object.assign({}, row, { lower, right, upper, left }));
     setTimeout(() => {
-      mapRef.current.leafletElement.fitBounds([[lower, left], [upper, right]]);
+      fitBounds({ lower, right, upper, left })
     }, 200);
   });
 
@@ -122,12 +129,13 @@ export const MapStandalone = ({ row, setRow }) => {
           ref={mapRef}
           showMap={false}
           imageUrl={row.imageUrl}
-          imageBounds={[[row.upper, row.left], [row.lower, row.right]]}
+          imageBounds={[[row.upper / mapFactor, row.left / mapFactor], [row.lower / mapFactor, row.right / mapFactor]]}
         >
           <MarkedPoint
             key='anchor'
-            location={[anchor.lat, anchor.lng]}
-            setLocation={p => {
+            location={[anchor.lat / mapFactor, anchor.lng / mapFactor]}
+            setLocation={p1000 => {
+              const p = [p1000[0] * mapFactor, p1000[1] * mapFactor];
               const x = (p[1] - row.left) / (row.right - row.left) * imageSize.x;
               const y = (p[0] - row.lower) / (row.upper - row.lower) * imageSize.y;
               setAnchor({ lat: p[0], lng: p[1], x, y });
@@ -137,12 +145,13 @@ export const MapStandalone = ({ row, setRow }) => {
           </MarkedPoint>
           <ChosenMarker
             key='chosen'
-            center={anchor}
+            center={[anchor.lat / mapFactor, anchor.lng / mapFactor]}
           />
           <MarkedPoint
             key='horiz'
-            location={[horizontalPoint.lat, horizontalPoint.lng]}
-            setLocation={p => {
+            location={[horizontalPoint.lat / mapFactor, horizontalPoint.lng / mapFactor]}
+            setLocation={p1000 => {
+              const p = [p1000[0] * mapFactor, p1000[1] * mapFactor];
               const xmeters = p[1] - anchor.lng;
               const x = xmeters / (row.right - row.left) * imageSize.x;
               setDistances({ ...distances, x, lng: xmeters })
@@ -152,8 +161,9 @@ export const MapStandalone = ({ row, setRow }) => {
           </MarkedPoint>
           <MarkedPoint
             key='verti'
-            location={[verticalPoint.lat, verticalPoint.lng]}
-            setLocation={p => {
+            location={[verticalPoint.lat / mapFactor, verticalPoint.lng / mapFactor]}
+            setLocation={p1000 => {
+              const p = [p1000[0] * mapFactor, p1000[1] * mapFactor];
               const ymeters = p[0] - anchor.lat;
               const y = ymeters / (row.upper - row.lower) * imageSize.y;
               setDistances({ ...distances, y, lat: ymeters })
@@ -162,7 +172,11 @@ export const MapStandalone = ({ row, setRow }) => {
           >
           </MarkedPoint>
           <DashedPolyline
-            positions={[verticalPoint, anchor, horizontalPoint]}
+            positions={[
+              {lat: verticalPoint.lat / mapFactor, lng: verticalPoint.lng / mapFactor},
+              {lat: anchor.lat / mapFactor, lng: anchor.lng / mapFactor},
+              {lat: horizontalPoint.lat / mapFactor, lng: horizontalPoint.lng / mapFactor}
+            ]}
           >
           </DashedPolyline>
         </MapWithImage>
