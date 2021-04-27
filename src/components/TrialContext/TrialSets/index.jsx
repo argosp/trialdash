@@ -64,7 +64,7 @@ class TrialSets extends React.Component {
               <BasketIcon />
             </CustomTooltip>
             <ConfirmDialog
-              title={'Delete Trial Set'}
+              title="Delete Trial Set"
               open={confirmOpen}
               setOpen={this.setConfirmOpen}
               onConfirm={() => this.deleteTrialSet(trialSet)}
@@ -89,7 +89,7 @@ class TrialSets extends React.Component {
       const clonedTrialSet = { ...trialSet };
       clonedTrialSet.key = uuid();
       // eslint-disable-next-line prefer-template
-      clonedTrialSet.id = trialSet.id + ' clone';
+      clonedTrialSet.name = trialSet.name + ' clone';
       const { match, client } = this.props;
       clonedTrialSet.experimentId = match.params.id;
       clonedTrialSet.numberOfTrials = 0;

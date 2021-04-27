@@ -7,7 +7,6 @@ import { DateIcon, NumberIcon, SelectListIcon, TextAreaIcon, TextIcon } from './
 
 const FIELD_TYPE_BASE = {
   description: 'a short description of the field',
-  id: '',
   prefix: '',
   suffix: '',
   required: false,
