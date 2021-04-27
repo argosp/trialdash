@@ -4,7 +4,6 @@ const data = experimentId => gql`
   {
     experimentData(experimentId:"${experimentId}"){
        project {
-        id
         name
         description
         status
