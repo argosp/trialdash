@@ -193,6 +193,8 @@ class TrialSets extends React.Component {
                 withAddButton
                 addButtonText="Add trial set"
                 addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-trial-set`)}
+                withBackButton
+                backButtonHandler={() => history.push('/experiments')}
               />
               <ContentTable
                 contentType={TRIAL_SETS}
