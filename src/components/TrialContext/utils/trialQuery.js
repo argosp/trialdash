@@ -9,6 +9,7 @@ const trials = (experimentId, trialSetKey) => gql`
         status
         cloneFrom
         state
+        trialSetKey
         numberOfDevices
         properties {
           key
