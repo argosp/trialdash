@@ -103,7 +103,7 @@ class Devices extends React.Component {
               <CheckBoxOutlinedIcon />
             }
             disableRipple
-          />{device.name}
+          /><span onClick={() => this.activateEditMode(device)} className={classes.tableCellPointer}>{device.name}</span>
         </StyledTableCell>
         {deviceType && deviceType.properties && deviceType.properties.filter(p => !p.trialField).map(property => (
           <StyledTableCell className={classnames(classes.tableCell, (selectedDT ? classes.selectedRow : ''))} key={property.key} align="left">

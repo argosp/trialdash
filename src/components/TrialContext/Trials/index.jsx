@@ -72,7 +72,7 @@ class Trials extends React.Component {
     return (
       // should be uniqe id
       <React.Fragment key={trial.created}>
-        <StyledTableCell align="left">{trial.name}</StyledTableCell>
+        <StyledTableCell align="left" className={classes.tableCell} onClick={() => this.activateEditMode(trial)}>{trial.name}</StyledTableCell>
         <StyledTableCell align="left">{trial.cloneFrom ? 'cloned from ' + trial.cloneFrom : ''}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfDevices}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
