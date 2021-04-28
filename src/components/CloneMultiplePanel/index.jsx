@@ -51,10 +51,10 @@ class CloneMultiplePanel extends React.Component {
       invalidNumberFormat = false;
     }
     if (invalid) {
-      this.setState({ });
+      this.setState({ invalidNumber, invalidNumberFormat, numberFormatError });
       return;
     }
-    this.setState({ number: '', prefix: '', numberFormat: '', suffix: '', invalidNumber, invalidNumberFormat, numberFormatError });
+    this.setState({ number: '', prefix: '', numberFormat: '', suffix: '' });
     cloneMultiple(number, `${prefix}{${numberFormat}}${suffix}`);
   }
 

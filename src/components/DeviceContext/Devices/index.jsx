@@ -15,6 +15,8 @@ import {
   DEVICE_TYPES_DASH,
   DEVICES,
   DEVICE_MUTATION,
+  DEVICE_TYPES,
+  DEVICE_TYPE_MUTATION,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
 import { CloneMultipleIcon, PenIcon, CheckBoxOutlineBlankIcon, CheckBoxOutlinedIcon, IndeterminateCheckBoxOutlinedIcon, MoreActionsIcon } from '../../../constants/icons';
@@ -249,6 +251,9 @@ class Devices extends React.Component {
             devicesQuery(match.params.id, match.params.deviceTypeKey),
             DEVICES,
             DEVICE_MUTATION,
+            false,
+            'deviceTypeKey',
+            this.updateDeviceTypeNumberOfDevices
           );
         },
       });
@@ -279,12 +284,28 @@ class Devices extends React.Component {
               DEVICES,
               DEVICE_MUTATION,
               true,
+              'deviceTypeKey',
+              this.updateDeviceTypeNumberOfDevices
             );
           },
         });
     }
     this.setState({ update: true, selected: [] });
   }
+
+  updateDeviceTypeNumberOfDevices = (n, cache) => {
+    const { match } = this.props;
+    const { deviceType } = this.state;
+    deviceType.numberOfDevices = n[deviceType.key];
+    updateCache(
+      cache,
+      {data: { [DEVICE_TYPE_MUTATION]: deviceType } },
+      deviceTypesQuery(match.params.id),
+      DEVICE_TYPES,
+      DEVICE_TYPE_MUTATION,
+      true,
+    );
+  };
 
   deleteDevice = async (device) => {
     let newEntity;
@@ -308,6 +329,8 @@ class Devices extends React.Component {
             DEVICES,
             DEVICE_MUTATION,
             true,
+            'deviceTypeKey',
+            this.updateDeviceTypeNumberOfDevices
           );
         },
       });
