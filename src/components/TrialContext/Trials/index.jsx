@@ -6,11 +6,15 @@ import moment from 'moment';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
+import Grid from '@material-ui/core/Grid';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import classnames from 'classnames';
 import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
 import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
-import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION } from '../../../constants/base';
+import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import { CloneIcon, GridIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
@@ -20,17 +24,12 @@ import TrialForm from '../TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
-import Grid from '@material-ui/core/Grid';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import classnames from 'classnames';
 
 class Trials extends React.Component {
   state = {
     trialSet: {},
     open: false,
-    confirmOpen:false
+    confirmOpen: false
   };
 
   setConfirmOpen = (open, trial) => {
@@ -51,30 +50,30 @@ class Trials extends React.Component {
         });
       });
   }
-  onInputChange = (e,trial) => {
+  onInputChange = (e, trial) => {
     const { value } = e.target;
-    this.setState({ anchorMenu: null});
-    this.clone(value,trial);
+    this.setState({ anchorMenu: null });
+    this.clone(value, trial);
   };
-  
+
   handleMenuClick = (event) => {
     this.setState({
       anchorMenu: event.currentTarget,
     });
   };
   //TODO handleMenuChange !state
-    handleMenuClose = (anchor) => {
+  handleMenuClose = (anchor) => {
     this.setState({ [anchor]: null });
   };
 
   renderTableRow = (trial) => {
-    const { trialSet, confirmOpen,anchorMenu } = this.state;
-    const { classes, theme} = this.props;
+    const { trialSet, confirmOpen, anchorMenu } = this.state;
+    const { classes, theme } = this.props;
     return (
       // should be uniqe id
-      <React.Fragment key={trial.created}> 
-        <StyledTableCell align="left">{trial.name}</StyledTableCell>
-        <StyledTableCell align="left">{trial.cloneFrom ?'cloned from '+trial.cloneFrom:''}</StyledTableCell>
+      <React.Fragment key={trial.created}>
+        <StyledTableCell align="left" className={classes.tableCell} onClick={() => this.activateEditMode(trial)}>{trial.name}</StyledTableCell>
+        <StyledTableCell align="left">{trial.cloneFrom ? 'cloned from ' + trial.cloneFrom : ''}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfDevices}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
@@ -103,39 +102,39 @@ class Trials extends React.Component {
             {/* <ClickAwayListener onClickAway={() => this.handleMenuClose('anchorMenu')}> */}
 
             <Menu
-            id="clone-menu"
-            classes={{ paper: classes.menu}}
-            open={Boolean(anchorMenu)}
-            onClose={() => this.handleMenuClose('anchorMenu')}
-            anchorEl={anchorMenu}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            {['design', 'deploy'].map((i)=><MenuItem
-              color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
-              key={uuid()}
-              classes={{ root: classes.menuItem }}
-              onClick={e => this.onInputChange({ target: { value: i } }, trial)}
+              id="clone-menu"
+              classes={{ paper: classes.menu }}
+              open={Boolean(anchorMenu)}
+              onClose={() => this.handleMenuClose('anchorMenu')}
+              anchorEl={anchorMenu}
+              getContentAnchorEl={null}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
             >
-              <Grid
-                container
-                wrap="nowrap"
-                alignItems="center"
+              {['design', 'deploy'].map((i) => <MenuItem
+                color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
+                key={uuid()}
+                classes={{ root: classes.menuItem }}
+                onClick={e => this.onInputChange({ target: { value: i } }, trial)}
               >
-                <div className={(classnames(classes.rect, classes[i]))}></div>
-                {i}
-              </Grid>
-            </MenuItem>)}
-          </Menu>
+                <Grid
+                  container
+                  wrap="nowrap"
+                  alignItems="center"
+                >
+                  <div className={(classnames(classes.rect, classes[i]))}></div>
+                  {i}
+                </Grid>
+              </MenuItem>)}
+            </Menu>
 
-          {/* </ClickAwayListener> */}
+            {/* </ClickAwayListener> */}
 
             <CloneIcon />
           </CustomTooltip>
@@ -150,7 +149,7 @@ class Trials extends React.Component {
             title="Delete"
             ariaLabel="delete"
             onClick={() => this.deleteTrial(trial)}
-            // onClick={() => this.setConfirmOpen(true, trial)}
+          // onClick={() => this.setConfirmOpen(true, trial)}
           >
             <BasketIcon />
           </CustomTooltip>
@@ -159,7 +158,7 @@ class Trials extends React.Component {
             open={confirmOpen}
             setOpen={this.setConfirmOpen}
             onConfirm={() => this.deleteTrial(trial)}
-            // inputValidation
+          // inputValidation
           >
             Are you sure you want to delete this trial?
           </ConfirmDialog>
@@ -196,9 +195,21 @@ class Trials extends React.Component {
     return columns;
   };
 
+  updateTrialSetNumberOfTrials = (n, cache) => {
+    const { match } = this.props;
+    const { trialSet } = this.state;
+    trialSet.numberOfTrials = n[trialSet.key];
+    updateCache(
+      cache,
+      {data: { [TRIAL_SET_MUTATION]: trialSet } },
+      trialSetsQuery(match.params.id),
+      TRIAL_SETS,
+      TRIAL_SET_MUTATION,
+      true,
+    );
+  };
 
-
-  clone = async (cloneFrom,trial) => {
+  clone = async (cloneFrom, trial) => {
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
     const { match, client } = this.props;
@@ -214,6 +225,9 @@ class Trials extends React.Component {
           trialsQuery(match.params.id, match.params.trialSetKey),
           TRIALS,
           TRIAL_MUTATION,
+          false,
+          'trialSetKey',
+          this.updateTrialSetNumberOfTrials
         );
       },
     });
@@ -235,7 +249,6 @@ class Trials extends React.Component {
     newEntity.trialSetKey = match.params.trialSetKey;
 
     const mutation = trialMutation;
-
     await client
       .mutate({
         mutation: mutation(newEntity),
@@ -247,6 +260,8 @@ class Trials extends React.Component {
             TRIALS,
             TRIAL_MUTATION,
             true,
+            'trialSetKey',
+            this.updateTrialSetNumberOfTrials
           );
         },
       });
@@ -295,7 +310,7 @@ class Trials extends React.Component {
               addButtonText="Add trial"
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
-              rightDescription={trialSet?trialSet.name:''}
+              rightDescription={trialSet ? trialSet.name : ''}
               addButtonHandler={() => history.push(
                 `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`,
               )}

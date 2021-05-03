@@ -31,25 +31,27 @@ class CloneMultiplePanel extends React.Component {
     const { cloneMultiple } = this.props;
     const { number, prefix, numberFormat, suffix } = this.state;
     let invalid = false;
+    let invalidNumber = false;
+    let invalidNumberFormat = false;
+    let numberFormatError = null;
     if (!number || number === '') {
-      this.state.invalidNumber = true;
+      invalidNumber = true;
       invalid = true;
     } else {
-      this.state.invalidNumber = false;
+      invalidNumber = false;
     }
-    this.state.numberFormatError = null;
     if (!numberFormat || numberFormat === '') {
-      this.state.invalidNumberFormat = true;
+      invalidNumberFormat = true;
       invalid = true;
     } else if (!numberFormat.match(/^\d+$/)) {
-      this.state.invalidNumberFormat = true;
-      this.state.numberFormatError = 'Invalid number format';
+      invalidNumberFormat = true;
+      numberFormatError = 'Invalid number format';
       invalid = true;
     } else {
-      this.state.invalidNumberFormat = false;
+      invalidNumberFormat = false;
     }
     if (invalid) {
-      this.setState({ });
+      this.setState({ invalidNumber, invalidNumberFormat, numberFormatError });
       return;
     }
     this.setState({ number: '', prefix: '', numberFormat: '', suffix: '' });

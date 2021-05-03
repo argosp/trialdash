@@ -103,6 +103,20 @@ class DeviceForm extends React.Component {
     );
   };
 
+  updateDeviceTypeNumberOfDevices = (n, cache) => {
+    const { match } = this.props;
+    const { deviceType } = this.state;
+    deviceType.numberOfDevices = n[deviceType.key];
+    updateCache(
+      cache,
+      {data: { [DEVICE_TYPE_MUTATION]: deviceType } },
+      deviceTypesQuery(match.params.id),
+      DEVICE_TYPES,
+      DEVICE_TYPE_MUTATION,
+      true,
+    );
+  };
+
   submitDevice = async (newDevice, deleted) => {
     const newEntity = newDevice;
     const { match, client, returnFunc } = this.props;
@@ -142,6 +156,8 @@ class DeviceForm extends React.Component {
           DEVICES,
           DEVICE_MUTATION,
           returnFunc,
+          'deviceTypeKey',
+          this.updateDeviceTypeNumberOfDevices
         );
       },
     });

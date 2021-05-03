@@ -13,4 +13,7 @@ export const styles = theme => ({
   cellTextLine: {
     margin: 0,
   },
+  tableCell: {
+    cursor: 'pointer',
+  },
 });

@@ -23,4 +23,7 @@ export const styles = theme => ({
   tableCellLast: {
     padding: '15px 15px 15px 30px',
   },
+  tableCellPointer: {
+    cursor: 'pointer',
+  },
 });

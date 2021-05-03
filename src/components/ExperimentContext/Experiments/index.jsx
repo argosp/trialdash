@@ -35,12 +35,12 @@ class Experiments extends React.Component {
   }
 
   renderTableRow = (experiment) => {
-    const { classes, client } = this.props;
+    const { classes, client, history } = this.props;
     const { confirmOpen } = this.state;
 
     return (
       <React.Fragment key={experiment.project.id}>
-        <StyledTableCell align="left">
+        <StyledTableCell align="left" className={classes.tableCell} onClick={() => history.push(`/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`)}>
           <p className={classes.cellTextLine}>{experiment.name}</p>
           <div className={classes.cellTextLine}>
             <Dotdotdot clamp={1}>
@@ -48,9 +48,9 @@ class Experiments extends React.Component {
             </Dotdotdot>
           </div>
         </StyledTableCell>
-        <StyledTableCell align="left">{moment(experiment.begin).format('D/M/YYYY')}</StyledTableCell>
-        <StyledTableCell align="left">{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
-        <StyledTableCell align="left">{experiment.numberOfTrials}</StyledTableCell>
+        <StyledTableCell align="left" className={classes.tableCell} onClick={() => history.push(`/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`)}>{moment(experiment.begin).format('D/M/YYYY')}</StyledTableCell>
+        <StyledTableCell align="left" className={classes.tableCell} onClick={() => history.push(`/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`)}>{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
+        <StyledTableCell align="left" className={classes.tableCell} onClick={() => history.push(`/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`)}>{experiment.numberOfTrials}</StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip
             title="Clone"
