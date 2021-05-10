@@ -52,6 +52,13 @@ export const FIELD_TYPES = {
     name: 'Number',
     type: 'number',
   },
+  datetime: {
+    ...FIELD_TYPE_BASE,
+    key: uuid(),
+    label: 'Date Time',
+    name: 'Date Time',
+    type: 'datetime-local',
+  },
   date: {
     ...FIELD_TYPE_BASE,
     key: uuid(),
@@ -84,6 +91,7 @@ export const FIELD_TYPES_ICONS = {
   date: <DateIcon />,
   time: <WatchLaterOutlinedIcon />,
   location: <LocationOnOutlinedIcon />,
+  'datetime-local': <DateIcon />,
 };
 
 const generateFieldTypesArray = () => {
