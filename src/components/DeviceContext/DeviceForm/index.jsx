@@ -4,9 +4,11 @@ import update from 'immutability-helper';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import LoadingOverlay from 'react-loading-overlay';
 import deviceMutation from './utils/deviceMutation';
 import { updateCache } from '../../../apolloGraphql';
 import {
@@ -32,6 +34,10 @@ class DeviceForm extends React.Component {
       properties: this.props.device && this.props.device.properties ? this.props.device.properties : [],
     },
     deviceType: {},
+    number: '',
+    prefix: '',
+    numberFormat: '',
+    suffix: '',
   };
 
   componentDidMount() {
@@ -94,6 +100,14 @@ class DeviceForm extends React.Component {
     }));
   };
 
+  onMultiChange = (e, inputName) => {
+    const { value } = e.target;
+
+    this.setState({
+      [inputName]: value,
+    });
+  };
+
   closeForm = (deleted) => {
     const { match, history, returnFunc } = this.props;
 
@@ -117,10 +131,20 @@ class DeviceForm extends React.Component {
     );
   };
 
+  getNumber = (numberFormat, i) => {
+    const startNumber = parseInt(numberFormat, 0);
+    const currentNumber = startNumber + i;
+    const n = currentNumber.toString();
+    return (n.length >= numberFormat.length ? n : new Array(numberFormat.length - n.length + 1).join('0') + n);
+  }
+
   submitDevice = async (newDevice, deleted) => {
     const newEntity = newDevice;
     const { match, client, returnFunc } = this.props;
-    const { deviceType } = this.state;
+    const { deviceType, loading } = this.state;
+    const { number, prefix, numberFormat, suffix } = this.state;
+    if (loading) return;
+    this.setState({ loading: true });
     if (deleted) newEntity.state = 'Deleted';
     let property;
     let invalid;
@@ -142,25 +166,60 @@ class DeviceForm extends React.Component {
         }
       });
       if (invalid) {
-        this.setState({ tabValue: 0 });
+        this.setState({ tabValue: 0, loading: false });
         return;
       }
     }
-    await client.mutate({
-      mutation: deviceMutation(newEntity),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          devicesQuery(match.params.id, match.params.deviceTypeKey),
-          DEVICES,
-          DEVICE_MUTATION,
-          returnFunc,
-          'deviceTypeKey',
-          this.updateDeviceTypeNumberOfDevices
-        );
-      },
-    });
+    if (window.location.href.match('add-multiple-devices')) {
+      let invalid = false;
+      let invalidNumber = false;
+      let invalidNumberFormat = false;
+      let numberFormatError = null;
+      if (!number || number === '') {
+        invalidNumber = true;
+        invalid = true;
+      } else {
+        invalidNumber = false;
+      }
+      if (!numberFormat || numberFormat === '') {
+        invalidNumberFormat = true;
+        invalid = true;
+      } else if (!numberFormat.match(/^\d+$/)) {
+        invalidNumberFormat = true;
+        numberFormatError = 'Invalid number format';
+        invalid = true;
+      } else {
+        invalidNumberFormat = false;
+      }
+      if (invalid) {
+        this.setState({ invalidNumber, invalidNumberFormat, numberFormatError, loading: false });
+        return;
+      }
+    }
+
+    for (let i = 0; i < (window.location.href.match('add-multiple-devices') ? number : 1); i += 1) {
+      const clonedDevice = { ...newEntity };
+      if (window.location.href.match('add-multiple-devices')) {
+        clonedDevice.key = uuid();
+        clonedDevice.name = `${prefix}${this.getNumber(numberFormat, i)}${suffix}`;
+      }
+      
+      await client.mutate({
+        mutation: deviceMutation(clonedDevice),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            devicesQuery(match.params.id, match.params.deviceTypeKey),
+            DEVICES,
+            DEVICE_MUTATION,
+            returnFunc,
+            'deviceTypeKey',
+            this.updateDeviceTypeNumberOfDevices
+          );
+        },
+      });
+    }
 
     this.closeForm(deleted);
   };
@@ -179,23 +238,70 @@ class DeviceForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { deviceType, device } = this.state;
+    const { deviceType, device, loading } = this.state;
+    const { number, prefix, numberFormat, suffix } = this.state;
 
     return (
-      <>
+      <LoadingOverlay
+        active={loading}
+        spinner
+        text='Saving, please wait...'
+      >
         <ContentHeader
           title={`Add ${deviceType.name}`}
           className={classes.header}
         />
         <Typography style={{ marginBottom: '100px' }}>
-          <CustomInput
-            id="device-name"
-            className={classes.property}
-            onChange={e => this.onInputChange(e, 'name')}
-            label="Name"
-            bottomDescription="a short description"
-            value={device.name}
-          />
+          {window.location.href.match('add-multiple-devices') ? 
+            <Grid style={{display: 'flex', justifyContent: 'space-between', width: '80%'}}>
+              <CustomInput
+                id="number"
+                onChange={e => this.onMultiChange(e, 'number')}
+                value={number}
+                label="Number of devices to create"
+                type="number"
+                className={classes.property}
+                invalid={this.state.invalidNumber}
+              />
+              <CustomInput
+                id="prefix"
+                onChange={e => this.onMultiChange(e, 'prefix')}
+                value={prefix}
+                label="Name Prefix"
+                type="text"
+                className={classes.property}
+                placeholder="Example: deviceName"
+              />
+              <CustomInput
+                id="numberFormat"
+                onChange={e => this.onMultiChange(e, 'numberFormat')}
+                value={numberFormat}
+                label="Name Number format"
+                type="text"
+                placeholder="Example: 000"
+                invalid={this.state.invalidNumberFormat}
+                errorText={this.state.numberFormatError}
+                className={classes.property}
+              />
+              <CustomInput
+                id="suffix"
+                onChange={e => this.onMultiChange(e, 'suffix')}
+                value={suffix}
+                label="Name Suffix"
+                type="text"
+                placeholder="Example: december test"
+                className={classes.property}
+              />
+            </Grid> :
+            <CustomInput
+              id="device-name"
+              className={classes.property}
+              onChange={e => this.onInputChange(e, 'name')}
+              label="Name"
+              bottomDescription="a short description"
+              value={device.name}
+            />
+          }
           {deviceType.properties
             ? deviceType.properties.filter(p => p.trialField !== true).map(property => (
               <CustomInput
@@ -219,8 +325,9 @@ class DeviceForm extends React.Component {
           saveButtonHandler={() => this.submitDevice(this.state.device)}
           withDeleteButton={this.props.device}
           deleteButtonHandler={() => this.submitDevice(device, true)}
+          loading={loading}
         />
-      </>
+      </LoadingOverlay>
     );
   }
 }

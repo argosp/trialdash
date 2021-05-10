@@ -9,6 +9,7 @@ import { withApollo } from 'react-apollo';
 import Checkbox from '@material-ui/core/Checkbox';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import LoadingOverlay from 'react-loading-overlay';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import {
@@ -265,7 +266,9 @@ class Devices extends React.Component {
   deleteMultiple = async () => {
     const { match, client } = this.props;
     const mutation = deviceMutationUpdate;
-    const { selected } = this.state;
+    const { selected, loading } = this.state;
+    if (loading) return;
+    this.setState({ loading: true });
     for (let i = 0; i < selected.length; i += 1) {
       const newEntity = { key: selected[i] };
       newEntity.action = 'update';
@@ -290,7 +293,7 @@ class Devices extends React.Component {
           },
         });
     }
-    this.setState({ update: true, selected: [] });
+    this.setState({ update: true, selected: [], loading: false });
   }
 
   updateDeviceTypeNumberOfDevices = (n, cache) => {
@@ -358,11 +361,15 @@ class Devices extends React.Component {
 
   render() {
     const { history, match } = this.props;
-    const { deviceType, isCloneMultiplePanelOpen, device, selected, confirmMultipleOpen } = this.state;
+    const { deviceType, isCloneMultiplePanelOpen, device, selected, confirmMultipleOpen, loading } = this.state;
     const tableHeadColumns = this.generateTableColumns(deviceType);
 
     return (
-      <>
+      <LoadingOverlay
+        active={loading}
+        spinner
+        text='Please wait...'
+      >
         {this.state.isEditModeEnabled
           // eslint-disable-next-line react/jsx-wrap-multilines
           ? <DeviceForm
@@ -385,6 +392,9 @@ class Devices extends React.Component {
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
               rightDescription={deviceType.id}
               addButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`)}
+              withAddMultipleButton
+              addMultipleButtonText="Add multiple devices"
+              addMultipleButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-multiple-devices`)}
             />
             <ConfirmDialog
               title={`Delete multiple devices`}
@@ -412,7 +422,7 @@ class Devices extends React.Component {
             />
           </>
         }
-      </>
+      </LoadingOverlay>
     );
   }
 }

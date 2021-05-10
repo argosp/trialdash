@@ -10,6 +10,7 @@ const Footer = ({
   deleteButtonHandler,
   withDeleteButton,
   classes,
+  loading,
 }) => (
   <Grid container justify="space-between" className={classes.root}>
     <div>
@@ -18,12 +19,14 @@ const Footer = ({
         colorVariant="primary"
         onClick={saveButtonHandler}
         text="Save"
+        disabled={loading}
       />
       <SimpleButton
         variant="outlined"
         className={classes.cancelButton}
         onClick={cancelButtonHandler}
         text="Cancel"
+        disabled={loading}
       />
     </div>
     {withDeleteButton ? (

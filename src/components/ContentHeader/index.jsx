@@ -30,6 +30,9 @@ const ContentHeader = (props) => {
     withDeleteButton,
     deleteButtonHandler,
     deleteButtonText,
+    withAddMultipleButton,
+    addMultipleButtonText,
+    addMultipleButtonHandler,
   } = props;
 
   return (
@@ -93,6 +96,16 @@ const ContentHeader = (props) => {
                 className={classes.addButton}
                 text={deleteButtonText}
                 onClick={deleteButtonHandler}
+              />
+            )
+          }
+          {withAddMultipleButton
+            && (
+              <SimpleButton
+                colorVariant="primary"
+                className={classes.addButton}
+                text={addMultipleButtonText}
+                onClick={addMultipleButtonHandler}
               />
             )
           }

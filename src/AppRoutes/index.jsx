@@ -87,6 +87,11 @@ const AppRoutes = () => (
           component={DeviceForm}
         />
         <Route
+          path={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/add-multiple-devices`}
+          exact
+          component={DeviceForm}
+        />
+        <Route
           path={`/experiments/:id/${TRIAL_SETS_DASH}`}
           component={TrialSets}
           exact
