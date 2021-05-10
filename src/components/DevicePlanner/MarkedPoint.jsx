@@ -10,14 +10,14 @@ export const MarkedPoint = (props) => {
 
     let locationToShowStr;
     if (!locationToShow) {
-        locationToShowStr = JSON.stringify(location.map(l => Math.round(l * 1e9) / 1e9)).replaceAll(',', ', ');
+        locationToShowStr = JSON.stringify(location.map(l => Math.round(l * 1e9) / 1e9)).replace(/\,/g, ', ');
     } else {
         locationToShowStr = locationToShow;
     }
     return (
         <Marker
             position={location}
-            title={locationToShowStr.replaceAll('<br/>', '\n')}
+            title={locationToShowStr.replace(/<br\/>/g, '\n')}
             draggable={true}
             ondrag={(e) => {
                 if (dragLocation) {
