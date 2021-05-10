@@ -28,7 +28,7 @@ class DevicesGrid extends React.Component {
 
   renderDevicesTableRow = (device) => {
     const { classes, removeEntity, onEntityPropertyChange, devices, deviceTypes } = this.props;
-    if (devices[device.key] === -1) return <React.Fragment key={device.key} />;
+    if (!devices[device.key]) return <React.Fragment key={device.key} />;
     return (
       <React.Fragment key={device.key}>
         <StyledTableCell classes={{ body: classes.deviceGridTd }} className={classes.tableCell} align="left">{devices[device.key][0].name}</StyledTableCell>
