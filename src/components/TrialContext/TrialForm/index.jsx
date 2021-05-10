@@ -3,17 +3,19 @@ import React from 'react';
 import { withStyles } from '@material-ui/core';
 import update from 'immutability-helper';
 import uuid from 'uuid/v4';
+import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
 import classnames from 'classnames';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import trialMutation from './utils/trialMutation';
-import trialSetMutation from '../utils/trialSetMutation';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
@@ -327,6 +329,11 @@ class TrialForm extends React.Component {
   SetCloneDevicesDialogOpen = (open) => {
     this.setState({ CloneDevicesDialogOpen: open });
   }
+  setCurrent = (property) => {
+    if (property.type === 'time') this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
+    if (property.type === 'date') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key)
+    if (property.type === 'datetime-local') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DDTHH:mm') } }, property.key)
+  }
   render() {
     const { classes, theme,match, client } = this.props;
     const {
@@ -453,6 +460,14 @@ class TrialForm extends React.Component {
                 multiple={property.multipleValues}
                 type={property.type}
                 invalid={this.getInvalid(property.key)}
+                endAdornment={(['date', 'time', 'datetime-local'].indexOf(property.type) !== -1) ?
+                  <InputAdornment position="end">
+                    <Button onClick={()=>this.setCurrent(property)}>
+                      Fill current
+                    </Button>
+                  </InputAdornment> :
+                  null
+                }
               />
             ))
             : null}

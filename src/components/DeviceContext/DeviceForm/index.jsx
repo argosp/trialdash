@@ -3,7 +3,10 @@ import React from 'react';
 import update from 'immutability-helper';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
+import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
@@ -235,6 +238,11 @@ class DeviceForm extends React.Component {
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].invalid : false);
   }
+  setCurrent = (property) => {
+    if (property.type === 'time') this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
+    if (property.type === 'date') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key)
+    if (property.type === 'datetime-local') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DDTHH:mm') } }, property.key)
+  }
 
   render() {
     const { classes } = this.props;
@@ -316,6 +324,14 @@ class DeviceForm extends React.Component {
                 type={property.type}
                 multiple={property.multipleValues}
                 invalid={this.getInvalid(property.key)}
+                endAdornment={(['date', 'time', 'datetime-local'].indexOf(property.type) !== -1) ?
+                  <InputAdornment position="end">
+                    <Button onClick={()=>this.setCurrent(property)}>
+                      Fill current
+                    </Button>
+                  </InputAdornment> :
+                  null
+                }
               />
             ))
             : null}
