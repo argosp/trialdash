@@ -58,8 +58,8 @@ class TrialSets extends React.Component {
             <CustomTooltip
               title="Delete"
               ariaLabel="delete"
-              onClick={() => this.deleteTrialSet(trialSet)}
-              // onClick={() => this.setConfirmOpen(true, trialSet)}
+              // onClick={() => this.deleteTrialSet(trialSet)}
+              onClick={() => this.setConfirmOpen(true, trialSet)}
             >
               <BasketIcon />
             </CustomTooltip>
