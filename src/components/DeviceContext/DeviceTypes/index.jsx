@@ -1,5 +1,6 @@
 import React from 'react';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import uuid from 'uuid/v4';
 import { withStyles } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -40,7 +41,11 @@ class DeviceTypes extends React.Component {
           <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.properties.length}</StyledTableCell>
           <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.numberOfDevices}</StyledTableCell>
           <StyledTableCell align="right">
-            <CustomTooltip title="Clone" ariaLabel="clone">
+            <CustomTooltip
+              title="Clone"
+              ariaLabel="clone"
+              onClick={() => this.clone(deviceType)}
+            >
               <CloneIcon />
             </CustomTooltip>
             <CustomTooltip
@@ -78,6 +83,31 @@ class DeviceTypes extends React.Component {
           </StyledTableCell>
         </React.Fragment>
       );
+    };
+
+    clone = async (deviceType) => {
+      const clonedDeviceType = { ...deviceType };
+      clonedDeviceType.key = uuid();
+      // eslint-disable-next-line prefer-template
+      clonedDeviceType.name = deviceType.name + ' clone';
+      const { match, client } = this.props;
+      clonedDeviceType.experimentId = match.params.id;
+      clonedDeviceType.numberOfDevices = 0;
+
+      await client.mutate({
+        mutation: deviceTypeMutation(clonedDeviceType),
+        update: (cache, mutationResult) => {
+          updateCache(
+            cache,
+            mutationResult,
+            deviceTypesQuery(match.params.id),
+            DEVICE_TYPES,
+            DEVICE_TYPE_MUTATION,
+          );
+        },
+      });
+
+      this.setState({ update: true });
     };
 
     setUpdated = () => {
