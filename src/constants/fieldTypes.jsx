@@ -52,7 +52,7 @@ export const FIELD_TYPES = {
     name: 'Number',
     type: 'number',
   },
-  datetime: {
+  'datetime-local': {
     ...FIELD_TYPE_BASE,
     key: uuid(),
     label: 'Date Time',
