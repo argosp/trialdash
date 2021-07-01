@@ -75,19 +75,22 @@ export const updateCache = (
     query,
   })[itemsName];
 
+  let existing = false;
   // set the new item
-  let updatedItems = items.concat([mutationResult.data[mutationName]]);
+  let updatedItems;
 
   // update the existing item
-  if (isExistingItem) {
-    items.forEach((item, i) => {
-      if (item[matchField] === mutationResult.data[mutationName][matchField]) {
-        items[i] = mutationResult.data[mutationName];
-      }
-    });
+  
+  items.forEach((item, i) => {
+    if (item[matchField] === mutationResult.data[mutationName][matchField]) {
+      items[i] = mutationResult.data[mutationName];
+      existing = true;
+    }
+  });
 
-    updatedItems = items;
-  }
+  updatedItems = items;
+
+  if (!existing) updatedItems = items.concat([mutationResult.data[mutationName]])
 
   let a = {};
 
@@ -106,5 +109,5 @@ export const updateCache = (
       [itemsName]: updatedItems,
     },
   });
-  if (callback) callback(a, apolloCache);
+  if (callback) callback(a, apolloCache, mutationResult.data[mutationName]);
 };

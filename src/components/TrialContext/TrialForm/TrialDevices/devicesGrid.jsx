@@ -27,7 +27,7 @@ class DevicesGrid extends React.Component {
   }
 
   renderDevicesTableRow = (device) => {
-    const { classes, removeEntity, onEntityPropertyChange, devices, deviceTypes } = this.props;
+    const { classes, removeEntity, onEntityPropertyChange, devices, deviceTypes, trial } = this.props;
     if (!devices[device.key]) return <React.Fragment key={device.key} />;
     return (
       <React.Fragment key={device.key}>
@@ -37,11 +37,11 @@ class DevicesGrid extends React.Component {
           <>
             {property.trialField
               ? (
-                <StyledTableCell classes={{ body: classes.deviceGridTd }} key={property.key} align="left">
+                <StyledTableCell classes={{ body: classes.deviceGridTd }} key={`device-property-${property.key}-${trial.status}`} align="left">
                   <CustomInput
                     value={device.properties && device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
                     onChange={e => onEntityPropertyChange(device, e, property.key)}
-                    id={`device-property-${property.key}`}
+                    id={`device-property-${property.key}-${trial.status}`}
                     className={classes.input}
                     type={property.type}
                     values={property.value}
