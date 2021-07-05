@@ -23,7 +23,7 @@ class ConfirmDialog extends React.Component {
     }
 
     render() {
-      const { title, children, open, setOpen, onConfirm, classes, inputValidation } = this.props;
+      const { title, children, open, setOpen, onConfirm, confirmText, confirmColor, classes, inputValidation, cancelColor, onCancel, cancelText } = this.props;
       const { text } = this.state;
       return (
         <Dialog
@@ -54,14 +54,25 @@ class ConfirmDialog extends React.Component {
             />}
           </DialogContent>
           <DialogActions>
+            {onCancel && <SimpleButton
+              variant="outlined"
+              style={{ color: cancelColor }}
+              onClick={() => {
+                setOpen && setOpen(false);
+                onCancel();
+              }}
+              text={cancelText || "Cancel"}
+              disabled={inputValidation && (text !== 'ARGOS')}
+            />}
             <SimpleButton
               variant="outlined"
               colorVariant="secondary"
+              style={{ color: confirmColor || '#EB5757' }}
               onClick={() => {
-                setOpen(false);
+                setOpen && setOpen(false);
                 onConfirm();
               }}
-              text="Delete"
+              text={confirmText || "Delete"}
               disabled={inputValidation && (text !== 'ARGOS')}
             />
           </DialogActions>

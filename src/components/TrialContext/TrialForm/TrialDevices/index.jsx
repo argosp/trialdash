@@ -73,7 +73,7 @@ class TrialDevices extends React.Component {
   componentDidUpdate(prevProps) {
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    if (prevProps.trial[entitiesField].length !== this.state.length) {
+    if (prevProps.trial[entitiesField].length !== this.state.length || prevProps.trial.status !== trial.status || this.state.entitiesField !== entitiesField) {
       this.orderEntities();
     }
   }
@@ -81,7 +81,7 @@ class TrialDevices extends React.Component {
   orderEntities = () => {
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.setState({ update: true, length: trial[entitiesField].length, entities: groupBy(trial[entitiesField], 'typeKey') });
+    this.setState({ update: true, length: trial[entitiesField].length, entities: groupBy(trial[entitiesField], 'typeKey'), entitiesField });
   }
 
   changeView = (selectedViewIndex) => {
