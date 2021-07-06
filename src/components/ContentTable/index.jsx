@@ -43,7 +43,7 @@ class ContentTable extends React.Component {
       this.getItemsFromServer();
     }
   }
-
+  renderTableRow
   setItems = () => {
     const { items, contentType, update, setUpdated, getData } = this.props;
     this.setState({ [contentType]: items });
@@ -90,7 +90,7 @@ class ContentTable extends React.Component {
           )
         }
         <TableBody>
-          {this.state[contentType].map(renderRow).map(child => (
+          {this.state[contentType] && this.state[contentType].map(renderRow).map(child => (
             <TableRow key={child.key} className={classes.tableBodyRow}>
               {child}
             </TableRow>

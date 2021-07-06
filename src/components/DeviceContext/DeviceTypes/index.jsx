@@ -64,13 +64,13 @@ class DeviceTypes extends React.Component {
               <BasketIcon />
             </CustomTooltip>
             <ConfirmDialog
-              title="Delete Device Type"
+              title="Delete Entities Type"
               open={confirmOpen}
               setOpen={this.setConfirmOpen}
               onConfirm={() => this.deleteDeviceType(deviceType)}
               // inputValidation
             >
-              Are you sure you want to delete this device type?
+              Are you sure you want to delete this entities type?
             </ConfirmDialog>
             <CustomTooltip
               title="Open"
@@ -164,7 +164,7 @@ class DeviceTypes extends React.Component {
           title: 'Fields',
         },
         { key: 2,
-          title: 'Devices',
+          title: 'Entities',
         },
         { key: 3,
           title: '',
@@ -189,11 +189,11 @@ class DeviceTypes extends React.Component {
             : <>
               <ContentHeader
                 withSearchInput
-                title="Devices types"
-                searchPlaceholder="Search Devices types"
+                title="Entities types"
+                searchPlaceholder="Search Entities types"
                 withAddButton
-                addButtonText="Add device type"
-                addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-device-type`)}
+                addButtonText="Add entities type"
+                addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-entities-type`)}
               />
               <ContentTable
                 contentType={DEVICE_TYPES}

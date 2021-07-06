@@ -256,8 +256,7 @@ class Header extends React.Component {
                   <StyledTabs
                     tabs={[
                       { key: uuid(), label: 'Trials', id: 'header-tab-0' },
-                      { key: uuid(), label: 'Assets', id: 'header-tab-1' },
-                      { key: uuid(), label: 'Devices', id: 'header-tab-2' },
+                      { key: uuid(), label: 'Entities', id: 'header-tab-1' },
                     ]}
                     value={data.headerTabId}
                     onChange={

@@ -47,7 +47,7 @@ class TrialDevices extends React.Component {
   componentWillMount() {
     const { client, match } = this.props;
     client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
-      const deviceTypes = groupBy(data.data.deviceTypes, 'key');
+      const deviceTypes = groupBy(data.data.entitiesTypes, 'key');
       let devices = [];
       client.query({ query: devicesQuery(match.params.id) }).then((devicesData) => {
         devices =  devicesData.data.devices;

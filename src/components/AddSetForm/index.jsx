@@ -148,7 +148,7 @@ class AddSetForm extends React.Component {
         delete p.trialField;
       }
     });
-    // add number of field types to the device type
+    // add number of field types to the Entities type
     if (DEVICE_TYPES_DASH === formType) {
       newEntity.numberOfFields = this.state.formObject.properties.length;
     }
@@ -311,7 +311,7 @@ class AddSetForm extends React.Component {
           title={
             // eslint-disable-next-line no-nested-ternary
             DEVICE_TYPES_DASH === formType
-              ? this.props.deviceType ? 'Edit device type' : 'Add device type'
+              ? this.props.deviceType ? 'Edit entities type' : 'Add entities type'
               : this.props.trialSet ? 'Edit trial set' : 'Add trial set'
           }
           bottomDescription="a short description of what it means to add an item here"
@@ -442,13 +442,13 @@ class AddSetForm extends React.Component {
           />
         ) : null}
           <ConfirmDialog
-            title={`Delete ${DEVICE_TYPES_DASH === formType ? 'Device Type' : 'Trial Set'}`}
+            title={`Delete ${DEVICE_TYPES_DASH === formType ? 'Entities Type' : 'Trial Set'}`}
             open={confirmOpen}
             setOpen={this.setConfirmOpen}
             onConfirm={() => this.submitEntity(this.state.formObject, true)}
             inputValidation
           >
-            Are you sure you want to delete this {DEVICE_TYPES_DASH === formType ? 'device type' : 'trial set'}?
+            Are you sure you want to delete this {DEVICE_TYPES_DASH === formType ? 'entities type' : 'trial set'}?
           </ConfirmDialog>
       </DragDropContext>
     );

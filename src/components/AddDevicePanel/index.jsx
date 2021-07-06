@@ -133,7 +133,7 @@ class AddDevicePanel extends React.Component {
     const { addEntity } = this.props;
     const { selectedDevice } = this.state;
     const properties = device.properties.filter(p => selectedDevice.properties.find(s => s.key === p.key).trialField);
-    addEntity(device, 'device', selectedDevice.key, properties);
+    addEntity(device, 'entity', selectedDevice.key, properties);
   }
 
   changeTab = (event, tabValue) => {
@@ -150,13 +150,12 @@ class AddDevicePanel extends React.Component {
         className={classes.rootPanel}
         isPanelOpen={isPanelOpen}
         onClose={onClose}
-        title={<h3 className={classes.headerTitle}>Device Types</h3>}
+        title={<h3 className={classes.headerTitle}>Entities Types</h3>}
       >
         <StyledTabs
           className={classes.tabsWrapper}
           tabs={[
-            { key: 0, label: 'Devices', id: 'trial-tab-0' },
-            { key: 1, label: 'Assets', id: 'trial-tab-1' },
+            { key: 0, label: 'Entities', id: 'trial-tab-0' },
           ]}
           value={tabValue}
           onChange={this.changeTab}
@@ -222,9 +221,6 @@ class AddDevicePanel extends React.Component {
               </>
             )
           }
-        </TabPanel>
-        <TabPanel value={tabValue} index={1}>
-          <></>
         </TabPanel>
       </RightPanelContainer>
     );

@@ -46,7 +46,7 @@ class Devices extends React.Component {
       .query({ query: deviceTypesQuery(match.params.id) })
       .then((data) => {
         this.setState({
-          deviceType: data.data.deviceTypes.find(
+          deviceType: data.data.entitiesTypes.find(
             deviceType => deviceType.key === match.params.deviceTypeKey,
           ),
         });
@@ -206,7 +206,7 @@ class Devices extends React.Component {
       }
       disableRipple
     />
-    <span>device name</span>
+    <span>entity name</span>
   </div>,
       },
     ];
@@ -382,8 +382,8 @@ class Devices extends React.Component {
             <ContentHeader
               withSearchInput
               title={deviceType.name}
-              searchPlaceholder="Search Devices"
-              addButtonText="Add device"
+              searchPlaceholder="Search Entities"
+              addButtonText="Add Entity"
               withAddButton={selected.length === 0}
               withDeleteButton={selected.length > 0}
               deleteButtonHandler={() => this.setConfirmMultipleOpen(true)}
@@ -391,19 +391,19 @@ class Devices extends React.Component {
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
               rightDescription={deviceType.id}
-              addButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-device`)}
+              addButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-entity`)}
               withAddMultipleButton
-              addMultipleButtonText="Add multiple devices"
-              addMultipleButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-multiple-devices`)}
+              addMultipleButtonText="Add multiple entities"
+              addMultipleButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-multiple-entities`)}
             />
             <ConfirmDialog
-              title={`Delete multiple devices`}
+              title={`Delete multiple entities`}
               open={confirmMultipleOpen}
               setOpen={this.setConfirmMultipleOpen}
               onConfirm={this.deleteMultiple}
               inputValidation
             >
-              Are you sure you want to delete {selected.length} devices?
+              Are you sure you want to delete {selected.length} entities?
             </ConfirmDialog>
             <CloneMultiplePanel
               device={device}

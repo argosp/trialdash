@@ -47,7 +47,7 @@ class DeviceForm extends React.Component {
     const { client, match, device } = this.props;
 
     client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
-      const deviceType = data.data.deviceTypes.find(
+      const deviceType = data.data.entitiesTypes.find(
         item => item.key === match.params.deviceTypeKey,
       );
 
@@ -173,7 +173,7 @@ class DeviceForm extends React.Component {
         return;
       }
     }
-    if (window.location.href.match('add-multiple-devices')) {
+    if (window.location.href.match('add-multiple-entities')) {
       let invalid = false;
       let invalidNumber = false;
       let invalidNumberFormat = false;
@@ -200,9 +200,9 @@ class DeviceForm extends React.Component {
       }
     }
 
-    for (let i = 0; i < (window.location.href.match('add-multiple-devices') ? number : 1); i += 1) {
+    for (let i = 0; i < (window.location.href.match('add-multiple-entities') ? number : 1); i += 1) {
       const clonedDevice = { ...newEntity };
-      if (window.location.href.match('add-multiple-devices')) {
+      if (window.location.href.match('add-multiple-entities')) {
         clonedDevice.key = uuid();
         clonedDevice.name = `${prefix}${this.getNumber(numberFormat, i)}${suffix}`;
       }
@@ -260,7 +260,7 @@ class DeviceForm extends React.Component {
           className={classes.header}
         />
         <Typography style={{ marginBottom: '100px' }}>
-          {window.location.href.match('add-multiple-devices') ? 
+          {window.location.href.match('add-multiple-entities') ? 
             <Grid style={{display: 'flex', justifyContent: 'space-between', width: '80%'}}>
               <CustomInput
                 id="number"

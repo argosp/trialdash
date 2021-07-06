@@ -20,7 +20,7 @@ class DevicesGrid extends React.Component {
 
   deviceTableHeadColumns = (deviceType) => {
     if (!deviceType || !this) return [];
-    const headers = [{ key: deviceType.key, title: 'device name' }];
+    const headers = [{ key: deviceType.key, title: 'entity name' }];
     deviceType.properties.forEach(p => headers.push({ key: p.key, title: p.label }));
     headers.push({ key: `${deviceType.key}-actions`, title: '' });
     return headers;
@@ -79,6 +79,7 @@ class DevicesGrid extends React.Component {
     const {
       open,
     } = this.state;
+    debugger
     return (
       <>
         {Object.keys(entities).filter(e => Object.keys(deviceTypes).indexOf(e) !== -1).map(e => (
