@@ -133,7 +133,7 @@ class AddDevicePanel extends React.Component {
     const { addEntity } = this.props;
     const { selectedDeviceType } = this.state;
     const properties = device.properties.filter(p => selectedDeviceType.properties.find(s => s.key === p.key).trialField);
-    addEntity(device, selectedDeviceType.key, properties,arraykeysOfEntites);
+    addEntity(device, selectedDeviceType.key, properties);
   }
 
   changeTab = (event, tabValue) => {
