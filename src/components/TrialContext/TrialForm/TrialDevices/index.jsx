@@ -38,8 +38,8 @@ const TabPanel = ({ children, value, index, ...other }) => (
 class TrialDevices extends React.Component {
   state = {
     selectedViewIndex: 3,
+    trialEntities: {},
     entities: {},
-    devices: {},
     deviceTypes: {},
     isLoading: true,
   };
@@ -48,11 +48,11 @@ class TrialDevices extends React.Component {
     const { client, match } = this.props;
     client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
       const deviceTypes = groupBy(data.data.entitiesTypes, 'key');
-      let devices = [];
-      client.query({ query: devicesQuery(match.params.id) }).then((devicesData) => {
-        devices =  devicesData.data.devices;
+      let entities = [];
+      client.query({ query: devicesQuery(match.params.id) }).then((entitiesData) => {
+        entities =  entitiesData.data.entities;
         this.setState({
-          devices: groupBy(devices, 'key'),
+          entities: groupBy(entities, 'key'),
         });
       });
       this.setState({
@@ -81,7 +81,7 @@ class TrialDevices extends React.Component {
   orderEntities = () => {
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.setState({ update: true, length: trial[entitiesField].length, entities: groupBy(trial[entitiesField], 'typeKey'), entitiesField });
+    this.setState({ update: true, length: trial[entitiesField].length, trialEntities: groupBy(trial[entitiesField], 'typeKey'), entitiesField });
   }
 
   changeView = (selectedViewIndex) => {
@@ -115,8 +115,8 @@ class TrialDevices extends React.Component {
     } = this.props;
     const {
       selectedViewIndex,
+      trialEntities,
       entities,
-      devices,
       deviceTypes,
       update,
       isLoading,
@@ -130,7 +130,7 @@ class TrialDevices extends React.Component {
         <Grid
           container
           justify="space-between"
-          className={classes.devicesPanelHeader}
+          className={classes.entitiesPanelHeader}
         >
           <Grid item>
             {/* <IconButton
@@ -201,8 +201,8 @@ class TrialDevices extends React.Component {
               trial={trial}
               removeEntity={removeEntity}
               onEntityPropertyChange={onEntityPropertyChange}
+              trialEntities={trialEntities}
               entities={entities}
-              devices={devices}
               deviceTypes={deviceTypes}
               update={update}
               setUpdated={this.setUpdated}
