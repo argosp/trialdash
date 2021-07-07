@@ -41,14 +41,14 @@ const TabPanel = ({ children, value, index, ...other }) => (
 class AddDevicePanel extends React.Component {
   state = {
     tabValue: 0,
-    selectedDevice: null,
+    selectedDeviceType: null,
   };
 
   renderDeviceTypesTableRow = (deviceType) => {
     const { classes, theme } = this.props;
     return (
       <React.Fragment key={deviceType.key}>
-        <StyledTableCell className={classes.tableCell} align="left" onClick={() => this.setState({ selectedDevice: deviceType })}>
+        <StyledTableCell className={classes.tableCell} align="left" onClick={() => this.setState({ selectedDeviceType: deviceType })}>
           <ContentHeader
             title={deviceType.name}
             bottomDescription={deviceType.description || 'description'}
@@ -61,7 +61,7 @@ class AddDevicePanel extends React.Component {
             title="Open"
             className={classes.arrowButton}
             ariaLabel="open"
-            onClick={() => this.setState({ selectedDevice: deviceType })}
+            onClick={() => this.setState({ selectedDeviceType: deviceType })}
           >
             <ArrowForwardIosIcon style={{ color: theme.palette.gray.main }} />
           </CustomTooltip>
@@ -72,7 +72,7 @@ class AddDevicePanel extends React.Component {
 
   renderDevicesTableRow = (device) => {
     const { classes, entities, theme } = this.props;
-    const { selectedDevice } = this.state;
+    const { selectedDeviceType } = this.state;
     if (entities.indexOf(device.key) !== -1) return <React.Fragment key={device.key} />;
     return (
       <React.Fragment key={device.key}>
@@ -82,7 +82,7 @@ class AddDevicePanel extends React.Component {
           />
           {device.name}
         </StyledTableCell>
-        {selectedDevice && selectedDevice.properties && selectedDevice.properties.map(property => (
+        {selectedDeviceType && selectedDeviceType.properties && selectedDeviceType.properties.map(property => (
           <>
             {!property.trialField
               && (
@@ -131,9 +131,9 @@ class AddDevicePanel extends React.Component {
 
   addDevice = (device) => {
     const { addEntity } = this.props;
-    const { selectedDevice } = this.state;
-    const properties = device.properties.filter(p => selectedDevice.properties.find(s => s.key === p.key).trialField);
-    addEntity(device, 'device', selectedDevice.key, properties);
+    const { selectedDeviceType } = this.state;
+    const properties = device.properties.filter(p => selectedDeviceType.properties.find(s => s.key === p.key).trialField);
+    addEntity(device, selectedDeviceType.key, properties,arraykeysOfEntites);
   }
 
   changeTab = (event, tabValue) => {
@@ -142,8 +142,8 @@ class AddDevicePanel extends React.Component {
 
   render() {
     const { classes, isPanelOpen, onClose, match } = this.props;
-    const { tabValue, selectedDevice } = this.state;
-    const deviceTableHeadColumns = this.generateTableColumns(selectedDevice);
+    const { tabValue, selectedDeviceType } = this.state;
+    const deviceTableHeadColumns = this.generateTableColumns(selectedDeviceType);
 
     return (
       <RightPanelContainer
@@ -163,7 +163,7 @@ class AddDevicePanel extends React.Component {
           ariaLabel="trial tabs"
         />
         <TabPanel value={tabValue} index={0}>
-          {!selectedDevice
+          {!selectedDeviceType
             ? (
               <>
                 <div className={classes.search}>
@@ -191,11 +191,11 @@ class AddDevicePanel extends React.Component {
             : (
               <>
                 <ContentHeader
-                  title={selectedDevice.name}
+                  title={selectedDeviceType.name}
                   withBackButton
-                  backButtonHandler={() => this.setState({ selectedDevice: null })}
-                  bottomDescription={selectedDevice.description || 'description'}
-                  classes={classes}
+                  backButtonHandler={() => this.setState({ selectedDeviceType: null })}
+                  bottomDescription={selectedDeviceType.description || 'description'}
+                  classes={classes}//yehuidt
                   className={classes.deviceTypeTitle}
                 />
                 <div className={classes.search}>
@@ -214,7 +214,7 @@ class AddDevicePanel extends React.Component {
                 </div>
                 <ContentTable
                   contentType={DEVICES}
-                  query={devicesQuery(match.params.id, selectedDevice.key)}
+                  query={devicesQuery(match.params.id, selectedDeviceType.key)}
                   tableHeadColumns={deviceTableHeadColumns}
                   renderRow={this.renderDevicesTableRow}
                   classes={classes}
