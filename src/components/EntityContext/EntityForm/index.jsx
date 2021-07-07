@@ -12,20 +12,20 @@ import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
-import deviceMutation from './utils/deviceMutation';
+import deviceMutation from './utils/entityMutation';
 import { updateCache } from '../../../apolloGraphql';
 import {
-  DEVICE_TYPES_DASH,
-  DEVICE_TYPES,
-  DEVICES, DEVICE_MUTATION, DEVICE_TYPE_MUTATION,
+  ENTITIES_TYPES_DASH,
+  ENTITIES_TYPES,
+  ENTITIES, ENTITY_MUTATION, ENTITIES_TYPE_MUTATION,
 } from '../../../constants/base';
-import deviceTypeMutation from '../utils/deviceTypeMutation';
+import entitiesTypeMutation from '../utils/entitiesTypeMutation';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import { styles } from './styles';
 import Footer from '../../Footer';
-import deviceTypesQuery from '../utils/deviceTypeQuery';
-import devicesQuery from '../Devices/utils/deviceQuery';
+import entitiesTypesQuery from '../utils/entityTypeQuery';
+import entitiesQuery from '../Entities/utils/entityQuery';
 
 class DeviceForm extends React.Component {
   state = {
@@ -46,7 +46,7 @@ class DeviceForm extends React.Component {
   componentDidMount() {
     const { client, match, device } = this.props;
 
-    client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
+    client.query({ query: entitiesTypesQuery(match.params.id) }).then((data) => {
       const deviceType = data.data.entitiesTypes.find(
         item => item.key === match.params.deviceTypeKey,
       );
@@ -116,7 +116,7 @@ class DeviceForm extends React.Component {
 
     if (returnFunc) returnFunc(deleted);
     history.push(
-      `/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/${DEVICES}`,
+      `/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.deviceTypeKey}/${ENTITIES}`,
     );
   };
 
@@ -126,10 +126,10 @@ class DeviceForm extends React.Component {
     deviceType.numberOfDevices = n[deviceType.key];
     updateCache(
       cache,
-      {data: { [DEVICE_TYPE_MUTATION]: deviceType } },
-      deviceTypesQuery(match.params.id),
-      DEVICE_TYPES,
-      DEVICE_TYPE_MUTATION,
+      {data: { [ENTITIES_TYPE_MUTATION]: deviceType } },
+      entitiesTypesQuery(match.params.id),
+      ENTITIES_TYPES,
+      ENTITIES_TYPE_MUTATION,
       true,
     );
   };
@@ -213,9 +213,9 @@ class DeviceForm extends React.Component {
           updateCache(
             cache,
             mutationResult,
-            devicesQuery(match.params.id, match.params.deviceTypeKey),
-            DEVICES,
-            DEVICE_MUTATION,
+            entitiesQuery(match.params.id, match.params.deviceTypeKey),
+            ENTITIES,
+            ENTITY_MUTATION,
             returnFunc,
             'deviceTypeKey',
             this.updateDeviceTypeNumberOfDevices

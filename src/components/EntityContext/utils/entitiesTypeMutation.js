@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { DEVICE_TYPE_MUTATION } from '../../../constants/base';
+import { ENTITIES_TYPE_MUTATION } from '../../../constants/base';
 
 export default (deviceType) => {
   const key = deviceType.key
@@ -8,7 +8,7 @@ export default (deviceType) => {
 
   return gql`
     mutation {
-    ${DEVICE_TYPE_MUTATION}(
+    ${ENTITIES_TYPE_MUTATION}(
             uid: "${localStorage.getItem('uid')}",
             experimentId:"${deviceType.experimentId}",
             key: "${key}",

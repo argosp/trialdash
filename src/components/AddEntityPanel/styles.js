@@ -45,18 +45,18 @@ export const styles = theme => ({
     cursor: 'pointer',
     borderBottom: `1px solid ${theme.palette.white.dark}`,
   },
-  deviceTableCell: {
+  entityTableCell: {
     padding: '0 0 0 19px',
     borderBottom: `1px solid ${theme.palette.white.dark}`,
     color: theme.palette.gray.dark,
     fontSize: 13,
   },
-  deviceNameTableCell: {
+  entityNameTableCell: {
     color: theme.palette.black.dark,
     fontWeight: 600,
     fontSize: 14,
   },
-  deviceActionsTableCell: {
+  entityActionsTableCell: {
     padding: '0 19px 0 19px',
   },
   title: {
@@ -78,7 +78,7 @@ export const styles = theme => ({
     color: theme.palette.gray.main,
     borderBottom: `1px solid ${theme.palette.white.dark}`,
   },
-  deviceTypeTitle: {
+  entitiesTypeTitle: {
     padding: '15px 0 15px 19px',
     borderBottom: `1px solid ${theme.palette.white.dark}`,
   },

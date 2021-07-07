@@ -4,11 +4,11 @@ export const TRIALS = 'trials';
 export const TRIAL_MUTATION = 'addUpdateTrial';
 export const TRIAL_SET_MUTATION = 'addUpdateTrialSet';
 
-export const DEVICE_TYPES_DASH = 'device-types';
-export const DEVICE_TYPES = 'entitiesTypes';
-export const DEVICES = 'entities';
-export const DEVICE_MUTATION = 'addUpdateDevice';
-export const DEVICE_TYPE_MUTATION = 'addUpdateDeviceType';
+export const ENTITIES_TYPES_DASH = 'entities-types';
+export const ENTITIES_TYPES = 'entitiesTypes';
+export const ENTITIES = 'entities';
+export const ENTITY_MUTATION = 'addUpdateEntity';
+export const ENTITIES_TYPE_MUTATION = 'addUpdateEntitiesType';
 
 export const EXPERIMENTS_WITH_DATA = 'experimentsWithData';
 export const EXPERIMENT_MUTATION = 'addUpdateExperiment';

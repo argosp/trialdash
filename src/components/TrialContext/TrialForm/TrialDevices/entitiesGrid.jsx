@@ -10,10 +10,10 @@ import CustomInput from '../../../CustomInput';
 import { BasketIcon } from '../../../../constants/icons';
 
 import {
-  DEVICES,
+  ENTITIES,
 } from '../../../../constants/base';
 
-class DevicesGrid extends React.Component {
+class EntitiesGrid extends React.Component {
   state = {
     open: {},
   };
@@ -108,7 +108,7 @@ class DevicesGrid extends React.Component {
                   tableBodyRow: classes.deviceGridTableBodyRow,
                 }}
                 items={trialEntities[e]}
-                contentType={DEVICES}
+                contentType={ENTITIES}
                 tableHeadColumns={this.deviceTableHeadColumns(deviceTypes && deviceTypes[e] && deviceTypes[e][0])}
                 renderRow={this.renderDevicesTableRow}
                 update={update}
@@ -122,4 +122,4 @@ class DevicesGrid extends React.Component {
   }
 }
 
-export default DevicesGrid;
+export default EntitiesGrid;

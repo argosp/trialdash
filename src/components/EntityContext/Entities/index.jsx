@@ -13,21 +13,21 @@ import LoadingOverlay from 'react-loading-overlay';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import {
-  DEVICE_TYPES_DASH,
-  DEVICES,
-  DEVICE_MUTATION,
-  DEVICE_TYPES,
-  DEVICE_TYPE_MUTATION,
+  ENTITIES_TYPES_DASH,
+  ENTITIES,
+  ENTITY_MUTATION,
+  ENTITIES_TYPES,
+  ENTITIES_TYPE_MUTATION,
 } from '../../../constants/base';
 import StyledTableCell from '../../StyledTableCell';
 import { CloneMultipleIcon, PenIcon, CheckBoxOutlineBlankIcon, CheckBoxOutlinedIcon, IndeterminateCheckBoxOutlinedIcon, MoreActionsIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
-import deviceTypesQuery from '../utils/deviceTypeQuery';
-import devicesQuery from './utils/deviceQuery';
+import entitiesTypesQuery from '../utils/entityTypeQuery';
+import entitiesQuery from './utils/entityQuery';
 import ContentTable from '../../ContentTable';
-import DeviceForm from '../DeviceForm';
-import deviceMutation from '../DeviceForm/utils/deviceMutation';
-import deviceMutationUpdate from '../DeviceForm/utils/deviceMutationUpdate';
+import DeviceForm from '../EntityForm';
+import deviceMutation from '../EntityForm/utils/entityMutation';
+import deviceMutationUpdate from '../EntityForm/utils/entityMutationUpdate';
 import CloneMultiplePanel from '../../CloneMultiplePanel';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
@@ -43,7 +43,7 @@ class Devices extends React.Component {
     const { match, client } = this.props;
 
     client
-      .query({ query: deviceTypesQuery(match.params.id) })
+      .query({ query: entitiesTypesQuery(match.params.id) })
       .then((data) => {
         this.setState({
           deviceType: data.data.entitiesTypes.find(
@@ -249,9 +249,9 @@ class Devices extends React.Component {
           updateCache(
             cache,
             mutationResult,
-            devicesQuery(match.params.id, match.params.deviceTypeKey),
-            DEVICES,
-            DEVICE_MUTATION,
+            entitiesQuery(match.params.id, match.params.deviceTypeKey),
+            ENTITIES,
+            ENTITY_MUTATION,
             false,
             'deviceTypeKey',
             this.updateDeviceTypeNumberOfDevices
@@ -283,9 +283,9 @@ class Devices extends React.Component {
             updateCache(
               cache,
               mutationResult,
-              devicesQuery(match.params.id, match.params.deviceTypeKey),
-              DEVICES,
-              DEVICE_MUTATION,
+              entitiesQuery(match.params.id, match.params.deviceTypeKey),
+              ENTITIES,
+              ENTITY_MUTATION,
               true,
               'deviceTypeKey',
               this.updateDeviceTypeNumberOfDevices
@@ -302,10 +302,10 @@ class Devices extends React.Component {
     deviceType.numberOfDevices = n[deviceType.key];
     updateCache(
       cache,
-      {data: { [DEVICE_TYPE_MUTATION]: deviceType } },
-      deviceTypesQuery(match.params.id),
-      DEVICE_TYPES,
-      DEVICE_TYPE_MUTATION,
+      {data: { [ENTITIES_TYPE_MUTATION]: deviceType } },
+      entitiesTypesQuery(match.params.id),
+      ENTITIES_TYPES,
+      ENTITIES_TYPE_MUTATION,
       true,
     );
   };
@@ -328,9 +328,9 @@ class Devices extends React.Component {
           updateCache(
             cache,
             mutationResult,
-            devicesQuery(match.params.id, match.params.deviceTypeKey),
-            DEVICES,
-            DEVICE_MUTATION,
+            entitiesQuery(match.params.id, match.params.deviceTypeKey),
+            ENTITIES,
+            ENTITY_MUTATION,
             true,
             'deviceTypeKey',
             this.updateDeviceTypeNumberOfDevices
@@ -389,12 +389,12 @@ class Devices extends React.Component {
               deleteButtonHandler={() => this.setConfirmMultipleOpen(true)}
               deleteButtonText={`Delete (${selected.length})`}
               withBackButton
-              backButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}`)}
+              backButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}`)}
               rightDescription={deviceType.id}
-              addButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-entity`)}
+              addButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.deviceTypeKey}/add-entity`)}
               withAddMultipleButton
               addMultipleButtonText="Add multiple entities"
-              addMultipleButtonHandler={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${match.params.deviceTypeKey}/add-multiple-entities`)}
+              addMultipleButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.deviceTypeKey}/add-multiple-entities`)}
             />
             <ConfirmDialog
               title={`Delete multiple entities`}
@@ -412,8 +412,8 @@ class Devices extends React.Component {
               cloneMultiple={this.cloneMultiple}
             />
             <ContentTable
-              contentType={DEVICES}
-              query={devicesQuery(match.params.id, match.params.deviceTypeKey)}
+              contentType={ENTITIES}
+              query={entitiesQuery(match.params.id, match.params.deviceTypeKey)}
               tableHeadColumns={tableHeadColumns}
               renderRow={this.renderTableRow}
               update={this.state.update}

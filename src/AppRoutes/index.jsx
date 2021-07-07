@@ -6,22 +6,22 @@ import TrialSets from '../components/TrialContext/TrialSets';
 import ExperimentForm from '../components/ExperimentContext/ExperimentForm';
 import AuthPage from '../components/AuthPage';
 import AddSetForm from '../components/AddSetForm';
-import DeviceTypes from '../components/DeviceContext/DeviceTypes';
-import deviceTypesQuery from '../components/DeviceContext/utils/deviceTypeQuery';
+import EntitiesTypes from '../components/EntityContext/EntitiesTypes';
+import entitiesTypesQuery from '../components/EntityContext/utils/entityTypeQuery';
 import Trials from '../components/TrialContext/Trials';
 import TrialForm from '../components/TrialContext/TrialForm';
 import trialSetsQuery from '../components/TrialContext/utils/trialSetQuery';
-import Devices from '../components/DeviceContext/Devices';
-import DeviceForm from '../components/DeviceContext/DeviceForm';
+import Entities from '../components/EntityContext/Entities';
+import EntityForm from '../components/EntityContext/EntityForm';
 import {
-  DEVICE_TYPES_DASH,
-  DEVICE_TYPES,
-  DEVICES,
+  ENTITIES_TYPES_DASH,
+  ENTITIES_TYPES,
+  ENTITIES,
   TRIAL_SETS_DASH,
   TRIAL_SETS,
   TRIALS,
   TRIAL_SET_MUTATION,
-  DEVICE_TYPE_MUTATION,
+  ENTITIES_TYPE_MUTATION,
 } from '../constants/base';
 
 const AppRoutes = () => (
@@ -43,8 +43,8 @@ const AppRoutes = () => (
           />
           <Redirect
             exact
-            from={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey`}
-            to={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/entities`}
+            from={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey`}
+            to={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/entities`}
           />
           {/* TODO Add redirect for assets */}
         </Switch>
@@ -69,10 +69,10 @@ const AppRoutes = () => (
           render={props => (
             <AddSetForm
               {...props}
-              formType={DEVICE_TYPES_DASH}
-              cacheQuery={deviceTypesQuery}
-              itemsName={DEVICE_TYPES}
-              mutationName={DEVICE_TYPE_MUTATION}
+              formType={ENTITIES_TYPES_DASH}
+              cacheQuery={entitiesTypesQuery}
+              itemsName={ENTITIES_TYPES}
+              mutationName={ENTITIES_TYPE_MUTATION}
             />
           )}
         />
@@ -82,14 +82,14 @@ const AppRoutes = () => (
           component={TrialForm}
         />
         <Route
-          path={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/add-entity`}
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/add-entity`}
           exact
-          component={DeviceForm}
+          component={EntityForm}
         />
         <Route
-          path={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/add-multiple-entities`}
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/add-multiple-entities`}
           exact
-          component={DeviceForm}
+          component={EntityForm}
         />
         <Route
           path={`/experiments/:id/${TRIAL_SETS_DASH}`}
@@ -97,8 +97,8 @@ const AppRoutes = () => (
           exact
         />
         <Route
-          path={`/experiments/:id/${DEVICE_TYPES_DASH}`}
-          component={DeviceTypes}
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}`}
+          component={EntitiesTypes}
           exact
         />
         {/* <Route path={`/experiments/:id/${ASSETS}`} component={Assets} exact /> */}
@@ -108,8 +108,8 @@ const AppRoutes = () => (
           exact
         />
         <Route
-          path={`/experiments/:id/${DEVICE_TYPES_DASH}/:deviceTypeKey/${DEVICES}`}
-          component={Devices}
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/${ENTITIES}`}
+          component={Entities}
           exact
         />
       </AuthPage>

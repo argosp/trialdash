@@ -11,11 +11,11 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import { groupBy } from 'lodash';
-import deviceTypesQuery from '../../../DeviceContext/utils/deviceTypeQuery';
-import devicesQuery from '../../../DeviceContext/Devices/utils/deviceQuery';
+import entitiesTypesQuery from '../../../EntityContext/utils/entityTypeQuery';
+import entitiesQuery from '../../../EntityContext/Entities/utils/entityQuery';
 import { styles } from '../styles';
-import AddDevicePanel from '../../../AddDevicePanel';
-import DevicesGrid from './devicesGrid';
+import AddDevicePanel from '../../../AddEntityPanel';
+import EntitiesGrid from './entitiesGrid';
 import SimpleButton from '../../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
 import DevicePlanner from '../../../DevicePlanner';
@@ -46,10 +46,10 @@ class TrialDevices extends React.Component {
 
   componentWillMount() {
     const { client, match } = this.props;
-    client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
+    client.query({ query: entitiesTypesQuery(match.params.id) }).then((data) => {
       const deviceTypes = groupBy(data.data.entitiesTypes, 'key');
       let entities = [];
-      client.query({ query: devicesQuery(match.params.id) }).then((entitiesData) => {
+      client.query({ query: entitiesQuery(match.params.id) }).then((entitiesData) => {
         entities =  entitiesData.data.entities;
         this.setState({
           entities: groupBy(entities, 'key'),
@@ -196,7 +196,7 @@ class TrialDevices extends React.Component {
         />}
         <TabPanel value={selectedViewIndex} index={2}>
           {selectedViewIndex === 2 &&
-            <DevicesGrid
+            <EntitiesGrid
               {...this.props}
               trial={trial}
               removeEntity={removeEntity}

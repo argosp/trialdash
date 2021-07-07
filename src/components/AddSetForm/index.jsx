@@ -11,11 +11,11 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import {
-  DEVICE_TYPES_DASH,
+  ENTITIES_TYPES_DASH,
   TRIAL_SETS_DASH,
 } from '../../constants/base';
 import FieldTypesPanel from '../FieldTypesPanel';
-import deviceTypeMutation from '../DeviceContext/utils/deviceTypeMutation';
+import entitiesTypeMutation from '../EntityContext/utils/entitiesTypeMutation';
 import {
   FIELD_TYPES,
   FIELD_TYPE_ITEM_INPUT_TYPE,
@@ -36,7 +36,7 @@ import ConfirmDialog from '../ConfirmDialog';
 class AddSetForm extends React.Component {
   state = {
     formObject:
-      DEVICE_TYPES_DASH === this.props.formType
+      ENTITIES_TYPES_DASH === this.props.formType
         ? {
           key: this.props.deviceType ? this.props.deviceType.key : uuid(),
           name: this.props.deviceType ? this.props.deviceType.name : '',
@@ -142,19 +142,19 @@ class AddSetForm extends React.Component {
     newEntity.properties.forEach((p) => {
       delete p.fields;
       delete p.name;
-      if (DEVICE_TYPES_DASH !== formType) {
+      if (ENTITIES_TYPES_DASH !== formType) {
         delete p.prefix;
         delete p.suffix;
         delete p.trialField;
       }
     });
     // add number of field types to the Entities type
-    if (DEVICE_TYPES_DASH === formType) {
+    if (ENTITIES_TYPES_DASH === formType) {
       newEntity.numberOfFields = this.state.formObject.properties.length;
     }
 
-    const mutation = DEVICE_TYPES_DASH === formType
-      ? deviceTypeMutation
+    const mutation = ENTITIES_TYPES_DASH === formType
+      ? entitiesTypeMutation
       : trialSetMutation;
 
     await client
@@ -310,7 +310,7 @@ class AddSetForm extends React.Component {
         <ContentHeader
           title={
             // eslint-disable-next-line no-nested-ternary
-            DEVICE_TYPES_DASH === formType
+            ENTITIES_TYPES_DASH === formType
               ? this.props.deviceType ? 'Edit entities type' : 'Add entities type'
               : this.props.trialSet ? 'Edit trial set' : 'Add trial set'
           }
@@ -442,13 +442,13 @@ class AddSetForm extends React.Component {
           />
         ) : null}
           <ConfirmDialog
-            title={`Delete ${DEVICE_TYPES_DASH === formType ? 'Entities Type' : 'Trial Set'}`}
+            title={`Delete ${ENTITIES_TYPES_DASH === formType ? 'Entities Type' : 'Trial Set'}`}
             open={confirmOpen}
             setOpen={this.setConfirmOpen}
             onConfirm={() => this.submitEntity(this.state.formObject, true)}
             inputValidation
           >
-            Are you sure you want to delete this {DEVICE_TYPES_DASH === formType ? 'entities type' : 'trial set'}?
+            Are you sure you want to delete this {ENTITIES_TYPES_DASH === formType ? 'entities type' : 'trial set'}?
           </ConfirmDialog>
       </DragDropContext>
     );
