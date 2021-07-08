@@ -8,6 +8,7 @@ import StyledTableCell from '../../../StyledTableCell';
 import CustomTooltip from '../../../CustomTooltip';
 import CustomInput from '../../../CustomInput';
 import { BasketIcon } from '../../../../constants/icons';
+import { PlusIcon } from '../../../../constants/icons';
 
 import {
   ENTITIES,
@@ -27,7 +28,7 @@ class EntitiesGrid extends React.Component {
   }
 
   renderDevicesTableRow = (device) => {
-    const { classes, removeEntity, onEntityPropertyChange, entities, deviceTypes, trial } = this.props;
+    const { classes, removeEntity, onEntityPropertyChange, entities, deviceTypes, trial, openAddDevicesPanel } = this.props;
     if (!entities[device.key]) return <React.Fragment key={device.key} />;
     return (
       <React.Fragment key={device.key}>
@@ -64,6 +65,14 @@ class EntitiesGrid extends React.Component {
           >
             <BasketIcon />
           </CustomTooltip>
+          <CustomTooltip
+            title="Add entity"
+            ariaLabel="Add entity"
+            onClick={() => openAddDevicesPanel(device.key)}
+          >
+            <PlusIcon/>
+          </CustomTooltip>
+
         </StyledTableCell>
       </React.Fragment>
     );

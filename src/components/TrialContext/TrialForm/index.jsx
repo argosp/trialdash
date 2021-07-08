@@ -270,14 +270,14 @@ class TrialForm extends React.Component {
     return (p !== -1 ? properties[p].invalid : false);
   }
 
-  addEntity = (entity, type, typeKey, properties) => {
+  addEntity = (entity, selectedDeviceType, properties) => {
     const { trial } = this.state;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
+    //check hireracy of contains entity.
     this.state.trial[entitiesField] = this.state.trial[entitiesField] || [];
     this.state.trial[entitiesField].push({
       key: entity.key,
-      type,
-      typeKey,
+      typeKey:selectedDeviceType,
       properties,
     });
     this.setState({ changed: true });
