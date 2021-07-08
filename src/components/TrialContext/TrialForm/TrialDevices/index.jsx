@@ -206,6 +206,7 @@ class TrialDevices extends React.Component {
               deviceTypes={deviceTypes}
               update={update}
               setUpdated={this.setUpdated}
+              openAddDevicesPanel ={this.openAddDevicesPanel}
             />
           }
         </TabPanel>
