@@ -405,7 +405,7 @@ class TrialForm extends React.Component {
             )}
             middleDescription={
               <React.Fragment>
-             <SimpleButton text={"Clone devices"} onClick={() => this.SetCloneDevicesDialogOpen(!CloneDevicesDialogOpen)}></SimpleButton>
+             <SimpleButton text={"Clone entities"} onClick={() => this.SetCloneDevicesDialogOpen(!CloneDevicesDialogOpen)}></SimpleButton>
               {CloneDevicesDialogOpen&&<CloneDevicesDialog
                   title={"Select trial to clone from"}
                   open={CloneDevicesDialogOpen}
@@ -425,7 +425,7 @@ class TrialForm extends React.Component {
               <StyledTabs
                 tabs={[
                   { key: trial.key + '_G', label: 'General', id: 'trial-tab-0' },
-                  { key: trial.key + '_D', label: 'Devices', id: 'trial-tab-1' },
+                  { key: trial.key + '_D', label: 'Entities', id: 'trial-tab-1' },
                 ]}
                 value={tabValue}
                 onChange={this.changeTab}

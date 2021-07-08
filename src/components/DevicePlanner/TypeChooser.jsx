@@ -11,7 +11,7 @@ export const TypeChooser = ({ selectedType, onChange, showAll, setShowAll, typeO
             />
         </div>
         <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
-            <InputLabel id="select-type" style={{ fontSize: 10 }}>Device Type</InputLabel>
+            <InputLabel id="select-type" style={{ fontSize: 10 }}>Entities Type</InputLabel>
             <Select
                 id="select-type"
                 value={selectedType}

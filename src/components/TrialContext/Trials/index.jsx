@@ -88,8 +88,8 @@ class Trials extends React.Component {
         </StyledTableCell>
         <StyledTableCell align="right">
           <CustomTooltip
-            title="Devices"
-            ariaLabel="devices"
+            title="Entities"
+            ariaLabel="entities"
             onClick={() => this.activateEditMode(trial, true)}
           >
             <GridIcon />
@@ -171,7 +171,7 @@ class Trials extends React.Component {
     const columns = [
       { key: uuid(), title: 'trial name' },
       { key: uuid(), title: 'clone' },
-      { key: uuid(), title: 'devices' },
+      { key: uuid(), title: 'entities' },
     ];
 
     if (!isEmpty(trialSet) && !isEmpty(trialSet.properties)) {

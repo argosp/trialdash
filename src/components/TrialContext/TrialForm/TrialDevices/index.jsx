@@ -11,11 +11,11 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import { groupBy } from 'lodash';
-import deviceTypesQuery from '../../../DeviceContext/utils/deviceTypeQuery';
-import devicesQuery from '../../../DeviceContext/Devices/utils/deviceQuery';
+import entitiesTypesQuery from '../../../EntityContext/utils/entityTypeQuery';
+import entitiesQuery from '../../../EntityContext/Entities/utils/entityQuery';
 import { styles } from '../styles';
-import AddDevicePanel from '../../../AddDevicePanel';
-import DevicesGrid from './devicesGrid';
+import AddDevicePanel from '../../../AddEntityPanel';
+import EntitiesGrid from './entitiesGrid';
 import SimpleButton from '../../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
 import DevicePlanner from '../../../DevicePlanner';
@@ -38,21 +38,21 @@ const TabPanel = ({ children, value, index, ...other }) => (
 class TrialDevices extends React.Component {
   state = {
     selectedViewIndex: 3,
+    trialEntities: {},
     entities: {},
-    devices: {},
     deviceTypes: {},
     isLoading: true,
   };
 
   componentWillMount() {
     const { client, match } = this.props;
-    client.query({ query: deviceTypesQuery(match.params.id) }).then((data) => {
-      const deviceTypes = groupBy(data.data.deviceTypes, 'key');
-      let devices = [];
-      client.query({ query: devicesQuery(match.params.id) }).then((devicesData) => {
-        devices =  devicesData.data.devices;
+    client.query({ query: entitiesTypesQuery(match.params.id) }).then((data) => {
+      const deviceTypes = groupBy(data.data.entitiesTypes, 'key');
+      let entities = [];
+      client.query({ query: entitiesQuery(match.params.id) }).then((entitiesData) => {
+        entities =  entitiesData.data.entities;
         this.setState({
-          devices: groupBy(devices, 'key'),
+          entities: groupBy(entities, 'key'),
         });
       });
       this.setState({
@@ -81,7 +81,7 @@ class TrialDevices extends React.Component {
   orderEntities = () => {
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.setState({ update: true, length: trial[entitiesField].length, entities: groupBy(trial[entitiesField], 'typeKey'), entitiesField });
+    this.setState({ update: true, length: trial[entitiesField].length, trialEntities: groupBy(trial[entitiesField], 'typeKey'), entitiesField });
   }
 
   changeView = (selectedViewIndex) => {
@@ -115,8 +115,8 @@ class TrialDevices extends React.Component {
     } = this.props;
     const {
       selectedViewIndex,
+      trialEntities,
       entities,
-      devices,
       deviceTypes,
       update,
       isLoading,
@@ -130,7 +130,7 @@ class TrialDevices extends React.Component {
         <Grid
           container
           justify="space-between"
-          className={classes.devicesPanelHeader}
+          className={classes.entitiesPanelHeader}
         >
           <Grid item>
             {/* <IconButton
@@ -196,13 +196,13 @@ class TrialDevices extends React.Component {
         />}
         <TabPanel value={selectedViewIndex} index={2}>
           {selectedViewIndex === 2 &&
-            <DevicesGrid
+            <EntitiesGrid
               {...this.props}
               trial={trial}
               removeEntity={removeEntity}
               onEntityPropertyChange={onEntityPropertyChange}
+              trialEntities={trialEntities}
               entities={entities}
-              devices={devices}
               deviceTypes={deviceTypes}
               update={update}
               setUpdated={this.setUpdated}

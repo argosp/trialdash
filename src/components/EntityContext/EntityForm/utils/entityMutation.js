@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
-import { DEVICE_MUTATION } from '../../../../constants/base';
+import { ENTITY_MUTATION } from '../../../../constants/base';
 
 export default (device) => {
   const key = device.key ? device.key : `${device.experimentId}_${Date.now()}`;
 
   return gql`mutation {
-        ${DEVICE_MUTATION}(
+        ${ENTITY_MUTATION}(
             key: "${key}",
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${device.experimentId}"

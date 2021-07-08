@@ -15,11 +15,11 @@ import CustomTooltip from '../CustomTooltip';
 import StyledTabs from '../StyledTabs';
 import { PlusIcon, DeviceIcon } from '../../constants/icons';
 import {
-  DEVICE_TYPES,
-  DEVICES,
+  ENTITIES_TYPES,
+  ENTITIES,
 } from '../../constants/base';
-import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
-import devicesQuery from '../DeviceContext/Devices/utils/deviceQuery';
+import entitiesTypesQuery from '../EntityContext/utils/entityTypeQuery';
+import entitiesQuery from '../EntityContext/Entities/utils/entityQuery';
 import ContentTable from '../ContentTable';
 import ContentHeader from '../ContentHeader';
 import { styles } from './styles';
@@ -44,14 +44,14 @@ class AddDevicePanel extends React.Component {
     selectedDeviceType: null,
   };
 
-  renderDeviceTypesTableRow = (deviceType) => {
+  renderDeviceTypesTableRow = (entitiesType) => {
     const { classes, theme } = this.props;
     return (
-      <React.Fragment key={deviceType.key}>
-        <StyledTableCell className={classes.tableCell} align="left" onClick={() => this.setState({ selectedDeviceType: deviceType })}>
+      <React.Fragment key={entitiesType.key}>
+        <StyledTableCell className={classes.tableCell} align="left" onClick={() => this.setState({ selectedDeviceType: entitiesType })}>
           <ContentHeader
-            title={deviceType.name}
-            bottomDescription={deviceType.description || 'description'}
+            title={entitiesType.name}
+            bottomDescription={entitiesType.description || 'description'}
             classes={classes}
             className={classes.header}
           />
@@ -61,7 +61,7 @@ class AddDevicePanel extends React.Component {
             title="Open"
             className={classes.arrowButton}
             ariaLabel="open"
-            onClick={() => this.setState({ selectedDeviceType: deviceType })}
+            onClick={() => this.setState({ selectedDeviceType: entitiesType })}
           >
             <ArrowForwardIosIcon style={{ color: theme.palette.gray.main }} />
           </CustomTooltip>
@@ -70,30 +70,30 @@ class AddDevicePanel extends React.Component {
     );
   };
 
-  renderDevicesTableRow = (device) => {
+  renderDevicesTableRow = (entity) => {
     const { classes, entities, theme } = this.props;
     const { selectedDeviceType } = this.state;
-    if (entities.indexOf(device.key) !== -1) return <React.Fragment key={device.key} />;
+    if (entities.indexOf(entity.key) !== -1) return <React.Fragment key={entity.key} />;
     return (
-      <React.Fragment key={device.key}>
-        <StyledTableCell className={classnames(classes.deviceTableCell, classes.deviceNameTableCell)} align="left">
+      <React.Fragment key={entity.key}>
+        <StyledTableCell className={classnames(classes.entityTableCell, classes.entityNameTableCell)} align="left">
           <DeviceIcon
             style={{ color: theme.palette.gray.main, marginRight: 10 }}
           />
-          {device.name}
+          {entity.name}
         </StyledTableCell>
         {selectedDeviceType && selectedDeviceType.properties && selectedDeviceType.properties.map(property => (
           <>
             {!property.trialField
               && (
-                <StyledTableCell className={classes.deviceTableCell} key={property.key} align="left">
-                  {device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
+                <StyledTableCell className={classes.entityTableCell} key={property.key} align="left">
+                  {entity.properties.find(p => p.key === property.key) ? entity.properties.find(p => p.key === property.key).val : ''}
                 </StyledTableCell>
               )
             }
           </>
         ))}
-        <StyledTableCell align="right" className={classnames(classes.deviceTableCell, classes.deviceActionsTableCell)}>
+        <StyledTableCell align="right" className={classnames(classes.entityTableCell, classes.entityActionsTableCell)}>
           <CustomTooltip
             title="Add"
             className={classes.arrowButton}
@@ -102,7 +102,7 @@ class AddDevicePanel extends React.Component {
             <IconButton
               disableRipple
               className={classnames(classes.viewButton, classes.viewButtonSelected)}
-              onClick={() => this.addDevice(device)}
+              onClick={() => this.addDevice(entity)}
             >
               <PlusIcon />
             </IconButton>
@@ -112,13 +112,13 @@ class AddDevicePanel extends React.Component {
     );
   };
 
-  generateTableColumns = (deviceType) => {
+  generateTableColumns = (entitiesType) => {
     const columns = [
       { key: uuid(), title: 'name' },
     ];
 
-    if (!isEmpty(deviceType) && !isEmpty(deviceType.properties)) {
-      deviceType.properties.forEach((property) => {
+    if (!isEmpty(entitiesType) && !isEmpty(entitiesType.properties)) {
+      entitiesType.properties.forEach((property) => {
         if (!property.trialField) {
           columns.push({ key: uuid(), title: property.label });
         }
@@ -129,11 +129,11 @@ class AddDevicePanel extends React.Component {
     return columns;
   };
 
-  addDevice = (device) => {
+  addDevice = (entity) => {
     const { addEntity } = this.props;
     const { selectedDeviceType } = this.state;
-    const properties = device.properties.filter(p => selectedDeviceType.properties.find(s => s.key === p.key).trialField);
-    addEntity(device, selectedDeviceType.key, properties);
+    const properties = entity.properties.filter(p => selectedDeviceType.properties.find(s => s.key === p.key).trialField);
+    addEntity(entity, selectedDeviceType.key, properties);
   }
 
   changeTab = (event, tabValue) => {
@@ -143,20 +143,19 @@ class AddDevicePanel extends React.Component {
   render() {
     const { classes, isPanelOpen, onClose, match } = this.props;
     const { tabValue, selectedDeviceType } = this.state;
-    const deviceTableHeadColumns = this.generateTableColumns(selectedDeviceType);
+    const entityTableHeadColumns = this.generateTableColumns(selectedDeviceType);
 
     return (
       <RightPanelContainer
         className={classes.rootPanel}
         isPanelOpen={isPanelOpen}
         onClose={onClose}
-        title={<h3 className={classes.headerTitle}>Device Types</h3>}
+        title={<h3 className={classes.headerTitle}>Entities Types</h3>}
       >
         <StyledTabs
           className={classes.tabsWrapper}
           tabs={[
-            { key: 0, label: 'Devices', id: 'trial-tab-0' },
-            { key: 1, label: 'Assets', id: 'trial-tab-1' },
+            { key: 0, label: 'Entities', id: 'trial-tab-0' },
           ]}
           value={tabValue}
           onChange={this.changeTab}
@@ -181,8 +180,8 @@ class AddDevicePanel extends React.Component {
                   />
                 </div>
                 <ContentTable
-                  contentType={DEVICE_TYPES}
-                  query={deviceTypesQuery(match.params.id)}
+                  contentType={ENTITIES_TYPES}
+                  query={entitiesTypesQuery(match.params.id)}
                   renderRow={this.renderDeviceTypesTableRow}
                   classes={classes}
                 />
@@ -195,8 +194,8 @@ class AddDevicePanel extends React.Component {
                   withBackButton
                   backButtonHandler={() => this.setState({ selectedDeviceType: null })}
                   bottomDescription={selectedDeviceType.description || 'description'}
-                  classes={classes}//yehuidt
-                  className={classes.deviceTypeTitle}
+                  classes={classes}
+                  className={classes.entitiesTypeTitle}
                 />
                 <div className={classes.search}>
                   <div className={classes.searchIcon}>
@@ -213,18 +212,15 @@ class AddDevicePanel extends React.Component {
                   />
                 </div>
                 <ContentTable
-                  contentType={DEVICES}
-                  query={devicesQuery(match.params.id, selectedDeviceType.key)}
-                  tableHeadColumns={deviceTableHeadColumns}
+                  contentType={ENTITIES}
+                  query={entitiesQuery(match.params.id, selectedDeviceType.key)}
+                  tableHeadColumns={entityTableHeadColumns}
                   renderRow={this.renderDevicesTableRow}
                   classes={classes}
                 />
               </>
             )
           }
-        </TabPanel>
-        <TabPanel value={tabValue} index={1}>
-          <></>
         </TabPanel>
       </RightPanelContainer>
     );

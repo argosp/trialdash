@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 const deviceTypes = experimentId => gql`
  {
-    deviceTypes(experimentId:"${experimentId}"){
+    entitiesTypes(experimentId:"${experimentId}"){
        key
        name
        numberOfDevices

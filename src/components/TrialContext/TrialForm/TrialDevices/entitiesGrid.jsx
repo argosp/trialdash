@@ -11,10 +11,10 @@ import { BasketIcon } from '../../../../constants/icons';
 import { PlusIcon } from '../../../../constants/icons';
 
 import {
-  DEVICES,
+  ENTITIES,
 } from '../../../../constants/base';
 
-class DevicesGrid extends React.Component {
+class EntitiesGrid extends React.Component {
   state = {
     open: {},
   };
@@ -28,11 +28,11 @@ class DevicesGrid extends React.Component {
   }
 
   renderDevicesTableRow = (device) => {
-    const { classes, removeEntity, onEntityPropertyChange, devices, deviceTypes, trial,openAddDevicesPanel } = this.props;
-    if (!devices[device.key]) return <React.Fragment key={device.key} />;
+    const { classes, removeEntity, onEntityPropertyChange, entities, deviceTypes, trial, openAddDevicesPanel } = this.props;
+    if (!entities[device.key]) return <React.Fragment key={device.key} />;
     return (
       <React.Fragment key={device.key}>
-        <StyledTableCell classes={{ body: classes.deviceGridTd }} className={classes.tableCell} align="left">{devices[device.key][0].name}</StyledTableCell>
+        <StyledTableCell classes={{ body: classes.deviceGridTd }} className={classes.tableCell} align="left">{entities[device.key][0].name}</StyledTableCell>
         {deviceTypes[device.typeKey] && deviceTypes[device.typeKey][0] && deviceTypes[device.typeKey][0].properties
         && deviceTypes[device.typeKey][0].properties.map(property => (
           <>
@@ -51,7 +51,7 @@ class DevicesGrid extends React.Component {
                 </StyledTableCell>
               ) : (
                 <StyledTableCell classes={{ body: classes.deviceGridTd }} key={property.key} align="left">
-                  {devices[device.key][0].properties.find(p => p.key === property.key) ? devices[device.key][0].properties.find(p => p.key === property.key).val : ''}
+                  {entities[device.key][0].properties.find(p => p.key === property.key) ? entities[device.key][0].properties.find(p => p.key === property.key).val : ''}
                 </StyledTableCell>
               )
             }
@@ -84,13 +84,13 @@ class DevicesGrid extends React.Component {
   }
 
   render() {
-    const { classes, entities, deviceTypes, update, setUpdated } = this.props;
+    const { classes, trialEntities, deviceTypes, update, setUpdated } = this.props;
     const {
       open,
     } = this.state;
     return (
       <>
-        {Object.keys(entities).filter(e => Object.keys(deviceTypes).indexOf(e) !== -1).map(e => (
+        {Object.keys(trialEntities).filter(e => Object.keys(deviceTypes).indexOf(e) !== -1).map(e => (
           <Grid
             className={classes.wrapper}
             key={e}
@@ -116,8 +116,8 @@ class DevicesGrid extends React.Component {
                   head: classes.deviceGridTableHead,
                   tableBodyRow: classes.deviceGridTableBodyRow,
                 }}
-                items={entities[e]}
-                contentType={DEVICES}
+                items={trialEntities[e]}
+                contentType={ENTITIES}
                 tableHeadColumns={this.deviceTableHeadColumns(deviceTypes && deviceTypes[e] && deviceTypes[e][0])}
                 renderRow={this.renderDevicesTableRow}
                 update={update}
@@ -131,4 +131,4 @@ class DevicesGrid extends React.Component {
   }
 }
 
-export default DevicesGrid;
+export default EntitiesGrid;

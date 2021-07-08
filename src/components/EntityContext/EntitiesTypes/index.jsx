@@ -10,17 +10,17 @@ import StyledTableCell from '../../StyledTableCell';
 import AddSetForm from '../../AddSetForm';
 import { styles } from './styles';
 import {
-  DEVICE_TYPES_DASH,
-  DEVICE_TYPES,
-  DEVICES,
-  DEVICE_TYPE_MUTATION,
+  ENTITIES_TYPES_DASH,
+  ENTITIES_TYPES,
+  ENTITIES,
+  ENTITIES_TYPE_MUTATION,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import deviceTypesQuery from '../utils/deviceTypeQuery';
+import entitiesTypesQuery from '../utils/entityTypeQuery';
 import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import { updateCache } from '../../../apolloGraphql';
-import deviceTypeMutation from '../utils/deviceTypeMutation';
+import entitiesTypeMutation from '../utils/entitiesTypeMutation';
 import ConfirmDialog from '../../ConfirmDialog';
 
 class DeviceTypes extends React.Component {
@@ -37,9 +37,9 @@ class DeviceTypes extends React.Component {
 
       return (
         <React.Fragment key={deviceType.key}>
-          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.name}</StyledTableCell>
-          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.properties.length}</StyledTableCell>
-          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}>{deviceType.numberOfDevices}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}>{deviceType.name}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}>{deviceType.properties.length}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}>{deviceType.numberOfDevices}</StyledTableCell>
           <StyledTableCell align="right">
             <CustomTooltip
               title="Clone"
@@ -64,19 +64,19 @@ class DeviceTypes extends React.Component {
               <BasketIcon />
             </CustomTooltip>
             <ConfirmDialog
-              title="Delete Device Type"
+              title="Delete Entities Type"
               open={confirmOpen}
               setOpen={this.setConfirmOpen}
               onConfirm={() => this.deleteDeviceType(deviceType)}
               // inputValidation
             >
-              Are you sure you want to delete this device type?
+              Are you sure you want to delete this entities type?
             </ConfirmDialog>
             <CustomTooltip
               title="Open"
               className={classes.arrowButton}
               ariaLabel="open"
-              onClick={() => history.push(`/experiments/${match.params.id}/${DEVICE_TYPES_DASH}/${deviceType.key}/${DEVICES}`)}
+              onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}
             >
               <ArrowForwardIosIcon />
             </CustomTooltip>
@@ -95,14 +95,14 @@ class DeviceTypes extends React.Component {
       clonedDeviceType.numberOfDevices = 0;
 
       await client.mutate({
-        mutation: deviceTypeMutation(clonedDeviceType),
+        mutation: entitiesTypeMutation(clonedDeviceType),
         update: (cache, mutationResult) => {
           updateCache(
             cache,
             mutationResult,
-            deviceTypesQuery(match.params.id),
-            DEVICE_TYPES,
-            DEVICE_TYPE_MUTATION,
+            entitiesTypesQuery(match.params.id),
+            ENTITIES_TYPES,
+            ENTITIES_TYPE_MUTATION,
           );
         },
       });
@@ -121,7 +121,7 @@ class DeviceTypes extends React.Component {
       const { match, client } = this.props;
       newEntity.experimentId = match.params.id;
 
-      const mutation = deviceTypeMutation;
+      const mutation = entitiesTypeMutation;
 
       await client
         .mutate({
@@ -130,9 +130,9 @@ class DeviceTypes extends React.Component {
             updateCache(
               cache,
               mutationResult,
-              deviceTypesQuery(match.params.id),
-              DEVICE_TYPES,
-              DEVICE_TYPE_MUTATION,
+              entitiesTypesQuery(match.params.id),
+              ENTITIES_TYPES,
+              ENTITIES_TYPE_MUTATION,
               true,
             );
           },
@@ -164,7 +164,7 @@ class DeviceTypes extends React.Component {
           title: 'Fields',
         },
         { key: 2,
-          title: 'Devices',
+          title: 'Entities',
         },
         { key: 3,
           title: '',
@@ -179,25 +179,25 @@ class DeviceTypes extends React.Component {
             ? <AddSetForm
               {...this.props}
               deviceType={this.state.deviceType}
-              formType={DEVICE_TYPES_DASH}
-              cacheQuery={deviceTypesQuery}
-              itemsName={DEVICE_TYPES}
-              mutationName={DEVICE_TYPE_MUTATION}
+              formType={ENTITIES_TYPES_DASH}
+              cacheQuery={entitiesTypesQuery}
+              itemsName={ENTITIES_TYPES}
+              mutationName={ENTITIES_TYPE_MUTATION}
               returnFunc={this.returnFunc}
             />
             // eslint-disable-next-line react/jsx-wrap-multilines
             : <>
               <ContentHeader
                 withSearchInput
-                title="Devices types"
-                searchPlaceholder="Search Devices types"
+                title="Entities types"
+                searchPlaceholder="Search Entities types"
                 withAddButton
-                addButtonText="Add device type"
-                addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-device-type`)}
+                addButtonText="Add entities type"
+                addButtonHandler={() => history.push(`/experiments/${match.params.id}/add-entities-type`)}
               />
               <ContentTable
-                contentType={DEVICE_TYPES}
-                query={deviceTypesQuery(match.params.id)}
+                contentType={ENTITIES_TYPES}
+                query={entitiesTypesQuery(match.params.id)}
                 tableHeadColumns={tableHeadColumns}
                 renderRow={this.renderTableRow}
                 update={this.state.update}

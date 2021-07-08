@@ -1,10 +1,10 @@
 import gql from 'graphql-tag';
-import { DEVICE_MUTATION } from '../../../../constants/base';
+import { ENTITY_MUTATION } from '../../../../constants/base';
 
 export default (device) => {
 
   return gql`mutation {
-        ${DEVICE_MUTATION}(
+        ${ENTITY_MUTATION}(
             action: "update",
             key: "${device.key}",
             uid:"${localStorage.getItem('uid')}"

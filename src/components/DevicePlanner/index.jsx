@@ -3,11 +3,10 @@ import React from 'react';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-import deviceTypesQuery from '../DeviceContext/utils/deviceTypeQuery';
 import { DeviceEditor } from './DeviceEditor';
 import { changeDeviceLocationWithProp, findDevicesChanged, getDeviceLocationProp, getTypeLocationProp } from './DeviceUtils';
 import { styles } from './styles';
-import devicesTrialQuery from './utils/devicesTrialQuery';
+import devicesTrialQuery from './utils/entitiesTrialQuery';
 
 const DevicePlanner = ({ client, trial, entities, match, updateLocation, deviceTypes, experimentDataMaps }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
@@ -42,7 +41,7 @@ const DevicePlanner = ({ client, trial, entities, match, updateLocation, deviceT
                 .then(dataDev => {
                     done += 1
                     setWorking(done / newdevs.length * 100);
-                    devtype.items = dataDev.data.devices.map(devitem => deviceWithTrialLocation(devitem, locationProp));
+                    devtype.items = dataDev.data.entities.map(devitem => deviceWithTrialLocation(devitem, locationProp));
                     devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
                     if (done === newdevs.length) {
                         setDevices(newdevs);

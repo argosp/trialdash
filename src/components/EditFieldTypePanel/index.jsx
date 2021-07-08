@@ -9,7 +9,7 @@ import SwitchSection from './SwitchSection';
 import SimpleButton from '../SimpleButton';
 import { FIELD_TYPES_ICONS } from '../../constants/fieldTypes';
 import {
-  DEVICE_TYPES_DASH,
+  ENTITIES_TYPES_DASH,
 } from '../../constants/base';
 
 const EditFieldTypePanel = ({
@@ -86,7 +86,7 @@ const EditFieldTypePanel = ({
         description="a short description about the device name"
         isChecked={fieldType.required}
       />
-      {formType === DEVICE_TYPES_DASH
+      {formType === ENTITIES_TYPES_DASH
         && (
         <SwitchSection
           onChange={e => onValueChange(e, 'switch', fieldType.key, 'trialField')}
