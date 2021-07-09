@@ -15,8 +15,24 @@ const trials = (experimentId, trialSetKey) => gql`
           key
           val
         }
-        entities 
-        deployedEntities
+        entities {
+          key
+          typeKey
+          type
+          properties {
+            key
+            val
+          }
+        }
+        deployedEntities {
+          key
+          typeKey
+          type
+          properties {
+            key
+            val
+          }
+        }
       }
   }`;
 

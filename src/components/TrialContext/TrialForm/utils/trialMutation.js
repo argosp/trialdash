@@ -53,8 +53,24 @@ export default (trial) => {
                 key
                 val
               }
-              entities 
-              deployedEntities 
+              entities {
+                key
+                typeKey
+                type
+                properties {
+                  key
+                  val
+                }
+              }
+              deployedEntities {
+                key
+                typeKey
+                type
+                properties {
+                  key
+                  val
+                }
+              }
             }
       }`;
 };
