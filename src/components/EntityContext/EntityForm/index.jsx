@@ -12,7 +12,7 @@ import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
-import deviceMutation from './utils/entityMutation';
+import entityMutation from './utils/entityMutation';
 import { updateCache } from '../../../apolloGraphql';
 import {
   ENTITIES_TYPES_DASH,
@@ -27,16 +27,16 @@ import Footer from '../../Footer';
 import entitiesTypesQuery from '../utils/entityTypeQuery';
 import entitiesQuery from '../Entities/utils/entityQuery';
 
-class DeviceForm extends React.Component {
+class EntityForm extends React.Component {
   state = {
-    device: {
-      key: this.props.device ? this.props.device.key : uuid(),
-      deviceTypeKey: this.props.match.params.deviceTypeKey,
+    entity: {
+      key: this.props.entity ? this.props.entity.key : uuid(),
+      entitiesTypeKey: this.props.match.params.entitiesTypeKey,
       experimentId: this.props.match.params.id,
-      name: this.props.device ? this.props.device.name : '',
-      properties: this.props.device && this.props.device.properties ? this.props.device.properties : [],
+      name: this.props.entity ? this.props.entity.name : '',
+      properties: this.props.entity && this.props.entity.properties ? this.props.entity.properties : [],
     },
-    deviceType: {},
+    entitiesType: {},
     number: '',
     prefix: '',
     numberFormat: '',
@@ -44,27 +44,27 @@ class DeviceForm extends React.Component {
   };
 
   componentDidMount() {
-    const { client, match, device } = this.props;
+    const { client, match, entity } = this.props;
 
     client.query({ query: entitiesTypesQuery(match.params.id) }).then((data) => {
-      const deviceType = data.data.entitiesTypes.find(
-        item => item.key === match.params.deviceTypeKey,
+      const entitiesType = data.data.entitiesTypes.find(
+        item => item.key === match.params.entitiesTypeKey,
       );
 
       let properties;
-      if (!device) {
+      if (!entity) {
         properties = [];
-        deviceType.properties.forEach(property => properties.push({ key: property.key, val: property.defaultValue }));
+        entitiesType.properties.forEach(property => properties.push({ key: property.key, val: property.defaultValue }));
       } else {
-        properties = device.properties;
+        properties = entity.properties;
       }
 
       this.setState(state => ({
-        device: {
-          ...state.device,
+        entity: {
+          ...state.entity,
           properties,
         },
-        deviceType,
+        entitiesType,
       }));
     });
   }
@@ -73,19 +73,19 @@ class DeviceForm extends React.Component {
     if (!e.target) return;
     let { value } = e.target;
     if (e.target.type === 'checkbox') value = e.target.checked.toString();
-    let indexOfProperty = this.state.device.properties.findIndex(
+    let indexOfProperty = this.state.entity.properties.findIndex(
       property => property.key === propertyKey,
     );
 
     if (indexOfProperty === -1) {
-      this.state.device.properties.push({ val: value, key: propertyKey });
-      indexOfProperty = this.state.device.properties.length - 1;
+      this.state.entity.properties.push({ val: value, key: propertyKey });
+      indexOfProperty = this.state.entity.properties.length - 1;
     }
 
     this.setState(state => ({
-      device: {
-        ...state.device,
-        properties: update(state.device.properties, {
+      entity: {
+        ...state.entity,
+        properties: update(state.entity.properties, {
           [indexOfProperty]: { val: { $set: value } },
         }),
       },
@@ -96,8 +96,8 @@ class DeviceForm extends React.Component {
     const { value } = e.target;
 
     this.setState(state => ({
-      device: {
-        ...state.device,
+      entity: {
+        ...state.entity,
         [inputName]: value,
       },
     }));
@@ -116,17 +116,17 @@ class DeviceForm extends React.Component {
 
     if (returnFunc) returnFunc(deleted);
     history.push(
-      `/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.deviceTypeKey}/${ENTITIES}`,
+      `/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.entitiesTypeKey}/${ENTITIES}`,
     );
   };
 
-  updateDeviceTypeNumberOfDevices = (n, cache) => {
+  updateEntitiesTypeNumberOfEntities = (n, cache) => {
     const { match } = this.props;
-    const { deviceType } = this.state;
-    deviceType.numberOfDevices = n[deviceType.key];
+    const { entitiesType } = this.state;
+    entitiesType.numberOfEntities = n[entitiesType.key];
     updateCache(
       cache,
-      {data: { [ENTITIES_TYPE_MUTATION]: deviceType } },
+      {data: { [ENTITIES_TYPE_MUTATION]: entitiesType } },
       entitiesTypesQuery(match.params.id),
       ENTITIES_TYPES,
       ENTITIES_TYPE_MUTATION,
@@ -141,18 +141,17 @@ class DeviceForm extends React.Component {
     return (n.length >= numberFormat.length ? n : new Array(numberFormat.length - n.length + 1).join('0') + n);
   }
 
-  submitDevice = async (newDevice, deleted) => {
-    const newEntity = newDevice;
+  submitEntity = async (newEntity, deleted) => {
     const { match, client, returnFunc } = this.props;
-    const { deviceType, loading } = this.state;
+    const { entitiesType, loading } = this.state;
     const { number, prefix, numberFormat, suffix } = this.state;
     if (loading) return;
     this.setState({ loading: true });
     if (deleted) newEntity.state = 'Deleted';
     let property;
     let invalid;
-    if (deviceType.properties) {
-      deviceType.properties.forEach((p) => {
+    if (entitiesType.properties) {
+      entitiesType.properties.forEach((p) => {
         property = newEntity.properties.find(ntp => ntp.key === p.key);
         if (!property) {
           property = {
@@ -201,24 +200,24 @@ class DeviceForm extends React.Component {
     }
 
     for (let i = 0; i < (window.location.href.match('add-multiple-entities') ? number : 1); i += 1) {
-      const clonedDevice = { ...newEntity };
+      const clonedEntity = { ...newEntity };
       if (window.location.href.match('add-multiple-entities')) {
-        clonedDevice.key = uuid();
-        clonedDevice.name = `${prefix}${this.getNumber(numberFormat, i)}${suffix}`;
+        clonedEntity.key = uuid();
+        clonedEntity.name = `${prefix}${this.getNumber(numberFormat, i)}${suffix}`;
       }
       
       await client.mutate({
-        mutation: deviceMutation(clonedDevice),
+        mutation: entityMutation(clonedEntity),
         update: (cache, mutationResult) => {
           updateCache(
             cache,
             mutationResult,
-            entitiesQuery(match.params.id, match.params.deviceTypeKey),
+            entitiesQuery(match.params.id, match.params.entitiesTypeKey),
             ENTITIES,
             ENTITY_MUTATION,
             returnFunc,
-            'deviceTypeKey',
-            this.updateDeviceTypeNumberOfDevices
+            'entitiesTypeKey',
+            this.updateEntitiesTypeNumberOfEntities
           );
         },
       });
@@ -228,13 +227,13 @@ class DeviceForm extends React.Component {
   };
 
   getValue = (key) => {
-    const { properties } = this.state.device;
+    const { properties } = this.state.entity;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].val : '');
   }
 
   getInvalid = (key) => {
-    const properties = this.state.device.properties;
+    const properties = this.state.entity.properties;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].invalid : false);
   }
@@ -246,7 +245,7 @@ class DeviceForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { deviceType, device, loading } = this.state;
+    const { entitiesType, entity, loading } = this.state;
     const { number, prefix, numberFormat, suffix } = this.state;
 
     return (
@@ -256,7 +255,7 @@ class DeviceForm extends React.Component {
         text='Saving, please wait...'
       >
         <ContentHeader
-          title={`Add ${deviceType.name}`}
+          title={`Add ${entitiesType.name}`}
           className={classes.header}
         />
         <Typography style={{ marginBottom: '100px' }}>
@@ -266,7 +265,7 @@ class DeviceForm extends React.Component {
                 id="number"
                 onChange={e => this.onMultiChange(e, 'number')}
                 value={number}
-                label="Number of devices to create"
+                label="Number of entities to create"
                 type="number"
                 className={classes.property}
                 invalid={this.state.invalidNumber}
@@ -278,7 +277,7 @@ class DeviceForm extends React.Component {
                 label="Name Prefix"
                 type="text"
                 className={classes.property}
-                placeholder="Example: deviceName"
+                placeholder="Example: entityName"
               />
               <CustomInput
                 id="numberFormat"
@@ -302,18 +301,18 @@ class DeviceForm extends React.Component {
               />
             </Grid> :
             <CustomInput
-              id="device-name"
+              id="entity-name"
               className={classes.property}
               onChange={e => this.onInputChange(e, 'name')}
               label="Name"
               bottomDescription="a short description"
-              value={device.name}
+              value={entity.name}
             />
           }
-          {deviceType.properties
-            ? deviceType.properties.filter(p => p.trialField !== true).map(property => (
+          {entitiesType.properties
+            ? entitiesType.properties.filter(p => p.trialField !== true).map(property => (
               <CustomInput
-                id={`device-property-${property.key}`}
+                id={`entity-property-${property.key}`}
                 className={classes.property}
                 key={property.key}
                 onChange={e => this.onPropertyChange(e, property.key)}
@@ -338,9 +337,9 @@ class DeviceForm extends React.Component {
         </Typography>
         <Footer
           cancelButtonHandler={this.closeForm}
-          saveButtonHandler={() => this.submitDevice(this.state.device)}
-          withDeleteButton={this.props.device}
-          deleteButtonHandler={() => this.submitDevice(device, true)}
+          saveButtonHandler={() => this.submitEntity(this.state.entity)}
+          withDeleteButton={this.props.entity}
+          deleteButtonHandler={() => this.submitEntity(entity, true)}
           loading={loading}
         />
       </LoadingOverlay>
@@ -352,4 +351,4 @@ export default compose(
   withRouter,
   withApollo,
   withStyles(styles),
-)(DeviceForm);
+)(EntityForm);

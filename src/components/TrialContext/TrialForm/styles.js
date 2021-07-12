@@ -51,10 +51,10 @@ export const styles = theme => ({
   arrowDown: {
     transform: 'rotate(90deg)',
   },
-  deviceGridTable: {
+  entityGridTable: {
     borderCollapse: 'collapse',
   },
-  deviceGridTd: {
+  entityGridTd: {
     padding: '0 15px 0 15px',
     border: `1px solid ${theme.palette.white.dark}`,
     borderRight: 'none',
@@ -67,7 +67,7 @@ export const styles = theme => ({
       paddingRight: 15,
     },
   },
-  deviceGridTableHead: {
+  entityGridTableHead: {
     padding: '15px',
     borderLeft: `1px solid ${theme.palette.white.dark}`,
     backgroundColor: theme.palette.white.main,
@@ -79,7 +79,7 @@ export const styles = theme => ({
       borderLeft: 'none',
     },
   },
-  deviceGridTableBodyRow: {
+  entityGridTableBodyRow: {
     boxShadow: 'none',
   },
   changeStatusButton: {

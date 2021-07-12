@@ -10,7 +10,7 @@ export default (device) => {
             uid:"${localStorage.getItem('uid')}"
             experimentId:"${device.experimentId}"
             name:"${device.name}"
-            deviceTypeKey: "${device.deviceTypeKey}"
+            entitiesTypeKey: "${device.entitiesTypeKey}"
             ${device.state ? `state:"${device.state}"` : ''}
             properties: ${JSON.stringify(device.properties)
     .replace(/"key":/g, 'key:')
@@ -19,7 +19,7 @@ export default (device) => {
             ){
             key
             name
-            deviceTypeKey
+            entitiesTypeKey
             state
             properties {
               key

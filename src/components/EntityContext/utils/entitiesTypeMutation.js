@@ -1,21 +1,21 @@
 import gql from 'graphql-tag';
 import { ENTITIES_TYPE_MUTATION } from '../../../constants/base';
 
-export default (deviceType) => {
-  const key = deviceType.key
-    ? deviceType.key
-    : `${deviceType.experimentId}_${Date.now()}`;
+export default (entitiesType) => {
+  const key = entitiesType.key
+    ? entitiesType.key
+    : `${entitiesType.experimentId}_${Date.now()}`;
 
   return gql`
     mutation {
     ${ENTITIES_TYPE_MUTATION}(
             uid: "${localStorage.getItem('uid')}",
-            experimentId:"${deviceType.experimentId}",
+            experimentId:"${entitiesType.experimentId}",
             key: "${key}",
-            name: "${deviceType.name}",
-            numberOfDevices: ${deviceType.numberOfDevices},
-            ${deviceType.state ? `state:"${deviceType.state}"` : ''}
-            properties: ${JSON.stringify(deviceType.properties)
+            name: "${entitiesType.name}",
+            numberOfEntities: ${entitiesType.numberOfEntities},
+            ${entitiesType.state ? `state:"${entitiesType.state}"` : ''}
+            properties: ${JSON.stringify(entitiesType.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"type":/g, 'type:')
     .replace(/"label":/g, 'label:')
@@ -33,7 +33,7 @@ export default (deviceType) => {
             ) {
                 key
                 name
-                numberOfDevices
+                numberOfEntities
                 state
                 properties {
                   key

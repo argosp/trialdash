@@ -9,7 +9,7 @@ import {
   Switch,
   TextField,
 } from '@material-ui/core';
-import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
+import { MarkedPoint } from "../../EntityPlanner/MarkedPoint";
 import { latLng } from "leaflet";
 import { MapWithImage } from "./MapWithImage";
 import { NumberTextField } from "./NumberTextField";

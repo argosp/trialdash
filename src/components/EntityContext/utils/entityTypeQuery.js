@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 
-const deviceTypes = experimentId => gql`
+const entitiesTypes = experimentId => gql`
  {
     entitiesTypes(experimentId:"${experimentId}"){
        key
        name
-       numberOfDevices
+       numberOfEntities
        properties{
            key
            type
@@ -25,4 +25,4 @@ const deviceTypes = experimentId => gql`
   }
   `;
 
-export default deviceTypes;
+export default entitiesTypes;

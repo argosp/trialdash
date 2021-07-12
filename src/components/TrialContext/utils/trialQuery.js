@@ -10,7 +10,7 @@ const trials = (experimentId, trialSetKey) => gql`
         cloneFrom
         state
         trialSetKey
-        numberOfDevices
+        numberOfEntities
         properties {
           key
           val

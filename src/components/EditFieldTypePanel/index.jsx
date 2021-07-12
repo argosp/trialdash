@@ -38,7 +38,7 @@ const EditFieldTypePanel = ({
         id="field-type-label"
         label="Label"
         placeholder="Label"
-        bottomDescription="a short description about the device name"
+        bottomDescription="a short description about the entity name"
         className={classes.input}
       />
       <CustomInput
@@ -47,7 +47,7 @@ const EditFieldTypePanel = ({
         id="field-type-description"
         label="Description"
         placeholder="Description"
-        bottomDescription="a short description about the device name"
+        bottomDescription="a short description about the entity name"
         className={classes.input}
       />
       {fieldType.fields && fieldType.fields.indexOf('value') !== -1 && (
@@ -56,7 +56,7 @@ const EditFieldTypePanel = ({
           onChange={e => onValueChange(e, 'input', fieldType.key, 'value')}
           id="field-type-value"
           label="Value"
-          bottomDescription="a short description about the device value"
+          bottomDescription="a short description about the entity value"
           className={classes.input}
         />
       )}
@@ -64,7 +64,7 @@ const EditFieldTypePanel = ({
         <SwitchSection
           onChange={e => onValueChange(e, 'switch', fieldType.key, 'multipleValues')}
           title="Multiple values"
-          description="a short description about the device name"
+          description="a short description about the entity name"
           isChecked={fieldType.multipleValues}
         />
       )}
@@ -73,7 +73,7 @@ const EditFieldTypePanel = ({
         onChange={e => onValueChange(e, fieldType.type === 'boolean' ? 'switch' : 'input', fieldType.key, 'defaultValue')}
         id="field-type-default-value"
         label="Default Value"
-        bottomDescription="a short description about the device default value"
+        bottomDescription="a short description about the entity default value"
         className={classes.input}
         type={fieldType.type}
         values={fieldType.value}
@@ -83,7 +83,7 @@ const EditFieldTypePanel = ({
         onChange={e => onValueChange(e, 'switch', fieldType.key, 'required')}
         className={classes.requiredSwitch}
         title="Required"
-        description="a short description about the device name"
+        description="a short description about the entity name"
         isChecked={fieldType.required}
       />
       {formType === ENTITIES_TYPES_DASH

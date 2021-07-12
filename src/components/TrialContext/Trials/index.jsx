@@ -74,7 +74,7 @@ class Trials extends React.Component {
       <React.Fragment key={trial.created}>
         <StyledTableCell align="left" className={classes.tableCell} onClick={() => this.activateEditMode(trial)}>{trial.name}</StyledTableCell>
         <StyledTableCell align="left">{trial.cloneFrom ? 'cloned from ' + trial.cloneFrom : ''}</StyledTableCell>
-        <StyledTableCell align="left">{trial.numberOfDevices}</StyledTableCell>
+        <StyledTableCell align="left">{trial.numberOfEntities}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
             {trial.properties.find(p => p.key === property.key) ? trial.properties.find(p => p.key === property.key).val : ''}
@@ -245,7 +245,7 @@ class Trials extends React.Component {
     newEntity.state = 'Deleted';
     const { match, client } = this.props;
     newEntity.experimentId = match.params.id;
-    newEntity.numberOfDevices = newEntity.numberOfDevices || 0;
+    newEntity.numberOfEntities = newEntity.numberOfEntities || 0;
     newEntity.trialSetKey = match.params.trialSetKey;
 
     const mutation = trialMutation;

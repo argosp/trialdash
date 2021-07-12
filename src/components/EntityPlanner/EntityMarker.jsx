@@ -3,10 +3,10 @@ import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-export const DeviceMarker = ({ device, devLocation, isSelected, isTypeSelected, shouldShowName }) => (
-    <Marker key={device.name}
+export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName }) => (
+    <Marker key={entity.name}
         position={devLocation}
-        title={device.name}
+        title={entity.name}
         icon={divIcon({
             iconSize: [20, 20],
             html: renderToStaticMarkup(
@@ -16,7 +16,7 @@ export const DeviceMarker = ({ device, devLocation, isSelected, isTypeSelected, 
                     />
                     {!shouldShowName ? null :
                         <span style={{ backgroundColor: "yellow", padding: 3, borderColor: "black" }}>
-                            {device.name.replace(/ /g, '\u00a0')}
+                            {entity.name.replace(/ /g, '\u00a0')}
                         </span>
                     }
                 </div>
@@ -24,7 +24,7 @@ export const DeviceMarker = ({ device, devLocation, isSelected, isTypeSelected, 
         })}
     >
         <Popup>
-            {device.name + ' at (' + devLocation + ')'}
+            {entity.name + ' at (' + devLocation + ')'}
         </Popup>
     </Marker >
 )

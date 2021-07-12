@@ -2,16 +2,16 @@ import { IconButton, ListItem, ListItemText, Tooltip } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import React from 'react';
 
-const formatDeviceLocation = (loc, layer) => {
+const formatEntityLocation = (loc, layer) => {
     return;
 }
 
-export const DeviceRow = ({ dev, deviceLocation, isDeviceOnLayer, deviceLayerName, isSelected, onClick, onDisableLocation }) => {
+export const EntityRow = ({ dev, entityLocation, isEntityOnLayer, entityLayerName, isSelected, onClick, onDisableLocation }) => {
     let tip = null;
-    if (deviceLocation) {
-        tip = deviceLocation.map(x => Math.round(x * 1e5) / 1e5).join(', ');
-        if (!isDeviceOnLayer) {
-            tip = '(' + tip + ') on ' + deviceLayerName;
+    if (entityLocation) {
+        tip = entityLocation.map(x => Math.round(x * 1e5) / 1e5).join(', ');
+        if (!isEntityOnLayer) {
+            tip = '(' + tip + ') on ' + entityLayerName;
         }
     }
     return (
@@ -22,7 +22,7 @@ export const DeviceRow = ({ dev, deviceLocation, isDeviceOnLayer, deviceLayerNam
             onClick={onClick}
         >
             <ListItemText primary={dev.name} />
-            {!deviceLocation ? null :
+            {!entityLocation ? null :
                 <Tooltip title={tip}>
                     <IconButton aria-label="Disable location" size="small"
                         onClick={(e) => {
@@ -30,7 +30,7 @@ export const DeviceRow = ({ dev, deviceLocation, isDeviceOnLayer, deviceLayerNam
                             onDisableLocation();
                         }}
                     >
-                        <LocationOnIcon color={isDeviceOnLayer ? "primary" : "inherit"} />
+                        <LocationOnIcon color={isEntityOnLayer ? "primary" : "inherit"} />
                     </IconButton>
                 </Tooltip>
             }
