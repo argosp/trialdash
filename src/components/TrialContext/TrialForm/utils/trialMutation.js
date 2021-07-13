@@ -22,7 +22,7 @@ export default (trial) => {
             status:"${trial.status}"
             ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
             trialSetKey:"${trial.trialSetKey}"
-            numberOfDevices:${trial.numberOfDevices}
+            numberOfEntities:${trial.numberOfEntities}
             ${trial.state ? `state:"${trial.state}"` : ''}
             properties: ${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
@@ -47,7 +47,7 @@ export default (trial) => {
               cloneFrom
               name
               trialSetKey
-              numberOfDevices
+              numberOfEntities
               state
               properties {
                 key

@@ -38,11 +38,11 @@ class AddSetForm extends React.Component {
     formObject:
       ENTITIES_TYPES_DASH === this.props.formType
         ? {
-          key: this.props.deviceType ? this.props.deviceType.key : uuid(),
-          name: this.props.deviceType ? this.props.deviceType.name : '',
+          key: this.props.entitiesType ? this.props.entitiesType.key : uuid(),
+          name: this.props.entitiesType ? this.props.entitiesType.name : '',
           experimentId: this.props.match.params.id,
-          numberOfDevices: this.props.deviceType ? this.props.deviceType.numberOfDevices : 0,
-          properties: this.props.deviceType ? this.props.deviceType.properties : [{
+          numberOfEntities: this.props.entitiesType ? this.props.entitiesType.numberOfEntities : 0,
+          properties: this.props.entitiesType ? this.props.entitiesType.properties : [{
             description: 'a short description of the field',
             prefix: '',
             suffix: '',
@@ -311,7 +311,7 @@ class AddSetForm extends React.Component {
           title={
             // eslint-disable-next-line no-nested-ternary
             ENTITIES_TYPES_DASH === formType
-              ? this.props.deviceType ? 'Edit entities type' : 'Add entities type'
+              ? this.props.entitiesType ? 'Edit entities type' : 'Add entities type'
               : this.props.trialSet ? 'Edit trial set' : 'Add trial set'
           }
           bottomDescription="a short description of what it means to add an item here"
@@ -436,7 +436,7 @@ class AddSetForm extends React.Component {
               else history.push(`/experiments/${match.params.id}/${formType}`);
             }}
             saveButtonHandler={() => this.submitEntity(this.state.formObject)}
-            withDeleteButton={this.props.deviceType || this.props.trialSet}
+            withDeleteButton={this.props.entitiesType || this.props.trialSet}
             // deleteButtonHandler={() => this.setConfirmOpen(true)}
             deleteButtonHandler={() => this.submitEntity(this.state.formObject, true)}
           />

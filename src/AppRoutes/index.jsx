@@ -43,8 +43,8 @@ const AppRoutes = () => (
           />
           <Redirect
             exact
-            from={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey`}
-            to={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/entities`}
+            from={`/experiments/:id/${ENTITIES_TYPES_DASH}/:entitiesTypeKey`}
+            to={`/experiments/:id/${ENTITIES_TYPES_DASH}/:entitiesTypeKey/entities`}
           />
           {/* TODO Add redirect for assets */}
         </Switch>
@@ -82,12 +82,12 @@ const AppRoutes = () => (
           component={TrialForm}
         />
         <Route
-          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/add-entity`}
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:entitiesTypeKey/add-entity`}
           exact
           component={EntityForm}
         />
         <Route
-          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/add-multiple-entities`}
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:entitiesTypeKey/add-multiple-entities`}
           exact
           component={EntityForm}
         />
@@ -108,7 +108,7 @@ const AppRoutes = () => (
           exact
         />
         <Route
-          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:deviceTypeKey/${ENTITIES}`}
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:entitiesTypeKey/${ENTITIES}`}
           component={Entities}
           exact
         />

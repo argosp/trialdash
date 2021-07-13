@@ -1,9 +1,9 @@
 import React from 'react';
 import { List } from '@material-ui/core';
-import { DeviceRow } from './DeviceRow';
-import { getDeviceLocation, getDeviceLocationProp } from './DeviceUtils';
+import { EntityRow } from './EntityRow';
+import { getEntityLocation, getEntityLocationProp } from './EntityUtils';
 
-export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocation, layerChosen }) => {
+export const EntityList = ({ entities, selection, setSelection, removeEntityLocation, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
     const handleSelectionClick = (index, doRange) => {
@@ -32,21 +32,21 @@ export const DeviceList = ({ devices, selection, setSelection, removeDeviceLocat
         >
             <List>
                 {
-                    devices.map(devType =>
+                    entities.map(devType =>
                         devType.items.map((dev, index) => {
-                            const prop = getDeviceLocationProp(dev, devType);
-                            const deviceLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
-                            const isDeviceOnLayer = deviceLocation && prop.val.name === layerChosen;
-                            const deviceLayerName = deviceLocation ? prop.val.name : null;
-                            return <DeviceRow
+                            const prop = getEntityLocationProp(dev, devType);
+                            const entityLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
+                            const isEntityOnLayer = entityLocation && prop.val.name === layerChosen;
+                            const entityLayerName = entityLocation ? prop.val.name : null;
+                            return <EntityRow
                                 key={dev.key}
                                 dev={dev}
-                                deviceLocation={deviceLocation}
-                                isDeviceOnLayer={isDeviceOnLayer}
-                                deviceLayerName={deviceLayerName}
+                                entityLocation={entityLocation}
+                                isEntityOnLayer={isEntityOnLayer}
+                                entityLayerName={entityLayerName}
                                 isSelected={selection.includes(index)}
                                 onClick={e => { handleSelectionClick(index, e.shiftKey) }}
-                                onDisableLocation={() => { removeDeviceLocation(index); }}
+                                onDisableLocation={() => { removeEntityLocation(index); }}
                             />
                         })
                     )

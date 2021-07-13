@@ -89,7 +89,7 @@ const GridlinesLayer = ({ from, to, delta = 1 }) => {
     </>)
 }
 
-const DeviceMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layerChosen }) => {
+const EntityMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layerChosen }) => {
     if (!standalone.length) {
         return <RealMapWithImagesLayer images={embedded} />
     }
@@ -121,7 +121,7 @@ const DeviceMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layer
     )
 }
 
-export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen, showGrid, showGridMeters }) => {
+export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen, showGrid, showGridMeters }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
@@ -181,7 +181,7 @@ export const DeviceMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             // crs={ CRS.Simple}
             minZoom={-10}
         >
-            <DeviceMapLayers
+            <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
                 standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
                 showGrid={showGrid}

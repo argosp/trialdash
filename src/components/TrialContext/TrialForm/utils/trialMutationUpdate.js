@@ -13,7 +13,7 @@ export default (trial) => {
           ${trial.name ? `name:"${trial.name}"` : ''},
           ${trial.status ? `status:"${trial.status}"` : ''},
           trialSetKey:"${trial.trialSetKey}",
-          ${trial.numberOfDevices ? `numberOfDevices:"${trial.numberOfDevices}"` : ''},
+          ${trial.numberOfEntities ? `numberOfEntities:"${trial.numberOfEntities}"` : ''},
           ${trial.state ? `state:"${trial.state}"` : ''}
           ${trial.properties ? `properties:${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
@@ -37,7 +37,7 @@ export default (trial) => {
               status
               name
               trialSetKey
-              numberOfDevices
+              numberOfEntities
               state
               properties {
                 key

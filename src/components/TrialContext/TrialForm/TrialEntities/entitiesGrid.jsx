@@ -19,30 +19,30 @@ class EntitiesGrid extends React.Component {
     open: {},
   };
 
-  deviceTableHeadColumns = (deviceType) => {
-    if (!deviceType || !this) return [];
-    const headers = [{ key: deviceType.key, title: 'device name' }];
-    deviceType.properties.forEach(p => headers.push({ key: p.key, title: p.label }));
-    headers.push({ key: `${deviceType.key}-actions`, title: '' });
+  entityTableHeadColumns = (entitiesType) => {
+    if (!entitiesType || !this) return [];
+    const headers = [{ key: entitiesType.key, title: 'entity name' }];
+    entitiesType.properties.forEach(p => headers.push({ key: p.key, title: p.label }));
+    headers.push({ key: `${entitiesType.key}-actions`, title: '' });
     return headers;
   }
 
-  renderDevicesTableRow = (device) => {
-    const { classes, removeEntity, onEntityPropertyChange, entities, deviceTypes, trial, openAddDevicesPanel } = this.props;
-    if (!entities[device.key]) return <React.Fragment key={device.key} />;
+  renderEntitiesTableRow = (entity) => {
+    const { classes, removeEntity, onEntityPropertyChange, entities, entitiesTypes, trial, openAddEntitiesPanel } = this.props;
+    if (!entities[entity.key]) return <React.Fragment key={entity.key} />;
     return (
-      <React.Fragment key={device.key}>
-        <StyledTableCell classes={{ body: classes.deviceGridTd }} className={classes.tableCell} align="left">{entities[device.key][0].name}</StyledTableCell>
-        {deviceTypes[device.typeKey] && deviceTypes[device.typeKey][0] && deviceTypes[device.typeKey][0].properties
-        && deviceTypes[device.typeKey][0].properties.map(property => (
+      <React.Fragment key={entity.key}>
+        <StyledTableCell classes={{ body: classes.entityGridTd }} className={classes.tableCell} align="left">{entities[entity.key][0].name}</StyledTableCell>
+        {entitiesTypes[entity.typeKey] && entitiesTypes[entity.typeKey][0] && entitiesTypes[entity.typeKey][0].properties
+        && entitiesTypes[entity.typeKey][0].properties.map(property => (
           <>
             {property.trialField
               ? (
-                <StyledTableCell classes={{ body: classes.deviceGridTd }} key={`device-property-${property.key}-${trial.status}`} align="left">
+                <StyledTableCell classes={{ body: classes.entityGridTd }} key={`entity-property-${property.key}-${trial.status}`} align="left">
                   <CustomInput
-                    value={device.properties && device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
-                    onChange={e => onEntityPropertyChange(device, e, property.key)}
-                    id={`device-property-${property.key}-${trial.status}`}
+                    value={entity.properties && entity.properties.find(p => p.key === property.key) ? entity.properties.find(p => p.key === property.key).val : ''}
+                    onChange={e => onEntityPropertyChange(entity, e, property.key)}
+                    id={`entity-property-${property.key}-${trial.status}`}
                     className={classes.input}
                     type={property.type}
                     values={property.value}
@@ -50,25 +50,25 @@ class EntitiesGrid extends React.Component {
                   />
                 </StyledTableCell>
               ) : (
-                <StyledTableCell classes={{ body: classes.deviceGridTd }} key={property.key} align="left">
-                  {entities[device.key][0].properties.find(p => p.key === property.key) ? entities[device.key][0].properties.find(p => p.key === property.key).val : ''}
+                <StyledTableCell classes={{ body: classes.entityGridTd }} key={property.key} align="left">
+                  {entities[entity.key][0].properties.find(p => p.key === property.key) ? entities[entity.key][0].properties.find(p => p.key === property.key).val : ''}
                 </StyledTableCell>
               )
             }
           </>
         ))}
-        <StyledTableCell classes={{ body: classes.deviceGridTd }} align="right">
+        <StyledTableCell classes={{ body: classes.entityGridTd }} align="right">
           <CustomTooltip
             title="Delete"
             ariaLabel="delete"
-            onClick={() => removeEntity(device.key)}
+            onClick={() => removeEntity(entity.key)}
           >
             <BasketIcon />
           </CustomTooltip>
           <CustomTooltip
             title="Add entity"
             ariaLabel="Add entity"
-            onClick={() => openAddDevicesPanel(device.key)}
+            onClick={() => openAddEntitiesPanel(entity.key)}
           >
             <PlusIcon/>
           </CustomTooltip>
@@ -84,13 +84,13 @@ class EntitiesGrid extends React.Component {
   }
 
   render() {
-    const { classes, trialEntities, deviceTypes, update, setUpdated } = this.props;
+    const { classes, trialEntities, entitiesTypes, update, setUpdated } = this.props;
     const {
       open,
     } = this.state;
     return (
       <>
-        {Object.keys(trialEntities).filter(e => Object.keys(deviceTypes).indexOf(e) !== -1).map(e => (
+        {Object.keys(trialEntities).filter(e => Object.keys(entitiesTypes).indexOf(e) !== -1).map(e => (
           <Grid
             className={classes.wrapper}
             key={e}
@@ -98,8 +98,8 @@ class EntitiesGrid extends React.Component {
             <ContentHeader
               onClick={() => this.openTable(e)}
               className={classes.contentHeader}
-              title={deviceTypes && deviceTypes[e] && deviceTypes[e][0].name}
-              bottomDescription={deviceTypes && deviceTypes[e] && deviceTypes[e][0].description}
+              title={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].name}
+              bottomDescription={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].description}
               rightComponent={(
                 <CustomTooltip
                   title="Open"
@@ -112,14 +112,14 @@ class EntitiesGrid extends React.Component {
             />
             <Collapse in={open[e]} timeout="auto" unmountOnExit>
               <ContentTable
-                classes={{ table: classes.deviceGridTable,
-                  head: classes.deviceGridTableHead,
-                  tableBodyRow: classes.deviceGridTableBodyRow,
+                classes={{ table: classes.entityGridTable,
+                  head: classes.entityGridTableHead,
+                  tableBodyRow: classes.entityGridTableBodyRow,
                 }}
                 items={trialEntities[e]}
                 contentType={ENTITIES}
-                tableHeadColumns={this.deviceTableHeadColumns(deviceTypes && deviceTypes[e] && deviceTypes[e][0])}
-                renderRow={this.renderDevicesTableRow}
+                tableHeadColumns={this.entityTableHeadColumns(entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0])}
+                renderRow={this.renderEntitiesTableRow}
                 update={update}
                 setUpdated={setUpdated}
               />

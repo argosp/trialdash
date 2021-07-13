@@ -14,11 +14,11 @@ import { groupBy } from 'lodash';
 import entitiesTypesQuery from '../../../EntityContext/utils/entityTypeQuery';
 import entitiesQuery from '../../../EntityContext/Entities/utils/entityQuery';
 import { styles } from '../styles';
-import AddDevicePanel from '../../../AddEntityPanel';
+import AddEntityPanel from '../../../AddEntityPanel';
 import EntitiesGrid from './entitiesGrid';
 import SimpleButton from '../../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
-import DevicePlanner from '../../../DevicePlanner';
+import EntityPlanner from '../../../EntityPlanner';
 import experimentsQuery from '../../../ExperimentContext/utils/experimentsQuery';
 
 const TabPanel = ({ children, value, index, ...other }) => (
@@ -35,19 +35,19 @@ const TabPanel = ({ children, value, index, ...other }) => (
   </Typography>
 );
 
-class TrialDevices extends React.Component {
+class TrialEntities extends React.Component {
   state = {
     selectedViewIndex: 3,
     trialEntities: {},
     entities: {},
-    deviceTypes: {},
+    entitiesTypes: {},
     isLoading: true,
   };
 
   componentWillMount() {
     const { client, match } = this.props;
     client.query({ query: entitiesTypesQuery(match.params.id) }).then((data) => {
-      const deviceTypes = groupBy(data.data.entitiesTypes, 'key');
+      const entitiesTypes = groupBy(data.data.entitiesTypes, 'key');
       let entities = [];
       client.query({ query: entitiesQuery(match.params.id) }).then((entitiesData) => {
         entities =  entitiesData.data.entities;
@@ -56,7 +56,7 @@ class TrialDevices extends React.Component {
         });
       });
       this.setState({
-        deviceTypes,
+        entitiesTypes,
       });
     });
   }
@@ -89,12 +89,12 @@ class TrialDevices extends React.Component {
     this.props.showFooter(selectedViewIndex !== 3);
   };
 
-  openAddDevicesPanel = () => {
-    this.setState({ isDevicesPanelOpen: true });
+  openAddEntitiesPanel = () => {
+    this.setState({ isEntitiesPanelOpen: true });
   }
 
-  closeAddDevicesPanel = () => {
-    this.setState({ isDevicesPanelOpen: false });
+  closeAddEntitiesPanel = () => {
+    this.setState({ isEntitiesPanelOpen: false });
   }
 
   setUpdated = () => {
@@ -117,7 +117,7 @@ class TrialDevices extends React.Component {
       selectedViewIndex,
       trialEntities,
       entities,
-      deviceTypes,
+      entitiesTypes,
       update,
       isLoading,
     } = this.state;
@@ -182,13 +182,13 @@ class TrialDevices extends React.Component {
             <SimpleButton
               text="Add"
               colorVariant="primary"
-              onClick={this.openAddDevicesPanel}
+              onClick={this.openAddEntitiesPanel}
             />
           </Grid>}
         </Grid>
-        {selectedViewIndex !== 3 && <AddDevicePanel
-          isPanelOpen={this.state.isDevicesPanelOpen}
-          onClose={this.closeAddDevicesPanel}
+        {selectedViewIndex !== 3 && <AddEntityPanel
+          isPanelOpen={this.state.isEntitiesPanelOpen}
+          onClose={this.closeAddEntitiesPanel}
           match={match}
           theme={theme}
           addEntity={addEntity}
@@ -203,21 +203,21 @@ class TrialDevices extends React.Component {
               onEntityPropertyChange={onEntityPropertyChange}
               trialEntities={trialEntities}
               entities={entities}
-              deviceTypes={deviceTypes}
+              entitiesTypes={entitiesTypes}
               update={update}
               setUpdated={this.setUpdated}
-              openAddDevicesPanel ={this.openAddDevicesPanel}
+              openAddEntitiesPanel ={this.openAddEntitiesPanel}
             />
           }
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
           {
-            (selectedViewIndex === 3 && Object.keys(deviceTypes).length) ?
-              <DevicePlanner
+            (selectedViewIndex === 3 && Object.keys(entitiesTypes).length) ?
+              <EntityPlanner
                 updateLocation={updateLocation}
                 trial={trial}
-                entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
-                deviceTypes={deviceTypes}
+                trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
+                entitiesTypes={entitiesTypes}
                 experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
               />
               : null
@@ -232,4 +232,4 @@ export default compose(
   withRouter,
   withApollo,
   withStyles(styles, { withTheme: true }),
-)(TrialDevices);
+)(TrialEntities);

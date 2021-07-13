@@ -25,16 +25,16 @@ import CustomTooltip from '../../CustomTooltip';
 import entitiesTypesQuery from '../utils/entityTypeQuery';
 import entitiesQuery from './utils/entityQuery';
 import ContentTable from '../../ContentTable';
-import DeviceForm from '../EntityForm';
-import deviceMutation from '../EntityForm/utils/entityMutation';
-import deviceMutationUpdate from '../EntityForm/utils/entityMutationUpdate';
+import EntityForm from '../EntityForm';
+import entityMutation from '../EntityForm/utils/entityMutation';
+import entityMutationUpdate from '../EntityForm/utils/entityMutationUpdate';
 import CloneMultiplePanel from '../../CloneMultiplePanel';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
 
-class Devices extends React.Component {
+class Entities extends React.Component {
   state = {
-    deviceType: {},
+    entitiesType: {},
     selected: [],
     data: [],
   };
@@ -46,23 +46,23 @@ class Devices extends React.Component {
       .query({ query: entitiesTypesQuery(match.params.id) })
       .then((data) => {
         this.setState({
-          deviceType: data.data.entitiesTypes.find(
-            deviceType => deviceType.key === match.params.deviceTypeKey,
+          entitiesType: data.data.entitiesTypes.find(
+            entitiesType => entitiesType.key === match.params.entitiesTypeKey,
           ),
         });
       });
   }
 
-  openCloneMultiplePanel = (device) => {
-    this.setState({ isCloneMultiplePanelOpen: true, device });
+  openCloneMultiplePanel = (entity) => {
+    this.setState({ isCloneMultiplePanelOpen: true, entity });
   }
 
   closeCloneMultiplePanel = () => {
     this.setState({ isCloneMultiplePanelOpen: false });
   }
 
-  setConfirmOpen = (open, device) => {
-    if (device || open) this.state.device = device;
+  setConfirmOpen = (open, entity) => {
+    if (entity || open) this.state.entity = entity;
     this.setState({ confirmOpen: open });
   }
 
@@ -77,10 +77,10 @@ class Devices extends React.Component {
     this.setState({ selected });
   }
 
-  handleMenuClick = (event, device) => {
+  handleMenuClick = (event, entity) => {
     this.setState({
       anchorMenu: event.currentTarget,
-      device
+      entity
     });
   };
 
@@ -88,16 +88,16 @@ class Devices extends React.Component {
     this.setState({ [anchor]: null });
   };
 
-  renderTableRow = (device) => {
+  renderTableRow = (entity) => {
     const { classes } = this.props;
-    const { deviceType, confirmOpen, selected, anchorMenu } = this.state;
-    const selectedDT = selected.indexOf(device.key) !== -1;
+    const { entitiesType, confirmOpen, selected, anchorMenu } = this.state;
+    const selectedDT = selected.indexOf(entity.key) !== -1;
     return (
-      <React.Fragment key={device.key}>
+      <React.Fragment key={entity.key}>
         <StyledTableCell className={classnames(classes.tableCell, (selectedDT ? classes.selectedRow : ''))} align="left">
           <Checkbox
             checked={selectedDT}
-            onClick={() => this.selectRow(device.key)}
+            onClick={() => this.selectRow(entity.key)}
             className={classes.checkboxWrapper}
             icon={
               <CheckBoxOutlineBlankIcon />
@@ -106,32 +106,32 @@ class Devices extends React.Component {
               <CheckBoxOutlinedIcon />
             }
             disableRipple
-          /><span onClick={() => this.activateEditMode(device)} className={classes.tableCellPointer}>{device.name}</span>
+          /><span onClick={() => this.activateEditMode(entity)} className={classes.tableCellPointer}>{entity.name}</span>
         </StyledTableCell>
-        {deviceType && deviceType.properties && deviceType.properties.filter(p => !p.trialField).map(property => (
+        {entitiesType && entitiesType.properties && entitiesType.properties.filter(p => !p.trialField).map(property => (
           <StyledTableCell className={classnames(classes.tableCell, (selectedDT ? classes.selectedRow : ''))} key={property.key} align="left">
-            {device.properties.find(p => p.key === property.key) ? device.properties.find(p => p.key === property.key).val : ''}
+            {entity.properties.find(p => p.key === property.key) ? entity.properties.find(p => p.key === property.key).val : ''}
           </StyledTableCell>
         ))}
         <StyledTableCell className={classnames(classes.tableCellLast, selectedDT ? classes.selectedRow : '')} align="right">
           <CustomTooltip
             title="Clone multiple"
             ariaLabel="clone-multiple"
-            onClick={() => this.openCloneMultiplePanel(device)}
+            onClick={() => this.openCloneMultiplePanel(entity)}
           >
             <CloneMultipleIcon />
           </CustomTooltip>
           <CustomTooltip
             title="Edit"
             ariaLabel="edit"
-            onClick={() => this.activateEditMode(device)}
+            onClick={() => this.activateEditMode(entity)}
           >
             <PenIcon />
           </CustomTooltip>
           <CustomTooltip
             title="More actions"
             ariaLabel="more actions"
-            onClick={(e) => this.handleMenuClick(e, device)}
+            onClick={(e) => this.handleMenuClick(e, entity)}
           >
             <MoreActionsIcon />
           </CustomTooltip>
@@ -153,20 +153,20 @@ class Devices extends React.Component {
           >
             <MenuItem
               key={uuid()}
-              onClick={this.deleteDevice}
+              onClick={this.deleteEntity}
               classes={{ root: classes.menuItem}}
-              // onClick={() => this.setConfirmOpen(true, device)}
+              // onClick={() => this.setConfirmOpen(true, entity)}
             >
-              Delete Device
+              Delete Entity
             </MenuItem>
           </Menu>
           <ConfirmDialog
-            title="Delete Device"
+            title="Delete Entity"
             open={confirmOpen}
             setOpen={this.setConfirmOpen}
-            onConfirm={this.deleteDevice}
+            onConfirm={this.deleteEntity}
           >
-            Are you sure you want to delete this device?
+            Are you sure you want to delete this entity?
           </ConfirmDialog>
         </StyledTableCell>
       </React.Fragment>
@@ -183,7 +183,7 @@ class Devices extends React.Component {
     this.setState({ selected });
   }
 
-  generateTableColumns = (deviceType) => {
+  generateTableColumns = (entitiesType) => {
     const { classes } = this.props;
     const { data, selected } = this.state;
     const columns = [
@@ -211,8 +211,8 @@ class Devices extends React.Component {
       },
     ];
 
-    if (!isEmpty(deviceType) && !isEmpty(deviceType.properties)) {
-      deviceType.properties.filter(property => !property.trialField).forEach((property) => {
+    if (!isEmpty(entitiesType) && !isEmpty(entitiesType.properties)) {
+      entitiesType.properties.filter(property => !property.trialField).forEach((property) => {
         columns.push({ key: uuid(), title: property.label });
       });
       columns.push({ key: uuid(), title: '' });
@@ -237,24 +237,24 @@ class Devices extends React.Component {
     const { match, client } = this.props;
 
     for (let i = 0; i < number; i += 1) {
-      const clonedDevice = { ...this.state.device };
-      clonedDevice.key = uuid();
-      clonedDevice.name = this.setPattern(number, name, i);
-      clonedDevice.experimentId = match.params.id;
-      clonedDevice.deviceTypeKey = match.params.deviceTypeKey;
+      const clonedEntity = { ...this.state.entity };
+      clonedEntity.key = uuid();
+      clonedEntity.name = this.setPattern(number, name, i);
+      clonedEntity.experimentId = match.params.id;
+      clonedEntity.entitiesTypeKey = match.params.entitiesTypeKey;
 
       await client.mutate({
-        mutation: deviceMutation(clonedDevice),
+        mutation: entityMutation(clonedEntity),
         update: (cache, mutationResult) => {
           updateCache(
             cache,
             mutationResult,
-            entitiesQuery(match.params.id, match.params.deviceTypeKey),
+            entitiesQuery(match.params.id, match.params.entitiesTypeKey),
             ENTITIES,
             ENTITY_MUTATION,
             false,
-            'deviceTypeKey',
-            this.updateDeviceTypeNumberOfDevices
+            'entitiesTypeKey',
+            this.updateEntitiesTypeNumberOfEntities
           );
         },
       });
@@ -265,7 +265,7 @@ class Devices extends React.Component {
 
   deleteMultiple = async () => {
     const { match, client } = this.props;
-    const mutation = deviceMutationUpdate;
+    const mutation = entityMutationUpdate;
     const { selected, loading } = this.state;
     if (loading) return;
     this.setState({ loading: true });
@@ -274,7 +274,7 @@ class Devices extends React.Component {
       newEntity.action = 'update';
       newEntity.state = 'Deleted';
       newEntity.experimentId = match.params.id;
-      newEntity.deviceTypeKey = match.params.deviceTypeKey;
+      newEntity.entitiesTypeKey = match.params.entitiesTypeKey;
 
       await client
         .mutate({
@@ -283,12 +283,12 @@ class Devices extends React.Component {
             updateCache(
               cache,
               mutationResult,
-              entitiesQuery(match.params.id, match.params.deviceTypeKey),
+              entitiesQuery(match.params.id, match.params.entitiesTypeKey),
               ENTITIES,
               ENTITY_MUTATION,
               true,
-              'deviceTypeKey',
-              this.updateDeviceTypeNumberOfDevices
+              'entitiesTypeKey',
+              this.updateEntitiesTypeNumberOfEntities
             );
           },
         });
@@ -296,13 +296,13 @@ class Devices extends React.Component {
     this.setState({ update: true, selected: [], loading: false });
   }
 
-  updateDeviceTypeNumberOfDevices = (n, cache) => {
+  updateEntitiesTypeNumberOfEntities = (n, cache) => {
     const { match } = this.props;
-    const { deviceType } = this.state;
-    deviceType.numberOfDevices = n[deviceType.key];
+    const { entitiesType } = this.state;
+    entitiesType.numberOfEntities = n[entitiesType.key];
     updateCache(
       cache,
-      {data: { [ENTITIES_TYPE_MUTATION]: deviceType } },
+      {data: { [ENTITIES_TYPE_MUTATION]: entitiesType } },
       entitiesTypesQuery(match.params.id),
       ENTITIES_TYPES,
       ENTITIES_TYPE_MUTATION,
@@ -310,16 +310,16 @@ class Devices extends React.Component {
     );
   };
 
-  deleteDevice = async (device) => {
+  deleteEntity = async (entity) => {
     let newEntity;
-    if (device && device.key) newEntity = { ...device };
-    else newEntity = this.state.device;
+    if (entity && entity.key) newEntity = { ...entity };
+    else newEntity = this.state.entity;
     newEntity.state = 'Deleted';
     const { match, client } = this.props;
     newEntity.experimentId = match.params.id;
-    newEntity.deviceTypeKey = match.params.deviceTypeKey;
+    newEntity.entitiesTypeKey = match.params.entitiesTypeKey;
 
-    const mutation = deviceMutation;
+    const mutation = entityMutation;
 
     await client
       .mutate({
@@ -328,12 +328,12 @@ class Devices extends React.Component {
           updateCache(
             cache,
             mutationResult,
-            entitiesQuery(match.params.id, match.params.deviceTypeKey),
+            entitiesQuery(match.params.id, match.params.entitiesTypeKey),
             ENTITIES,
             ENTITY_MUTATION,
             true,
-            'deviceTypeKey',
-            this.updateDeviceTypeNumberOfDevices
+            'entitiesTypeKey',
+            this.updateEntitiesTypeNumberOfEntities
           );
         },
       });
@@ -341,10 +341,10 @@ class Devices extends React.Component {
     this.setState({ update: true, anchorMenu: null });
   };
 
-  activateEditMode = (device) => {
+  activateEditMode = (entity) => {
     this.setState({
       isEditModeEnabled: true,
-      device,
+      entity,
     });
   };
 
@@ -361,8 +361,8 @@ class Devices extends React.Component {
 
   render() {
     const { history, match } = this.props;
-    const { deviceType, isCloneMultiplePanelOpen, device, selected, confirmMultipleOpen, loading } = this.state;
-    const tableHeadColumns = this.generateTableColumns(deviceType);
+    const { entitiesType, isCloneMultiplePanelOpen, entity, selected, confirmMultipleOpen, loading } = this.state;
+    const tableHeadColumns = this.generateTableColumns(entitiesType);
 
     return (
       <LoadingOverlay
@@ -372,16 +372,16 @@ class Devices extends React.Component {
       >
         {this.state.isEditModeEnabled
           // eslint-disable-next-line react/jsx-wrap-multilines
-          ? <DeviceForm
+          ? <EntityForm
             {...this.props}
-            device={this.state.device}
+            entity={this.state.entity}
             returnFunc={this.returnFunc}
           />
           // eslint-disable-next-line react/jsx-wrap-multilines
           : <>
             <ContentHeader
               withSearchInput
-              title={deviceType.name}
+              title={entitiesType.name}
               searchPlaceholder="Search Entities"
               addButtonText="Add Entity"
               withAddButton={selected.length === 0}
@@ -390,11 +390,11 @@ class Devices extends React.Component {
               deleteButtonText={`Delete (${selected.length})`}
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}`)}
-              rightDescription={deviceType.id}
-              addButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.deviceTypeKey}/add-entity`)}
+              rightDescription={entitiesType.id}
+              addButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.entitiesTypeKey}/add-entity`)}
               withAddMultipleButton
               addMultipleButtonText="Add multiple entities"
-              addMultipleButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.deviceTypeKey}/add-multiple-entities`)}
+              addMultipleButtonHandler={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.entitiesTypeKey}/add-multiple-entities`)}
             />
             <ConfirmDialog
               title={`Delete multiple entities`}
@@ -406,14 +406,14 @@ class Devices extends React.Component {
               Are you sure you want to delete {selected.length} entities?
             </ConfirmDialog>
             <CloneMultiplePanel
-              device={device}
+              entity={entity}
               isPanelOpen={isCloneMultiplePanelOpen}
               onClose={this.closeCloneMultiplePanel}
               cloneMultiple={this.cloneMultiple}
             />
             <ContentTable
               contentType={ENTITIES}
-              query={entitiesQuery(match.params.id, match.params.deviceTypeKey)}
+              query={entitiesQuery(match.params.id, match.params.entitiesTypeKey)}
               tableHeadColumns={tableHeadColumns}
               renderRow={this.renderTableRow}
               update={this.state.update}
@@ -431,4 +431,4 @@ export default compose(
   withApollo,
   withRouter,
   withStyles(styles),
-)(Devices);
+)(Entities);

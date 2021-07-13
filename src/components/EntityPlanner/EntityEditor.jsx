@@ -1,10 +1,10 @@
 import { Button, InputLabel, Paper, Switch, Grid } from '@material-ui/core';
 import React from 'react';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
-import { DeviceList } from './DeviceList';
-import { DeviceMap } from './DeviceMap';
-import { DeviceMarker } from './DeviceMarker';
-import { changeDeviceLocation, getDeviceLocation } from './DeviceUtils';
+import { EntityList } from './EntityList';
+import { EntityMap } from './EntityMap';
+import { EntityMarker } from './EntityMarker';
+import { changeEntityLocation, getEntityLocation } from './EntityUtils';
 import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
@@ -21,8 +21,8 @@ const SimplifiedSwitch = ({ label, value, setValue }) => (
     </div>
 )
 
-export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
-    const [selectedType, setSelectedType] = React.useState(devices.length ? devices[0].name : '');
+export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
+    const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
     const [shape, setShape] = React.useState("Point");
@@ -34,28 +34,28 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
     const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
 
-    console.log('DeviceEditor', layerChosen, devices, showOnlyAssigned, selectedType, showGrid)
+    console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
 
-    if (selectedType === '' && devices.length > 0) {
-        setSelectedType(devices[0].name);
+    if (selectedType === '' && entities.length > 0) {
+        setSelectedType(entities[0].name);
     }
 
     const changeLocations = (type, indices, newLocations = [undefined]) => {
-        let tempDevices = JSON.parse(JSON.stringify(devices));
-        let typeDevices = tempDevices.find(d => d.name === type);
+        let tempEntities = JSON.parse(JSON.stringify(entities));
+        let typeEntities = tempEntities.find(d => d.name === type);
         for (let i = 0; i < indices.length; ++i) {
             const loc = newLocations[Math.min(i, newLocations.length - 1)];
             console.log(layerChosen)
-            changeDeviceLocation(typeDevices.items[indices[i]], typeDevices, loc, layerChosen);
+            changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
         }
-        return tempDevices;
+        return tempEntities;
     };
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
-            setDevices(changeLocations(selectedType, selection, [currPoint]));
+            setEntities(changeLocations(selectedType, selection, [currPoint]));
             setMarkedPoints([]);
             setSelection([]);
         } else {
@@ -115,9 +115,9 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
 
     const shapeData = shapeOptions.find(s => s.name === shape);
 
-    const handlePutDevices = () => {
+    const handlePutEntities = () => {
         const positions = shapeData.toPositions(markedPoints, selection.length);
-        setDevices(changeLocations(selectedType, selection, positions));
+        setEntities(changeLocations(selectedType, selection, positions));
         setMarkedPoints([]);
         setSelection([]);
     };
@@ -134,7 +134,7 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
             style={{ height: '550px' }}
         >
             <Grid item xs={9}>
-                <DeviceMap
+                <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}
                     layerChosen={layerChosen}
@@ -143,13 +143,13 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                     showGridMeters={showGridMeters}
                 >
                     {
-                        devices.map(devType => {
+                        entities.map(devType => {
                             if (showAll || (devType.name === selectedType)) {
                                 return devType.items.map((dev, index) => {
-                                    const loc = getDeviceLocation(dev, devType, layerChosen);
+                                    const loc = getEntityLocation(dev, devType, layerChosen);
                                     if (!loc) return null;
-                                    return <DeviceMarker
-                                        key={dev.key} device={dev}
+                                    return <EntityMarker
+                                        key={dev.key} entity={dev}
                                         devLocation={loc}
                                         isSelected={selection.includes(index)}
                                         isTypeSelected={devType.name === selectedType}
@@ -167,14 +167,14 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                         setMarkedPoints={setMarkedPoints}
                         shape={shape}
                         shapeCreator={shapeData}
-                        deviceNum={selection.length}
+                        entityNum={selection.length}
                         distanceInMeters={distanceInMeters()}
                     />
 
-                </DeviceMap>
+                </EntityMap>
             </Grid>
             <Grid item xs={3} style={{ overflow: 'auto' }}>
-                {!devices.length ? null :
+                {!entities.length ? null :
                     <>
                         <ShapeChooser
                             shape={shape}
@@ -187,9 +187,9 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                         <Button variant="contained" color="primary"
                             disabled={shape === 'Point'}
                             style={{ margin: 5 }}
-                            onClick={handlePutDevices}
+                            onClick={handlePutEntities}
                         >
-                            Put devices
+                            Put entities
                                 </Button>
                         <TypeChooser
                             selectedType={selectedType}
@@ -199,10 +199,10 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                             }}
                             showAll={showAll}
                             setShowAll={val => setShowAll(val)}
-                            typeOptions={devices.map(dev => { return { name: dev.name } })}
+                            typeOptions={entities.map(dev => { return { name: dev.name } })}
                         />
                         <SimplifiedSwitch
-                            label='Devices show name'
+                            label='Entities show name'
                             value={showName}
                             setValue={v => setShowName(v)}
                         />
@@ -225,11 +225,11 @@ export const DeviceEditor = ({ devices, setDevices, showOnlyAssigned, setShowOnl
                                 />
                             </div>
                         }
-                        <DeviceList
+                        <EntityList
                             selection={selection}
                             setSelection={setSelection}
-                            devices={devices.filter(d => d.name === selectedType)}
-                            removeDeviceLocation={(index) => setDevices(changeLocations(selectedType, [index]))}
+                            entities={entities.filter(d => d.name === selectedType)}
+                            removeEntityLocation={(index) => setEntities(changeLocations(selectedType, [index]))}
                             layerChosen={layerChosen}
                         />
                     </>
