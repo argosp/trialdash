@@ -23,7 +23,7 @@ import trialsQuery from "../TrialContext/utils/trialQuery.js";
 
 import { styles } from "./styles";
 
-function CloneDevicesDialog({
+function CloneEntitiesDialog({
   title,
   open,
   setOpen,
@@ -39,7 +39,7 @@ function CloneDevicesDialog({
   const [selectedTrialStatus, setSelectedTrialStatus] = React.useState();
 
   useEffect(() => {
-    if (selectedTrialStatus && selectedTrial) cloneDevicesFromSelectedTrial();
+    if (selectedTrialStatus && selectedTrial) cloneEntitiesFromSelectedTrial();
   }, [selectedTrialStatus]);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function CloneDevicesDialog({
         setTrials(data.data[trials]);
       });
   };
-  const cloneDevicesFromSelectedTrial = () => {
+  const cloneEntitiesFromSelectedTrial = () => {
     if (selectedTrialStatus == "design") {
       if (updateTrial.status == "design")
         setUpdateTrial({
@@ -136,7 +136,7 @@ function CloneDevicesDialog({
         > 
         {selectedTrial && (
           <FormControl component="fieldset">
-            <FormLabel component="legend">Copy devices from:</FormLabel>
+            <FormLabel component="legend">Copy entities from:</FormLabel>
             <RadioGroup
               aria-label="copy-from"
               name="opyFrom"
@@ -174,4 +174,4 @@ function CloneDevicesDialog({
   );
 }
 
-export default compose(withStyles(styles))(CloneDevicesDialog);
+export default compose(withStyles(styles))(CloneEntitiesDialog);

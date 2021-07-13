@@ -23,43 +23,43 @@ import { updateCache } from '../../../apolloGraphql';
 import entitiesTypeMutation from '../utils/entitiesTypeMutation';
 import ConfirmDialog from '../../ConfirmDialog';
 
-class DeviceTypes extends React.Component {
+class EntitiesTypes extends React.Component {
     state = {};
 
-    setConfirmOpen = (open, deviceType) => {
-      if (deviceType || open) this.state.deviceType = deviceType;
+    setConfirmOpen = (open, entitiesType) => {
+      if (entitiesType || open) this.state.entitiesType = entitiesType;
       this.setState({ confirmOpen: open });
     }
 
-    renderTableRow = (deviceType) => {
+    renderTableRow = (entitiesType) => {
       const { history, match, classes } = this.props;
       const { confirmOpen } = this.state;
 
       return (
-        <React.Fragment key={deviceType.key}>
-          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}>{deviceType.name}</StyledTableCell>
-          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}>{deviceType.properties.length}</StyledTableCell>
-          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}>{deviceType.numberOfDevices}</StyledTableCell>
+        <React.Fragment key={entitiesType.key}>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${entitiesType.key}/${ENTITIES}`)}>{entitiesType.name}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${entitiesType.key}/${ENTITIES}`)}>{entitiesType.properties.length}</StyledTableCell>
+          <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${entitiesType.key}/${ENTITIES}`)}>{entitiesType.numberOfEntities}</StyledTableCell>
           <StyledTableCell align="right">
             <CustomTooltip
               title="Clone"
               ariaLabel="clone"
-              onClick={() => this.clone(deviceType)}
+              onClick={() => this.clone(entitiesType)}
             >
               <CloneIcon />
             </CustomTooltip>
             <CustomTooltip
               title="Edit"
               ariaLabel="edit"
-              onClick={() => this.activateEditMode(deviceType)}
+              onClick={() => this.activateEditMode(entitiesType)}
             >
               <PenIcon />
             </CustomTooltip>
             <CustomTooltip
               title="Delete"
               ariaLabel="delete"
-              // onClick={() => this.deleteDeviceType(deviceType)}
-              onClick={() => this.setConfirmOpen(true, deviceType)}
+              // onClick={() => this.deleteEntitiesType(entitiesType)}
+              onClick={() => this.setConfirmOpen(true, entitiesType)}
             >
               <BasketIcon />
             </CustomTooltip>
@@ -67,7 +67,7 @@ class DeviceTypes extends React.Component {
               title="Delete Entities Type"
               open={confirmOpen}
               setOpen={this.setConfirmOpen}
-              onConfirm={() => this.deleteDeviceType(deviceType)}
+              onConfirm={() => this.deleteEntitiesType(entitiesType)}
               // inputValidation
             >
               Are you sure you want to delete this entities type?
@@ -76,7 +76,7 @@ class DeviceTypes extends React.Component {
               title="Open"
               className={classes.arrowButton}
               ariaLabel="open"
-              onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${deviceType.key}/${ENTITIES}`)}
+              onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${entitiesType.key}/${ENTITIES}`)}
             >
               <ArrowForwardIosIcon />
             </CustomTooltip>
@@ -85,17 +85,17 @@ class DeviceTypes extends React.Component {
       );
     };
 
-    clone = async (deviceType) => {
-      const clonedDeviceType = { ...deviceType };
-      clonedDeviceType.key = uuid();
+    clone = async (entitiesType) => {
+      const clonedEntitiesType = { ...entitiesType };
+      clonedEntitiesType.key = uuid();
       // eslint-disable-next-line prefer-template
-      clonedDeviceType.name = deviceType.name + ' clone';
+      clonedEntitiesType.name = entitiesType.name + ' clone';
       const { match, client } = this.props;
-      clonedDeviceType.experimentId = match.params.id;
-      clonedDeviceType.numberOfDevices = 0;
+      clonedEntitiesType.experimentId = match.params.id;
+      clonedEntitiesType.numberOfEntities = 0;
 
       await client.mutate({
-        mutation: entitiesTypeMutation(clonedDeviceType),
+        mutation: entitiesTypeMutation(clonedEntitiesType),
         update: (cache, mutationResult) => {
           updateCache(
             cache,
@@ -114,9 +114,9 @@ class DeviceTypes extends React.Component {
       this.setState({ update: false });
     }
 
-    deleteDeviceType = async (deviceType) => {
-      const newEntity = this.state.deviceType;
-      // const newEntity = deviceType;
+    deleteEntitiesType = async (entitiesType) => {
+      const newEntity = this.state.entitiesType;
+      // const newEntity = entitiesType;
       newEntity.state = 'Deleted';
       const { match, client } = this.props;
       newEntity.experimentId = match.params.id;
@@ -141,10 +141,10 @@ class DeviceTypes extends React.Component {
       this.setState({ update: true });
     };
 
-    activateEditMode = (deviceType) => {
+    activateEditMode = (entitiesType) => {
       this.setState({
         isEditModeEnabled: true,
-        deviceType,
+        entitiesType,
       });
     };
 
@@ -178,7 +178,7 @@ class DeviceTypes extends React.Component {
             // eslint-disable-next-line react/jsx-wrap-multilines
             ? <AddSetForm
               {...this.props}
-              deviceType={this.state.deviceType}
+              entitiesType={this.state.entitiesType}
               formType={ENTITIES_TYPES_DASH}
               cacheQuery={entitiesTypesQuery}
               itemsName={ENTITIES_TYPES}
@@ -214,4 +214,4 @@ export default compose(
   withRouter,
   withApollo,
   withStyles(styles),
-)(DeviceTypes);
+)(EntitiesTypes);

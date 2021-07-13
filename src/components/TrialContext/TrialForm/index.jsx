@@ -34,8 +34,8 @@ import SimpleButton from '../../SimpleButton';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
-import TrialDevices from './TrialDevices';
-import CloneDevicesDialog from '../../CloneDevicesDialog';
+import TrialEntities from './TrialEntities';
+import CloneEntitiesDialog from '../../CloneEntitiesDialog';
 import trialMutationUpdate from './utils/trialMutationUpdate';
 import ConfirmDialog from '../../ConfirmDialog';
 
@@ -61,6 +61,7 @@ const TabPanel = ({ children, value, index, ...other }) => (
 );
 
 class TrialForm extends React.Component {
+
   state = {
     trial: {
       key: this.props.trial ? this.props.trial.key : uuid(),
@@ -68,7 +69,7 @@ class TrialForm extends React.Component {
       experimentId: this.props.match.params.id,
       name: this.props.trial ? this.props.trial.name : '',
       status: this.props.trial && this.props.trial.status ? this.props.trial.status : 'design',
-      numberOfDevices: this.props.trial ? this.props.trial.numberOfDevices : 0,
+      numberOfEntities: this.props.trial ? this.props.trial.numberOfEntities : 0,
       properties: this.props.trial && this.props.trial.properties ? [...this.props.trial.properties] : [],
       entities: this.props.trial && this.props.trial.entities ? [...this.props.trial.entities.map(e => {return({...e, properties: [...e.properties]})})] : [],
       deployedEntities: this.props.trial && this.props.trial.deployedEntities ? [...this.props.trial.deployedEntities] : [],
@@ -76,7 +77,7 @@ class TrialForm extends React.Component {
     trialSet: {},
     tabValue: this.props.tabValue || 0,
     showFooter: true,
-    CloneDevicesDialogOpen: false
+    CloneEntitiesDialogOpen: false
   };
 
   componentDidMount() {
@@ -270,14 +271,14 @@ class TrialForm extends React.Component {
     return (p !== -1 ? properties[p].invalid : false);
   }
 
-  addEntityToTrial = (entity, selectedDeviceType, properties) => {
+  addEntityToTrial = (entity, selectedEntitiesType, properties) => {
     const { trial } = this.state;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     //check hireracy of contains entity.
     this.state.trial[entitiesField] = this.state.trial[entitiesField] || [];
     this.state.trial[entitiesField].push({
       key: entity.key,
-      typeKey:selectedDeviceType,
+      entitiesTypeKey:selectedEntitiesType,
       properties,
     });
     this.setState({ changed: true });
@@ -347,8 +348,8 @@ class TrialForm extends React.Component {
     this.setState({ [anchor]: null });
     this.setEditableStatus(false)
   };
-  SetCloneDevicesDialogOpen = (open) => {
-    this.setState({ CloneDevicesDialogOpen: open });
+  SetCloneEntitiesDialogOpen = (open) => {
+    this.setState({ CloneEntitiesDialogOpen: open });
   }
   setCurrent = (property) => {
     if (property.type === 'time') this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
@@ -370,7 +371,7 @@ class TrialForm extends React.Component {
       editableStatus,
       anchorMenu,
       showFooter,
-      CloneDevicesDialogOpen,
+      CloneEntitiesDialogOpen,
       confirmOpen,
       confirmStatusOpen,
       newStatus,
@@ -405,17 +406,17 @@ class TrialForm extends React.Component {
             )}
             middleDescription={
               <React.Fragment>
-             <SimpleButton text={"Clone entities"} onClick={() => this.SetCloneDevicesDialogOpen(!CloneDevicesDialogOpen)}></SimpleButton>
-              {CloneDevicesDialogOpen&&<CloneDevicesDialog
+             <SimpleButton text={"Clone entities"} onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
+              {CloneEntitiesDialogOpen&&<CloneEntitiesDialog
                   title={"Select trial to clone from"}
-                  open={CloneDevicesDialogOpen}
-                  setOpen={this.SetCloneDevicesDialogOpen}
+                  open={CloneEntitiesDialogOpen}
+                  setOpen={this.SetCloneEntitiesDialogOpen}
                   onConfirm={(updateTrial) => this.submitTrial(updateTrial)}
                   currentTrial = {trial}
                   client ={client}
                   match ={match}
                 >
-               </CloneDevicesDialog>}
+               </CloneEntitiesDialog>}
              </React.Fragment>
              
             }
@@ -503,7 +504,7 @@ class TrialForm extends React.Component {
             : null}
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <TrialDevices
+          <TrialEntities
             trial={trial}
             addEntityToTrial={this.addEntityToTrial}
             removeEntity={this.removeEntity}

@@ -10,15 +10,15 @@ const trials = (experimentId, trialSetKey) => gql`
         cloneFrom
         state
         trialSetKey
-        numberOfDevices
+        numberOfEntities
         properties {
           key
           val
         }
         entities {
           key
-          typeKey
-          type
+          entitiesTypeKey
+          containsEntities
           properties {
             key
             val
@@ -26,8 +26,8 @@ const trials = (experimentId, trialSetKey) => gql`
         }
         deployedEntities {
           key
-          typeKey
-          type
+          entitiesTypeKey
+          containsEntities
           properties {
             key
             val

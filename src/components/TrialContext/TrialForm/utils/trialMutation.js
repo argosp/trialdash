@@ -22,7 +22,7 @@ export default (trial) => {
             status:"${trial.status}"
             ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
             trialSetKey:"${trial.trialSetKey}"
-            numberOfDevices:${trial.numberOfDevices}
+            numberOfEntities:${trial.numberOfEntities}
             ${trial.state ? `state:"${trial.state}"` : ''}
             properties: ${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
@@ -31,13 +31,13 @@ export default (trial) => {
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')
-    .replace(/"typeKey":/g, 'typeKey:')
+    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
     .replace(/"properties":/g, 'properties:')},
             deployedEntities: ${JSON.stringify(trial.deployedEntities)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')
-    .replace(/"typeKey":/g, 'typeKey:')
+    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
     .replace(/"properties":/g, 'properties:')}
             )
             {
@@ -47,7 +47,7 @@ export default (trial) => {
               cloneFrom
               name
               trialSetKey
-              numberOfDevices
+              numberOfEntities
               state
               properties {
                 key
@@ -55,8 +55,8 @@ export default (trial) => {
               }
               entities {
                 key
-                typeKey
-                type
+                entitiesTypeKey
+                containsEntities
                 properties {
                   key
                   val
@@ -64,8 +64,8 @@ export default (trial) => {
               }
               deployedEntities {
                 key
-                typeKey
-                type
+                entitiesTypeKey
+                containsEntities
                 properties {
                   key
                   val

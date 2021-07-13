@@ -88,7 +88,7 @@ class CloneMultiplePanel extends React.Component {
               id="number"
               onChange={e => this.onInputChange(e, 'number')}
               value={number}
-              label="Number of devices to create"
+              label="Number of entities to create"
               type="number"
               className={classes.input}
               invalid={this.state.invalidNumber}
@@ -102,7 +102,7 @@ class CloneMultiplePanel extends React.Component {
               label="Name Prefix"
               type="text"
               className={classes.input}
-              placeholder="Example: deviceName"
+              placeholder="Example: entityName"
             />
           </Grid>
           <Grid>

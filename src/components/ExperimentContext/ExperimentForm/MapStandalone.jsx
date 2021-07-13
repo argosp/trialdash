@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Grid,
 } from '@material-ui/core';
-import { MarkedPoint } from "../../DevicePlanner/MarkedPoint";
+import { MarkedPoint } from "../../EntityPlanner/MarkedPoint";
 import { MapWithImage } from "./MapWithImage";
 import { NumberTextField } from "./NumberTextField";
 import { DashedPolyline } from "./DashedPolyline";
