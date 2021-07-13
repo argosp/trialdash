@@ -29,6 +29,7 @@ class EntitiesGrid extends React.Component {
 
   renderDevicesTableRow = (device) => {
     const { classes, removeEntity, onEntityPropertyChange, entities, deviceTypes, trial, openAddDevicesPanel } = this.props;
+
     if (!entities[device.key]) return <React.Fragment key={device.key} />;
     return (
       <React.Fragment key={device.key}>
@@ -68,7 +69,7 @@ class EntitiesGrid extends React.Component {
           <CustomTooltip
             title="Add entity"
             ariaLabel="Add entity"
-            onClick={() => openAddDevicesPanel(device.key)}
+            onClick={() => openAddDevicesPanel(device)}
           >
             <PlusIcon/>
           </CustomTooltip>

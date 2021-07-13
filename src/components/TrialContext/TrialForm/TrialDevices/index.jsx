@@ -42,6 +42,7 @@ class TrialDevices extends React.Component {
     entities: {},
     deviceTypes: {},
     isLoading: true,
+    parentEntity: {}
   };
 
   componentWillMount() {
@@ -89,8 +90,9 @@ class TrialDevices extends React.Component {
     this.props.showFooter(selectedViewIndex !== 3);
   };
 
-  openAddDevicesPanel = () => {
-    this.setState({ isDevicesPanelOpen: true });
+  openAddDevicesPanel = (parentEntity) => {
+    this.setState({ isDevicesPanelOpen: true, parentEntity});
+
   }
 
   closeAddDevicesPanel = () => {
@@ -107,7 +109,7 @@ class TrialDevices extends React.Component {
       theme,
       match,
       trial,
-      addEntity,
+      addEntityToTrial,
       removeEntity,
       onEntityPropertyChange,
       updateLocation,
@@ -120,6 +122,7 @@ class TrialDevices extends React.Component {
       deviceTypes,
       update,
       isLoading,
+      parentEntity
     } = this.state;
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
@@ -187,11 +190,12 @@ class TrialDevices extends React.Component {
           </Grid>}
         </Grid>
         {selectedViewIndex !== 3 && <AddDevicePanel
+          parentEntity ={parentEntity}
           isPanelOpen={this.state.isDevicesPanelOpen}
           onClose={this.closeAddDevicesPanel}
           match={match}
           theme={theme}
-          addEntity={addEntity}
+          addEntityToTrial={addEntityToTrial}
           entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
         />}
         <TabPanel value={selectedViewIndex} index={2}>

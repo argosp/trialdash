@@ -102,7 +102,7 @@ class AddDevicePanel extends React.Component {
             <IconButton
               disableRipple
               className={classnames(classes.viewButton, classes.viewButtonSelected)}
-              onClick={() => this.addDevice(entity)}
+              onClick={() => this.AddEntity(entity)}
             >
               <PlusIcon />
             </IconButton>
@@ -128,12 +128,19 @@ class AddDevicePanel extends React.Component {
 
     return columns;
   };
+  AddEntityToParent= (entity, parentEntity)=>{
+   if(parentEntity.containsEntities == null)
+     parentEntity.containsEntities =[];
+    parentEntity.containsEntities.push(entity.key);
 
-  addDevice = (entity) => {
-    const { addEntity } = this.props;
+  }
+  AddEntity = (entity) => {
+    const { addEntityToTrial,parentEntity } = this.props;
+    debugger
+    if(parentEntity) this.AddEntityToParent(entity,parentEntity);//TODO check if need call to new specific mutattion 
     const { selectedDeviceType } = this.state;
     const properties = entity.properties.filter(p => selectedDeviceType.properties.find(s => s.key === p.key).trialField);
-    addEntity(entity, selectedDeviceType.key, properties);
+    addEntityToTrial(entity, selectedDeviceType.key, properties);
   }
 
   changeTab = (event, tabValue) => {
