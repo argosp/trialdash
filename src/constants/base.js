@@ -3,6 +3,7 @@ export const TRIAL_SETS = 'trialSets';
 export const TRIALS = 'trials';
 export const TRIAL_MUTATION = 'addUpdateTrial';
 export const TRIAL_SET_MUTATION = 'addUpdateTrialSet';
+export const UPDATE_CONTAINS_ENTITIES_MUTATION = 'updateTrialContainsEntities';
 
 export const ENTITIES_TYPES_DASH = 'entities-types';
 export const ENTITIES_TYPES = 'entitiesTypes';

@@ -38,17 +38,20 @@ class EntitiesGrid extends React.Component {
           <>
             {property.trialField
               ? (
-                <StyledTableCell classes={{ body: classes.entityGridTd }} key={`entity-property-${property.key}-${trial.status}`} align="left">
-                  <CustomInput
-                    value={entity.properties && entity.properties.find(p => p.key === property.key) ? entity.properties.find(p => p.key === property.key).val : ''}
-                    onChange={e => onEntityPropertyChange(entity, e, property.key)}
-                    id={`entity-property-${property.key}-${trial.status}`}
-                    className={classes.input}
-                    type={property.type}
-                    values={property.value}
-                    multiple={property.multipleValues}
-                  />
-                </StyledTableCell>
+                // <Collapse in={open[e]} timeout="auto" unmountOnExit>
+                  <StyledTableCell classes={{ body: classes.entityGridTd }} key={`entity-property-${property.key}-${trial.status}`} align="left">
+                    <CustomInput
+                      value={entity.properties && entity.properties.find(p => p.key === property.key) ? entity.properties.find(p => p.key === property.key).val : ''}
+                      onChange={e => onEntityPropertyChange(entity, e, property.key)}
+                      id={`entity-property-${property.key}-${trial.status}`}
+                      className={classes.input}
+                      type={property.type}
+                      values={property.value}
+                      multiple={property.multipleValues}
+                    />
+                  </StyledTableCell>
+                // </Collapse>
+
               ) : (
                 <StyledTableCell classes={{ body: classes.entityGridTd }} key={property.key} align="left">
                   {entities[entity.key][0].properties.find(p => p.key === property.key) ? entities[entity.key][0].properties.find(p => p.key === property.key).val : ''}
@@ -68,11 +71,10 @@ class EntitiesGrid extends React.Component {
           <CustomTooltip
             title="Add entity"
             ariaLabel="Add entity"
-            onClick={() => openAddEntitiesPanel(entity)}
+            onClick={(e) => openAddEntitiesPanel(e,entity)}
           >
             <PlusIcon/>
           </CustomTooltip>
-
         </StyledTableCell>
       </React.Fragment>
     );

@@ -90,8 +90,8 @@ class TrialEntities extends React.Component {
     this.props.showFooter(selectedViewIndex !== 3);
   };
 
-  openAddEntitiesPanel = (parentEntity) => {
-    this.setState({ isEntitiesPanelOpen: true,parentEntity });
+  openAddEntitiesPanel = (e,parentEntity) => {
+    this.setState({ isEntitiesPanelOpen: true, parentEntity });
   }
 
   closeAddEntitiesPanel = () => {
@@ -126,7 +126,7 @@ class TrialEntities extends React.Component {
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-    const currentExperiment = experiments.find(experiment => experiment.project.id === trial.experimentId);
+    const currentExperiment = experiments? experiments.find(experiment => experiment.project.id === trial.experimentId): '';
     return (
       <>
         <Grid

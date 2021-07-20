@@ -128,19 +128,12 @@ class AddEntityPanel extends React.Component {
 
     return columns;
   };
-  addEntityToParent= (entity, parentEntity)=>{
-   if(parentEntity.containsEntities == null)
-     parentEntity.containsEntities =[];
-    parentEntity.containsEntities.push(entity.key);
-    // return parentEntity;
 
-  }
   addEntity = (entity) => {
     const { addEntityToTrial, parentEntity } = this.props;
     const { selectedEntitiesType } = this.state;
-    if(parentEntity)  this.addEntityToParent(entity,parentEntity);//TODO check if need call to new specific mutattion 
     const properties = entity.properties.filter(p => selectedEntitiesType.properties.find(s => s.key === p.key).trialField);
-    addEntityToTrial(entity, selectedEntitiesType.key, properties);
+    addEntityToTrial(entity, selectedEntitiesType.key, properties,parentEntity,'update');//TODO: delete
   }
 
   changeTab = (event, tabValue) => {

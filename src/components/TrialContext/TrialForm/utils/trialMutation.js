@@ -32,13 +32,15 @@ export default (trial) => {
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')
     .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-    .replace(/"properties":/g, 'properties:')},
+    .replace(/"properties":/g, 'properties:')
+    .replace(/"containsEntities":/g, 'containsEntities:')},
             deployedEntities: ${JSON.stringify(trial.deployedEntities)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')
     .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-    .replace(/"properties":/g, 'properties:')}
+    .replace(/"properties":/g, 'properties:')
+    .replace(/"containsEntities":/g, 'containsEntities:')}
             )
             {
               key
