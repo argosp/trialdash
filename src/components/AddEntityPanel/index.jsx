@@ -130,10 +130,10 @@ class AddEntityPanel extends React.Component {
   };
 
   addEntity = (entity) => {
-    const { addEntity } = this.props;
+    const { addEntityToTrial, parentEntity } = this.props;
     const { selectedEntitiesType } = this.state;
     const properties = entity.properties.filter(p => selectedEntitiesType.properties.find(s => s.key === p.key).trialField);
-    addEntity(entity, selectedEntitiesType.key, properties);
+    addEntityToTrial(entity, selectedEntitiesType.key, properties,parentEntity,'update');//TODO: delete
   }
 
   changeTab = (event, tabValue) => {

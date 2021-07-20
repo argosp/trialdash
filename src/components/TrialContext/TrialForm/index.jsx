@@ -16,6 +16,7 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import trialMutation from './utils/trialMutation';
+import updateContainsEntitiesMutation from './utils/trialMutationUpdateContainsEntities';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
@@ -61,6 +62,7 @@ const TabPanel = ({ children, value, index, ...other }) => (
 );
 
 class TrialForm extends React.Component {
+
   state = {
     trial: {
       key: this.props.trial ? this.props.trial.key : uuid(),
@@ -76,7 +78,7 @@ class TrialForm extends React.Component {
     trialSet: {},
     tabValue: this.props.tabValue || 0,
     showFooter: true,
-    CloneEntitiesDialogOpen: false
+    CloneEntitiesDialogOpen: false,
   };
 
   componentDidMount() {
@@ -209,22 +211,22 @@ class TrialForm extends React.Component {
   };
 
   submitTrial = async (newTrial, deleted, newStatus) => {
-    const newEntity = newTrial;
+    const updatedTrial = newTrial;
     const { match, client, returnFunc } = this.props;
     const { trialSet } = this.state;
-    if (deleted) newEntity.state = 'Deleted';
-    if (newStatus) newEntity.status = newStatus;
+    if (deleted) updatedTrial.state = 'Deleted';
+    if (newStatus) updatedTrial.status = newStatus;
     let property;
     let invalid;
     if (trialSet.properties) {
       trialSet.properties.forEach((p) => {
-        property = newEntity.properties.find(ntp => ntp.key === p.key);
+        property = updatedTrial.properties.find(ntp => ntp.key === p.key);
         if (!property) {
           property = {
             key: p.key,
             val: this.getValue(p.key, p.defaultValue)
           };
-          newEntity.properties.push(property);
+          updatedTrial.properties.push(property);
         }
         if (p.required && !property.val) {
           invalid = true;
@@ -239,7 +241,7 @@ class TrialForm extends React.Component {
       }
     }
     await client.mutate({
-      mutation: trialMutation(newEntity),
+      mutation:trialMutation(updatedTrial),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -270,18 +272,52 @@ class TrialForm extends React.Component {
     return (p !== -1 ? properties[p].invalid : false);
   }
 
-  addEntity = (entity, selectedEntitiesType, properties) => {
+  addEntityToTrial = (entity, selectedEntitiesType, properties, parentEntity, action) => {
     const { trial } = this.state;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    //check hireracy of contains entity.
     this.state.trial[entitiesField] = this.state.trial[entitiesField] || [];
-    this.state.trial[entitiesField].push({
+    const newEntity = {
       key: entity.key,
-      typeKey:selectedEntitiesType,
-      properties,
-    });
+      entitiesTypeKey: selectedEntitiesType,
+      properties
+    };
+    this.state.trial[entitiesField].push(newEntity);
+    if (parentEntity){
+      //TODO: when open AddEntityPanel by plus icon of entity -> display all entites that can add to entity(filter by not exist key in containsArray)
+     this.addEntityToParent(parentEntity, newEntity, action);
+    }
+    else
     this.setState({ changed: true });
   }
+  
+  addEntityToParent  = async (parentEntity, newEntity, action) => {
+    const { match, client, returnFunc } = this.props;
+    const { trial } = this.state;
+    const containsEntitiesObj = { 
+      parentEntityKey: parentEntity.key,
+      newEntity: newEntity,
+      action: action //TODO: delete
+   }
+   await client.mutate({
+     mutation: updateContainsEntitiesMutation(
+       trial,
+       containsEntitiesObj.parentEntityKey,
+       containsEntitiesObj.newEntity, 
+       containsEntitiesObj.action),//yehudit
+     update: (cache, mutationResult) => {
+       updateCache(
+         cache,
+         mutationResult,
+         trialsQuery(match.params.id, match.params.trialSetKey),
+         TRIALS,
+         TRIAL_MUTATION,
+         returnFunc,
+         'trialSetKey',
+         this.updateAfterSubmit
+       );
+     },
+   });
+ }
 
   removeEntity = (key) => {
     const { trial } = this.state;
@@ -505,7 +541,7 @@ class TrialForm extends React.Component {
         <TabPanel value={tabValue} index={1}>
           <TrialEntities
             trial={trial}
-            addEntity={this.addEntity}
+            addEntityToTrial={this.addEntityToTrial}
             removeEntity={this.removeEntity}
             updateLocation={this.updateLocation}
             onEntityPropertyChange={this.onEntityPropertyChange}

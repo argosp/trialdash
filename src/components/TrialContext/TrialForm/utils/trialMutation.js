@@ -31,14 +31,16 @@ export default (trial) => {
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')
-    .replace(/"typeKey":/g, 'typeKey:')
-    .replace(/"properties":/g, 'properties:')},
+    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+    .replace(/"properties":/g, 'properties:')
+    .replace(/"containsEntities":/g, 'containsEntities:')},
             deployedEntities: ${JSON.stringify(trial.deployedEntities)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')
     .replace(/"type":/g, 'type:')
-    .replace(/"typeKey":/g, 'typeKey:')
-    .replace(/"properties":/g, 'properties:')}
+    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+    .replace(/"properties":/g, 'properties:')
+    .replace(/"containsEntities":/g, 'containsEntities:')}
             )
             {
               key
@@ -53,8 +55,24 @@ export default (trial) => {
                 key
                 val
               }
-              entities 
-              deployedEntities 
+              entities {
+                key
+                entitiesTypeKey
+                containsEntities
+                properties {
+                  key
+                  val
+                }
+              }
+              deployedEntities {
+                key
+                entitiesTypeKey
+                containsEntities
+                properties {
+                  key
+                  val
+                }
+              }
             }
       }`;
 };
