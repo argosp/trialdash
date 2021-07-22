@@ -49,6 +49,7 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
     return (
         <>
             {
+                shape === 'Point' ? null :
                 markedPoints.map((p, i) => (
                     <MarkedPoint
                         key={i}
