@@ -27,7 +27,7 @@ export const EntityRow = ({ dev, entityLocation, isEntityOnLayer, entityLayerNam
                     <IconButton aria-label="Disable location" size="small"
                         onClick={(e) => {
                             e.stopPropagation();
-                            onDisableLocation();
+                            onDisableLocation(e.shiftKey);
                         }}
                     >
                         <LocationOnIcon color={isEntityOnLayer ? "primary" : "inherit"} />

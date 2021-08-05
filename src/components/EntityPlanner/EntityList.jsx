@@ -3,7 +3,7 @@ import { List } from '@material-ui/core';
 import { EntityRow } from './EntityRow';
 import { getEntityLocation, getEntityLocationProp } from './EntityUtils';
 
-export const EntityList = ({ entities, selection, setSelection, removeEntityLocation, layerChosen }) => {
+export const EntityList = ({ entities, selection, setSelection, removeEntitiesLocations, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
     const handleSelectionClick = (index, doRange) => {
@@ -46,7 +46,9 @@ export const EntityList = ({ entities, selection, setSelection, removeEntityLoca
                                 entityLayerName={entityLayerName}
                                 isSelected={selection.includes(index)}
                                 onClick={e => { handleSelectionClick(index, e.shiftKey) }}
-                                onDisableLocation={() => { removeEntityLocation(index); }}
+                                onDisableLocation={(doOnWholeList) => {
+                                    removeEntitiesLocations(doOnWholeList ? selection : [index]);
+                                }}
                             />
                         })
                     )

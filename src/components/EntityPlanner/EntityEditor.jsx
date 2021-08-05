@@ -232,7 +232,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             selection={selection}
                             setSelection={setSelection}
                             entities={entities.filter(d => d.name === selectedType)}
-                            removeEntityLocation={(index) => setEntities(changeLocations(selectedType, [index]))}
+                            removeEntitiesLocations={(indices) => setEntities(changeLocations(selectedType, indices))}
                             layerChosen={layerChosen}
                         />
                     </>
