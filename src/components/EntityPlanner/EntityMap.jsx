@@ -52,20 +52,28 @@ const RealMapWithImagesLayer = ({ images }) => (
 )
 
 const createRangeArray = (from, to, delta) => {
-    const ret = [];
-    if (delta > 0.1) {
-        const first = Math.ceil( from / delta) * delta;
-        const last = Math.floor( to / delta) * delta;
-        if (Math.abs(first - from) > 0.0001) {
-            ret.push(from);
+    let ret = [];
+    if (Math.abs(delta) > 0.1) {
+        const back = []
+        for (let pos = Math.min(-delta, to); pos > from; pos -= delta) {
+            const thick = (back.length + 1) % 5 === 0 ? 1.2 : 0.5;
+            back.push({ pos, thick });
         }
-        for (let x = first; x <= last; x += delta) {
-            ret.push(x);
+        back.push({ pos: from, thick: 2 });
+        back.reverse();
+
+        const zero = (from < 0 && to > 0) ? [{ pos: 0, thick: 2 }] : [];
+
+        const forw = []
+        for (let pos = Math.max(delta, from); pos < to; pos += delta) {
+            const thick = (forw.length + 1) % 5 === 0 ? 1.2 : 0.5;
+            forw.push({ pos, thick });
         }
-        if (Math.abs(last - to) > 0.0001) {
-            ret.push(to);
-        }
+        forw.push({ pos: to, thick: 2.5 });
+
+        ret = back.concat(zero).concat(forw);
     }
+    console.log(ret);
     return ret;
 }
 
@@ -77,24 +85,28 @@ const GridlinesLayer = ({ from, to, delta = 1 }) => {
     const lats = createRangeArray(lat0, lat1, delta);
     const lngs = createRangeArray(lng0, lng1, delta);
     return (<>
-        {lats.map(lat => (
-            <Polyline
-                weight={lat === 0 ? 2 : 0.5}
-                positions={[
-                    [lat, lng0],
-                    [lat, lng1],
-                ]}
-            />
-        ))}
-        {lngs.map(lng => (
-            <Polyline
-                weight={lng === 0 ? 2 : 0.5}
-                positions={[
-                    [lat0, lng],
-                    [lat1, lng],
-                ]}
-            />
-        ))}
+        {lats.map(({ pos: lat, thick }) => {
+            return (
+                <Polyline
+                    weight={thick}
+                    positions={[
+                        [lat, lng0],
+                        [lat, lng1],
+                    ]}
+                />
+            )
+        })}
+        {lngs.map(({ pos: lng, thick }) => {
+            return (
+                <Polyline
+                    weight={thick}
+                    positions={[
+                        [lat0, lng],
+                        [lat1, lng],
+                    ]}
+                />
+            )
+        })}
     </>)
 }
 
