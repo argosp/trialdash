@@ -53,10 +53,19 @@ const RealMapWithImagesLayer = ({ images }) => (
 
 const createRangeArray = (from, to, delta) => {
     const ret = [];
-    for (let x = from; x < to; x += delta) {
-        ret.push(x);
+    if (delta > 0.1) {
+        const first = Math.ceil( from / delta) * delta;
+        const last = Math.floor( to / delta) * delta;
+        if (Math.abs(first - from) > 0.0001) {
+            ret.push(from);
+        }
+        for (let x = first; x <= last; x += delta) {
+            ret.push(x);
+        }
+        if (Math.abs(last - to) > 0.0001) {
+            ret.push(to);
+        }
     }
-    ret.push(to);
     return ret;
 }
 
@@ -70,7 +79,7 @@ const GridlinesLayer = ({ from, to, delta = 1 }) => {
     return (<>
         {lats.map(lat => (
             <Polyline
-                weight={0.5}
+                weight={lat === 0 ? 2 : 0.5}
                 positions={[
                     [lat, lng0],
                     [lat, lng1],
@@ -79,7 +88,7 @@ const GridlinesLayer = ({ from, to, delta = 1 }) => {
         ))}
         {lngs.map(lng => (
             <Polyline
-                weight={0.5}
+                weight={lng === 0 ? 2 : 0.5}
                 positions={[
                     [lat0, lng],
                     [lat1, lng],
