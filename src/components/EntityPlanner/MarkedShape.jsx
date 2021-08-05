@@ -24,11 +24,23 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
         }
     };
 
+    const unbindTooltip = (element) => {
+        if (element && element.current && element.current.leafletElement && element.current.leafletElement.unbindTooltip) {
+            element.current.leafletElement.unbindTooltip();
+        }
+    };
+
     const renderShape = (points) => {
         points = points || markedPoints;
-        if (!points.length) return;
-        const shownPolylines = shapeCreator.toLine(points);
-        if (!shownPolylines || !shownPolylines.length) return;
+        let shownPolylines = undefined;
+        if (points.length) {
+            shownPolylines = shapeCreator.toLine(points);
+        }
+        if (!shownPolylines || !shownPolylines.length) {
+            unbindTooltip(currPolyline);
+            unbindTooltip(auxPolyline);
+            return;
+        }
         setLatLngsWithDist(currPolyline.current.leafletElement, shownPolylines[0]);
         if (shape === 'Arc') {
             setLatLngsWithDist(auxPolyline.current.leafletElement, shownPolylines.length > 1 ? shownPolylines[1] : []);
@@ -50,18 +62,18 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator
         <>
             {
                 shape === 'Point' ? null :
-                markedPoints.map((p, i) => (
-                    <MarkedPoint
-                        key={i}
-                        location={p}
-                        setLocation={(latlng) => {
-                            setMarkedPoints(replacePoint(markedPoints, i, latlng));
-                        }}
-                        dragLocation={(latlng) => {
-                            renderShape(replacePoint(markedPoints, i, latlng));
-                        }}
-                    ></MarkedPoint>
-                ))
+                    markedPoints.map((p, i) => (
+                        <MarkedPoint
+                            key={i}
+                            location={p}
+                            setLocation={(latlng) => {
+                                setMarkedPoints(replacePoint(markedPoints, i, latlng));
+                            }}
+                            dragLocation={(latlng) => {
+                                renderShape(replacePoint(markedPoints, i, latlng));
+                            }}
+                        ></MarkedPoint>
+                    ))
             }
             <Polyline positions={[]} ref={currPolyline} />
             {
