@@ -9,6 +9,7 @@ export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, 
         title={entity.name}
         icon={divIcon({
             iconSize: [20, 20],
+            iconAnchor: [10, 22],
             html: renderToStaticMarkup(
                 <div>
                     <i className=" fa fa-map-marker-alt fa-2x"
