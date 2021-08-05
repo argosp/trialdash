@@ -6,14 +6,32 @@ const formatEntityLocation = (loc, layer) => {
     return;
 }
 
-export const EntityRow = ({ dev, entityLocation, isEntityOnLayer, entityLayerName, isSelected, onClick, onDisableLocation }) => {
-    let tip = null;
-    if (entityLocation) {
-        tip = entityLocation.map(x => Math.round(x * 1e5) / 1e5).join(', ');
-        if (!isEntityOnLayer) {
-            tip = '(' + tip + ') on ' + entityLayerName;
-        }
+const EntityLocationButton = ({ entityLocation, isEntityOnLayer, entityLayerName, onDisableLocation }) => {
+    let tip = entityLocation.map(x => Math.round(x * 1e5) / 1e5).join(', ');
+    if (!isEntityOnLayer) {
+        tip = '(' + tip + ') on ' + entityLayerName;
     }
+    return (
+        <Tooltip title={tip}>
+            <IconButton aria-label="Disable location" size="small"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onDisableLocation(e.shiftKey);
+                }}
+                onContextMenu={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    console.log(e);
+                }}
+            >
+                <LocationOnIcon color={isEntityOnLayer ? "primary" : "inherit"} />
+            </IconButton>
+        </Tooltip>
+    );
+};
+
+export const EntityRow = ({ dev, entityLocation, isEntityOnLayer, entityLayerName, isSelected, onClick, onDisableLocation }) => {
     return (
         <ListItem
             key={dev.name}
@@ -23,16 +41,12 @@ export const EntityRow = ({ dev, entityLocation, isEntityOnLayer, entityLayerNam
         >
             <ListItemText primary={dev.name} />
             {!entityLocation ? null :
-                <Tooltip title={tip}>
-                    <IconButton aria-label="Disable location" size="small"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onDisableLocation(e.shiftKey);
-                        }}
-                    >
-                        <LocationOnIcon color={isEntityOnLayer ? "primary" : "inherit"} />
-                    </IconButton>
-                </Tooltip>
+                <EntityLocationButton
+                    entityLocation={entityLocation}
+                    isEntityOnLayer={isEntityOnLayer}
+                    entityLayerName={entityLayerName}
+                    onDisableLocation={onDisableLocation}
+                />
             }
         </ListItem>
     )
