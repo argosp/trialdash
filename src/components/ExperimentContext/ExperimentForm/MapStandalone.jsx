@@ -100,20 +100,44 @@ export const MapStandalone = ({ row, setRow }) => {
           <Grid item>
             <Grid container spacing={2}>
               <Grid item>
-                <NumberTextField value={distances.lng} onChange={(num) => setDistances({ ...distances, lng: Math.abs(num) })} label="Horizontal Meters" width='150px' />
+                <NumberTextField value={distances.lng}
+                  label="Horizontal Meters" width='150px'
+                  onChange={(num) => {
+                    const lng = Math.abs(num);
+                    if (lng > 1e-6) {
+                      const lat = distances.lat / distances.lng * lng;
+                      setDistances({ ...distances, lat, lng });
+                    }
+                  }}
+                />
               </Grid>
               <Grid item>
-                <NumberTextField value={distances.x} onChange={(num) => setDistances({ ...distances, x: num })} label="Horizontal Pixels" width='150px' />
+                <NumberTextField value={distances.x}
+                  label="Horizontal Pixels" width='150px'
+                  onChange={(num) => setDistances({ ...distances, x: num })}
+                />
               </Grid>
             </Grid>
           </Grid>
           <Grid item>
             <Grid container spacing={2}>
               <Grid item>
-                <NumberTextField value={distances.lat} onChange={(num) => setDistances({ ...distances, lat: Math.abs(num) })} label="Vertical Meters" width='150px' />
+                <NumberTextField value={distances.lat}
+                  label="Vertical Meters" width='150px'
+                  onChange={(num) => {
+                    const lat = Math.abs(num);
+                    if (lat > 1e-6) {
+                      const lng = distances.lng / distances.lat * lat;
+                      setDistances({ ...distances, lat, lng });
+                    }
+                  }}
+                />
               </Grid>
               <Grid item>
-                <NumberTextField value={distances.y} onChange={(num) => setDistances({ ...distances, y: num })} label="Vertical Pixels" width='150px' />
+                <NumberTextField value={distances.y}
+                  label="Vertical Pixels" width='150px'
+                  onChange={(num) => setDistances({ ...distances, y: num })}
+                />
               </Grid>
             </Grid>
           </Grid>

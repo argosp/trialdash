@@ -178,7 +178,10 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                     <>
                         <ShapeChooser
                             shape={shape}
-                            onChange={(val) => setShape(val)}
+                            onChange={(val) => {
+                                if (val === "Point") setMarkedPoints([]);
+                                setShape(val)
+                            }}
                             shapeOptions={shapeOptions}
                         />
                         {shape !== 'Rect' ? null :
@@ -190,7 +193,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             onClick={handlePutEntities}
                         >
                             Put entities
-                                </Button>
+                        </Button>
                         <TypeChooser
                             selectedType={selectedType}
                             onChange={newType => {
@@ -229,7 +232,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             selection={selection}
                             setSelection={setSelection}
                             entities={entities.filter(d => d.name === selectedType)}
-                            removeEntityLocation={(index) => setEntities(changeLocations(selectedType, [index]))}
+                            removeEntitiesLocations={(indices) => setEntities(changeLocations(selectedType, indices))}
                             layerChosen={layerChosen}
                         />
                     </>
