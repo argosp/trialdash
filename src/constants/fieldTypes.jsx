@@ -13,6 +13,7 @@ const FIELD_TYPE_BASE = {
   template: '',
   multipleValues: false,
   trialField: false,
+  inheritable: false
 };
 
 export const FIELD_TYPES = {

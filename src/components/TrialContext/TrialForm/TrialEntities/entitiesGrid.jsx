@@ -71,7 +71,7 @@ class EntitiesGrid extends React.Component {
           <CustomTooltip
             title="Add entity"
             ariaLabel="Add entity"
-            onClick={(e) => openAddEntitiesPanel(e,entity)}
+            onClick={(e) => openAddEntitiesPanel(e, entity)}
           >
             <PlusIcon/>
           </CustomTooltip>

@@ -96,6 +96,13 @@ const EditFieldTypePanel = ({
         />
         )
       }
+      {formType === ENTITIES_TYPES_DASH && fieldType.trialField &&  <SwitchSection
+        onChange={e => onValueChange(e, 'switch', fieldType.key, 'inheritable')}
+        className={classes.requiredSwitch}
+        title="inheritable"
+        description="Inherit the property to contains entity"
+        isChecked={fieldType.inheritable}
+      /> }
       <Grid
         container
         wrap="nowrap"
