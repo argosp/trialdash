@@ -25,7 +25,9 @@ export default (trialSet) => {
     .replace(/"template":/g, 'template:')
     .replace(/"multipleValues":/g, 'multipleValues:')
     .replace(/"value":/g, 'value:')
-    .replace(/"defaultValue":/g, 'defaultValue:')}
+    .replace(/"defaultValue":/g, 'defaultValue:')
+    .replace(/"inheritable":/g, 'inheritable:')
+  }
         ) {
             key
             name
@@ -42,6 +44,7 @@ export default (trialSet) => {
               multipleValues
               value
               defaultValue
+              inheritable
             }
         }
     }

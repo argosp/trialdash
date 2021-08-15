@@ -29,6 +29,7 @@ export default (entitiesType) => {
     .replace(/"value":/g, 'value:')
     .replace(/"defaultValue":/g, 'defaultValue:')
     .replace(/"defaultProperty":/g, 'defaultProperty:')
+    .replace(/"inheritable":/g, 'inheritable:')
 }
             ) {
                 key
@@ -49,6 +50,7 @@ export default (entitiesType) => {
                   value
                   defaultValue
                   defaultProperty
+                  inheritable
                 }
             }
         }

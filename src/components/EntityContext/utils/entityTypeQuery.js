@@ -20,6 +20,7 @@ const entitiesTypes = experimentId => gql`
            value
            defaultValue
            defaultProperty
+           inheritable
         }
      }
   }
