@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { TRIAL_MUTATION } from '../../../../constants/base';
 
-export default (trial) => {
+export default (trial, changedEntities) => {
   const key = trial.key ? trial.key : `${trial.experimentId}_${Date.now()}`;
 
   return gql`mutation {
@@ -14,7 +14,14 @@ export default (trial) => {
           ${trial.status ? `status:"${trial.status}"` : ''},
           trialSetKey:"${trial.trialSetKey}",
           ${trial.numberOfEntities ? `numberOfEntities:"${trial.numberOfEntities}"` : ''},
-          ${trial.state ? `state:"${trial.state}"` : ''}
+          ${trial.state ? `state:"${trial.state}"` : ''},
+          ${changedEntities ? `changedEntities: ${JSON.stringify(changedEntities)
+            .replace(/"key":/g, 'key:')
+            .replace(/"val":/g, 'val:')
+            .replace(/"type":/g, 'type:')
+            .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+            .replace(/"properties":/g, 'properties:')
+            .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
           ${trial.properties ? `properties:${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')}` : ''}
