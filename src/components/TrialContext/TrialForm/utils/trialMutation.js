@@ -11,7 +11,7 @@ import { TRIAL_MUTATION } from '../../../../constants/base';
     .replace(/"type":/g, 'type:');
 } */
 
-export default (trial) => {
+export default (trial, changedEntities) => {
   const key = trial.key ? trial.key : `${trial.experimentId}_${Date.now()}`;
   return gql`mutation {
         ${TRIAL_MUTATION}(
@@ -24,6 +24,13 @@ export default (trial) => {
             trialSetKey:"${trial.trialSetKey}"
             numberOfEntities:${trial.numberOfEntities}
             ${trial.state ? `state:"${trial.state}"` : ''}
+            ${changedEntities ? `changedEntities: ${JSON.stringify(changedEntities)
+              .replace(/"key":/g, 'key:')
+              .replace(/"val":/g, 'val:')
+              .replace(/"type":/g, 'type:')
+              .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+              .replace(/"properties":/g, 'properties:')
+              .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
             properties: ${JSON.stringify(trial.properties)
     .replace(/"key":/g, 'key:')
     .replace(/"val":/g, 'val:')},

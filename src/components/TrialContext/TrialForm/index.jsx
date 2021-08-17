@@ -79,6 +79,7 @@ class TrialForm extends React.Component {
     tabValue: this.props.tabValue || 0,
     showFooter: true,
     CloneEntitiesDialogOpen: false,
+    changedEntities: []
   };
 
   componentDidMount() {
@@ -133,7 +134,7 @@ class TrialForm extends React.Component {
   };
 
   onEntityPropertyChange = (entityObj, e, propertyKey) => {
-    const { trial } = this.state;
+    const { trial, changedEntities } = this.state;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     if (!e.target) return;
     let { value } = e.target;
@@ -153,9 +154,13 @@ class TrialForm extends React.Component {
       property.val = value;
       trial[entitiesField][indexOfEntity].properties[indexOfProperty] = {...property};
     }
-    this.setState({ trial, changed: true });
+    this.updateChangedEntities(changedEntities, entityObj);
+    this.setState({ trial, changed: true});
   };
-
+  updateChangedEntities = (changedEntities, entityObj) => {
+    if(changedEntities.findIndex(e => e.key == entityObj.key) == -1)
+    this.setState({changedEntities:[...this.state.changedEntities, entityObj]})
+  }
   onInputChange = (e, inputName) => {
     const { value } = e.target;
 
@@ -213,7 +218,7 @@ class TrialForm extends React.Component {
   submitTrial = async (newTrial, deleted, newStatus) => {
     const updatedTrial = newTrial;
     const { match, client, returnFunc } = this.props;
-    const { trialSet } = this.state;
+    const { trialSet, changedEntities } = this.state;
     if (deleted) updatedTrial.state = 'Deleted';
     if (newStatus) updatedTrial.status = newStatus;
     let property;
@@ -241,7 +246,7 @@ class TrialForm extends React.Component {
       }
     }
     await client.mutate({
-      mutation:trialMutation(updatedTrial),
+      mutation:trialMutation(updatedTrial, changedEntities),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -303,7 +308,7 @@ class TrialForm extends React.Component {
        trial,
        containsEntitiesObj.parentEntityKey,
        containsEntitiesObj.newEntity, 
-       containsEntitiesObj.action),//yehudit
+       containsEntitiesObj.action),
      update: (cache, mutationResult) => {
        updateCache(
          cache,
@@ -327,16 +332,16 @@ class TrialForm extends React.Component {
   }
 
   updateLocation = async (entity) => {
-    const newEntity = {};
+    const updatedTrial = {};
     const { match, client } = this.props;
     const { trial } = this.state;
-    newEntity.key = trial.key;
-    newEntity.experimentId = trial.experimentId;
-    newEntity.trialSetKey = trial.trialSetKey;
-    newEntity[!trial.status || trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
-
+    updatedTrial.key = trial.key;
+    updatedTrial.experimentId = trial.experimentId;
+    updatedTrial.trialSetKey = trial.trialSetKey;
+    updatedTrial[!trial.status || trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
+    const changedEntities = [entity];
     await client.mutate({
-      mutation: trialMutationUpdate(newEntity),
+      mutation: trialMutationUpdate(updatedTrial, changedEntities),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
