@@ -1,7 +1,6 @@
 import gql from "graphql-tag";
 import { UPDATE_CONTAINS_ENTITIES_MUTATION } from "../../../../constants/base";
 export default (trial, parentEntityKey, entity, action) => {
-  debugger;
   return gql`mutation {
         ${UPDATE_CONTAINS_ENTITIES_MUTATION}(
             key:"${trial.key}",

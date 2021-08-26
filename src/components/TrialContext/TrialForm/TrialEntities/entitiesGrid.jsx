@@ -28,7 +28,7 @@ class EntitiesGrid extends React.Component {
   }
 
   renderEntitiesTableRow = (entity) => {
-    const { classes, removeEntity, onEntityPropertyChange, entities, entitiesTypes, trial, openAddEntitiesPanel } = this.props;
+    const { classes, removeEntity, onEntityPropertyChange, entities, entitiesTypes, trial, openAddEntitiesPanel, updateEntityInParent } = this.props;
     if (!entities[entity.key]) return <React.Fragment key={entity.key} />;
     return (
       <React.Fragment key={entity.key}>
@@ -60,7 +60,7 @@ class EntitiesGrid extends React.Component {
         ))}
         <StyledTableCell classes={{ body: classes.entityGridTd }} align="right">
         {entity.containsEntities && entity.containsEntities.length ?
-        <ContainsEntitiesDisplayList entity = {entity} experimentEntitiesArray = { entities } trialEntitiesArray ={trial.entities} classes ={classes}></ContainsEntitiesDisplayList>: ''}          
+        <ContainsEntitiesDisplayList entity = {entity} experimentEntitiesArray = { entities } trialEntitiesArray ={trial.entities} classes ={classes} removeEntityFromParent ={updateEntityInParent}></ContainsEntitiesDisplayList>: ''}          
           <CustomTooltip
             title="Delete"
             ariaLabel="delete"

@@ -7,15 +7,19 @@ const ContainsEntitiesDisplayList = ({
   entity,
   experimentEntitiesArray,
   trialEntitiesArray,
+  removeEntityFromParent,
   classes,
 }) => {
   const [openContent, setOpenContent] = useState(false);
+  const [data, setData] = useState({});
+
   useEffect(() => {
     for (const element of trialEntitiesArray) {
       createSubItems(element);
     }
   }, []);
   const handleClick = () => {
+    setData(trialEntitiesArray.find((el) => el.key === entity.key));
     setOpenContent(!openContent);
   };
 
@@ -43,6 +47,9 @@ const ContainsEntitiesDisplayList = ({
     }
   };
 
+  const removeEntity = (entityKey) => {
+    removeEntityFromParent(data.key,{key: entityKey}, 'delete');
+  };
   return (
     <div>
       <CustomTooltip
@@ -55,7 +62,8 @@ const ContainsEntitiesDisplayList = ({
       </CustomTooltip>
       {openContent && (
         <NestedAccordion
-          data={trialEntitiesArray.find((el) => el.key === entity.key)}
+          data={data}
+          removeEntity={removeEntity}
         ></NestedAccordion>
       )}
     </div>

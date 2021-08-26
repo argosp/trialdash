@@ -110,6 +110,7 @@ class TrialEntities extends React.Component {
       trial,
       addEntityToTrial,
       removeEntity,
+      updateEntityInParent,
       onEntityPropertyChange,
       updateLocation,
       client,
@@ -203,6 +204,7 @@ class TrialEntities extends React.Component {
               {...this.props}
               trial={trial}
               removeEntity={removeEntity}
+              updateEntityInParent ={updateEntityInParent}
               onEntityPropertyChange={onEntityPropertyChange}
               trialEntities={trialEntities}
               entities={entities}
