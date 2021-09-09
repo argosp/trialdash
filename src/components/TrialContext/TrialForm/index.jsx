@@ -27,6 +27,7 @@ import {
   TRIALS,
   TRIAL_MUTATION,
   TRIAL_SET_MUTATION,
+  UPDATE_CONTAINS_ENTITIES_MUTATION
 } from '../../../constants/base';
 import { PenIcon } from '../../../constants/icons';
 import StatusBadge from '../../StatusBadge';
@@ -315,7 +316,7 @@ class TrialForm extends React.Component {
          mutationResult,
          trialsQuery(match.params.id, match.params.trialSetKey),
          TRIALS,
-         TRIAL_MUTATION,
+         UPDATE_CONTAINS_ENTITIES_MUTATION,
          returnFunc,
          'trialSetKey',
          this.updateAfterSubmit
