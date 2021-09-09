@@ -9,15 +9,15 @@ import CustomTooltip from '../../../CustomTooltip';
 import CustomInput from '../../../CustomInput';
 import { BasketIcon } from '../../../../constants/icons';
 import { PlusIcon } from '../../../../constants/icons';
-
+import  ContainsEntitiesDisplayList  from '../TrialEntities/ContainsEntitiesDisplayList';
 import {
   ENTITIES,
 } from '../../../../constants/base';
 
 class EntitiesGrid extends React.Component {
   state = {
-    open: {},
-  };
+    openContentHeader: {}
+    };
 
   entityTableHeadColumns = (entitiesType) => {
     if (!entitiesType || !this) return [];
@@ -28,7 +28,7 @@ class EntitiesGrid extends React.Component {
   }
 
   renderEntitiesTableRow = (entity) => {
-    const { classes, removeEntity, onEntityPropertyChange, entities, entitiesTypes, trial, openAddEntitiesPanel } = this.props;
+    const { classes, removeEntity, onEntityPropertyChange, entities, entitiesTypes, trial, openAddEntitiesPanel, updateEntityInParent } = this.props;
     if (!entities[entity.key]) return <React.Fragment key={entity.key} />;
     return (
       <React.Fragment key={entity.key}>
@@ -38,7 +38,6 @@ class EntitiesGrid extends React.Component {
           <>
             {property.trialField
               ? (
-                // <Collapse in={open[e]} timeout="auto" unmountOnExit>
                   <StyledTableCell classes={{ body: classes.entityGridTd }} key={`entity-property-${property.key}-${trial.status}`} align="left">
                     <CustomInput
                       value={entity.properties && entity.properties.find(p => p.key === property.key) ? entity.properties.find(p => p.key === property.key).val : ''}
@@ -50,7 +49,6 @@ class EntitiesGrid extends React.Component {
                       multiple={property.multipleValues}
                     />
                   </StyledTableCell>
-                // </Collapse>
 
               ) : (
                 <StyledTableCell classes={{ body: classes.entityGridTd }} key={property.key} align="left">
@@ -61,6 +59,8 @@ class EntitiesGrid extends React.Component {
           </>
         ))}
         <StyledTableCell classes={{ body: classes.entityGridTd }} align="right">
+        {entity.containsEntities && entity.containsEntities.length ?
+        <ContainsEntitiesDisplayList entity = {entity} experimentEntitiesArray = { entities } trialEntitiesArray ={trial.entities} classes ={classes} removeEntityFromParent ={updateEntityInParent}></ContainsEntitiesDisplayList>: ''}          
           <CustomTooltip
             title="Delete"
             ariaLabel="delete"
@@ -80,15 +80,15 @@ class EntitiesGrid extends React.Component {
     );
   };
 
-  openTable = (e) => {
-    this.state.open[e] = !this.state.open[e];
+  openTable = (e, currentContent) => {  
+    this.state[currentContent][e] = !this.state[currentContent][e];
     this.setState({ });
   }
-
+ 
   render() {
     const { classes, trialEntities, entitiesTypes, update, setUpdated } = this.props;
     const {
-      open,
+      openContentHeader,
     } = this.state;
     return (
       <>
@@ -98,21 +98,21 @@ class EntitiesGrid extends React.Component {
             key={e}
           >
             <ContentHeader
-              onClick={() => this.openTable(e)}
+              onClick={() => this.openTable(e ,'openContentHeader')}
               className={classes.contentHeader}
               title={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].name}
               bottomDescription={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].description}
               rightComponent={(
                 <CustomTooltip
                   title="Open"
-                  className={open[e] ? classes.arrowDown : ''}
+                  className={openContentHeader[e] ? classes.arrowDown : ''}
                   ariaLabel="open"
                 >
                   <ArrowForwardIosIcon />
                 </CustomTooltip>
               )}
             />
-            <Collapse in={open[e]} timeout="auto" unmountOnExit>
+            <Collapse in={openContentHeader[e]} timeout="auto" unmountOnExit>
               <ContentTable
                 classes={{ table: classes.entityGridTable,
                   head: classes.entityGridTableHead,

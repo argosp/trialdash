@@ -27,6 +27,7 @@ import {
   TRIALS,
   TRIAL_MUTATION,
   TRIAL_SET_MUTATION,
+  UPDATE_CONTAINS_ENTITIES_MUTATION
 } from '../../../constants/base';
 import { PenIcon } from '../../../constants/icons';
 import StatusBadge from '../../StatusBadge';
@@ -289,19 +290,19 @@ class TrialForm extends React.Component {
     this.state.trial[entitiesField].push(newEntity);
     if (parentEntity){
       //TODO: when open AddEntityPanel by plus icon of entity -> display all entites that can add to entity(filter by not exist key in containsArray)
-     this.addEntityToParent(parentEntity, newEntity, action);
+     this.updateEntityInParent(parentEntity, newEntity, action);
     }
     else
     this.setState({ changed: true });
   }
   
-  addEntityToParent  = async (parentEntity, newEntity, action) => {
+  updateEntityInParent  = async (parentEntity, newEntity, action) => {
     const { match, client, returnFunc } = this.props;
     const { trial } = this.state;
     const containsEntitiesObj = { 
-      parentEntityKey: parentEntity.key,
+      parentEntityKey: parentEntity.key || parentEntity,
       newEntity: newEntity,
-      action: action //TODO: delete
+      action: action
    }
    await client.mutate({
      mutation: updateContainsEntitiesMutation(
@@ -315,7 +316,7 @@ class TrialForm extends React.Component {
          mutationResult,
          trialsQuery(match.params.id, match.params.trialSetKey),
          TRIALS,
-         TRIAL_MUTATION,
+         UPDATE_CONTAINS_ENTITIES_MUTATION,
          returnFunc,
          'trialSetKey',
          this.updateAfterSubmit
@@ -548,6 +549,7 @@ class TrialForm extends React.Component {
             trial={trial}
             addEntityToTrial={this.addEntityToTrial}
             removeEntity={this.removeEntity}
+            updateEntityInParent = {this.updateEntityInParent}
             updateLocation={this.updateLocation}
             onEntityPropertyChange={this.onEntityPropertyChange}
             showFooter={this.showFooter}
