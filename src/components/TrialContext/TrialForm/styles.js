@@ -31,6 +31,9 @@ export const styles = theme => ({
     fontSize: 20,
     transform: 'scale(1.3)',
   },
+  trialActionBtn: {
+     marginLeft: '4px'
+  },
   entitiesPanelHeader: {
     borderBottom: `1px solid ${theme.palette.white.dark}`,
     paddingBottom: 20,

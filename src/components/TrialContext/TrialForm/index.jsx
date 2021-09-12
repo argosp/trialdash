@@ -37,7 +37,6 @@ import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
 import TrialEntities from './TrialEntities';
-import CloneEntitiesDialog from '../../CloneEntitiesDialog';
 import trialMutationUpdate from './utils/trialMutationUpdate';
 import ConfirmDialog from '../../ConfirmDialog';
 
@@ -79,7 +78,6 @@ class TrialForm extends React.Component {
     trialSet: {},
     tabValue: this.props.tabValue || 0,
     showFooter: true,
-    CloneEntitiesDialogOpen: false,
     changedEntities: []
   };
 
@@ -389,9 +387,7 @@ class TrialForm extends React.Component {
     this.setState({ [anchor]: null });
     this.setEditableStatus(false)
   };
-  SetCloneEntitiesDialogOpen = (open) => {
-    this.setState({ CloneEntitiesDialogOpen: open });
-  }
+  
   setCurrent = (property) => {
     if (property.type === 'time') this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
     if (property.type === 'date') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key)
@@ -412,7 +408,6 @@ class TrialForm extends React.Component {
       editableStatus,
       anchorMenu,
       showFooter,
-      CloneEntitiesDialogOpen,
       confirmOpen,
       confirmStatusOpen,
       newStatus,
@@ -445,22 +440,7 @@ class TrialForm extends React.Component {
                 color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
               />
             )}
-            middleDescription={
-              <React.Fragment>
-             <SimpleButton text={"Clone entities"} onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
-              {CloneEntitiesDialogOpen&&<CloneEntitiesDialog
-                  title={"Select trial to clone from"}
-                  open={CloneEntitiesDialogOpen}
-                  setOpen={this.SetCloneEntitiesDialogOpen}
-                  onConfirm={(updateTrial) => this.submitTrial(updateTrial)}
-                  currentTrial = {trial}
-                  client ={client}
-                  match ={match}
-                >
-               </CloneEntitiesDialog>}
-             </React.Fragment>
-             
-            }
+         
             title={trial.name || 'trial name goes here'}
             className={classes.header}
             rightComponent={(
@@ -551,6 +531,7 @@ class TrialForm extends React.Component {
             removeEntity={this.removeEntity}
             updateEntityInParent = {this.updateEntityInParent}
             updateLocation={this.updateLocation}
+            submitTrial={this.submitTrial}
             onEntityPropertyChange={this.onEntityPropertyChange}
             showFooter={this.showFooter}
           />

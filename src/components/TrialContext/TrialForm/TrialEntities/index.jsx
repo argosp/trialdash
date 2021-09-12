@@ -19,6 +19,7 @@ import EntitiesGrid from './entitiesGrid';
 import SimpleButton from '../../../SimpleButton';
 import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
 import EntityPlanner from '../../../EntityPlanner';
+import CloneEntitiesDialog from '../../../CloneEntitiesDialog';
 import experimentsQuery from '../../../ExperimentContext/utils/experimentsQuery';
 
 const TabPanel = ({ children, value, index, ...other }) => (
@@ -42,7 +43,8 @@ class TrialEntities extends React.Component {
     entities: {},
     entitiesTypes: {},
     isLoading: true,
-    parentEntity: {}
+    parentEntity: {},
+    CloneEntitiesDialogOpen: false
   };
 
   componentWillMount() {
@@ -101,7 +103,9 @@ class TrialEntities extends React.Component {
   setUpdated = () => {
     this.setState({ update: false });
   }
-
+  SetCloneEntitiesDialogOpen = (open) => {
+    this.setState({ CloneEntitiesDialogOpen: open });
+  }
   render() {
     const {
       classes,
@@ -113,6 +117,7 @@ class TrialEntities extends React.Component {
       updateEntityInParent,
       onEntityPropertyChange,
       updateLocation,
+      submitTrial,
       client,
     } = this.props;
     const {
@@ -122,7 +127,8 @@ class TrialEntities extends React.Component {
       entitiesTypes,
       update,
       isLoading,
-      parentEntity
+      parentEntity,
+      CloneEntitiesDialogOpen
     } = this.state;
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
@@ -182,12 +188,28 @@ class TrialEntities extends React.Component {
             </IconButton>
           </Grid>
           {selectedViewIndex !== 3 && <Grid item>
+            <SimpleButton text={"Clone entities"} 
+             onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
+              {CloneEntitiesDialogOpen&&<CloneEntitiesDialog
+                  title={"Select trial to clone from"}
+                  open={CloneEntitiesDialogOpen}
+                  setOpen={this.SetCloneEntitiesDialogOpen}
+                  onConfirm={(updateTrial) => submitTrial(updateTrial)}
+                  currentTrial = {trial}
+                  client ={client}
+                  match ={match}
+                >
+               </CloneEntitiesDialog>}
             <SimpleButton
+              className={classes.trialActionBtn}
               text="Add"
               colorVariant="primary"
               onClick={this.openAddEntitiesPanel}
             />
-          </Grid>}
+          </Grid>
+          
+          }
+          
         </Grid>
         {selectedViewIndex !== 3 && <AddEntityPanel
           isPanelOpen={this.state.isEntitiesPanelOpen}
