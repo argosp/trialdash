@@ -12,7 +12,7 @@ export const styles = () => ({
     cursor: 'pointer',
   },
   actionsCell: {
-    display:"inline-flex"
+    display:"flex"
 
   }
 });
