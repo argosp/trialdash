@@ -1,3 +1,5 @@
+import { red } from "@material-ui/core/colors";
+
 export const styles = () => ({
   locationLink: {
     textDecoration: 'none',
@@ -9,4 +11,8 @@ export const styles = () => ({
   tableCell: {
     cursor: 'pointer',
   },
+  actionsCell: {
+    display:"inline-flex"
+
+  }
 });

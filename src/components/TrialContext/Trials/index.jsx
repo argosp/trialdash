@@ -86,7 +86,7 @@ class Trials extends React.Component {
         <StyledTableCell align="left">
           <StatusBadge color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main} title={trial.status} />
         </StyledTableCell>
-        <StyledTableCell align="right">
+        <StyledTableCell align="right" className={classes.actionsCell}>
           <CustomTooltip
             title="Entities"
             ariaLabel="entities"
