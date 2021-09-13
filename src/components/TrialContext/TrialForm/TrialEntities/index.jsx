@@ -234,6 +234,9 @@ class TrialEntities extends React.Component {
               update={update}
               setUpdated={this.setUpdated}
               openAddEntitiesPanel ={this.openAddEntitiesPanel}
+              submitTrial = {(updateTrial) => submitTrial(updateTrial)}
+              client ={client}
+              match ={match}
             />
           }
         </TabPanel>

@@ -109,7 +109,7 @@ function CloneEntitiesDialog({
         disableTypography
       >
         <Typography variant="h6">{title}</Typography>
-        <IconButton aria-label="close" onClick={() => setOpen(false)}>
+        <IconButton aria-label="close" onClick={(e) => {setOpen(false);  e.stopPropagation()}}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>

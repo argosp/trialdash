@@ -9,14 +9,18 @@ import CustomTooltip from '../../../CustomTooltip';
 import CustomInput from '../../../CustomInput';
 import { BasketIcon } from '../../../../constants/icons';
 import { PlusIcon } from '../../../../constants/icons';
+import SimpleButton from '../../../SimpleButton';
 import  ContainsEntitiesDisplayList  from '../TrialEntities/ContainsEntitiesDisplayList';
+import CloneEntitiesDialog from '../../../CloneEntitiesDialog';
+
 import {
   ENTITIES,
 } from '../../../../constants/base';
 
 class EntitiesGrid extends React.Component {
   state = {
-    openContentHeader: {}
+    openContentHeader: {},
+    CloneEntitiesDialogOpen: false
     };
 
   entityTableHeadColumns = (entitiesType) => {
@@ -84,11 +88,14 @@ class EntitiesGrid extends React.Component {
     this.state[currentContent][e] = !this.state[currentContent][e];
     this.setState({ });
   }
- 
+  SetCloneEntitiesDialogOpen = (open) => {
+    this.setState({ CloneEntitiesDialogOpen: open });
+  }
   render() {
-    const { classes, trialEntities, entitiesTypes, update, setUpdated } = this.props;
+    const { classes, trialEntities, entitiesTypes, update, setUpdated,trial, submitTrial, match, client } = this.props;
     const {
       openContentHeader,
+      CloneEntitiesDialogOpen
     } = this.state;
     return (
       <>
@@ -103,6 +110,24 @@ class EntitiesGrid extends React.Component {
               title={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].name}
               bottomDescription={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].description}
               rightComponent={(
+                <div>
+                <SimpleButton text={"Clone device type"} 
+                  variant="outlined"
+                  onClick={(e) => { 
+                    this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen);   
+                     e.stopPropagation()}}>
+                  </SimpleButton>
+                  {CloneEntitiesDialogOpen && 
+                  <CloneEntitiesDialog
+                    title={"Select trial to clone from"}
+                    open={CloneEntitiesDialogOpen}
+                    setOpen={this.SetCloneEntitiesDialogOpen}
+                    onConfirm={(updateTrial) => submitTrial(updateTrial)}
+                    currentTrial = {trial}
+                    client ={client}
+                    match ={match}
+                  >
+                </CloneEntitiesDialog>}
                 <CustomTooltip
                   title="Open"
                   className={openContentHeader[e] ? classes.arrowDown : ''}
@@ -110,6 +135,7 @@ class EntitiesGrid extends React.Component {
                 >
                   <ArrowForwardIosIcon />
                 </CustomTooltip>
+                </div>
               )}
             />
             <Collapse in={openContentHeader[e]} timeout="auto" unmountOnExit>
