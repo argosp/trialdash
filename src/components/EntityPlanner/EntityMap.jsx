@@ -11,6 +11,7 @@ import {
 import config from '../../config';
 import { L, latLngBounds } from 'leaflet';
 import { CRS } from 'leaflet';
+import  ErrorBoundary from '../ErrorBoundary';
 // import styled from "styled-components";
 import { withStyles } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
@@ -224,6 +225,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     }
 
     return (
+       <ErrorBoundary >
         <LeafletMap
             bounds={getLayerPosition(layerChosen)}
             zoom={15}
@@ -248,5 +250,6 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             />
             {children}
         </LeafletMap>
+        </ErrorBoundary>
     );
 }
