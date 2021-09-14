@@ -29,6 +29,8 @@ function CloneEntitiesDialog({
   setOpen,
   onConfirm,
   currentTrial,
+  entitiesTypes,
+  trialEntities,
   client,
   match,
 }) {
@@ -37,6 +39,9 @@ function CloneEntitiesDialog({
   const [trials, setTrials] = React.useState();
   const [selectedTrial, setSelectedTrial] = React.useState();
   const [selectedTrialStatus, setSelectedTrialStatus] = React.useState();
+  //TODO: if modal open form the new btn of entityType- get below data from props.
+  //TODO: check when call to cloneEntitiesFromSelectedTrial function and when confirm - onConfirm
+  const [selectedEntitiesTypeKey, setSelectedEntitiesTypeKey] = React.useState();
 
   useEffect(() => {
     if (selectedTrialStatus && selectedTrial) cloneEntitiesFromSelectedTrial();
@@ -67,17 +72,23 @@ function CloneEntitiesDialog({
         setTrials(data.data[trials]);
       });
   };
+  const getEntitiesToClone = () => {
+    if(selectedEntitiesTypeKey)
+      return  updateTrial.entities.concat(selectedTrial.entities.filter(e=>e.entitiesTypeKey == e.entitiesTypeKey));
+    return updateTrial.entities.concat(selectedTrial.entities);
+  }
+
   const cloneEntitiesFromSelectedTrial = () => {
     if (selectedTrialStatus == "design") {
       if (updateTrial.status == "design")
         setUpdateTrial({
           ...updateTrial,
-          entities: updateTrial.entities.concat(selectedTrial.entities),
+          entities: getEntitiesToClone(),
         });
       else
         setUpdateTrial({
           ...updateTrial,
-          deployedEntities: updateTrial.entities.concat(selectedTrial.entities),
+          deployedEntities: getEntitiesToClone(),
         });
     } else if (selectedTrialStatus == "deploy") {
       if (updateTrial.status == "design")
@@ -109,7 +120,7 @@ function CloneEntitiesDialog({
         disableTypography
       >
         <Typography variant="h6">{title}</Typography>
-        <IconButton aria-label="close" onClick={(e) => {setOpen(false);  e.stopPropagation()}}>
+        <IconButton aria-label="close" onClick={(e) => {setOpen(false); e.stopPropagation()}}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -121,7 +132,8 @@ function CloneEntitiesDialog({
                 <ListItem
                   key={trial.key}
                   button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setSelectedTrial(trial);
                   }}
                 >
@@ -130,6 +142,13 @@ function CloneEntitiesDialog({
               ))}
           </List>
         </DialogContentText>
+        <span>Choose device type (Optional)</span> 
+        {Object.keys(trialEntities).filter(e => Object.keys(entitiesTypes).indexOf(e) !== -1).map(element => (
+         <div  onClick={(e) => {
+          e.stopPropagation();
+          setSelectedEntitiesTypeKey(entitiesTypes[element][0].key);
+        }}>ddd {entitiesTypes && entitiesTypes[element] && entitiesTypes[element][0].name}</div>
+        ))}
       </DialogContent>
       <DialogActions 
       style={{"justifyContent": 'end'}}
@@ -161,14 +180,14 @@ function CloneEntitiesDialog({
             </RadioGroup>
           </FormControl>
         )}
-        {/* <SimpleButton
+        <SimpleButton
           variant="outlined"
           onClick={() => {
             setOpen(false);
             onConfirm(updateTrial);
           }}
-          text="SAVE"
-        /> */}
+          text="CLONE"
+        />
       </DialogActions>
     </Dialog>
   );

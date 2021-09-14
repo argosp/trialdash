@@ -195,6 +195,8 @@ class TrialEntities extends React.Component {
                   open={CloneEntitiesDialogOpen}
                   setOpen={this.SetCloneEntitiesDialogOpen}
                   onConfirm={(updateTrial) => submitTrial(updateTrial)}
+                  entitiesTypes={entitiesTypes}
+                  trialEntities={trialEntities}
                   currentTrial = {trial}
                   client ={client}
                   match ={match}
