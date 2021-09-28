@@ -293,11 +293,11 @@ class TrialForm extends React.Component {
     else
     this.setState({ changed: true });
   }
-  
+
   updateEntityInParent  = async (parentEntity, newEntity, action) => {
     const { match, client, returnFunc } = this.props;
     const { trial } = this.state;
-    const containsEntitiesObj = { 
+    const containsEntitiesObj = {
       parentEntityKey: parentEntity.key || parentEntity,
       newEntity: newEntity,
       action: action
@@ -306,7 +306,7 @@ class TrialForm extends React.Component {
      mutation: updateContainsEntitiesMutation(
        trial,
        containsEntitiesObj.parentEntityKey,
-       containsEntitiesObj.newEntity, 
+       containsEntitiesObj.newEntity,
        containsEntitiesObj.action),
      update: (cache, mutationResult) => {
        updateCache(
@@ -387,7 +387,7 @@ class TrialForm extends React.Component {
     this.setState({ [anchor]: null });
     this.setEditableStatus(false)
   };
-  
+
   setCurrent = (property) => {
     if (property.type === 'time') this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
     if (property.type === 'date') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key)
@@ -440,7 +440,7 @@ class TrialForm extends React.Component {
                 color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
               />
             )}
-         
+
             title={trial.name || 'trial name goes here'}
             className={classes.header}
             rightComponent={(
@@ -525,16 +525,18 @@ class TrialForm extends React.Component {
             : null}
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <TrialEntities
-            trial={trial}
-            addEntityToTrial={this.addEntityToTrial}
-            removeEntity={this.removeEntity}
-            updateEntityInParent = {this.updateEntityInParent}
-            updateLocation={this.updateLocation}
-            submitTrial={this.submitTrial}
-            onEntityPropertyChange={this.onEntityPropertyChange}
-            showFooter={this.showFooter}
-          />
+          {tabValue === 1 &&
+            <TrialEntities
+              trial={trial}
+              addEntityToTrial={this.addEntityToTrial}
+              removeEntity={this.removeEntity}
+              updateEntityInParent = {this.updateEntityInParent}
+              updateLocation={this.updateLocation}
+              submitTrial={this.submitTrial}
+              onEntityPropertyChange={this.onEntityPropertyChange}
+              showFooter={this.showFooter}
+            />
+          }
         </TabPanel>
         {(tabValue === 0 || showFooter) && <Footer
           cancelButtonHandler={this.closeForm}
