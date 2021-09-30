@@ -191,10 +191,12 @@ class TrialEntities extends React.Component {
             <SimpleButton text={"Clone entities"} 
              onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
               {CloneEntitiesDialogOpen&&<CloneEntitiesDialog
-                  title={"Select trial to clone from"}
+                  title={"Clone trial"}
                   open={CloneEntitiesDialogOpen}
                   setOpen={this.SetCloneEntitiesDialogOpen}
                   onConfirm={(updateTrial) => submitTrial(updateTrial)}
+                  entitiesTypes={entitiesTypes}
+                  trialEntities={trialEntities}
                   currentTrial = {trial}
                   client ={client}
                   match ={match}
@@ -234,6 +236,9 @@ class TrialEntities extends React.Component {
               update={update}
               setUpdated={this.setUpdated}
               openAddEntitiesPanel ={this.openAddEntitiesPanel}
+              submitTrial = {(updateTrial) => submitTrial(updateTrial)}
+              client ={client}
+              match ={match}
             />
           }
         </TabPanel>
