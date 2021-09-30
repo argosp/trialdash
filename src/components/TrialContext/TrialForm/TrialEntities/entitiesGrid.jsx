@@ -110,24 +110,7 @@ class EntitiesGrid extends React.Component {
               title={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].name}
               bottomDescription={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].description}
               rightComponent={(
-                <div>
-                <SimpleButton text={"Clone device type"} 
-                  variant="outlined"
-                  onClick={(e) => { 
-                    this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen);   
-                     e.stopPropagation()}}>
-                  </SimpleButton>
-                  {CloneEntitiesDialogOpen && 
-                  <CloneEntitiesDialog
-                    title={"Select trial to clone from"}
-                    open={CloneEntitiesDialogOpen}
-                    setOpen={this.SetCloneEntitiesDialogOpen}
-                    onConfirm={(updateTrial) => submitTrial(updateTrial)}
-                    currentTrial = {trial}
-                    client ={client}
-                    match ={match}
-                  >
-                </CloneEntitiesDialog>}
+                <>
                 <CustomTooltip
                   title="Open"
                   className={openContentHeader[e] ? classes.arrowDown : ''}
@@ -135,7 +118,7 @@ class EntitiesGrid extends React.Component {
                 >
                   <ArrowForwardIosIcon />
                 </CustomTooltip>
-                </div>
+                </>
               )}
             />
             <Collapse in={openContentHeader[e]} timeout="auto" unmountOnExit>

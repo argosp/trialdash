@@ -191,7 +191,7 @@ class TrialEntities extends React.Component {
             <SimpleButton text={"Clone entities"} 
              onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
               {CloneEntitiesDialogOpen&&<CloneEntitiesDialog
-                  title={"Select trial to clone from"}
+                  title={"Clone trial"}
                   open={CloneEntitiesDialogOpen}
                   setOpen={this.SetCloneEntitiesDialogOpen}
                   onConfirm={(updateTrial) => submitTrial(updateTrial)}
