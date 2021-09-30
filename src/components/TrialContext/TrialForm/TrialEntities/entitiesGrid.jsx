@@ -9,9 +9,7 @@ import CustomTooltip from "../../../CustomTooltip";
 import CustomInput from "../../../CustomInput";
 import { BasketIcon } from "../../../../constants/icons";
 import { PlusIcon } from "../../../../constants/icons";
-import SimpleButton from "../../../SimpleButton";
 import ContainsEntitiesDisplayList from "../TrialEntities/ContainsEntitiesDisplayList";
-import CloneEntitiesDialog from "../../../CloneEntitiesDialog";
 
 import { ENTITIES } from "../../../../constants/base";
 

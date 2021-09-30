@@ -23,8 +23,8 @@ import { styles } from "./styles";
 const StyledListItem = withStyles({
   root: {
     "&.Mui-selected": {
-      backgroundColor: "#eceff1"
-    }
+      backgroundColor: "#eceff1",
+    },
   },
 })(ListItem);
 function CloneEntitiesDialog({
@@ -41,8 +41,10 @@ function CloneEntitiesDialog({
   const [trials, setTrials] = React.useState();
   const [selectedTrial, setSelectedTrial] = React.useState();
   const [selectedTrialStatus, setSelectedTrialStatus] = React.useState();
-  const [entitiesTypesOfSelectedTrial, setEntitiesTypesOfSelectedTrial] = useState();
-  const [selectedEntitiesTypeKey, setSelectedEntitiesTypeKey] = React.useState();
+  const [entitiesTypesOfSelectedTrial, setEntitiesTypesOfSelectedTrial] =
+    useState();
+  const [selectedEntitiesTypeKey, setSelectedEntitiesTypeKey] =
+    React.useState();
   useEffect(() => {
     if (selectedTrialStatus && selectedTrial) {
       setOpen(false);
@@ -69,10 +71,14 @@ function CloneEntitiesDialog({
       });
   };
   const getEntitiesByEntitiesTypeKey = () => {
-    if(selectedEntitiesTypeKey)
-      return  updateTrial.entities.concat(selectedTrial.entities.filter(e => e.entitiesTypeKey == selectedEntitiesTypeKey));
+    if (selectedEntitiesTypeKey)
+      return updateTrial.entities.concat(
+        selectedTrial.entities.filter(
+          (e) => e.entitiesTypeKey == selectedEntitiesTypeKey
+        )
+      );
     return updateTrial.entities.concat(selectedTrial.entities);
-  }
+  };
 
   const cloneEntitiesFromSelectedTrial = () => {
     let entities;
@@ -104,15 +110,16 @@ function CloneEntitiesDialog({
         });
     }
   };
-const getEntitiesTypeFromSelectedTrial= (trial) => {
-  //TODO: refactor outside of this component
-  const entitiesTypeKeyArr = trial.entities.map(obj => {
-    return obj.entitiesTypeKey
-   });
-  const x =Object.entries(entitiesTypes).filter(e=> entitiesTypeKeyArr.indexOf(e[0])!=-1).map(item=>item[1][0]);
-  setEntitiesTypesOfSelectedTrial(x);
-
-}
+  const getEntitiesTypeFromSelectedTrial = (trial) => {
+    //TODO: refactor outside of this component
+    const entitiesTypeKeyArr = trial.entities.map((obj) => {
+      return obj.entitiesTypeKey;
+    });
+    const x = Object.entries(entitiesTypes)
+      .filter((e) => entitiesTypeKeyArr.indexOf(e[0]) != -1)
+      .map((item) => item[1][0]);
+    setEntitiesTypesOfSelectedTrial(x);
+  };
   return (
     <Dialog
       open={open}
@@ -121,92 +128,105 @@ const getEntitiesTypeFromSelectedTrial= (trial) => {
     >
       <DialogTitle
         id="customized-dialog-title"
-        style={{"display": 'flex', "justifyContent": 'space-between' }}
+        style={{ display: "flex", justifyContent: "space-between" }}
         disableTypography
       >
         <Typography variant="h6">{title}</Typography>
-        <IconButton aria-label="close" onClick={(e) => { e.stopPropagation(); setOpen(false);}}>
+        <IconButton
+          aria-label="close"
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(false);
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
-          <List component="nav">
+        <List component="nav">
           <Typography variant="h6"> Select trial to clone from:</Typography>
-            {trials &&
-              trials.map((trial) => (
-                <StyledListItem
-                  selected = {selectedTrial&& trial.key === selectedTrial.key}
-                  key={trial.key}
-                  button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedTrial(trial);
-                    getEntitiesTypeFromSelectedTrial(trial);
-                  }}
-                >
-                  <ListItemText primary={trial.name} />
-                </StyledListItem>
-              ))}
-          </List>
-          <List component="nav">
-            {selectedTrial && selectedTrial.entities && entitiesTypesOfSelectedTrial &&
-            <>
-        <Typography variant="h6"> Select entity type (Optional):</Typography>
-             {entitiesTypesOfSelectedTrial.map((element) => (
-                <StyledListItem
-                  key={element.key}
-                  selected={selectedEntitiesTypeKey&& element.key === selectedEntitiesTypeKey}
-                  button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedEntitiesTypeKey(element.key);
-                  }}
-                >
-                <ListItemText primary={element.name} />
-                </StyledListItem>
-              ))
-             } </>}
-          </List>
-      <DialogActions 
-      style={{"justifyContent": 'end'}}
-        > 
-        {selectedTrial && (
-          <FormControl component="fieldset"  style={{"display": 'flex'}}>
-           <Typography variant="h6">Copy entities from:</Typography>
-            <RadioGroup
-              aria-label="copy-from"
-              name="opyFrom"
-              value={selectedTrialStatus}
-              onChange={(e) => setSelectedTrialStatus(e.target.value)}
-            >
-              <FormControlLabel
-                value="design"
-                disabled={!selectedTrial}
-                control={<Radio />}
-                label="design"
-              />
-              <FormControlLabel
-                value="deploy"
-                disabled={
-                  !selectedTrial ||
-                  (selectedTrial && !selectedTrial.deployedEntities.length)
-                }
-                control={<Radio />}
-                label="deploy"
-              />
-            </RadioGroup>
-          </FormControl>
-        )} 
+          {trials &&
+            trials.map((trial) => (
+              <StyledListItem
+                selected={selectedTrial && trial.key === selectedTrial.key}
+                key={trial.key}
+                button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTrial(trial);
+                  getEntitiesTypeFromSelectedTrial(trial);
+                }}
+              >
+                <ListItemText primary={trial.name} />
+              </StyledListItem>
+            ))}
+        </List>
+        <List component="nav">
+          {selectedTrial &&
+            selectedTrial.entities &&
+            entitiesTypesOfSelectedTrial && (
+              <>
+                <Typography variant="h6">
+                  {" "}
+                  Select entity type (Optional):
+                </Typography>
+                {entitiesTypesOfSelectedTrial.map((element) => (
+                  <StyledListItem
+                    key={element.key}
+                    selected={
+                      selectedEntitiesTypeKey &&
+                      element.key === selectedEntitiesTypeKey
+                    }
+                    button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedEntitiesTypeKey(element.key);
+                    }}
+                  >
+                    <ListItemText primary={element.name} />
+                  </StyledListItem>
+                ))}{" "}
+              </>
+            )}
+        </List>
+        <DialogActions style={{ justifyContent: "end" }}>
+          {selectedTrial && (
+            <FormControl component="fieldset" style={{ display: "flex" }}>
+              <Typography variant="h6">Copy entities from:</Typography>
+              <RadioGroup
+                aria-label="copy-from"
+                name="opyFrom"
+                value={selectedTrialStatus}
+                onChange={(e) => setSelectedTrialStatus(e.target.value)}
+              >
+                <FormControlLabel
+                  value="design"
+                  disabled={!selectedTrial}
+                  control={<Radio />}
+                  label="design"
+                />
+                <FormControlLabel
+                  value="deploy"
+                  disabled={
+                    !selectedTrial ||
+                    (selectedTrial && !selectedTrial.deployedEntities.length)
+                  }
+                  control={<Radio />}
+                  label="deploy"
+                />
+              </RadioGroup>
+            </FormControl>
+          )}
         </DialogActions>
       </DialogContent>
-        <SimpleButton
-          variant="outlined"
-          disabled ={!selectedTrial || !selectedTrialStatus}
-          onClick={() => {
-            cloneEntitiesFromSelectedTrial();
-          }}
-          text="CLONE"
-        />
+      <SimpleButton
+        variant="outlined"
+        disabled={!selectedTrial || !selectedTrialStatus}
+        onClick={() => {
+          cloneEntitiesFromSelectedTrial();
+        }}
+        text="CLONE"
+      />
     </Dialog>
   );
 }
