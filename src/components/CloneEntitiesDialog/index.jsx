@@ -3,7 +3,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -18,7 +17,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { compose } from "recompose";
 import SimpleButton from "../SimpleButton";
 import trialsQuery from "../TrialContext/utils/trialQuery.js";
-
+import {getCurrentEntitsNameByStatus, getEntitiesByEntitiesTypeKey, getEntitiesTypeArrayFromSelectedTrial} from '../../assets/Utils';
 import { styles } from "./styles";
 const StyledListItem = withStyles({
   root: {
@@ -27,6 +26,7 @@ const StyledListItem = withStyles({
     },
   },
 })(ListItem);
+
 function CloneEntitiesDialog({
   title,
   open,
@@ -43,8 +43,8 @@ function CloneEntitiesDialog({
   const [selectedTrialStatus, setSelectedTrialStatus] = React.useState();
   const [entitiesTypesOfSelectedTrial, setEntitiesTypesOfSelectedTrial] =
     useState();
-  const [selectedEntitiesTypeKey, setSelectedEntitiesTypeKey] =
-    React.useState();
+  const [selectedEntitiesTypeKey, setSelectedEntitiesTypeKey] = useState();
+
   useEffect(() => {
     if (selectedTrialStatus && selectedTrial) {
       setOpen(false);
@@ -70,56 +70,42 @@ function CloneEntitiesDialog({
         setTrials(data.data[trials]);
       });
   };
-  const getEntitiesByEntitiesTypeKey = () => {
-    if (selectedEntitiesTypeKey)
-      return updateTrial.entities.concat(
-        selectedTrial.entities.filter(
-          (e) => e.entitiesTypeKey == selectedEntitiesTypeKey
-        )
-      );
-    return updateTrial.entities.concat(selectedTrial.entities);
+
+  const concatEntities = () => {
+    let ent;
+    if (selectedEntitiesTypeKey) ent = getEntitiesByEntitiesTypeKey(selectedTrial, selectedEntitiesTypeKey);
+    return updateTrial.entities.concat(ent || selectedTrial.entities);
   };
 
   const cloneEntitiesFromSelectedTrial = () => {
-    let entities;
-    if (selectedTrialStatus == "design") {
-      if (updateTrial.status == "design")
-        setUpdateTrial({
-          ...updateTrial,
-          entities: getEntitiesByEntitiesTypeKey(),
-        });
-      else
-        setUpdateTrial({
-          ...updateTrial,
-          deployedEntities: getEntitiesByEntitiesTypeKey(),
-        });
-    } else if (selectedTrialStatus == "deploy") {
-      if (updateTrial.status == "design")
-        setUpdateTrial({
-          ...updateTrial,
-          deployedEntities: updateTrial.entities.concat(
-            selectedTrial.deployedEntities
-          ),
-        });
-      else
-        setUpdateTrial({
-          ...updateTrial,
-          deployedEntities: updateTrial.deployedEntities.concat(
-            selectedTrial.deployedEntities
-          ),
-        });
+    switch (selectedTrialStatus) {
+      case "design":
+        {
+          if (updateTrial.status == "design")
+            setUpdateTrial({
+              ...updateTrial,
+              entities: concatEntities(),
+            });
+          else
+            setUpdateTrial({
+              ...updateTrial,
+              deployedEntities: concatEntities(),
+            });
+        }
+        break;
+      case "deploy": {
+          setUpdateTrial({
+            ...updateTrial,
+            deployedEntities: updateTrial[getCurrentEntitsNameByStatus(updateTrial).valueOf()].concat(
+              selectedTrial.deployedEntities
+            ),
+          });
+      }
+      default:
+        break;
     }
   };
-  const getEntitiesTypeFromSelectedTrial = (trial) => {
-    //TODO: refactor outside of this component
-    const entitiesTypeKeyArr = trial.entities.map((obj) => {
-      return obj.entitiesTypeKey;
-    });
-    const x = Object.entries(entitiesTypes)
-      .filter((e) => entitiesTypeKeyArr.indexOf(e[0]) != -1)
-      .map((item) => item[1][0]);
-    setEntitiesTypesOfSelectedTrial(x);
-  };
+
   return (
     <Dialog
       open={open}
@@ -154,7 +140,7 @@ function CloneEntitiesDialog({
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedTrial(trial);
-                  getEntitiesTypeFromSelectedTrial(trial);
+                  setEntitiesTypesOfSelectedTrial(getEntitiesTypeArrayFromSelectedTrial(trial, entitiesTypes));
                 }}
               >
                 <ListItemText primary={trial.name} />
@@ -195,7 +181,7 @@ function CloneEntitiesDialog({
               <Typography variant="h6">Copy entities from:</Typography>
               <RadioGroup
                 aria-label="copy-from"
-                name="opyFrom"
+                name="copyFrom"
                 value={selectedTrialStatus}
                 onChange={(e) => setSelectedTrialStatus(e.target.value)}
               >
