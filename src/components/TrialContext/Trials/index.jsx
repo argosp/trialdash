@@ -99,8 +99,8 @@ class Trials extends React.Component {
             ariaLabel="clone"
             onClick={this.handleMenuClick}
           >
-            {/* <ClickAwayListener onClickAway={() => this.handleMenuClose('anchorMenu')}> */}
-
+          <CloneIcon />
+        </CustomTooltip>
             <Menu
               id="clone-menu"
               classes={{ paper: classes.menu }}
@@ -133,11 +133,6 @@ class Trials extends React.Component {
                 </Grid>
               </MenuItem>)}
             </Menu>
-
-            {/* </ClickAwayListener> */}
-
-            <CloneIcon />
-          </CustomTooltip>
           <CustomTooltip
             title="Edit"
             ariaLabel="edit"
