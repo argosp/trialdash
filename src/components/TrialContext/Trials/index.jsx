@@ -205,12 +205,13 @@ class Trials extends React.Component {
   };
 
   clone = async (cloneFrom, trial) => {
+    const { match, client } = this.props;
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
-    const { match, client } = this.props;
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
     clonedTrial.cloneFrom = cloneFrom;
+    clonedTrial.name = `${clonedTrial.name} clone`;
     await client.mutate({
       mutation: trialMutation(clonedTrial),
       update: (cache, mutationResult) => {
