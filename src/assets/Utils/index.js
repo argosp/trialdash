@@ -15,3 +15,7 @@ export const getEntitiesTypeArrayFromSelectedTrial = (trial, entitiesTypes) => {
     .filter((e) => entitiesTypeKeyArr.indexOf(e[0]) != -1)
     .map((item) => item[1][0]);
 };
+
+export const getTrialNameByKey = (trialKey, trialsArr)=> {
+ return trialsArr.filter(e=>e.key == trialKey)[0].name;
+}
