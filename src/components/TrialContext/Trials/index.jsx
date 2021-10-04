@@ -67,10 +67,11 @@ class Trials extends React.Component {
     this.setState({ [anchor]: null });
   };
   displayCloneData = (cloneFromData, trialsArray) =>{
-    return `cloned from ${getTrialNameByKey(cloneFromData.trial, trialsArray)}/${state}`;
-   
+    return `cloned from ${getTrialNameByKey(cloneFromData.trial, trialsArray)}/${cloneFromData.state}`;
   }
-  renderTableRow = (trial,index, trialsArray) => {
+
+  //push changes to brunch and copy the link to the issue
+  renderTableRow = (trial, index, trialsArray) => {
     const { trialSet, confirmOpen, anchorMenu } = this.state;
     const { classes, theme } = this.props;
     return (
