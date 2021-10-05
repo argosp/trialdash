@@ -20,9 +20,8 @@ export default (trial, changedEntities) => {
             experimentId:"${trial.experimentId}"
             name:"${trial.name}"
             status:"${trial.status}"
-            ${trial.cloneFromData ? `cloneFrom:"${JSON.stringify(trial.cloneFrom)
-              .replace(/"state":/g, 'state:')
-              .replace(/"trial":/g, 'trial:')}` : ''},
+            ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
+            ${trial.cloneFromTrailKey ? `cloneFromTrailKey:"${trial.cloneFromTrailKey}"` : ''},
             trialSetKey:"${trial.trialSetKey}"
             numberOfEntities:${trial.numberOfEntities}
             ${trial.state ? `state:"${trial.state}"` : ''}
@@ -55,10 +54,8 @@ export default (trial, changedEntities) => {
               key
               created
               status
-              cloneFrom {
-                state
-                trial
-              }
+              cloneFrom
+              cloneFromTrailKey
               name
               trialSetKey
               numberOfEntities

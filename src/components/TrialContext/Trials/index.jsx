@@ -24,7 +24,7 @@ import TrialForm from '../TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
-import {getTrialNameByKey} from '../../../assets/Utils';
+import { getTrialNameByKey } from '../../../assets/Utils';
 
 class Trials extends React.Component {
   state = {
@@ -66,11 +66,12 @@ class Trials extends React.Component {
   handleMenuClose = (anchor) => {
     this.setState({ [anchor]: null });
   };
-  displayCloneData = (cloneFromData, trialsArray) =>{
-    return `cloned from ${getTrialNameByKey(cloneFromData.trial, trialsArray)}/${cloneFromData.state}`;
+  displayCloneData = (trial, trialsArray) => {
+    return trial.cloneFromTrailKey?
+    `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}`: 
+    `cloned from ${trial.cloneFrom}`;//state will display
   }
 
-  //push changes to brunch and copy the link to the issue
   renderTableRow = (trial, index, trialsArray) => {
     const { trialSet, confirmOpen, anchorMenu } = this.state;
     const { classes, theme } = this.props;
@@ -78,8 +79,7 @@ class Trials extends React.Component {
       // should be uniqe id
       <React.Fragment key={trial.created}>
         <StyledTableCell align="left" className={classes.tableCell} onClick={() => this.activateEditMode(trial)}>{trial.name}</StyledTableCell>
-      {/* //TODO:call to function displayCloneData() */}
-        <StyledTableCell align="left">{trial.cloneFrom ? 'cloned from ' + trial.cloneFrom : ''}</StyledTableCell>
+        <StyledTableCell align="left">{trial.cloneFrom ? this.displayCloneData(trial, trialsArray): ''}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfEntities}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
@@ -216,12 +216,9 @@ class Trials extends React.Component {
     clonedTrial.key = uuid();
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
-    // clonedTrial.cloneFrom = cloneFrom;
-    clonedTrial.cloneFromData = {
-      'state': state,
-      'trial': clonedTrial.key };
-    //in display call function that get trial key and reuturn name from a list of trials - check how to access to trials list
-    clonedTrial.name = `${clonedTrial.name} clone`;
+    clonedTrial.cloneFrom = state;
+    clonedTrial.cloneFromTrailKey = trial.key;
+    clonedTrial.name = `${trial.name} clone`;
     await client.mutate({
       mutation: trialMutation(clonedTrial),
       update: (cache, mutationResult) => {
