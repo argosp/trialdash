@@ -21,6 +21,7 @@ export default (trial, changedEntities) => {
             name:"${trial.name}"
             status:"${trial.status}"
             ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
+            ${trial.cloneFromTrailKey ? `cloneFromTrailKey:"${trial.cloneFromTrailKey}"` : ''},
             trialSetKey:"${trial.trialSetKey}"
             numberOfEntities:${trial.numberOfEntities}
             ${trial.state ? `state:"${trial.state}"` : ''}
@@ -54,6 +55,7 @@ export default (trial, changedEntities) => {
               created
               status
               cloneFrom
+              cloneFromTrailKey
               name
               trialSetKey
               numberOfEntities

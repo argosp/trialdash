@@ -8,6 +8,7 @@ const trials = (experimentId, trialSetKey) => gql`
         created
         status
         cloneFrom
+        cloneFromTrailKey
         state
         trialSetKey
         numberOfEntities

@@ -24,6 +24,7 @@ import TrialForm from '../TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
+import { getTrialNameByKey } from '../../../assets/Utils';
 
 class Trials extends React.Component {
   state = {
@@ -65,15 +66,20 @@ class Trials extends React.Component {
   handleMenuClose = (anchor) => {
     this.setState({ [anchor]: null });
   };
+  displayCloneData = (trial, trialsArray) => {
+    return trial.cloneFromTrailKey?
+    `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}`: 
+    `cloned from ${trial.cloneFrom}`;//state will display
+  }
 
-  renderTableRow = (trial) => {
+  renderTableRow = (trial, index, trialsArray) => {
     const { trialSet, confirmOpen, anchorMenu } = this.state;
     const { classes, theme } = this.props;
     return (
       // should be uniqe id
       <React.Fragment key={trial.created}>
         <StyledTableCell align="left" className={classes.tableCell} onClick={() => this.activateEditMode(trial)}>{trial.name}</StyledTableCell>
-        <StyledTableCell align="left">{trial.cloneFrom ? 'cloned from ' + trial.cloneFrom : ''}</StyledTableCell>
+        <StyledTableCell align="left">{trial.cloneFrom ? this.displayCloneData(trial, trialsArray): ''}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfEntities}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
@@ -204,14 +210,15 @@ class Trials extends React.Component {
     );
   };
 
-  clone = async (cloneFrom, trial) => {
+  clone = async (state, trial) => {
     const { match, client } = this.props;
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
-    clonedTrial.cloneFrom = cloneFrom;
-    clonedTrial.name = `${clonedTrial.name} clone`;
+    clonedTrial.cloneFrom = state;
+    clonedTrial.cloneFromTrailKey = trial.key;
+    clonedTrial.name = `${trial.name} clone`;
     await client.mutate({
       mutation: trialMutation(clonedTrial),
       update: (cache, mutationResult) => {
