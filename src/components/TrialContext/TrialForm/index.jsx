@@ -545,7 +545,7 @@ class TrialForm extends React.Component {
           deleteButtonHandler={() => this.submitTrial(trial, true)}
         />}
         <ConfirmDialog
-          title={'Are you sure you want to leave the page?'}
+          title={'There are unsaved changes. Do you want to leave without saving the changes?'}
           open={confirmOpen}
           setOpen={() => this.setConfirmOpen(false)}
           confirmText="Yes, I want to leave"
