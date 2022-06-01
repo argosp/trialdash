@@ -51,15 +51,16 @@ class Trials extends React.Component {
         });
       });
   }
-  onInputChange = (e, trial) => {
+  onInputChange = (e) => {
     const { value } = e.target;
     this.setState({ anchorMenu: null });
-    this.clone(value, trial);
+    this.clone(value, this.state.currentTrial);
   };
 
-  handleMenuClick = (event) => {
+  handleMenuClick = (event, trial) => {
     this.setState({
       anchorMenu: event.currentTarget,
+      currentTrial: trial
     });
   };
   //TODO handleMenuChange !state
@@ -103,11 +104,11 @@ class Trials extends React.Component {
           <CustomTooltip
             title="Clone from"
             ariaLabel="clone"
-            onClick={this.handleMenuClick}
+            onClick={(e) => this.handleMenuClick(e,trial)}
           >
           <CloneIcon />
         </CustomTooltip>
-            <Menu
+            {this.state.currentTrial && <Menu
               id="clone-menu"
               classes={{ paper: classes.menu }}
               open={Boolean(anchorMenu)}
@@ -124,10 +125,10 @@ class Trials extends React.Component {
               }}
             >
               {['design', 'deploy'].map((i) => <MenuItem
-                color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
+                color={theme.palette[this.state.currentTrial.status === 'deploy' ? 'orange' : 'violet'].main}
                 key={uuid()}
                 classes={{ root: classes.menuItem }}
-                onClick={e => this.onInputChange({ target: { value: i } }, trial)}
+                onClick={e => this.onInputChange({ target: { value: i } })}
               >
                 <Grid
                   container
@@ -138,7 +139,7 @@ class Trials extends React.Component {
                   {i}
                 </Grid>
               </MenuItem>)}
-            </Menu>
+            </Menu>}
           <CustomTooltip
             title="Edit"
             ariaLabel="edit"
