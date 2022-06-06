@@ -20,7 +20,7 @@ const handleToggle = (e, value, onChange, multiple) => {
   onChange({ target: { value: (multiple ? value.join(',') : value) } });
 };
 
-const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple, invalid, errorText, endAdornment }) => {
+const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple, invalid, errorText, endAdornment, onClick }) => {
   let _value;
   if (!errorText) errorText = 'Please select a value';
   switch (type) {
@@ -119,6 +119,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             label={label}
             helperText={bottomDescription}
             id={id}
+            onClick={onClick}
             fullWidth
             FormHelperTextProps={{ classes: { root: classes.bottomDescription } }}
             placeholder={placeholder}
@@ -162,6 +163,7 @@ const CustomInput = ({
   invalid,
   errorText,
   endAdornment,
+  onClick
 }) => (
   <div>
     {renderSwitch({
@@ -182,6 +184,7 @@ const CustomInput = ({
       invalid,
       errorText,
       endAdornment,
+      onClick
     })}
   </div>
 );

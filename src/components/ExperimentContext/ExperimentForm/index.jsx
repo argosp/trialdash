@@ -189,6 +189,10 @@ class ExperimentForm extends React.Component {
                     TextFieldComponent={props => (
                       <CustomInput
                         {...props}
+                        onClick={() => this.setIsDatePickerOpen(
+                          'isStartDatePickerOpen',
+                          true,
+                        )}
                         inputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -228,6 +232,11 @@ class ExperimentForm extends React.Component {
                     TextFieldComponent={props => (
                       <CustomInput
                         {...props}
+                        onClick={() => this.setIsDatePickerOpen(
+                          'isEndDatePickerOpen',
+                          true,
+                        )}
+                        
                         inputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
