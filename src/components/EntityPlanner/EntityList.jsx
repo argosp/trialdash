@@ -27,7 +27,7 @@ export const EntityList = ({ entities, selection, setSelection, removeEntitiesLo
     }
 
     return (
-        <div style={{ overflow: 'scroll', height: 'inherit', display: 'block' }}
+        <div style={{ overflow: 'auto', height: '340px', display: 'block' }}
         // inputProps={{ style: { overflow: 'scroll' } }}
         >
             <List>
