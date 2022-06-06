@@ -71,6 +71,7 @@ class TrialEntities extends React.Component {
       .query({ query: experimentsQuery })
       .then(() => this.setState({ isLoading: false }));
     showFooter(false);
+    this.cloneEntitiesRef = React.createRef();
   }
 
   componentDidUpdate(prevProps) {
@@ -82,6 +83,7 @@ class TrialEntities extends React.Component {
   }
 
   orderEntities = () => {
+
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     this.setState({ update: true, length: trial[entitiesField].length, trialEntities: groupBy(trial[entitiesField], 'entitiesTypeKey'), entitiesField });
@@ -103,9 +105,10 @@ class TrialEntities extends React.Component {
   setUpdated = () => {
     this.setState({ update: false });
   }
-  SetCloneEntitiesDialogOpen = (open) => {
-    this.setState({ CloneEntitiesDialogOpen: open });
+  SetCloneEntitiesDialogOpen = () => {
+    this.cloneEntitiesRef.current.openDialog()
   }
+
   render() {
     const {
       classes,
@@ -190,10 +193,11 @@ class TrialEntities extends React.Component {
           {selectedViewIndex !== 3 && <Grid item>
             <SimpleButton text={"Clone entities"} 
              onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
-              {CloneEntitiesDialogOpen&&<CloneEntitiesDialog
+              <CloneEntitiesDialog
                   title={"Clone trial"}
                   open={CloneEntitiesDialogOpen}
                   setOpen={this.SetCloneEntitiesDialogOpen}
+                  ref={this.cloneEntitiesRef}
                   onConfirm={(updateTrial) => submitTrial(updateTrial)}
                   entitiesTypes={entitiesTypes}
                   trialEntities={trialEntities}
@@ -201,7 +205,7 @@ class TrialEntities extends React.Component {
                   client ={client}
                   match ={match}
                 >
-               </CloneEntitiesDialog>}
+               </CloneEntitiesDialog>
             <SimpleButton
               className={classes.trialActionBtn}
               text="Add"
