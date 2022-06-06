@@ -315,9 +315,7 @@ class Trials extends React.Component {
               withBackButton
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
               rightDescription={trialSet ? trialSet.name : ''}
-              addButtonHandler={() => history.push(
-                `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`,
-              )}
+              addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
             />
             <ContentTable
               contentType={TRIALS}
