@@ -92,7 +92,8 @@ class TrialSets extends React.Component {
       clonedTrialSet.name = trialSet.name + ' clone';
       const { match, client } = this.props;
       clonedTrialSet.experimentId = match.params.id;
-      clonedTrialSet.numberOfTrials = 0;
+      clonedTrialSet.numberOfTrials = trialSet.numberOfTrials;
+      clonedTrialSet.cloneTrailKey = trialSet.key
 
       await client.mutate({
         mutation: trialSetMutation(clonedTrialSet),
