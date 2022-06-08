@@ -123,6 +123,7 @@ class TrialForm extends React.Component {
       indexOfProperty = this.state.trial.properties.length - 1;
     }
     this.setState(state => ({
+      changed: true,
       trial: {
         ...state.trial,
         properties: update(state.trial.properties, {
@@ -170,6 +171,7 @@ class TrialForm extends React.Component {
       this.setState(state => ({
         editableStatus: false,
         anchorMenu: null,
+        changed: true,
         trial: {
           ...state.trial,
           [inputName]: value,
