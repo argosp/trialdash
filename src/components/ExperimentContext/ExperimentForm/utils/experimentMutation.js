@@ -15,6 +15,7 @@ export default (experiment) => {
             begin:"${experiment.begin}"
             end:"${experiment.end}"
             location:"${experiment.location}"
+            cloneTrailId:"${experiment.cloneTrailId}"
             numberOfTrials:${experiment.numberOfTrials}
             ${experiment.status ? `status:"${experiment.status}"` : ''}
             ${experiment.state ? `state:"${experiment.state}"` : ''}

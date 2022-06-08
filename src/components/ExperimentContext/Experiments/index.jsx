@@ -147,6 +147,7 @@ class Experiments extends React.Component {
     clonedEXperiment.projectId = '';
     const { client } = this.props;
     clonedEXperiment.numberOfTrials = 0;
+    clonedEXperiment.cloneTrailId = experiment.project.id
 
     await client.mutate({
       mutation: experimentMutation(clonedEXperiment),
