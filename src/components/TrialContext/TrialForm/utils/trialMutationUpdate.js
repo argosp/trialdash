@@ -48,6 +48,7 @@ export default (trial, changedEntities) => {
               trialSetKey
               numberOfEntities
               state
+              error
               properties {
                 key
                 val

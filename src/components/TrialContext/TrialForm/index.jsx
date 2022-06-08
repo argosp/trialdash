@@ -247,6 +247,9 @@ class TrialForm extends React.Component {
     await client.mutate({
       mutation:trialMutation(updatedTrial, changedEntities),
       update: (cache, mutationResult) => {
+        if (mutationResult && mutationResult.data.addUpdateTrial.error) {
+          return alert(mutationResult.data.addUpdateTrial.error)
+        } 
         updateCache(
           cache,
           mutationResult,

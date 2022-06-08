@@ -150,8 +150,7 @@ class Trials extends React.Component {
           <CustomTooltip
             title="Delete"
             ariaLabel="delete"
-            onClick={() => this.deleteTrial(trial)}
-          // onClick={() => this.setConfirmOpen(true, trial)}
+            onClick={() => this.setConfirmOpen(true, trial)}
           >
             <BasketIcon />
           </CustomTooltip>
@@ -223,6 +222,9 @@ class Trials extends React.Component {
     await client.mutate({
       mutation: trialMutation(clonedTrial),
       update: (cache, mutationResult) => {
+        if (mutationResult && mutationResult.data.addUpdateTrial.error) {
+          return alert(mutationResult.data.addUpdateTrial.error)
+        } 
         updateCache(
           cache,
           mutationResult,

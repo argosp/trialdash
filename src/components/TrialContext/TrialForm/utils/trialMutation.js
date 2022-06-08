@@ -82,6 +82,7 @@ export default (trial, changedEntities) => {
                   val
                 }
               }
+              error
             }
       }`;
 };
