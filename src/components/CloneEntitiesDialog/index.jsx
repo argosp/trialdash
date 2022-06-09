@@ -17,7 +17,8 @@ import FormControl from "@material-ui/core/FormControl";
 import { compose } from "recompose";
 import SimpleButton from "../SimpleButton";
 import _ from "lodash";
-import trialsQuery from "../TrialContext/utils/trialQuery.js";
+import trialSetQuery from "../TrialContext/utils/trialSetQuery";
+import trialsQuery from "../TrialContext/utils/trialQuery";
 import DuplicateEntitiesDialog from './DuplicateEntitiesDialog';
 import { getCurrentEntitsNameByStatus, getEntitiesByEntitiesTypeKey, getEntitiesTypeArrayFromSelectedTrial } from '../../assets/Utils';
 import { styles } from "./styles";
@@ -39,7 +40,12 @@ function CloneEntitiesDialog({
 }, ref) {
   const [updateTrial, setUpdateTrial] = React.useState(currentTrial);
   const [open, setOpen] = useState()
+  const [trialSets, setTrialSets] = React.useState();
   const [trials, setTrials] = React.useState();
+  const [selectedTrialSet, setSelectedTrialSet] = React.useState();
+  const [selectedTrialSetStatus, setSelectedTrialSetStatus] = React.useState();
+  const [entitiesTypesOfSelectedTrialSet, setEntitiesTypesOfSelectedTrialSet] =
+    useState();
   const [selectedTrial, setSelectedTrial] = React.useState();
   const [selectedTrialStatus, setSelectedTrialStatus] = React.useState();
   const [entitiesTypesOfSelectedTrial, setEntitiesTypesOfSelectedTrial] =
@@ -64,15 +70,29 @@ function CloneEntitiesDialog({
 
 
   useEffect(() => {
-    if (!trials) {
-      getTrials();
-    }
+    getTrialSets()
   }, []);
+
+  useEffect(() => {
+    if(selectedTrialSet) {
+      getTrials()
+    }
+  }, [selectedTrialSet])
+
+  const getTrialSets = () => {
+    client
+      .query({
+        query: trialSetQuery(match.params.id),
+      })
+      .then((data) => {
+        setTrialSets(data.data['trialSets'])
+      });
+  };
 
   const getTrials = () => {
     client
       .query({
-        query: trialsQuery(match.params.id, match.params.trialSetKey),
+        query: trialsQuery(match.params.id, selectedTrialSet.key),
       })
       .then((data) => {
         data.data[trials] = data.data.trials.filter(
@@ -172,10 +192,26 @@ function CloneEntitiesDialog({
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <List component="nav">
+        <List component="nav">
+            <Typography variant="h6"> Select trial set to clone from:</Typography>
+            {trialSets &&
+              trialSets.map((trialSet) => (
+                <StyledListItem
+                  selected={selectedTrialSet && trialSet.key === selectedTrialSet.key}
+                  key={trialSet.key}
+                  button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedTrialSet(trialSet);
+                  }}
+                >
+                  <ListItemText primary={trialSet.name} />
+                </StyledListItem>
+              ))}
+          </List>
+          {trials && <List component="nav">
             <Typography variant="h6"> Select trial to clone from:</Typography>
-            {trials &&
-              trials.map((trial) => (
+            {trials.map((trial) => (
                 <StyledListItem
                   selected={selectedTrial && trial.key === selectedTrial.key}
                   key={trial.key}
@@ -189,7 +225,7 @@ function CloneEntitiesDialog({
                   <ListItemText primary={trial.name} />
                 </StyledListItem>
               ))}
-          </List>
+          </List>}
           <List component="nav">
             {selectedTrial &&
               selectedTrial.entities &&
