@@ -81,10 +81,10 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
     return (
         <>
             {
-                (entities.length === 0 || working) &&
+                (entities.length === 0 || working) ?
                 (working === !!working ?
                     <LinearProgress /> :
-                    <LinearProgress variant="determinate" value={working} />)
+                    <LinearProgress variant="determinate" value={working} />) : <></>
             }
             {
                 <EntityEditor
