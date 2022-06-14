@@ -43,9 +43,6 @@ function CloneEntitiesDialog({
   const [trialSets, setTrialSets] = React.useState();
   const [trials, setTrials] = React.useState();
   const [selectedTrialSet, setSelectedTrialSet] = React.useState();
-  const [selectedTrialSetStatus, setSelectedTrialSetStatus] = React.useState();
-  const [entitiesTypesOfSelectedTrialSet, setEntitiesTypesOfSelectedTrialSet] =
-    useState();
   const [selectedTrial, setSelectedTrial] = React.useState();
   const [selectedTrialStatus, setSelectedTrialStatus] = React.useState();
   const [entitiesTypesOfSelectedTrial, setEntitiesTypesOfSelectedTrial] =

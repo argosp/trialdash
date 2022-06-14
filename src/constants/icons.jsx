@@ -1,6 +1,11 @@
 import React from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
 
+export const DownloadIcon = props => (
+  <SvgIcon viewBox="0 0 16 16" {...props}>
+    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+  </SvgIcon>
+)
 export const TextIcon = props => (
   <SvgIcon viewBox="0 0 24 12" {...props}>
     <path d="M2.00063 0C0.9075 0 0 0.9075 0 2.00062V9.99937C0 11.0925 0.9075 12 2.00063 12H21.9994C23.0925 12 24 11.0925 24 9.99937V2.00062C24 0.9075 23.0925 0 21.9994 0H2.00063ZM2.00063 2.00062H21.9994V9.99937H2.00063V2.00062ZM3.99937 6V8.00062H6V6H3.99937ZM8.00062 6V8.00062H9.99937V6H8.00062ZM12 6V8.00062H14.0006V6H12Z" />

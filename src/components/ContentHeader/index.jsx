@@ -16,12 +16,15 @@ const ContentHeader = (props) => {
     searchPlaceholder,
     withAddButton,
     addButtonText,
+    withUploadButton,
+    uploadButtonText,
     withBackButton,
     backButtonHandler,
     topDescription,
     rightDescription,
     middleDescription,
     addButtonHandler,
+    uploadButtonHandler,
     bottomDescription,
     withSearchInput,
     className,
@@ -86,6 +89,23 @@ const ContentHeader = (props) => {
                 className={classes.addButton}
                 text={addButtonText}
                 onClick={addButtonHandler}
+              />
+            )
+          }
+          {withUploadButton
+            && (
+              <SimpleButton
+                colorVariant="primary"
+                className={classes.addButton}
+                component="label"
+                text={
+                  <>
+                  {uploadButtonText}
+                  <input
+                    type="file"
+                    onChange={uploadButtonHandler}
+                    hidden
+                  /></>}
               />
             )
           }

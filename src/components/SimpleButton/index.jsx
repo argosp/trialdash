@@ -13,9 +13,11 @@ const SimpleButton = ({
   colorVariant = 'default',
   size = 'normal',
   disabled = false,
+  component = 'button'
 }) => (
   <Button
     variant={variant}
+    component={component}
     color={colorVariant}
     disabled={disabled}
     className={

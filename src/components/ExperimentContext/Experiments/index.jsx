@@ -14,10 +14,13 @@ import {
   EXPERIMENTS_WITH_DATA,
   TRIAL_SETS_DASH,
   EXPERIMENT_MUTATION,
+  UPLOAD_EXPERIMENT
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import experimentsQuery from '../utils/experimentsQuery';
-import { CloneIcon, PenIcon, BasketIcon } from '../../../constants/icons';
+import experimentAllDataQuery from '../utils/experimentAllDataQuery';
+import uploadExperiment from '../utils/uploadExperimentMutation';
+import { CloneIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import ExperimentForm from '../ExperimentForm';
 import experimentMutation from '../ExperimentForm/utils/experimentMutation';
@@ -52,6 +55,13 @@ class Experiments extends React.Component {
         <StyledTableCell align="left" className={classes.tableCell} onClick={() => history.push(`/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`)}>{moment(experiment.end).format('D/M/YYYY')}</StyledTableCell>
         <StyledTableCell align="left" className={classes.tableCell} onClick={() => history.push(`/experiments/${experiment.project.id}/${TRIAL_SETS_DASH}`)}>{experiment.numberOfTrials}</StyledTableCell>
         <StyledTableCell align="right">
+          <CustomTooltip
+            title="Download"
+            ariaLabel="download"
+            onClick={() => this.download(experiment)}
+          >
+            <DownloadIcon />
+          </CustomTooltip>
           <CustomTooltip
             title="Clone"
             ariaLabel="clone"
@@ -141,6 +151,50 @@ class Experiments extends React.Component {
     });
   }
 
+  download = async (experiment) => {
+    this.props.client
+      .query({
+        query: experimentAllDataQuery(experiment.project.id),
+      })
+      .then((data) => {
+        if(data && data.data.getAllExperimentData) {
+          const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+            JSON.stringify({...data.data.getAllExperimentData, experiment})
+          )}`;
+          const link = document.createElement("a");
+          link.href = jsonString;
+          link.download = `${experiment.name}.json`;
+          link.click();
+        }
+
+      });
+
+
+
+  }
+
+  upload = (e) => {
+    const fileReader = new FileReader();
+    fileReader.readAsText(e.target.files[0], "UTF-8");
+    fileReader.onload = async e => {
+      const experiment = JSON.parse(e.target.result)
+      await this.props.client
+        .mutate({
+          mutation: uploadExperiment(experiment),
+          update: (cache, mutationResult) => {
+            updateCache(
+              cache,
+              mutationResult,
+              experimentsQuery,
+              EXPERIMENTS_WITH_DATA,
+              UPLOAD_EXPERIMENT
+            );
+          },
+        })
+        this.setState({ update: true });
+    };
+  }
+
   clone = async (experiment) => {
     const clonedEXperiment = { ...experiment };
     clonedEXperiment.key = uuid();
@@ -170,16 +224,19 @@ class Experiments extends React.Component {
 
   render() {
     const tableHeadColumns = [
-      { key: 0,
+      {
+        key: 0,
         title: '',
       },
-      { key: 1,
+      {
         title: 'Start date',
       },
-      { key: 2,
+      {
+        key: 2,
         title: 'End date',
       },
-      { key: 3,
+      {
+        key: 3,
         title: 'Trials',
       },
     ];
@@ -202,6 +259,9 @@ class Experiments extends React.Component {
               withAddButton
               addButtonText="Add experiment"
               addButtonHandler={() => this.props.history.push('/add-experiment')}
+              withUploadButton
+              uploadButtonText="Upload experiment"
+              uploadButtonHandler={this.upload}
             />
             <ContentTable
               contentType={EXPERIMENTS_WITH_DATA}
