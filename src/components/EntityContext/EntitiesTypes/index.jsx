@@ -27,7 +27,9 @@ class EntitiesTypes extends React.Component {
     state = {};
 
     setConfirmOpen = (open, entitiesType) => {
-      if (entitiesType || open) this.state.entitiesType = entitiesType;
+      if (entitiesType || open) {
+        this.setState({entitiesType})
+      }
       this.setState({ confirmOpen: open });
     }
 

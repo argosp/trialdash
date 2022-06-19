@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import CustomTooltip from "../../../../CustomTooltip";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import NestedAccordion from "../../../../NestedAccordion";
@@ -22,9 +22,6 @@ const ContainsEntitiesDisplayList = ({
    createSubItems(item);
    updateEntities(item);
  };
- const checkAllListDeleted= () => {
-  return !Object.keys(updatedTrialEntities).filter(e => e.deleted == true).length == Object.keys(updatedTrialEntities).length;
-}
 
  const updateEntities = (item)=> {
    setUpdatedTrialEntities((prevTrialEntities) => ({
@@ -76,7 +73,7 @@ const ContainsEntitiesDisplayList = ({
  const findAndUpdateNestedItem = (arr, key, nestingKey) => {
    for (let index = 0; index < arr.length; index++) {
      let item = arr[index];
-     if(item.key == key)
+     if(item.key === key)
        {
          item.deleted = true;
          return arr;

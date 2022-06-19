@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Map as LeafletMap,
     TileLayer,
@@ -9,10 +9,7 @@ import {
     Tooltip
 } from "react-leaflet";
 import config from '../../config';
-import { L, latLngBounds } from 'leaflet';
 import { CRS } from 'leaflet';
-// import styled from "styled-components";
-import { withStyles } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 
 const NudeTooltip = styled(Tooltip)({

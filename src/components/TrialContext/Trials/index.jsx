@@ -34,7 +34,9 @@ class Trials extends React.Component {
   };
 
   setConfirmOpen = (open, trial) => {
-    if (trial || open) this.state.trial = trial;
+    if (trial || open) {
+      this.setState({trial})
+    }
     this.setState({ confirmOpen: open });
   }
 

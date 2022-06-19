@@ -1,7 +1,7 @@
 import React from 'react';
 import { List } from '@material-ui/core';
 import { EntityRow } from './EntityRow';
-import { getEntityLocation, getEntityLocationProp } from './EntityUtils';
+import { getEntityLocationProp } from './EntityUtils';
 
 export const EntityList = ({ entities, selection, setSelection, removeEntitiesLocations, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();

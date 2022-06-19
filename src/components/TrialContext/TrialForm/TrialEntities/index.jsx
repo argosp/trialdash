@@ -17,7 +17,7 @@ import { styles } from '../styles';
 import AddEntityPanel from '../../../AddEntityPanel';
 import EntitiesGrid from './entitiesGrid';
 import SimpleButton from '../../../SimpleButton';
-import { GridIcon, ListIcon, TreeIcon } from '../../../../constants/icons';
+import { GridIcon } from '../../../../constants/icons';
 import EntityPlanner from '../../../EntityPlanner';
 import CloneEntitiesDialog from '../../../CloneEntitiesDialog';
 import experimentsQuery from '../../../ExperimentContext/utils/experimentsQuery';

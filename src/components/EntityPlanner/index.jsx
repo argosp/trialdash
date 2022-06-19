@@ -29,7 +29,6 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
 
     React.useEffect(() => {
         const experimentId = match.params.id;
-        const trialKey = showOnlyAssigned ? trial.key : undefined;
         const entityTypesAsList = Object.values(entitiesTypes).filter(dtlst => dtlst.length).flat();
         const newdevs = entityTypesAsList.filter(dt => dt.name && dt.key && getTypeLocationProp(dt));
         newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));

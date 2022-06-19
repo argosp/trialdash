@@ -13,9 +13,7 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import { MapsEditDetails } from "./mapsEditDetails";
-import uploadFilesMutation from "./utils/uploadFilesMutation";
 import config from '../../../config';
-import { Circle } from "react-leaflet";
 
 const UPLOAD_FILE = gql`
   mutation($file: Upload!) {
@@ -110,12 +108,7 @@ const TextLatLng = ({ lat, lng, setLat, setLng, editable }) => {
 
 export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
   const [open, setOpen] = useState(false);
-  const mapAttrib =
-    process.env.REACT_APP_MAP_ATTRIBUTION ||
-    '&copy; <a href="https://carto.com">Carto</a> contributors';
-  const mapTileUrl =
-    process.env.REACT_APP_MAP_URL ||
-    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
+
   return (
     <>
       <TableRow>
@@ -138,15 +131,16 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
           {!open ? (
             row.imageName
           ) : (
-              <TextField
-                value={row.imageName}
-                onChange={(e) => setRow({ ...row, imageName: e.target.value })}
-              />
-            )}
+            <TextField
+              value={row.imageName}
+              onChange={(e) => setRow({ ...row, imageName: e.target.value })}
+            />
+          )}
         </TableCell>
         <TableCell align="right" style={{ padding: 0 }}>
           {!row.imageUrl ? null : (
             <img
+              alt=""
               src={config.url + '/' + row.imageUrl}
               style={{ height: "50px", borderRadius: "50px" }}
             />

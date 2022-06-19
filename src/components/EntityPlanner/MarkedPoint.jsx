@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -10,7 +10,7 @@ export const MarkedPoint = (props) => {
 
     let locationToShowStr;
     if (!locationToShow) {
-        locationToShowStr = JSON.stringify(location.map(l => Math.round(l * 1e9) / 1e9)).replace(/\,/g, ', ');
+        locationToShowStr = JSON.stringify(location.map(l => Math.round(l * 1e9) / 1e9)).replace(/,/g, ', ');
     } else {
         locationToShowStr = locationToShow;
     }

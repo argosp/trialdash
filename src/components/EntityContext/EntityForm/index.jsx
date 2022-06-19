@@ -19,7 +19,6 @@ import {
   ENTITIES_TYPES,
   ENTITIES, ENTITY_MUTATION, ENTITIES_TYPE_MUTATION,
 } from '../../../constants/base';
-import entitiesTypeMutation from '../utils/entitiesTypeMutation';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
 import { styles } from './styles';

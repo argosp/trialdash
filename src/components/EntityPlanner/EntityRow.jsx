@@ -2,10 +2,6 @@ import { IconButton, ListItem, ListItemText, Tooltip, Menu, MenuItem } from '@ma
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import React from 'react';
 
-const formatEntityLocation = (loc, layer) => {
-    return;
-}
-
 const EntityLocationButton = ({ entityLocation, isEntityOnLayer, entityLayerName, onDisableLocation }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     let tip = entityLocation.map(x => Math.round(x * 1e5) / 1e5).join(', ');

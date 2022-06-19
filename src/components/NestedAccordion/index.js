@@ -3,10 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { BasketIcon } from "../../constants/icons";
 
 const NestedAccordion = ({ data, removeEntity }) => {
 //no inner subItems - check in old github code
@@ -15,9 +12,6 @@ const NestedAccordion = ({ data, removeEntity }) => {
           width: "100%",
         },
       });
-      const handleClick = (itemKey) => {
-        removeEntity(itemKey);
-      };
 
       const printRrecursive = (obj) => {
         if (!obj.subItems || !obj.subItems.length) return;

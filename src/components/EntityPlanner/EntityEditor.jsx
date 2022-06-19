@@ -1,4 +1,4 @@
-import { Button, InputLabel, Paper, Switch, Grid } from '@material-ui/core';
+import { Button, InputLabel, Switch, Grid } from '@material-ui/core';
 import React from 'react';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
 import { EntityList } from './EntityList';

@@ -131,8 +131,9 @@ class EntitiesGrid extends React.Component {
   };
 
   openTable = (e, currentContent) => {
-    this.state[currentContent][e] = !this.state[currentContent][e];
-    this.setState({});
+    const tmp = this.state[currentContent];
+    tmp[e] = !this.state[currentContent][e];
+    this.setState({[currentContent]: tmp});
   };
   SetCloneEntitiesDialogOpen = (open) => {
     this.setState({ CloneEntitiesDialogOpen: open });
@@ -144,12 +145,8 @@ class EntitiesGrid extends React.Component {
       entitiesTypes,
       update,
       setUpdated,
-      trial,
-      submitTrial,
-      match,
-      client,
     } = this.props;
-    const { openContentHeader, CloneEntitiesDialogOpen } = this.state;
+    const { openContentHeader } = this.state;
     return (
       <>
         {Object.keys(trialEntities)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import {
   Paper,
   Table,
@@ -11,7 +11,6 @@ import {
   Icon,
 } from '@material-ui/core';
 import { MapsEditRow } from "./mapsEditRow";
-import { client } from "../../../apolloGraphql";
 
 export const MapsEditTable = ({ data, setData, client }) => {
   if (!data) {

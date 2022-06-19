@@ -71,7 +71,7 @@ function CloneEntitiesDialog({
   }, []);
 
   useEffect(() => {
-    if(selectedTrialSet) {
+    if (selectedTrialSet) {
       getTrials()
     }
   }, [selectedTrialSet])
@@ -107,7 +107,7 @@ function CloneEntitiesDialog({
         array.unshift(element)
       }
     });
-    if (updateTrial.status == "design")
+    if (updateTrial.status === "design")
       setUpdateTrial({
         ...updateTrial,
         entities: array,
@@ -147,11 +147,10 @@ function CloneEntitiesDialog({
 
   const cloneEntitiesFromSelectedTrial = () => {
     switch (selectedTrialStatus) {
-      case "design":
-        {
-          concatEntities()
-        }
+      case "design": {
+        concatEntities()
         break;
+      }
       case "deploy": {
         setUpdateTrial({
           ...updateTrial,
@@ -159,6 +158,7 @@ function CloneEntitiesDialog({
             selectedTrial.deployedEntities
           ),
         });
+        break;
       }
       default:
         break;
@@ -189,7 +189,7 @@ function CloneEntitiesDialog({
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-        <List component="nav">
+          <List component="nav">
             <Typography variant="h6"> Select trial set to clone from:</Typography>
             {trialSets &&
               trialSets.map((trialSet) => (
@@ -209,19 +209,19 @@ function CloneEntitiesDialog({
           {trials && <List component="nav">
             <Typography variant="h6"> Select trial to clone from:</Typography>
             {trials.map((trial) => (
-                <StyledListItem
-                  selected={selectedTrial && trial.key === selectedTrial.key}
-                  key={trial.key}
-                  button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedTrial(trial);
-                    setEntitiesTypesOfSelectedTrial(getEntitiesTypeArrayFromSelectedTrial(trial, entitiesTypes));
-                  }}
-                >
-                  <ListItemText primary={trial.name} />
-                </StyledListItem>
-              ))}
+              <StyledListItem
+                selected={selectedTrial && trial.key === selectedTrial.key}
+                key={trial.key}
+                button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTrial(trial);
+                  setEntitiesTypesOfSelectedTrial(getEntitiesTypeArrayFromSelectedTrial(trial, entitiesTypes));
+                }}
+              >
+                <ListItemText primary={trial.name} />
+              </StyledListItem>
+            ))}
           </List>}
           <List component="nav">
             {selectedTrial &&

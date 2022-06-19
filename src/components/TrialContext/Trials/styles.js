@@ -1,5 +1,3 @@
-import { red } from "@material-ui/core/colors";
-
 export const styles = () => ({
   locationLink: {
     textDecoration: 'none',

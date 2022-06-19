@@ -4,7 +4,7 @@ import uuid from 'uuid/v4';
 const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials }) => {
   
   let entityTypesStr = '';
-  entityTypes.map(e => {
+  entityTypes.forEach(e => {
     entityTypesStr += `{
       key: "${e.key}",
       name: "${e.name}",
@@ -30,7 +30,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
   });
 
   let entitiesStr = '';
-  entities.map(e => {
+  entities.forEach(e => {
     entitiesStr += `{
       key: "${e.key}",
       name: "${e.name}",
@@ -44,7 +44,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
   });
 
   let trialSetsStr = '';
-  trialSets.map(e => {
+  trialSets.forEach(e => {
     trialSetsStr += `{
       key: "${e.key}",
       name: "${e.name}",
@@ -67,7 +67,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
   });
 
 let trialsStr = '';
-  trials.map(e => {
+  trials.forEach(e => {
     trialsStr += `{
       key: "${e.key}",
       name: "${e.name}",

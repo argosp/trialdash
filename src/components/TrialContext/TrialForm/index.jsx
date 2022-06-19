@@ -32,7 +32,6 @@ import {
 import { PenIcon } from '../../../constants/icons';
 import StatusBadge from '../../StatusBadge';
 import StyledTabs from '../../StyledTabs';
-import SimpleButton from '../../SimpleButton';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
@@ -158,7 +157,7 @@ class TrialForm extends React.Component {
     this.setState({ trial, changed: true});
   };
   updateChangedEntities = (changedEntities, entityObj) => {
-    if(changedEntities.findIndex(e => e.key == entityObj.key) == -1)
+    if(changedEntities.findIndex(e => e.key === entityObj.key) === -1)
     this.setState({changedEntities:[...this.state.changedEntities, entityObj]})
   }
   onInputChange = (e, inputName) => {
@@ -284,7 +283,10 @@ class TrialForm extends React.Component {
   addEntityToTrial = (entity, selectedEntitiesType, properties, parentEntity, action) => {
     const { trial } = this.state;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.state.trial[entitiesField] = this.state.trial[entitiesField] || [];
+    this.setState({})
+    const tmp = this.state.trial;
+    tmp[entitiesField] = this.state.trial[entitiesField] || [];
+    this.setState({trial: tmp})
     const newEntity = {
       key: entity.key,
       entitiesTypeKey: selectedEntitiesType,
@@ -405,7 +407,7 @@ class TrialForm extends React.Component {
     this.setState({ confirmStatusOpen: false });
   }
   render() {
-    const { classes, theme, match, client } = this.props;
+    const { classes, theme } = this.props;
     const {
       tabValue,
       trialSet,

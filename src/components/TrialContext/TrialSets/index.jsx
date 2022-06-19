@@ -27,7 +27,9 @@ class TrialSets extends React.Component {
     state = {};
 
     setConfirmOpen = (open, trialSet) => {
-      if (trialSet || open) this.state.trialSet = trialSet;
+      if (trialSet || open) {
+        this.setState({trialSet})
+      }
       this.setState({ confirmOpen: open });
     }
 

@@ -45,7 +45,9 @@ class Experiments extends React.Component {
   };
 
   setConfirmOpen = (open, experiment) => {
-    if (experiment || open) this.state.experiment = experiment;
+    if (experiment || open) {
+      this.setState({experiment})
+    }
     this.setState({ confirmOpen: open });
   }
 

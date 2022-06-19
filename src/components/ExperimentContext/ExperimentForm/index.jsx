@@ -131,14 +131,12 @@ class ExperimentForm extends React.Component {
   }
 
   render() {
-    const { classes, theme, client } = this.props;
+    const { classes, client } = this.props;
     const {
       formObject,
       isStartDatePickerOpen,
       isEndDatePickerOpen,
       confirmOpen,
-      columns,
-      data
     } = this.state;
 
     return (

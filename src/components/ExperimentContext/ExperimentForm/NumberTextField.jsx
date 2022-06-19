@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import {
     TextField
 } from '@material-ui/core';
 import { DebounceInput } from 'react-debounce-input';
 
-export const NumberTextField = ({ value, onChange, label, size, width }) => {
+export const NumberTextField = ({ value, onChange, label, width }) => {
     return (
         <DebounceInput
             value={value}
