@@ -4,11 +4,14 @@ import uuid from 'uuid/v4';
 import { withStyles } from '@material-ui/core';
 import moment from 'moment';
 import Dotdotdot from 'react-dotdotdot';
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import { Link } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import ContentTable from '../../ContentTable';
 import StyledTableCell from '../../StyledTableCell';
+import config from '../../../config';
 import { styles } from './styles';
 import {
   EXPERIMENTS_WITH_DATA,
@@ -26,6 +29,15 @@ import ExperimentForm from '../ExperimentForm';
 import experimentMutation from '../ExperimentForm/utils/experimentMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
+import gql from 'graphql-tag';
+
+const UPLOAD_FILE = gql`
+  mutation($file: Upload!) {
+    uploadFile(file: $file){
+      filename
+      path
+    }
+  }`;
 
 class Experiments extends React.Component {
   state = {
@@ -151,20 +163,41 @@ class Experiments extends React.Component {
     });
   }
 
+  getImage = async (map) => {
+    return new Promise((resolve) => {
+      const fileExtension = map.imageUrl.split('.')
+      const fileName = `${map.imageName}.${fileExtension[fileExtension.length - 1]}`
+      fetch(`${config.url}/${map.imageUrl}`)
+        .then(response => response.blob())
+        .then(image => resolve({
+          ...map,
+          imageUrl: image,
+          imageName: fileName
+        }))
+    })
+  }
+
   download = async (experiment) => {
+    const expToDownload = { ...experiment }
     this.props.client
       .query({
         query: experimentAllDataQuery(experiment.project.id),
       })
-      .then((data) => {
-        if(data && data.data.getAllExperimentData) {
-          const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-            JSON.stringify({...data.data.getAllExperimentData, experiment})
-          )}`;
-          const link = document.createElement("a");
-          link.href = jsonString;
-          link.download = `${experiment.name}.json`;
-          link.click();
+      .then(async (data) => {
+        if (data && data.data.getAllExperimentData) {
+          expToDownload.maps = await Promise.all(expToDownload.maps.map(async map => await this.getImage(map)))
+          const zip = JSZip();
+          zip.file("data.json", JSON.stringify({ ...data.data.getAllExperimentData, experiment: expToDownload }));
+
+          expToDownload.maps.forEach(img => {
+            zip.file(`images/${img.imageName}`, img.imageUrl, {
+              binary: true
+            });
+          });
+
+          zip.generateAsync({ type: "blob" }).then(function (blob) {
+            saveAs(blob, `experiment_${experiment.name}.zip`);
+          });
         }
 
       });
@@ -174,25 +207,77 @@ class Experiments extends React.Component {
   }
 
   upload = (e) => {
-    const fileReader = new FileReader();
-    fileReader.readAsText(e.target.files[0], "UTF-8");
-    fileReader.onload = async e => {
-      const experiment = JSON.parse(e.target.result)
-      await this.props.client
-        .mutate({
-          mutation: uploadExperiment(experiment),
-          update: (cache, mutationResult) => {
-            updateCache(
-              cache,
-              mutationResult,
-              experimentsQuery,
-              EXPERIMENTS_WITH_DATA,
-              UPLOAD_EXPERIMENT
-            );
-          },
-        })
+
+    const zip = new JSZip();
+    zip.loadAsync(e.target.files[0])
+      .then(async (content) => {
+        let jsonData = await zip.file('data.json').async("string");
+        jsonData = JSON.parse(jsonData)
+        jsonData.experiment.maps = await Promise.all(
+          jsonData.experiment.maps.map(async img => {
+            const file = await zip.file(`images/${img.imageName}`).async("blob")
+            const res = await this.props.client.mutate({
+              mutation: UPLOAD_FILE,
+              variables: { file }
+            })
+            if (res && res.data && res.data.uploadFile) {
+              return { ...img, imageUrl: res.data.uploadFile.path }
+            }
+          }
+          ))
+          console.log('333333333333333', jsonData.experiment)
+        await this.props.client
+          .mutate({
+            mutation: uploadExperiment(jsonData),
+            update: (cache, mutationResult) => {
+              updateCache(
+                cache,
+                mutationResult,
+                experimentsQuery,
+                EXPERIMENTS_WITH_DATA,
+                UPLOAD_EXPERIMENT
+              );
+            },
+          })
         this.setState({ update: true });
-    };
+
+      })
+    //         // await this.props.client
+    //         //   .mutate({
+    //         //     mutation: uploadExperiment(experiment),
+    //         //     update: (cache, mutationResult) => {
+    //         //       updateCache(
+    //         //         cache,
+    //         //         mutationResult,
+    //         //         experimentsQuery,
+    //         //         EXPERIMENTS_WITH_DATA,
+    //         //         UPLOAD_EXPERIMENT
+    //         //       );
+    //         //     },
+    //         //   })
+    //         // this.setState({ update: true });
+    //      // };
+    //     });
+    //   })
+    // const fileReader = new FileReader();
+    // fileReader.readAsText(e.target.files[0], "UTF-8");
+    // fileReader.onload = async e => {
+    //   const experiment = JSON.parse(e.target.result)
+    //   await this.props.client
+    //     .mutate({
+    //       mutation: uploadExperiment(experiment),
+    //       update: (cache, mutationResult) => {
+    //         updateCache(
+    //           cache,
+    //           mutationResult,
+    //           experimentsQuery,
+    //           EXPERIMENTS_WITH_DATA,
+    //           UPLOAD_EXPERIMENT
+    //         );
+    //       },
+    //     })
+    //   this.setState({ update: true });
+    // };
   }
 
   clone = async (experiment) => {
