@@ -26,6 +26,7 @@ export default (entitiesType) => {
     .replace(/"template":/g, 'template:')
     .replace(/"multipleValues":/g, 'multipleValues:')
     .replace(/"trialField":/g, 'trialField:')
+    .replace(/"static":/g, 'static:')
     .replace(/"value":/g, 'value:')
     .replace(/"defaultValue":/g, 'defaultValue:')
     .replace(/"defaultProperty":/g, 'defaultProperty:')
@@ -47,6 +48,7 @@ export default (entitiesType) => {
                   template
                   multipleValues
                   trialField
+                  static
                   value
                   defaultValue
                   defaultProperty

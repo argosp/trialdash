@@ -17,6 +17,7 @@ const entitiesTypes = experimentId => gql`
            template
            multipleValues
            trialField
+           static
            value
            defaultValue
            defaultProperty

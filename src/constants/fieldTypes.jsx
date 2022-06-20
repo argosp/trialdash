@@ -12,6 +12,7 @@ const FIELD_TYPE_BASE = {
   required: false,
   template: '',
   multipleValues: false,
+  static: false,
   trialField: false,
   inheritable: false
 };

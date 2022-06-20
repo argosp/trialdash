@@ -88,21 +88,31 @@ const EditFieldTypePanel = ({
       />
       {formType === ENTITIES_TYPES_DASH
         && (
-        <SwitchSection
-          onChange={e => onValueChange(e, 'switch', fieldType.key, 'trialField')}
-          title="Trial field"
-          description="this field is set per trial"
-          isChecked={fieldType.trialField}
-        />
+          <SwitchSection
+            onChange={e => onValueChange(e, 'switch', fieldType.key, 'trialField')}
+            title="Trial field"
+            description="this field is set per trial"
+            isChecked={fieldType.trialField}
+          />
         )
       }
-      {formType === ENTITIES_TYPES_DASH && fieldType.trialField &&  <SwitchSection
+      {formType === ENTITIES_TYPES_DASH
+        && (
+          <SwitchSection
+            onChange={e => onValueChange(e, 'switch', fieldType.key, 'static')}
+            title="Static field"
+            description="this field is static"
+            isChecked={fieldType.static}
+          />
+        )
+      }
+      {formType === ENTITIES_TYPES_DASH && fieldType.trialField && <SwitchSection
         onChange={e => onValueChange(e, 'switch', fieldType.key, 'inheritable')}
         className={classes.requiredSwitch}
         title="inheritable"
         description="Inherit the property to contains entity"
         isChecked={fieldType.inheritable}
-      /> }
+      />}
       <Grid
         container
         wrap="nowrap"

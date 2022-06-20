@@ -227,6 +227,11 @@ class EntityForm extends React.Component {
 
   getValue = (key) => {
     const { properties } = this.state.entity;
+    const entityTypeProps = this.state.entitiesType.properties
+    const staticProp = ((entityTypeProps && entityTypeProps.length) ? entityTypeProps.findIndex(pr => pr.key === key) : -1);
+    if(staticProp !== -1 && entityTypeProps[staticProp].static) {
+      return entityTypeProps[staticProp].defaultValue
+    }
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].val : '');
   }
@@ -246,7 +251,6 @@ class EntityForm extends React.Component {
     const { classes } = this.props;
     const { entitiesType, entity, loading } = this.state;
     const { number, prefix, numberFormat, suffix } = this.state;
-
     return (
       <LoadingOverlay
         active={loading}
@@ -319,6 +323,7 @@ class EntityForm extends React.Component {
                 bottomDescription={property.description}
                 value={this.getValue(property.key)}
                 values={property.value}
+                disabled={property.static}
                 type={property.type}
                 multiple={property.multipleValues}
                 invalid={this.getInvalid(property.key)}

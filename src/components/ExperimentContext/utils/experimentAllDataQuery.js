@@ -18,6 +18,7 @@ const getAllExperimentData = experimentId => gql`
           template
           multipleValues
           trialField
+          static
           value
           defaultValue
           defaultProperty
