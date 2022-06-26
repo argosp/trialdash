@@ -1,9 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DatePicker } from '@material-ui/pickers';
 import { Grid, Typography } from '@material-ui/core';
-import MomentUtils from '@date-io/moment';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import moment from 'moment';
 import { compose } from 'recompose';
@@ -140,7 +139,7 @@ class ExperimentForm extends React.Component {
     } = this.state;
 
     return (
-      <MuiPickersUtilsProvider utils={MomentUtils}>
+      <>
         <ContentHeader className={classes.header} title={this.props.experiment ? 'Edit experiment' : 'Add experiment'} />
         <form>
           <Grid container>
@@ -293,7 +292,7 @@ class ExperimentForm extends React.Component {
         >
           Are you sure you want to delete this experiment?
         </ConfirmDialog>
-      </MuiPickersUtilsProvider>
+      </>
     );
   }
 }
