@@ -12,7 +12,7 @@ const Footer = ({
   classes,
   loading,
 }) => (
-  <Grid container justify="space-between" className={classes.root}>
+  <Grid container justifyContent="space-between" className={classes.root}>
     <div>
       <SimpleButton
         className={classes.saveButton}

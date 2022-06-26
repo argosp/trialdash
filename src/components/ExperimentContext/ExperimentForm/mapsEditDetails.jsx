@@ -18,9 +18,9 @@ import { ChosenMarker } from "./ChosenMarker";
 import { MapStandalone } from "./MapStandalone";
 
 const ControlPointText = ({ point, setPoint }) => (
-  <Grid container direction="column" justify="space-evenly" alignItems="center" spacing={1}>
+  <Grid container direction="column" justifyContent="space-evenly" alignItems="center" spacing={1}>
     <Grid item>
-      <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
+      <Grid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={1}>
         <Grid item>
           <NumberTextField
             value={point.lat}
@@ -38,7 +38,7 @@ const ControlPointText = ({ point, setPoint }) => (
       </Grid>
     </Grid>
     <Grid item>
-      <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
+      <Grid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={1}>
         <Grid item>
           <NumberTextField
             value={point.x}
@@ -178,7 +178,7 @@ const MapsEmbedded = ({ row, setRow }) => {
     <Grid container>
       <Grid item xs={2}>
         <Grid container direction="column"
-          justify="flex-start"
+          justifyContent="flex-start"
           alignItems="center"
           spacing={2}
         >
@@ -234,7 +234,7 @@ const MapsEmbedded = ({ row, setRow }) => {
             }}
           >
             <Popup permanent>
-              <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
+              <Grid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={1}>
                 <Grid item>
                   <TextField
                     value={Math.round(distanceMeters(controlPoints[0], controlPoints[1]) * 100) / 100}

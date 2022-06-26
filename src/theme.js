@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import Inter from './assets/fonts/Inter-Regular.woff';
 
 const interFont = {
@@ -10,7 +10,7 @@ const interFont = {
   `,
 };
 
-export default createMuiTheme({
+export default createTheme({
   typography: {
     fontFamily:
       'Inter, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',

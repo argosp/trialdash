@@ -12,6 +12,9 @@ import Trials from '../components/TrialContext/Trials';
 import TrialForm from '../components/TrialContext/TrialForm';
 import trialSetsQuery from '../components/TrialContext/utils/trialSetQuery';
 import Entities from '../components/EntityContext/Entities';
+import Logs from '../components/LogsContext/Logs';
+import NewLog from '../components/LogsContext/NewLog';
+import EditLog from '../components/LogsContext/EditLog';
 import EntityForm from '../components/EntityContext/EntityForm';
 import {
   ENTITIES_TYPES_DASH,
@@ -22,6 +25,7 @@ import {
   TRIALS,
   TRIAL_SET_MUTATION,
   ENTITIES_TYPE_MUTATION,
+  LOGS_DASH
 } from '../constants/base';
 
 const AppRoutes = () => (
@@ -111,6 +115,21 @@ const AppRoutes = () => (
           path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:entitiesTypeKey/${ENTITIES}`}
           component={Entities}
           exact
+        />
+        <Route
+          path={`/experiments/:id/${LOGS_DASH}`}
+          component={Logs}
+          exact
+        />
+        <Route
+          path={`/experiments/:id/${LOGS_DASH}/new`}
+          exact
+          component={NewLog}
+        />
+        <Route
+          path={`/experiments/:id/${LOGS_DASH}/:logKey([0-9a-zA-Z-]{5,})`}
+          exact
+          component={EditLog}
         />
       </AuthPage>
     </Switch>

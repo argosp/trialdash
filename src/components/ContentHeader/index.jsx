@@ -39,7 +39,7 @@ const ContentHeader = (props) => {
   } = props;
 
   return (
-    <Grid container justify="space-between" className={classnames(classes.header, className)} onClick={onClick}>
+    <Grid container justifyContent="space-between" className={classnames(classes.header, className)} onClick={onClick}>
       <Box
         display="flex"
         alignItems="center"

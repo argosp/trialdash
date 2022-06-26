@@ -130,7 +130,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
     return (
         <Grid
-            container direction="row-reverse" justify="flex-start" alignItems="stretch"
+            container direction="row-reverse" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
         >
             <Grid item xs={9}>

@@ -10,7 +10,7 @@ const CustomSwitch = withStyles(switcher)(Switch);
 const SwitchSection = ({ title, description, classes, className, onChange, isChecked }) => (
   <Grid
     container
-    justify="space-between"
+    justifyContent="space-between"
     wrap="nowrap"
     className={classnames(classes.root, className)}
   >

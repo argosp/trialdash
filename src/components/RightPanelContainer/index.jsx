@@ -8,7 +8,7 @@ const RightPanelContainer = ({ classes, title, children, isPanelOpen, onClose, c
   <div className={isPanelOpen ? `${classes.root} ${className}` : classes.hiddenRoot}>
     <Grid
       container
-      justify="space-between"
+      justifyContent="space-between"
       alignItems="center"
       className={classes.headerWrapper}
     >

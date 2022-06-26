@@ -227,7 +227,6 @@ class Experiments extends React.Component {
             }
           }
           ))
-          console.log('333333333333333', jsonData.experiment)
         await this.props.client
           .mutate({
             mutation: uploadExperiment(jsonData),
@@ -244,42 +243,7 @@ class Experiments extends React.Component {
         this.setState({ update: true });
 
       })
-    //         // await this.props.client
-    //         //   .mutate({
-    //         //     mutation: uploadExperiment(experiment),
-    //         //     update: (cache, mutationResult) => {
-    //         //       updateCache(
-    //         //         cache,
-    //         //         mutationResult,
-    //         //         experimentsQuery,
-    //         //         EXPERIMENTS_WITH_DATA,
-    //         //         UPLOAD_EXPERIMENT
-    //         //       );
-    //         //     },
-    //         //   })
-    //         // this.setState({ update: true });
-    //      // };
-    //     });
-    //   })
-    // const fileReader = new FileReader();
-    // fileReader.readAsText(e.target.files[0], "UTF-8");
-    // fileReader.onload = async e => {
-    //   const experiment = JSON.parse(e.target.result)
-    //   await this.props.client
-    //     .mutate({
-    //       mutation: uploadExperiment(experiment),
-    //       update: (cache, mutationResult) => {
-    //         updateCache(
-    //           cache,
-    //           mutationResult,
-    //           experimentsQuery,
-    //           EXPERIMENTS_WITH_DATA,
-    //           UPLOAD_EXPERIMENT
-    //         );
-    //       },
-    //     })
-    //   this.setState({ update: true });
-    // };
+
   }
 
   clone = async (experiment) => {

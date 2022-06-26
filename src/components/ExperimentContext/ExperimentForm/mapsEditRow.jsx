@@ -91,7 +91,7 @@ const TextLatLng = ({ lat, lng, setLat, setLng, editable }) => {
     return lat + "," + lng;
   }
   return (
-    <Grid container justify="space-evenly" alignItems="center">
+    <Grid container justifyContent="space-evenly" alignItems="center">
       <TextField
         value={lat}
         onChange={(e) => setLat(parseFloat(e.target.value))}

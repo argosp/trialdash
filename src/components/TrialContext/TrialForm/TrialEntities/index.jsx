@@ -141,7 +141,7 @@ class TrialEntities extends React.Component {
       <>
         <Grid
           container
-          justify="space-between"
+          justifyContent="space-between"
           className={classes.entitiesPanelHeader}
         >
           <Grid item>

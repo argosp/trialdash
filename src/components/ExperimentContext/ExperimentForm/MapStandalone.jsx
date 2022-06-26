@@ -75,7 +75,7 @@ export const MapStandalone = ({ row, setRow }) => {
     <Grid container>
       <Grid item xs={3}>
         <Grid container direction="column"
-          justify="flex-start"
+          justifyContent="flex-start"
           alignItems="center"
           spacing={2}
         >

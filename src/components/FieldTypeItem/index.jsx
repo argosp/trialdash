@@ -84,7 +84,7 @@ class FieldTypeItem extends React.Component {
             />
           )}
         </Grid>
-        <Grid item container xs={2} justify="flex-end" alignItems="center">
+        <Grid item container xs={2} justifyContent="flex-end" alignItems="center">
           <CustomTooltip
             title="Edit"
             className={

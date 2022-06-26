@@ -18,3 +18,5 @@ export const UPLOAD_EXPERIMENT = 'uploadExperiment'
 export const UPLOAD_FILE = 'uploadFile';
 
 export const ASSETS = 'assets';
+
+export const LOGS_DASH = 'logs';

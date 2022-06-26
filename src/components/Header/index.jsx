@@ -36,7 +36,6 @@ const UserData = ({ classes, handleProfileMenuClick }) => (
         `}
   >
     {({ loading, error, data }) => {
-      console.log('loading ',loading, 'error ',error,'data ',data)
       if (loading) return <p>Loading...</p>;
       else
       if (error) return <p> {error}</p>;//TODO check how to set data
@@ -242,7 +241,7 @@ class Header extends React.Component {
             </>
           ) : null}
         </Grid>
-        <Grid item container xs={7} justify="flex-end">
+        <Grid item container xs={7} justifyContent="flex-end">
           {withExperiments ? (
             <>
               <Query
@@ -257,6 +256,7 @@ class Header extends React.Component {
                     tabs={[
                       { key: uuid(), label: 'Trials', id: 'header-tab-0' },
                       { key: uuid(), label: 'Entities', id: 'header-tab-1' },
+                      { key: uuid(), label: 'Logs', id: 'header-tab-2' },
                     ]}
                     value={data.headerTabId}
                     onChange={

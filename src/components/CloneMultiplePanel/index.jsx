@@ -70,7 +70,7 @@ class CloneMultiplePanel extends React.Component {
           (
             <Grid
               container
-              justify="space-between"
+              justifyContent="space-between"
               alignItems="center"
               className={classes.headerTitle}
             >

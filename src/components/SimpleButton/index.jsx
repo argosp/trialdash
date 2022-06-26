@@ -13,10 +13,14 @@ const SimpleButton = ({
   colorVariant = 'default',
   size = 'normal',
   disabled = false,
-  component = 'button'
+  component = 'button',
+  fullWidth= false,
+  labelClassName,
+  href
 }) => (
   <Button
     variant={variant}
+    fullWidth={fullWidth}
     component={component}
     color={colorVariant}
     disabled={disabled}
@@ -26,6 +30,8 @@ const SimpleButton = ({
         : classnames(classes.root, className)
     }
     onClick={onClick}
+    classes={{label: labelClassName}}
+    href={href}
   >
     {text}
   </Button>

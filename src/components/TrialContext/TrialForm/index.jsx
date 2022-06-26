@@ -436,7 +436,7 @@ class TrialForm extends React.Component {
                   <Grid
                     container
                     wrap="nowrap"
-                    justify="space-between"
+                    justifyContent="space-between"
                     alignItems="center"
                     alignContent="space-between"
                   >
