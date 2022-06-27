@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 import uuid from 'uuid/v4';
 
-const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials }) => {
-  
+const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials, logs }) => {
+
   let entityTypesStr = '';
   entityTypes.forEach(e => {
     entityTypesStr += `{
@@ -66,7 +66,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
     }`
   });
 
-let trialsStr = '';
+  let trialsStr = '';
   trials.forEach(e => {
     trialsStr += `{
       key: "${e.key}",
@@ -102,7 +102,16 @@ let trialsStr = '';
     }`
   });
 
-return gql`
+  let logsStr = '';
+  logs.forEach(e => {
+    logsStr += `${JSON.stringify({ title: e.title, key: e.key, comment: e.comment })
+      .replace(/"title":/g, 'title:')
+      .replace(/"key":/g, 'key:')
+      .replace(/"comment":/g, 'comment:')
+      }`
+  });
+
+  return gql`
     mutation{
         uploadExperiment(
             experiment: {
@@ -116,20 +125,21 @@ return gql`
                 ${experiment.status ? `status:"${experiment.status}"` : ''},
                 ${experiment.state ? `state:"${experiment.state}"` : ''},
                 ${experiment.maps ? `maps: ${JSON.stringify(experiment.maps)
-                .replace(/"imageUrl":/g, 'imageUrl:')
-                .replace(/"imageName":/g, 'imageName:')
-                .replace(/"lower":/g, 'lower:')
-                .replace(/"upper":/g, 'upper:')
-                .replace(/"right":/g, 'right:')
-                .replace(/"left":/g, 'left:')
-                .replace(/"width":/g, 'width:')
-                .replace(/"height":/g, 'height:')
-                .replace(/"embedded":/g, 'embedded:')}` : ''}
+      .replace(/"imageUrl":/g, 'imageUrl:')
+      .replace(/"imageName":/g, 'imageName:')
+      .replace(/"lower":/g, 'lower:')
+      .replace(/"upper":/g, 'upper:')
+      .replace(/"right":/g, 'right:')
+      .replace(/"left":/g, 'left:')
+      .replace(/"width":/g, 'width:')
+      .replace(/"height":/g, 'height:')
+      .replace(/"embedded":/g, 'embedded:')}` : ''}
             },
             entityTypes: [${entityTypesStr}],
             entities: [${entitiesStr}],
             trialSets: [${trialSetsStr}],
             trials: [${trialsStr}],
+            logs: [${logsStr}],
             uid: "${localStorage.getItem('uid')}"){
                 name
                 description

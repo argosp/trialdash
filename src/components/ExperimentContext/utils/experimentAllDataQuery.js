@@ -86,6 +86,11 @@ const getAllExperimentData = experimentId => gql`
           }
         }
     }
+    logs {
+      key
+      title
+      comment
+    }
     }
   }`;
 
