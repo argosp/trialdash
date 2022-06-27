@@ -46,7 +46,7 @@ class Experiments extends React.Component {
 
   setConfirmOpen = (open, experiment) => {
     if (experiment || open) {
-      this.setState({experiment})
+      this.setState({ experiment })
     }
     this.setState({ confirmOpen: open });
   }
@@ -165,18 +165,49 @@ class Experiments extends React.Component {
     });
   }
 
-  getImage = async (map) => {
+  fetchImageBlob = async (imageUrl) => {
     return new Promise((resolve) => {
-      const fileExtension = map.imageUrl.split('.')
-      const fileName = `${map.imageName}.${fileExtension[fileExtension.length - 1]}`
-      fetch(`${config.url}/${map.imageUrl}`)
+      fetch(imageUrl)
         .then(response => response.blob())
-        .then(image => resolve({
-          ...map,
-          imageUrl: image,
-          imageName: fileName
-        }))
+        .then(image => resolve(image))
     })
+  }
+
+  getImageFromMap = async (map) => {
+    return new Promise(async (resolve) => {
+      // const fileExtension = map.imageName.split('.')
+      // const fileName = `${map.imageName}.${fileExtension[fileExtension.length - 1]}`
+      const image = await this.fetchImageBlob(`${config.url}/${map.imageUrl}`)
+      return resolve({
+        ...map,
+        imageUrl: image
+      })
+
+    })
+  }
+
+  getImageFromLog = async (comment) => {
+    return new Promise(async (resolve) => {
+      const regex = /!\[(.*?)\]\((.*?)\)/g;
+      const imagesData = [];
+      let m;
+      while ((m = regex.exec(comment)) !== null) {
+        if (m.index === regex.lastIndex) {
+          regex.lastIndex++;
+        }
+        imagesData.push({ imageUrl: m[2], imageName: m[1] })
+      }
+      const images = await Promise.all(imagesData.map(async img => {
+        const blob = await this.fetchImageBlob(img.imageUrl)
+        return {
+          imageUrl: blob,
+          imageName: img.imageName
+        }
+
+      }))
+      return resolve(images)
+    })
+
   }
 
   download = async (experiment) => {
@@ -187,15 +218,22 @@ class Experiments extends React.Component {
       })
       .then(async (data) => {
         if (data && data.data.getAllExperimentData) {
-          expToDownload.maps = await Promise.all(expToDownload.maps.map(async map => await this.getImage(map)))
+          expToDownload.maps = await Promise.all(expToDownload.maps.map(async map => await this.getImageFromMap(map)))
+          const logImages = await Promise.all(data.data.getAllExperimentData.logs.map(async log => await this.getImageFromLog(log.comment)))
           const zip = JSZip();
           zip.file("data.json", JSON.stringify({ ...data.data.getAllExperimentData, experiment: expToDownload }));
-
           expToDownload.maps.forEach(img => {
             zip.file(`images/${img.imageName}`, img.imageUrl, {
               binary: true
             });
           });
+          logImages.forEach(array => {
+            array.forEach(img => {
+              zip.file(`images/${img.imageName}`, img.imageUrl, {
+                binary: true
+              });
+            });
+          })
 
           zip.generateAsync({ type: "blob" }).then(function (blob) {
             saveAs(blob, `experiment_${experiment.name}.zip`);
@@ -208,6 +246,30 @@ class Experiments extends React.Component {
 
   }
 
+  uploadImagesFromZip = async(zip) => {
+    return new Promise(async(resolve) => {
+      const files = zip.file(/^images/)
+      const images = await Promise.all(files.map(async file => {
+        const fileName = file.name.replace('images/', '')
+        const img = await file.async("blob")
+        const res = await this.props.client.mutate({
+          mutation: UPLOAD_FILE,
+          variables: { file: img }
+        })
+        return {[fileName]: res.data.uploadFile.path}
+      }))
+      return resolve(Object.assign({}, ...images))
+    })
+  }
+
+  replaceImagesInLog = (comment, images) => {
+    const regex = /!\[(.*?)\]\((.*?)\)/g;
+    function replacer(match, p1) {
+      return `![${p1}](${config.url}/${images[p1]})`
+    }
+    return comment.replace(regex, replacer)
+  }
+
   upload = (e) => {
 
     const zip = new JSZip();
@@ -215,18 +277,17 @@ class Experiments extends React.Component {
       .then(async (content) => {
         let jsonData = await zip.file('data.json').async("string");
         jsonData = JSON.parse(jsonData)
-        jsonData.experiment.maps = await Promise.all(
-          jsonData.experiment.maps.map(async img => {
-            const file = await zip.file(`images/${img.imageName}`).async("blob")
-            const res = await this.props.client.mutate({
-              mutation: UPLOAD_FILE,
-              variables: { file }
-            })
-            if (res && res.data && res.data.uploadFile) {
-              return { ...img, imageUrl: res.data.uploadFile.path }
-            }
-          }
-          ))
+        const images = await this.uploadImagesFromZip(zip)
+        jsonData.experiment.maps = jsonData.experiment.maps.map(img => ({
+          ...img,
+          imageUrl: images[img.imageName]
+        }))
+
+        jsonData.logs = jsonData.logs.map(log => ({
+          ...log,
+          comment: this.replaceImagesInLog(log.comment, images)
+        }))
+
         await this.props.client
           .mutate({
             mutation: uploadExperiment(jsonData),
