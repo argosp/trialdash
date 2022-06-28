@@ -15,5 +15,8 @@ export const styles = theme => ({
     labelBtn: {
         justifyContent: 'flex-start',
         fontWeight: 'normal'
+    },
+    labelsDivider: {
+        margin: '20px 0'
     }
 });

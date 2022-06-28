@@ -6,10 +6,10 @@ import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, IconB
 import { styles } from './styles';
 import addUpdateLog from '../utils/logMutation';
 import SimpleButton from '../../SimpleButton';
-import SettingsIcon from '@material-ui/icons/Settings';
 import MDEditor from '@uiw/react-md-editor';
 import FileUpload from './fileUpload';
-import getDate from '../utils/getDate'
+import getDate from '../utils/getDate';
+import Labels from '../LabelsDropdown';
 
 function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
 
@@ -80,13 +80,10 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
                 </>
               }
             />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="delete">
-                <SettingsIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
+            <Labels/>
           </ListItem>
         </List>
+
       </Grid>
     </Grid>
   )

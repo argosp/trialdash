@@ -3,18 +3,21 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import moment from 'moment';
 import { withApollo } from 'react-apollo';
-import { withStyles, Grid, List, ListItem, ListItemText, Paper, Button } from '@material-ui/core';
+import { withStyles, Grid, List, ListItem, ListItemText, Paper } from '@material-ui/core';
 import { styles } from './styles';
 import logsQuery from '../utils/logsQuery';
+import labelsQuery from '../utils/labelsQuery';
 import SimpleButton from '../../SimpleButton';
 import { LOGS_DASH } from '../../../constants/base';
 import getDate from '../utils/getDate';
 import { DatePicker } from "@material-ui/pickers";
+import ContentHeader from '../../ContentHeader';
 
-function Logs({ match, client, classes }) {
+function Logs({ match, client, classes, history }) {
   const [rows, setRows] = useState([])
   const [filteredRows, setFilteredRows] = useState([])
   const [selectedDate, handleDateChange] = useState(null);
+  const [labels, setLabels] = useState([])
 
   useEffect(() => {
     const experimentId = match.params.id
@@ -24,6 +27,13 @@ function Logs({ match, client, classes }) {
         if (data && data.data && data.data.logs) {
           setRows(data.data.logs)
           setFilteredRows(data.data.logs)
+        }
+      });
+    client
+      .query({ query: labelsQuery(experimentId) })
+      .then((data) => {
+        if (data && data.data && data.data.labels) {
+          setLabels(data.data.labels)
         }
       });
   }, [])
@@ -38,6 +48,11 @@ function Logs({ match, client, classes }) {
 
   return (
     <>
+      <ContentHeader
+        title="Logs"
+        withBackButton
+        backButtonHandler={() => history.push('/experiments')}
+      />
       <Grid container direction="row" justifyContent="flex-end">
         <SimpleButton
           colorVariant="primary"

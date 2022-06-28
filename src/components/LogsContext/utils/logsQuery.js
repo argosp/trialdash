@@ -6,6 +6,12 @@ const logsQuery = (experimentId) => gql`
         title
         key
         created
+        labels {
+          name
+        }
+        allLabels {
+          name
+        }
       }
   }`;
 
