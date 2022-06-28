@@ -47,6 +47,7 @@ function Labels({ classes, client, match }) {
         }}
         classes={{ paper: classes.popoverPaper }}
       >
+          
         <>
           {labelsState === 'list' && <List setLabelsState={setLabelsState} handleClose={handleClose}/>}
           {labelsState === 'create' && <Create setLabelsState={setLabelsState} handleClose={handleClose}/>}
