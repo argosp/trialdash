@@ -8,10 +8,17 @@ const logQuery = (experimentId, logId) => gql`
         created
         updated
         creator
+        state
         comment
+        labels {
+          key
+          name
+          color
+        }
         allLabels {
           key
           name
+          color
         }
       }
   }`;

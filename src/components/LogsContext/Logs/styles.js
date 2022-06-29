@@ -5,7 +5,15 @@ export const styles = theme => ({
     },
     filtersPaper: {
         backgroundColor: 'whitesmoke',
-        padding: 20,
-        marginTop: 20
+        marginTop: 20,
+        height: 100,
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 20px'
+    },
+    filterLabelControl: {
+        marginRight: theme.spacing(3),
+        minWidth: 200,
+
     }
 });

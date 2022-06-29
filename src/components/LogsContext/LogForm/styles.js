@@ -18,5 +18,9 @@ export const styles = theme => ({
     },
     labelsDivider: {
         margin: '20px 0'
+    },
+    labelChip: {
+        margin: theme.spacing(0.5),
+        color: 'white'
     }
 });

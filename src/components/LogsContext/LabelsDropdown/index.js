@@ -9,7 +9,7 @@ import Create from './create';
 import List from './list'
 
 
-function Labels({ classes, client, match }) {
+function Labels({ classes, client, match, log, updateLabels }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [labelsState, setLabelsState] = useState('list')
 
@@ -48,7 +48,7 @@ function Labels({ classes, client, match }) {
         classes={{ paper: classes.popoverPaper }}
       >
         <>
-          {labelsState === 'list' && <List setLabelsState={setLabelsState} handleClose={handleClose}/>}
+          {labelsState === 'list' && <List log={log} setLabelsState={setLabelsState} handleClose={handleClose} updateLabels={updateLabels}/>}
           {labelsState === 'create' && <Create setLabelsState={setLabelsState} handleClose={handleClose}/>}
         </>
       </Popover>

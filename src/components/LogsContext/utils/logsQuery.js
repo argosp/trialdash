@@ -6,8 +6,11 @@ const logsQuery = (experimentId) => gql`
         title
         key
         created
+        state
         labels {
           name
+          key
+          color
         }
         allLabels {
           name

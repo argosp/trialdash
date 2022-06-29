@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { withStyles, Grid, Popover, IconButton, ListItemSecondaryAction, ListItem, ListItemText, Divider, TextField, Typography } from '@material-ui/core';
+import { withStyles, Grid, IconButton, Divider, TextField } from '@material-ui/core';
 import SimpleButton from '../../SimpleButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { compose } from 'recompose';
