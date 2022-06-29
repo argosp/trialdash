@@ -1,14 +1,15 @@
 import gql from 'graphql-tag';
 
-const addUpdateLabel = (experimentId, labelName, color) => {
+const addUpdateLabel = (experimentId, labelData) => {
 
   return gql`
   mutation {
     addUpdateLabel(
       experimentId:"${experimentId}",
       uid: "${localStorage.getItem('uid')}",
-      name: "${labelName}",
-      color: "${color}"
+      name: "${labelData.labelName}",
+      color: "${labelData.color}",
+      ${labelData.key ? `key:"${labelData.key}"` : ''}
     ) {
         key
         name 

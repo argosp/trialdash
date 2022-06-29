@@ -7,6 +7,7 @@ import { styles } from './styles';
 import { withRouter } from 'react-router-dom';
 import labelsQuery from '../utils/labelsQuery';
 import addUpdateLog from '../utils/logMutation';
+import { BasketIcon, PenIcon } from '../../../constants/icons';
 
 function LabelRow({ label }) {
   return (
@@ -18,7 +19,7 @@ function LabelRow({ label }) {
 }
 
 
-function LabelsList({ classes, client, match, setLabelsState, handleClose, log, updateLabels }) {
+function LabelsList({ classes, client, match, setLabelsState, handleClose, log, updateLabels, handleEdit }) {
 
   const [labels, setLabels] = useState([])
   const [checked, setChecked] = React.useState((log.labels && log.labels.map(q => q.key)) || []);
@@ -79,9 +80,9 @@ function LabelsList({ classes, client, match, setLabelsState, handleClose, log, 
               </ListItemIcon>
               <ListItemText primary={<LabelRow label={l} />} />
               <ListItemSecondaryAction>
-                {/* <IconButton edge="end" aria-label="comments">
-                   <CommentIcon />
-                 </IconButton> */}
+                <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(l)}>
+                   <PenIcon />
+                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>)}
         </List>

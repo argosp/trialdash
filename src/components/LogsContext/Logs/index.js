@@ -164,7 +164,7 @@ function Logs({ match, client, classes, history }) {
           <ListItem key={r.key} button component="a" href={`/experiments/${match.params.id}/${LOGS_DASH}/${r.key}`} classes={{ root: classes.listItem }}>
             <ListItemText style={{flex: 'none'}} primary={r.title} secondary={`Opened on ${getDate(r.created)}`} />
             <div style={{marginLeft: 10}}>
-            {r.labels && r.labels.map(q => <Chip component="span" key={q.name} classes={{ root: classes.labelChip }} style={{ backgroundColor: q.color }} label={q.name} />)}
+            {r.labels && r.labels.map(q => <Chip component="span" key={q.name} style={{ backgroundColor: q.color, margin: '0 5px' }} label={q.name} />)}
               </div>
             <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="edit" onClick={(e) => handleEditClick(e, r)}>

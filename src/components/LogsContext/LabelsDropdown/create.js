@@ -27,13 +27,13 @@ const COLORS = [
   '#F19CBB',
   '#FF7E00'
 ]
-function Create({ classes, client, match, setLabelsState, handleClose }) {
-  const [labelName, setLabelName] = useState('');
-  const [color, setColor] = useState();
+function Create({ classes, client, match, setLabelsState, handleClose, label={name: ''} }) {
+  const [labelName, setLabelName] = useState(label.name);
+  const [color, setColor] = useState(label.color);
 
   function createLabel() {
     client.mutate({
-      mutation: addUpdateLabel(match.params.id, labelName, color),
+      mutation: addUpdateLabel(match.params.id, {labelName, color, key: label.key}),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -50,7 +50,7 @@ function Create({ classes, client, match, setLabelsState, handleClose }) {
   return (
     <>
       <div className={classes.dropdownTitle}>
-        <span className={classes.dropdownTitleSpan}>Create label</span>
+        <span className={classes.dropdownTitleSpan}>{`${label.key ? 'Edit Label' : 'Create Label'}`}</span>
         <IconButton classes={{root: classes.dropdownClose}} onClick={handleClose}>
           <CloseIcon />
         </IconButton>
@@ -70,7 +70,7 @@ function Create({ classes, client, match, setLabelsState, handleClose }) {
         <SimpleButton
           variant="outlined"
           onClick={createLabel}
-          text="Create"
+          text={`${label.key ? 'Update' : 'Create'}`}
           size="small"
           disabled={!labelName || !color}
         />

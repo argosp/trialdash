@@ -6,12 +6,12 @@ import { withApollo } from 'react-apollo';
 import { styles } from './styles';
 import { withRouter } from 'react-router-dom';
 import Create from './create';
-import List from './list'
+import List from './list';
 
-
-function Labels({ classes, client, match, log, updateLabels }) {
+function Labels({ classes, log, updateLabels }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [labelsState, setLabelsState] = useState('list')
+  const [labelToEdit, setLabelToEdit] = useState()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -21,6 +21,11 @@ function Labels({ classes, client, match, log, updateLabels }) {
     setLabelsState('list')
     setAnchorEl(null);
   };
+
+  const handleEdit = (label) => {
+      setLabelToEdit(label);
+      setLabelsState('create')
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -48,8 +53,8 @@ function Labels({ classes, client, match, log, updateLabels }) {
         classes={{ paper: classes.popoverPaper }}
       >
         <>
-          {labelsState === 'list' && <List log={log} setLabelsState={setLabelsState} handleClose={handleClose} updateLabels={updateLabels}/>}
-          {labelsState === 'create' && <Create setLabelsState={setLabelsState} handleClose={handleClose}/>}
+          {labelsState === 'list' && <List log={log} setLabelsState={setLabelsState} handleEdit={handleEdit} handleClose={handleClose} updateLabels={updateLabels}/>}
+          {labelsState === 'create' && <Create setLabelsState={setLabelsState} label={labelToEdit} handleClose={handleClose}/>}
         </>
       </Popover>
     </>
