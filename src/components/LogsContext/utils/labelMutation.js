@@ -7,8 +7,9 @@ const addUpdateLabel = (experimentId, labelData) => {
     addUpdateLabel(
       experimentId:"${experimentId}",
       uid: "${localStorage.getItem('uid')}",
-      name: "${labelData.labelName}",
+      name: "${labelData.name}",
       color: "${labelData.color}",
+      ${labelData.state ? `state:"${labelData.state}"` : ''},
       ${labelData.key ? `key:"${labelData.key}"` : ''}
     ) {
         key

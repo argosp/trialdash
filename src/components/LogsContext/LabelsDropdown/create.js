@@ -33,7 +33,7 @@ function Create({ classes, client, match, setLabelsState, handleClose, label={na
 
   function createLabel() {
     client.mutate({
-      mutation: addUpdateLabel(match.params.id, {labelName, color, key: label.key}),
+      mutation: addUpdateLabel(match.params.id, {name: labelName, color, key: label.key}),
       update: (cache, mutationResult) => {
         updateCache(
           cache,

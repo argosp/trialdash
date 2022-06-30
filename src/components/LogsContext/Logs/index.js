@@ -68,14 +68,7 @@ function Logs({ match, client, classes, history }) {
   useEffect(() => {
 
     function filterRows() {
-      return rows.filter(w => {
-        const found = w.labels.find(l => {
-          console.log('dddddddd', selectedLabels.find(s => s === l.key))
-          return selectedLabels.find(s => s === l.key)
-        })
-        console.log('222222222222', found)
-        return found;
-      })
+      return rows.filter(w =>  w.labels.find(l => selectedLabels.find(s => s === l.key)))
     }
     selectedLabels.length ? setFilteredRows(filterRows()) : setFilteredRows(rows)
   }, [selectedLabels])
@@ -164,7 +157,7 @@ function Logs({ match, client, classes, history }) {
           <ListItem key={r.key} button component="a" href={`/experiments/${match.params.id}/${LOGS_DASH}/${r.key}`} classes={{ root: classes.listItem }}>
             <ListItemText style={{flex: 'none'}} primary={r.title} secondary={`Opened on ${getDate(r.created)}`} />
             <div style={{marginLeft: 10}}>
-            {r.labels && r.labels.map(q => <Chip component="span" key={q.name} style={{ backgroundColor: q.color, margin: '0 5px' }} label={q.name} />)}
+            {r.labels && r.labels.map(q => <Chip component="span" key={q.name} style={{ backgroundColor: q.color, margin: '0 5px', color: 'white' }} label={q.name} />)}
               </div>
             <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="edit" onClick={(e) => handleEditClick(e, r)}>

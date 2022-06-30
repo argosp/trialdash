@@ -7,6 +7,7 @@ import { styles } from './styles';
 import { withRouter } from 'react-router-dom';
 import labelsQuery from '../utils/labelsQuery';
 import addUpdateLog from '../utils/logMutation';
+import addUpdateLabel from '../utils/labelMutation';
 import { BasketIcon, PenIcon } from '../../../constants/icons';
 
 function LabelRow({ label }) {
@@ -57,6 +58,12 @@ function LabelsList({ classes, client, match, setLabelsState, handleClose, log, 
     updateLabels(newChecked.map(q => ({ ...labelsObj[q] })))
   }
 
+  function handleDelete(label) {
+    client.mutate({
+      mutation: addUpdateLabel(match.params.id, { ...label, state: 'Deleted' })
+    });
+  }
+
   return (
     <>
       <div className={classes.dropdownTitle}>
@@ -82,6 +89,9 @@ function LabelsList({ classes, client, match, setLabelsState, handleClose, log, 
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(l)}>
                    <PenIcon />
+                 </IconButton>
+                 <IconButton edge="end" aria-label="edit" onClick={() => handleDelete(l)}>
+                   <BasketIcon />
                  </IconButton>
               </ListItemSecondaryAction>
             </ListItem>)}

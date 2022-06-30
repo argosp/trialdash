@@ -5,12 +5,13 @@ import { withApollo } from 'react-apollo';
 import { withStyles, Typography, Divider, Grid } from '@material-ui/core';
 import { styles } from './styles';
 import logQuery from '../utils/logQuery';
+import ContentHeader from '../../ContentHeader'
 import getDate from '../utils/getDate';
 import LogForm from '../LogForm';
 import { LOGS_DASH } from '../../../constants/base';
 import SimpleButton from '../../SimpleButton'
 
-function EditLog({ client, match, classes }) {
+function EditLog({ client, match, classes, history }) {
 
   const [log, setLog] = useState()
 
@@ -34,10 +35,12 @@ function EditLog({ client, match, classes }) {
   return (
     log ? <>
       <Grid container justifyContent="space-between" alignItems="center">
-        <Grid itemRef=''>
-          <Typography variant='h4'>{log.title}</Typography>
-          <Typography variant='subtitle1'><strong>{log.creator}</strong> opened this log on {getDate(log.created)}</Typography>
-        </Grid>
+        <ContentHeader
+          title={log.title}
+          withBackButton
+          backButtonHandler={() => history.push(`/experiments/${match.params.id}/logs`)}
+        />
+        <Typography variant='subtitle1'><strong>{log.creator}</strong> opened this log on {getDate(log.created)}</Typography>
         <Grid item>
           <SimpleButton
             colorVariant="primary"
