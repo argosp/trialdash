@@ -221,7 +221,7 @@ class Experiments extends React.Component {
           expToDownload.maps = await Promise.all(expToDownload.maps.map(async map => await this.getImageFromMap(map)))
           const logImages = await Promise.all(data.data.getAllExperimentData.logs.map(async log => await this.getImageFromLog(log.comment)))
           const zip = JSZip();
-          zip.file("data.json", JSON.stringify({ ...data.data.getAllExperimentData, experiment: expToDownload }));
+          zip.file("data.json", JSON.stringify({ version: '2.0.0.',...data.data.getAllExperimentData, experiment: expToDownload }));
           expToDownload.maps.forEach(img => {
             zip.file(`images/${img.imageName}`, img.imageUrl, {
               binary: true

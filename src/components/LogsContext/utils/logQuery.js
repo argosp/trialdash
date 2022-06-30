@@ -15,11 +15,6 @@ const logQuery = (experimentId, logId) => gql`
           name
           color
         }
-        allLabels {
-          key
-          name
-          color
-        }
       }
   }`;
 

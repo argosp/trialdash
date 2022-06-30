@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import uuid from 'uuid/v4';
 
-const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials, logs }) => {
+const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials, logs, labels }) => {
 
   let entityTypesStr = '';
   entityTypes.forEach(e => {
@@ -25,6 +25,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
         .replace(/"defaultValue":/g, 'defaultValue:')
         .replace(/"defaultProperty":/g, 'defaultProperty:')
         .replace(/"inheritable":/g, 'inheritable:')
+        .replace(/"static":/g, 'static:')
       }
     }`
   });
@@ -104,10 +105,20 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
 
   let logsStr = '';
   logs.forEach(e => {
-    logsStr += `${JSON.stringify({ title: e.title, key: e.key, comment: e.comment })
+    logsStr += `${JSON.stringify({ title: e.title, key: e.key, comment: e.comment, labels: e.labels.map(q => q.key) })
       .replace(/"title":/g, 'title:')
       .replace(/"key":/g, 'key:')
       .replace(/"comment":/g, 'comment:')
+      .replace(/"labels":/g, 'labels:')
+      }`
+  });
+
+  let labelsStr = '';
+  labels.forEach(e => {
+    labelsStr += `${JSON.stringify({ name: e.name, key: e.key, color: e.color })
+      .replace(/"name":/g, 'name:')
+      .replace(/"key":/g, 'key:')
+      .replace(/"color":/g, 'color:')
       }`
   });
 
@@ -140,6 +151,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
             trialSets: [${trialSetsStr}],
             trials: [${trialsStr}],
             logs: [${logsStr}],
+            labels: [${labelsStr}],
             uid: "${localStorage.getItem('uid')}"){
                 name
                 description

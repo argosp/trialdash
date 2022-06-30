@@ -12,9 +12,6 @@ const logsQuery = (experimentId) => gql`
           key
           color
         }
-        allLabels {
-          name
-        }
       }
   }`;
 

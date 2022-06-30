@@ -90,6 +90,14 @@ const getAllExperimentData = experimentId => gql`
       key
       title
       comment
+      labels{
+        key
+      }
+    }
+    labels {
+      key
+      name
+      color
     }
     }
   }`;
