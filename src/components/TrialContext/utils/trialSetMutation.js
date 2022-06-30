@@ -28,6 +28,7 @@ export default (trialSet) => {
     .replace(/"value":/g, 'value:')
     .replace(/"defaultValue":/g, 'defaultValue:')
     .replace(/"inheritable":/g, 'inheritable:')
+    .replace(/"static":/g, 'static:')
   }
         ) {
             key
