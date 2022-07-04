@@ -61,9 +61,18 @@ const TabPanel = ({ children, value, index, ...other }) => (
 );
 
 class TrialForm extends React.Component {
-
   state = {
-    trial: {
+    trial: this.initTrial(),
+    trialSet: {},
+    tabValue: this.props.tabValue || 0,
+    showFooter: true,
+    changedEntities: [],
+    triggerUpdate: 0
+  };
+
+
+  initTrial() {
+    return {
       key: this.props.trial ? this.props.trial.key : uuid(),
       trialSetKey: this.props.match.params.trialSetKey,
       experimentId: this.props.match.params.id,
@@ -71,14 +80,10 @@ class TrialForm extends React.Component {
       status: this.props.trial && this.props.trial.status ? this.props.trial.status : 'design',
       numberOfEntities: this.props.trial ? this.props.trial.numberOfEntities : 0,
       properties: this.props.trial && this.props.trial.properties ? [...this.props.trial.properties] : [],
-      entities: this.props.trial && this.props.trial.entities ? [...this.props.trial.entities.map(e => {return({...e, properties: [...e.properties]})})] : [],
+      entities: this.props.trial && this.props.trial.entities ? [...this.props.trial.entities.map(e => { return ({ ...e, properties: [...e.properties] }) })] : [],
       deployedEntities: this.props.trial && this.props.trial.deployedEntities ? [...this.props.trial.deployedEntities] : [],
-    },
-    trialSet: {},
-    tabValue: this.props.tabValue || 0,
-    showFooter: true,
-    changedEntities: []
-  };
+    }
+  }
 
   componentDidMount() {
     const { client, match, trial } = this.props;
@@ -149,16 +154,16 @@ class TrialForm extends React.Component {
       trial[entitiesField][indexOfEntity].properties.push({ val: value, key: propertyKey });
       indexOfProperty = trial[entitiesField][indexOfEntity].properties.length - 1;
     } else {
-      const property = {...trial[entitiesField][indexOfEntity].properties[indexOfProperty]};
+      const property = { ...trial[entitiesField][indexOfEntity].properties[indexOfProperty] };
       property.val = value;
-      trial[entitiesField][indexOfEntity].properties[indexOfProperty] = {...property};
+      trial[entitiesField][indexOfEntity].properties[indexOfProperty] = { ...property };
     }
     this.updateChangedEntities(changedEntities, entityObj);
-    this.setState({ trial, changed: true});
+    this.setState({ trial, changed: true });
   };
   updateChangedEntities = (changedEntities, entityObj) => {
-    if(changedEntities.findIndex(e => e.key === entityObj.key) === -1)
-    this.setState({changedEntities:[...this.state.changedEntities, entityObj]})
+    if (changedEntities.findIndex(e => e.key === entityObj.key) === -1)
+      this.setState({ changedEntities: [...this.state.changedEntities, entityObj] })
   }
   onInputChange = (e, inputName) => {
     const { value } = e.target;
@@ -207,7 +212,7 @@ class TrialForm extends React.Component {
     trialSet.numberOfTrials = n[trialSet.key];
     updateCache(
       cache,
-      {data: { [TRIAL_SET_MUTATION]: trialSet } },
+      { data: { [TRIAL_SET_MUTATION]: trialSet } },
       trialSetsQuery(match.params.id),
       TRIAL_SETS,
       TRIAL_SET_MUTATION,
@@ -246,11 +251,11 @@ class TrialForm extends React.Component {
       }
     }
     await client.mutate({
-      mutation:trialMutation(updatedTrial, changedEntities),
+      mutation: trialMutation(updatedTrial, changedEntities),
       update: (cache, mutationResult) => {
         if (mutationResult && mutationResult.data.addUpdateTrial.error) {
           return alert(mutationResult.data.addUpdateTrial.error)
-        } 
+        }
         updateCache(
           cache,
           mutationResult,
@@ -286,49 +291,49 @@ class TrialForm extends React.Component {
     this.setState({})
     const tmp = this.state.trial;
     tmp[entitiesField] = this.state.trial[entitiesField] || [];
-    this.setState({trial: tmp})
+    this.setState({ trial: tmp })
     const newEntity = {
       key: entity.key,
       entitiesTypeKey: selectedEntitiesType,
       properties
     };
     this.state.trial[entitiesField].push(newEntity);
-    if (parentEntity){
+    if (parentEntity) {
       //TODO: when open AddEntityPanel by plus icon of entity -> display all entites that can add to entity(filter by not exist key in containsArray)
-     this.updateEntityInParent(parentEntity, newEntity, action);
+      this.updateEntityInParent(parentEntity, newEntity, action);
     }
     else
-    this.setState({ changed: true });
+      this.setState({ changed: true });
   }
 
-  updateEntityInParent  = async (parentEntity, newEntity, action) => {
+  updateEntityInParent = async (parentEntity, newEntity, action) => {
     const { match, client, returnFunc } = this.props;
     const { trial } = this.state;
     const containsEntitiesObj = {
       parentEntityKey: parentEntity.key || parentEntity,
       newEntity: newEntity,
       action: action
-   }
-   await client.mutate({
-     mutation: updateContainsEntitiesMutation(
-       trial,
-       containsEntitiesObj.parentEntityKey,
-       containsEntitiesObj.newEntity,
-       containsEntitiesObj.action),
-     update: (cache, mutationResult) => {
-       updateCache(
-         cache,
-         mutationResult,
-         trialsQuery(match.params.id, match.params.trialSetKey),
-         TRIALS,
-         UPDATE_CONTAINS_ENTITIES_MUTATION,
-         returnFunc,
-         'trialSetKey',
-         this.updateAfterSubmit
-       );
-     },
-   });
- }
+    }
+    await client.mutate({
+      mutation: updateContainsEntitiesMutation(
+        trial,
+        containsEntitiesObj.parentEntityKey,
+        containsEntitiesObj.newEntity,
+        containsEntitiesObj.action),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          trialsQuery(match.params.id, match.params.trialSetKey),
+          TRIALS,
+          UPDATE_CONTAINS_ENTITIES_MUTATION,
+          returnFunc,
+          'trialSetKey',
+          this.updateAfterSubmit
+        );
+      },
+    });
+  }
 
   removeEntity = (key) => {
     const { trial } = this.state;
@@ -406,6 +411,9 @@ class TrialForm extends React.Component {
   cancelChangeStatus = () => {
     this.setState({ confirmStatusOpen: false });
   }
+  cancelHandler = () => {
+    this.setState({trial: this.initTrial(),changedEntities: [], changed: false, triggerUpdate: this.state.triggerUpdate + 1})
+  }
   render() {
     const { classes, theme } = this.props;
     const {
@@ -419,6 +427,7 @@ class TrialForm extends React.Component {
       confirmStatusOpen,
       newStatus,
     } = this.state;
+
     return (
       <>
         <div>
@@ -427,7 +436,7 @@ class TrialForm extends React.Component {
             topDescription={trialSet.name}
             withBackButton
             rightDescription={(
-            trial.status && <StatusBadge
+              trial.status && <StatusBadge
                 onClick={this.handleMenuClick}
                 onMouseEnter={() => this.setEditableStatus(true)}
                 onMouseLeave={() => this.setEditableStatus(false)}
@@ -460,13 +469,13 @@ class TrialForm extends React.Component {
                 onChange={this.changeTab}
                 ariaLabel="trial tabs"
               />
-              )}
+            )}
           />
           <Menu
             onMouseEnter={() => this.setEditableStatus(true)}
             onMouseLeave={() => this.setEditableStatus(false)}
             id="statuses-menu"
-            classes={{ paper: classes.menu}}
+            classes={{ paper: classes.menu }}
             open={Boolean(anchorMenu)}
             onClose={() => this.handleMenuClose('anchorMenu')}
             anchorEl={anchorMenu}
@@ -480,7 +489,7 @@ class TrialForm extends React.Component {
               horizontal: 'left',
             }}
           >
-            {['design', 'deploy', 'execution', 'complete'].map((i)=><MenuItem
+            {['design', 'deploy', 'execution', 'complete'].map((i) => <MenuItem
               key={uuid()}
               classes={{ root: classes.menuItem }}
               onClick={e => this.onInputChange({ target: { value: i } }, 'status')}
@@ -521,7 +530,7 @@ class TrialForm extends React.Component {
                 invalid={this.getInvalid(property.key)}
                 endAdornment={(['date', 'time', 'datetime-local'].indexOf(property.type) !== -1) ?
                   <InputAdornment position="end">
-                    <Button onClick={()=>this.setCurrent(property)}>
+                    <Button onClick={() => this.setCurrent(property)}>
                       Fill current
                     </Button>
                   </InputAdornment> :
@@ -535,9 +544,10 @@ class TrialForm extends React.Component {
           {tabValue === 1 &&
             <TrialEntities
               trial={trial}
+              triggerUpdate={this.state.triggerUpdate}
               addEntityToTrial={this.addEntityToTrial}
               removeEntity={this.removeEntity}
-              updateEntityInParent = {this.updateEntityInParent}
+              updateEntityInParent={this.updateEntityInParent}
               updateLocation={this.updateLocation}
               submitTrial={this.submitTrial}
               onEntityPropertyChange={this.onEntityPropertyChange}
@@ -546,10 +556,10 @@ class TrialForm extends React.Component {
           }
         </TabPanel>
         {(tabValue === 0 || showFooter) && <Footer
-          cancelButtonHandler={this.closeForm}
+          cancelButtonHandler={this.cancelHandler}
+          saveButtonDisabled={!this.state.changed}
           saveButtonHandler={() => this.submitTrial(trial)}
-          withDeleteButton={this.props.trial}
-          deleteButtonHandler={() => this.submitTrial(trial, true)}
+          cancelButtonDisabled={!this.state.changed}
         />}
         <ConfirmDialog
           title={'There are unsaved changes. Do you want to leave without saving the changes?'}
@@ -573,7 +583,7 @@ class TrialForm extends React.Component {
           confirmText="Save changes and change status"
           onConfirm={() => {
             this.setState({ changed: false }, () => {
-              this.submitTrial(trial, false , newStatus);
+              this.submitTrial(trial, false, newStatus);
             });
           }}
           cancelText="I don't want to change status"

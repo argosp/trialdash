@@ -21,7 +21,7 @@ class CustomLocation extends React.Component {
   render() {
     const { classes, id, withBorder, label } = this.props;
     let { value } = this.props;
-    if (!value) value = { name: 'OSMMap', coordinates: [] };
+    if (!value) value = { name: 'OSMMap', coordinates: ['', ''] };
     else value = JSON.parse(value);
     return (
       <Grid

@@ -75,15 +75,15 @@ class TrialEntities extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+   
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    if (prevProps.trial[entitiesField].length !== this.state.length || prevProps.trial.status !== trial.status || this.state.entitiesField !== entitiesField) {
+    if (prevProps.triggerUpdate !== this.props.triggerUpdate || prevProps.trial[entitiesField].length !== this.props.trial[entitiesField].length || prevProps.trial[entitiesField].length !== this.state.length || prevProps.trial.status !== trial.status || this.state.entitiesField !== entitiesField) {
       this.orderEntities();
     }
   }
 
   orderEntities = () => {
-
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     this.setState({ update: true, length: trial[entitiesField].length, trialEntities: groupBy(trial[entitiesField], 'entitiesTypeKey'), entitiesField });
@@ -110,6 +110,7 @@ class TrialEntities extends React.Component {
   }
 
   render() {
+
     const {
       classes,
       theme,
@@ -125,12 +126,12 @@ class TrialEntities extends React.Component {
     } = this.props;
     const {
       selectedViewIndex,
-      trialEntities,
       entities,
       entitiesTypes,
       update,
       isLoading,
       parentEntity,
+      trialEntities,
       CloneEntitiesDialogOpen
     } = this.state;
     const experiments = !isLoading
