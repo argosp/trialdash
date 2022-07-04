@@ -203,7 +203,8 @@ class TrialForm extends React.Component {
   updateAfterSubmit = (n, cache, trial) => {
     this.updateTrialSetNumberOfTrials(n, cache);
     trial.experimentId = this.props.match.params.id;
-    this.setState({ trial });
+    //this.setState({ trial });
+    this.props.updateTrial(trial)
   }
 
   updateTrialSetNumberOfTrials = (n, cache) => {

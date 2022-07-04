@@ -292,6 +292,9 @@ class Trials extends React.Component {
       update: deleted,
     });
   }
+  updateTrial = (trial) => {
+    this.setState({trial})
+  }
 
   render() {
     const { history, match } = this.props;
@@ -307,6 +310,7 @@ class Trials extends React.Component {
             trial={this.state.trial}
             returnFunc={this.returnFunc}
             tabValue={tabValue}
+            updateTrial={this.updateTrial}
           />
           // eslint-disable-next-line react/jsx-wrap-multilines
           : <>
