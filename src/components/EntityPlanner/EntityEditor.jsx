@@ -8,6 +8,8 @@ import { changeEntityLocation, getEntityLocation } from './EntityUtils';
 import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
+import ToBePositionTable from './new';
+import DeviceTypesTable from './new/ToBePositionTable/DeviceTypes';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 
@@ -133,7 +135,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
             container direction="row-reverse" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
         >
-            <Grid item xs={9}>
+            <Grid item xs={9} >
                 <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}
@@ -173,7 +175,13 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
                 </EntityMap>
             </Grid>
-            <Grid item xs={3} style={{ overflow: 'auto' }}>
+        {/* To be position Table */}
+            <Grid item xs={3} style={{overflow: 'inherit', backgroundColor: '#f5f5f5'}}>
+                <ToBePositionTable entities={entities} />
+             </Grid>
+
+            {/* <Grid item xs={3} style={{ overflow: 'auto' }}>
+                {console.log(entities)}
                 {!entities.length ? null :
                     <>
                         <ShapeChooser
@@ -237,7 +245,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                         />
                     </>
                 }
-            </Grid>
+            </Grid> */}
         </Grid>
     )
 }
