@@ -9,7 +9,7 @@ import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCur
 import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
 import ToBePositionTable from './new';
-import DeviceTypesTable from './new/ToBePositionTable/DeviceTypes';
+import DeviceTypesTable from './new/ToBePositionTable/EditTable';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 
