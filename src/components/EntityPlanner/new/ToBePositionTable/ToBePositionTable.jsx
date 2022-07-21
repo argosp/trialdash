@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
 
-
 import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container'
 import Divider from '@material-ui/core/Divider'
@@ -15,6 +14,7 @@ import DevicesFilter from './DevicesFilter';
 import SearchInput from './SearchInput';
 import DeviceRow from './DeviceRow';
 import EditTable from './EditTable'
+import { ReactComponent as DnDIcon } from './DnDIcon.svg';
 
 import { makeStyles } from "@material-ui/core/styles";
 import { styles } from './styles'
@@ -35,11 +35,17 @@ function ToBePositionTable({ entities }) {
   const [addDeviceMode, setAddDeviceMode] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [TBPDevices, setTBPDevices] = useState([]);
-  const [filteredDevices, setFilteredDevices] = useState([]);
+  const [filteredTBPDevices, setFilteredTBPDevices] = useState([]);
+
+  const handleFilterDevices = (filter) => {
+    console.log(filter)
+    // setFilteredTBPDevices(filter)
+  }
 
   const handleMapTypeChange = (value) => {
     setMapType(value)
   }
+
   const reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
@@ -119,7 +125,7 @@ function ToBePositionTable({ entities }) {
 
         <WidthDivider />
 
-        <DevicesFilter />
+        <DevicesFilter classes={classes} deviceNames={entities.map(device => device.name)} handleFilterDevices={handleFilterDevices} />
 
         <WidthDivider />
 
@@ -141,10 +147,24 @@ function ToBePositionTable({ entities }) {
                   <div
                     ref={droppableProvided.innerRef}
                     className={dropZoneClassName}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      margin: '8px auto',
+                      width: '99%',
+                      lineHeight: '10px',
+                      flexDirection: 'column'
+                    }}
                   >
                     {
                       isEmpty(TBPDevices) ?
-                        <span>Drag Devices Here</span>
+                        <>
+                          <DnDIcon />
+                          <p>
+                            Drag Devices Here
+                          </p>
+                        </>
                         :
 
                         TBPDevices.map((fieldType, index) => {

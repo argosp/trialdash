@@ -4,8 +4,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 
-import { ReactComponent as ExpandLess } from './ExpandLess.svg';
-import { ReactComponent as ExpandMore } from './ExpandMore.svg';
+import { ReactComponent as ExpandLess } from './ExpandLessIcon.svg';
+import { ReactComponent as ExpandMore } from './ExpandMoreIcon.svg';
 import { Divider, IconButton } from '@material-ui/core';
 
 const EditTableListRow = ({ classes, deviceProps, children }) => {
