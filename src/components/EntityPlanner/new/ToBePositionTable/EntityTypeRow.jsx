@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import { VisibilityOffOutlined, VisibilityOutlined} from '@material-ui/icons'
 
-const DeviceRow = ({entity}) => {
+const EntityTypeRow = ({entity}) => {
     const [isVisible, setIsVisible ] = React.useState(true)
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
@@ -26,4 +26,4 @@ const DeviceRow = ({entity}) => {
   )
 }
 
-export default DeviceRow
+export default EntityTypeRow

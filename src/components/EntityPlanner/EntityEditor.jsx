@@ -9,7 +9,6 @@ import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCur
 import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
 import ToBePositionTable from './new';
-import DeviceTypesTable from './new/ToBePositionTable/EditTable';
 import { ShapeChooser } from './ShapeChooser';
 import { TypeChooser } from './TypeChooser';
 
@@ -175,10 +174,10 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
                 </EntityMap>
             </Grid>
-        {/* To be position Table */}
-            <Grid item xs={3} style={{overflow: 'inherit', backgroundColor: '#f5f5f5'}}>
+            {/* To be position Table */}
+            <Grid item xs={3} style={{ overflow: 'inherit', backgroundColor: '#f5f5f5' }}>
                 <ToBePositionTable entities={entities} />
-             </Grid>
+            </Grid>
 
             {/* <Grid item xs={3} style={{ overflow: 'auto' }}>
                 {console.log(entities)}

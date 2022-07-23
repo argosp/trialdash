@@ -10,10 +10,10 @@ import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
 
 import MapTypesList from './MapTypesList'
-import DevicesFilter from './DevicesFilter';
+import DevicesFilter from './EntityTypeFilter';
 import SearchInput from './SearchInput';
-import DeviceRow from './DeviceRow';
-import EditTable from './EditTable'
+import DeviceRow from './EntityTypeRow';
+import EntitiesTypesTable from './EntitiesTypesTable'
 import { ReactComponent as DnDIcon } from './DnDIcon.svg';
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -167,29 +167,27 @@ function ToBePositionTable({ entities }) {
                         </>
                         :
 
-                        TBPDevices.map((fieldType, index) => {
-                          console.log(fieldType)
-                          return (
-                            <Draggable
-                              key={fieldType.source.droppableId + index}
-                              draggableId={fieldType.source.droppableId + index}
-                              index={index}
-                            // isDragDisabled={isDragDisabled}
-                            >
-                              {draggableProvided => (
-                                <div
-                                  ref={draggableProvided.innerRef}
-                                  {...draggableProvided.draggableProps}
-                                  {...draggableProvided.dragHandleProps}
-                                >
-                                  <div style={{ width: 50, height: 50, border: '1px solid black' }}>
+                        TBPDevices.map((fieldType, index) => (
+                          <Draggable
+                            key={fieldType.source.droppableId + index}
+                            draggableId={fieldType.source.droppableId + index}
+                            index={index}
+                          // isDragDisabled={isDragDisabled}
+                          >
+                            {draggableProvided => (
+                              <div
+                                ref={draggableProvided.innerRef}
+                                {...draggableProvided.draggableProps}
+                                {...draggableProvided.dragHandleProps}
+                              >
+                                <div style={{ width: 50, height: 50, border: '1px solid black' }}>
 
-                                  </div>
                                 </div>
-                              )}
-                            </Draggable>
-                          )
-                        })
+                              </div>
+                            )}
+                          </Draggable>
+                        )
+                        )
 
                     }
                     {droppableProvided.placeholder}
@@ -248,7 +246,7 @@ function ToBePositionTable({ entities }) {
 
           {
             !!addDeviceMode &&
-            <EditTable
+            <EntitiesTypesTable
               entities={entities}
               setAddDeviceMode={setAddDeviceMode}
 

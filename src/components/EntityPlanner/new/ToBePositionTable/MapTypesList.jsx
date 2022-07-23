@@ -1,45 +1,44 @@
 import React from 'react';
-import {Typography, Box, Container} from '@material-ui/core'
+import { Typography, Box, Container } from '@material-ui/core'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { CheckOutlined } from "@material-ui/icons";
-import { IconButton } from '@material-ui/core';
 
 
 const ListIcon = () => (
   <ListItemIcon>
-      <CheckOutlined />
-    </ListItemIcon>
-  )
-  
+    <CheckOutlined />
+  </ListItemIcon>
+)
+
 const MapTypesList = ({ mapType, handleMapTypeChange }) => {
 
   return (
-  <Container disableGutters fixed className="tbpRow">
-    <Typography component="span">
-        <Box sx={{ fontWeight: 600}}>Maps</Box>
-    </Typography>
-    <List
-      sx={{ width: '100%', maxWidth: 360, backgroundColor: 'white', cursor: 'pointer' }}
-      aria-label="contacts"
+    <Container disableGutters fixed className="tbpRow">
+      <Typography component="span">
+        <Box sx={{ fontWeight: 600 }}>Maps</Box>
+      </Typography>
+      <List
+        sx={{ width: '100%', maxWidth: 360, backgroundColor: 'white', cursor: 'pointer' }}
+        aria-label="contacts"
       >
-              {
-            ['OSMMap', 'Concourse', 'Platform']
-            .map( (type) =>
-            {
+        {
+          ['OSMMap', 'Concourse', 'Platform']
+            .map((type) => {
               const lowerCaseType = type.toLowerCase();
               const isMapType = lowerCaseType === mapType
 
               return (
-                  <ListItem disablePadding onClick={() => handleMapTypeChange(lowerCaseType)}>
-                    { isMapType && <ListIcon /> }
+                <ListItem disablePadding onClick={() => handleMapTypeChange(lowerCaseType)}>
+                  {isMapType && <ListIcon />}
                   <ListItemText fontSize="1rem" inset={!isMapType} primary={type} />
-              </ListItem>
-            )})
+                </ListItem>
+              )
+            })
         }
-    </List>
+      </List>
     </Container>
   );
 }
