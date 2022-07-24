@@ -22,5 +22,16 @@ export const styles = (theme) => ({
   },
   containerChild: {
     padding: '10px 0'
+  },
+  tbpEntity: {
+    width: '100%',
+    backgroundColor: theme.palette.white.main,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottom: '1px solid #E0E0E0',
+    '& .titles': {
+      marginRight: 'auto'
+    }
   }
 })

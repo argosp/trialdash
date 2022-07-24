@@ -13,7 +13,8 @@ import MapTypesList from './MapTypesList'
 import EntityTypeFilter from './EntityTypeFilter';
 import SearchInput from './SearchInput';
 import DeviceRow from './EntityTypeRow';
-import EntitiesTypesTable from './EntitiesTypesTable'
+import EntitiesTypesTable from './EntitiesTypesTable';
+import TBPEntity from './TBPEntity'
 import { ReactComponent as DnDIcon } from './DnDIcon.svg';
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -47,27 +48,28 @@ function ToBePositionTable({ entities }) {
     setMapType(value)
   }
 
-  const reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
+  const findEntityTypeName = (key) => entities.find(e => e.key === key)
+  // const reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
+  //   const result = Array.from(list);
+  //   const [removed] = result.splice(startIndex, 1);
+  //   result.splice(endIndex, 0, removed);
 
-    return result;
-  };
+  //   return result;
+  // };
 
-  const moveFieldType = (source, destination, droppableSource, droppableDestination) => {
-    console.log("moveFieldType:", { source, destination })
-    const sourceClone = Array.from(source);
-    const destClone = Array.from(destination);
-    const fieldType = sourceClone[droppableSource.index];
+  // const moveFieldType = (source, destination, droppableSource, droppableDestination) => {
+  //   console.log("moveFieldType:", { source, destination })
+  //   const sourceClone = Array.from(source);
+  //   const destClone = Array.from(destination);
+  //   const fieldType = sourceClone[droppableSource.index];
 
-    destClone.splice(droppableDestination.index, 0, {
-      ...fieldType,
-      key: uuid(),
-    });
+  //   destClone.splice(droppableDestination.index, 0, {
+  //     ...fieldType,
+  //     key: uuid(),
+  //   });
 
-    return destClone;
-  };
+  //   return destClone;
+  // };
 
   const onDragStart = () => {
     setIsDragging(true);
@@ -75,13 +77,12 @@ function ToBePositionTable({ entities }) {
 
   const onDragEnd = ({ source, destination }) => {
     setIsDragging(false);
-    console.log("onDragEnd:", { source, destination });
+
     const draggedEntity = entitiesTypesInstances[source.index]
     // dropped outside the list
     if (!destination) {
       return;
     }
-    // setTBPEntities(p => ([...p, { source }]))
 
     if (source.droppableId !== destination.droppableId) {
       setTBPEntities(prev => ([
@@ -137,7 +138,7 @@ function ToBePositionTable({ entities }) {
                     className={dropZoneClassName}
                     style={{
                       display: 'flex',
-                      justifyContent: 'center',
+                      justifyContent: isEmpty(TBPEntities) ? 'center' : 'start',
                       alignItems: 'center',
                       margin: '8px auto',
                       width: '99%',
@@ -167,10 +168,13 @@ function ToBePositionTable({ entities }) {
                                 ref={draggableProvided.innerRef}
                                 {...draggableProvided.draggableProps}
                                 {...draggableProvided.dragHandleProps}
+                                style={{ width: '100%' }}
                               >
-                                <div style={{ width: 50, height: 50, border: '1px solid black' }}>
-                                  {entity.name}
-                                </div>
+                                <TBPEntity
+                                  entity={entity}
+                                  entityType={findEntityTypeName(entity.entitiesTypeKey)}
+                                  classes={classes.tbpEntity}
+                                />
                               </div>
                             )}
                           </Draggable>
