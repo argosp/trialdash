@@ -10,7 +10,7 @@ import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
 
 import MapTypesList from './MapTypesList'
-import DevicesFilter from './EntityTypeFilter';
+import EntityTypeFilter from './EntityTypeFilter';
 import SearchInput from './SearchInput';
 import DeviceRow from './EntityTypeRow';
 import EntitiesTypesTable from './EntitiesTypesTable'
@@ -34,12 +34,13 @@ function ToBePositionTable({ entities }) {
   const [mapType, setMapType] = useState("concourse");
   const [addDeviceMode, setAddDeviceMode] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const [TBPDevices, setTBPDevices] = useState([]);
-  const [filteredTBPDevices, setFilteredTBPDevices] = useState([]);
+  const [TBPEntities, setTBPEntities] = useState([]);
+  const [filteredTBPEntities, setFilteredTBPEntities] = useState([]);
+  const entitiesTypesInstances = entities.reduce((prev, curr) => [...prev, ...curr.items], [])
 
   const handleFilterDevices = (filter) => {
     console.log(filter)
-    // setFilteredTBPDevices(filter)
+    // setFilteredTBPEntities(filter)
   }
 
   const handleMapTypeChange = (value) => {
@@ -75,40 +76,27 @@ function ToBePositionTable({ entities }) {
   const onDragEnd = ({ source, destination }) => {
     setIsDragging(false);
     console.log("onDragEnd:", { source, destination });
+    const draggedEntity = entitiesTypesInstances[source.index]
     // dropped outside the list
     if (!destination) {
       return;
     }
-    setTBPDevices(p => ([...p, { source }]))
+    // setTBPEntities(p => ([...p, { source }]))
 
-    // if (source.droppableId === destination.droppableId) {
-    //   setTBPDevices(prev => ({
-    //     ...prev,
-    //     properties: reorderDraggedFieldTypes(
-    //       prev.properties,
-    //       source.index,
-    //       destination.index,
-    //     ),
-    //   }));
-    // } else {
-    //   setTBPDevices(prev => ({
-    //     ...prev,
-    //     properties: moveFieldType(
-    //       prev.fieldTypes,
-    //       prev.properties,
-    //       source,
-    //       destination,
-    //     )
-    //   }));
-    // }
+    if (source.droppableId !== destination.droppableId) {
+      setTBPEntities(prev => ([
+        ...prev,
+        draggedEntity
+      ]));
+    }
   };
   useEffect(() => {
 
-    if (isEmpty(TBPDevices) && isDragging) {
+    if (isEmpty(TBPEntities) && isDragging) {
       setDropZoneClassName(classnames(dndClasses.dropZoneEmpty, dndClasses.dropZoneEmptyDragging))
     }
 
-    if (isEmpty(TBPDevices) && !isDragging) {
+    if (isEmpty(TBPEntities) && !isDragging) {
       setDropZoneClassName(classnames(dndClasses.dropZoneEmpty))
     }
   }, [isDragging])
@@ -125,7 +113,7 @@ function ToBePositionTable({ entities }) {
 
         <WidthDivider />
 
-        <DevicesFilter classes={classes} deviceNames={entities.map(device => device.name)} handleFilterDevices={handleFilterDevices} />
+        <EntityTypeFilter classes={classes} entitiesNames={entities.map(device => device.name)} handleFilterDevices={handleFilterDevices} />
 
         <WidthDivider />
 
@@ -158,7 +146,7 @@ function ToBePositionTable({ entities }) {
                     }}
                   >
                     {
-                      isEmpty(TBPDevices) ?
+                      isEmpty(TBPEntities) ?
                         <>
                           <DnDIcon />
                           <p>
@@ -167,10 +155,10 @@ function ToBePositionTable({ entities }) {
                         </>
                         :
 
-                        TBPDevices.map((fieldType, index) => (
+                        TBPEntities.map((entity, index) => (
                           <Draggable
-                            key={fieldType.source.droppableId + index}
-                            draggableId={fieldType.source.droppableId + index}
+                            key={entity.key}
+                            draggableId={entity.key}
                             index={index}
                           // isDragDisabled={isDragDisabled}
                           >
@@ -181,7 +169,7 @@ function ToBePositionTable({ entities }) {
                                 {...draggableProvided.dragHandleProps}
                               >
                                 <div style={{ width: 50, height: 50, border: '1px solid black' }}>
-
+                                  {entity.name}
                                 </div>
                               </div>
                             )}
@@ -248,6 +236,7 @@ function ToBePositionTable({ entities }) {
             !!addDeviceMode &&
             <EntitiesTypesTable
               entities={entities}
+              entitiesTypesInstances={entitiesTypesInstances}
               setAddDeviceMode={setAddDeviceMode}
 
             />

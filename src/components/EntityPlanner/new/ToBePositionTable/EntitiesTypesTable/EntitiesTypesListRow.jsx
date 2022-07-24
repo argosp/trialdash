@@ -8,7 +8,7 @@ import { ReactComponent as ExpandLess } from './ExpandLessIcon.svg';
 import { ReactComponent as ExpandMore } from './ExpandMoreIcon.svg';
 import { Divider, IconButton } from '@material-ui/core';
 
-const EntitiesTypesListRow = ({ classes, deviceProps, children }) => {
+const EntitiesTypesListRow = ({ classes, entityType, children }) => {
 
   const [open, setOpen] = React.useState(false);
 
@@ -18,13 +18,13 @@ const EntitiesTypesListRow = ({ classes, deviceProps, children }) => {
 
   return (
     <>
-      <ListItem style={{ zIndex: 20000 }} button onClick={handleClick}>
+      <ListItem style={{ zIndex: 20 }} button onClick={handleClick}>
 
         <IconButton disabled>
           {open ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
 
-        <ListItemText className={classes.rowTitleText} disableTypography children="Device Type" />
+        <ListItemText className={classes.rowTitleText} disableTypography children={entityType.name} />
 
         <ListItemText align="center" className={classes.flexItem1}>
           {/* positioned */}

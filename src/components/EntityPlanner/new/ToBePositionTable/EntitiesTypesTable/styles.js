@@ -52,7 +52,8 @@ export const styles = (theme) => ({
   rowTitleText: {
     fontWeight: 600,
     fontSize: 14,
-    color: 'black'
+    color: 'black',
+    flex: 2
   },
   iconButton: {
     textAlign: 'center',

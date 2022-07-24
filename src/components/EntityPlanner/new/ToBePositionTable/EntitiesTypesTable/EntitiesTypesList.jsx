@@ -16,9 +16,9 @@ const Container = ({ classes, children }) => <section className={classes}>{child
 
 const Pane = ({ align, classes, children }) => <div style={{ textAlign: align }} className={classes}>{children}</div>
 
-function EntitiesTypesList({ entities, classes }) {
+function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: entitiesList, classes }) {
 
-  const devicesTypes = entities.reduce((prev, current) => [...prev, ...current.properties], [])
+  // const entitiesTypes = entities.reduce((prev, current) => [...prev, ...current.properties], [])
 
 
   return (
@@ -34,7 +34,7 @@ function EntitiesTypesList({ entities, classes }) {
 
         {
           ['positioned', 'not positioned'].map(text => (
-            <div align="center" className={classes.flexItem1} >
+            <div key={text} align="center" className={classes.flexItem1} >
               <Typography variant="overline" className={classes.colText}>
                 {text}
               </Typography>
@@ -52,42 +52,48 @@ function EntitiesTypesList({ entities, classes }) {
                 className={'dropZoneClassName'}
               >
                 {
-                  devicesTypes.map((deviceProps, index) =>
-                  (
-                    <EntitiesTypesListRow classes={classes} deviceProps={deviceProps}>
-                      <Draggable key={deviceProps.key} draggableId={deviceProps.key} index={index}>
+                  entitiesTypes.map((entityType, index) => (
+                    <EntitiesTypesListRow key={entityType.key} classes={classes} entityType={entityType}>
+                      {
+                        entitiesList.map((entity, entityIndex) => {
 
-                        {
-                          draggableProvided => (
-                            <div
-                              ref={draggableProvided.innerRef}
-                              {...draggableProvided.draggableProps}
-                              {...draggableProvided.dragHandleProps}
-                            >
+                          if (entityType.key === entity.entitiesTypeKey) return (
+                          <Draggable key={entity.key} draggableId={entity.key} index={entityIndex}>
 
-                              <List className={classes.list} component="div" disablePadding>
+                            {
+                              draggableProvided => (
+                                <div
+                                  ref={draggableProvided.innerRef}
+                                  {...draggableProvided.draggableProps}
+                                  {...draggableProvided.dragHandleProps}
+                                >
 
-                                <ListItem button className={classes.nested}>
-                                  <ListItemText primary={deviceProps.type} />
-                                  <ListItemText secondary="50cm" />
-                                  <ListItemText secondary="Samsung" />
-                                  <ListItemText secondary="blabla23" />
-                                  <ListItemText secondary="20kg" />
-                                  <IconButton className={classes.iconButton}>
-                                    <LocationOnOutlinedIcon />
-                                  </IconButton>
+                                  <List className={classes.list} component="div" disablePadding>
 
-                                  <ListItemSecondaryAction className={classes.addIconWrapper}>
-                                    <IconButton className={classes.iconButton}>
-                                      <AddBoxIcon fontSize="large" color="primary" />
-                                    </IconButton>
-                                  </ListItemSecondaryAction>
-                                </ListItem>
+                                    <ListItem button className={classes.nested}>
+                                      <ListItemText primary={entity.name} />
+                                      <ListItemText secondary="50cm" />
+                                      <ListItemText secondary="Samsung" />
+                                      <ListItemText secondary="blabla23" />
+                                      <ListItemText secondary="20kg" />
+                                      <IconButton className={classes.iconButton}>
+                                        <LocationOnOutlinedIcon />
+                                      </IconButton>
 
-                              </List>
-                            </div>
-                          )}
-                      </Draggable>
+                                      <ListItemSecondaryAction className={classes.addIconWrapper}>
+                                        <IconButton className={classes.iconButton}>
+                                          <AddBoxIcon fontSize="large" color="primary" />
+                                        </IconButton>
+                                      </ListItemSecondaryAction>
+                                    </ListItem>
+
+                                  </List>
+                                </div>
+                              )}
+                          </Draggable>
+                          )
+                        })
+                      }
                     </EntitiesTypesListRow>
                   ))
                 }

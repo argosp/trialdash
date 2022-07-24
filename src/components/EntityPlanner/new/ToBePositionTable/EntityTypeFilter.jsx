@@ -5,16 +5,15 @@ import { ReactComponent as FilterIcon } from './FilterIcon.svg'
 
 import DoneOutlinedIcon from '@material-ui/icons/DoneOutlined';
 
-const EntityTypeFilter = ({ classes, deviceNames, handleFilterDevices }) => {
+const EntityTypeFilter = ({ classes, entitiesNames, handleFilterDevices }) => {
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [checked, setChecked] = useState(fromPairs(deviceNames.map((name) => [name, false])))
+  const [checked, setChecked] = useState(fromPairs(entitiesNames.map((name) => [name, false])))
 
   const handleChange = (e, val) => {
-    console.log(val);
     const filter = e.target.name
     const v = e.target.checked
-    console.log(filter, v);
+
     setChecked(p => ({ ...p, [filter]: v }))
     handleFilterDevices({ ...checked, [filter]: v })
   }
@@ -51,7 +50,7 @@ const EntityTypeFilter = ({ classes, deviceNames, handleFilterDevices }) => {
           <FormControl component="div" fullWidth >
             <FormGroup>
               {
-                deviceNames.map((deviceName) => (
+                entitiesNames.map((deviceName) => (
                   <FormControlLabel
                     key={deviceName}
                     style={{

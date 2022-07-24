@@ -14,7 +14,7 @@ import { styles } from './styles'
 
 const useStyles = makeStyles(styles);
 
-function EntitiesTypesTable({ entities, setAddDeviceMode }) {
+function EntitiesTypesTable({ entities, entitiesTypesInstances,setAddDeviceMode }) {
 
   const [tabValue, setTabValue] = React.useState(0);
 
@@ -49,7 +49,7 @@ function EntitiesTypesTable({ entities, setAddDeviceMode }) {
         />
 
         {
-          tabValue === 0 && <EntitiesTypesList entities={entities} classes={classes} />
+          tabValue === 0 && <EntitiesTypesList entities={entities} entitiesTypesInstances={entitiesTypesInstances} classes={classes} />
         }
 
       </Container>
