@@ -15,6 +15,7 @@ import SearchInput from './SearchInput';
 import DeviceRow from './EntityTypeRow';
 import EntitiesTypesTable from './EntitiesTypesTable';
 import TBPEntity from './TBPEntity'
+import TBPButtons from './TBPButtons'
 import { ReactComponent as DnDIcon } from './DnDIcon.svg';
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -45,8 +46,9 @@ function ToBePositionTable({ entities }) {
   const [TBPEntities, setTBPEntities] = useState([]);
   const [filteredTBPEntities, setFilteredTBPEntities] = useState([]);
   const [entitiesTypesInstances, setEntitiesTypesInstances] = useState([])
+
   useEffect(() => setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], [])), [entities])
-  useEffect(() => console.log(entitiesTypesInstances), [entitiesTypesInstances])
+
   const handleFilterDevices = (filter) => {
     console.log(filter)
     // setFilteredTBPEntities(filter)
@@ -203,64 +205,7 @@ function ToBePositionTable({ entities }) {
           </Box>
 
           <Box sx={{ width: '100%' }} bgcolor='inherit' >
-            {
-              addEntityMode === INIT_MODE &&
-              <>
-                <label>
-                  <input type="checkbox" />
-                  Entities show name
-                </label>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  style={{ width: '100%' }}
-                  onClick={() => handleModeChange(SELECT_MODE)}
-                >
-                  add device
-                </Button>
-              </>
-            }
-            {
-              addEntityMode === SELECT_MODE &&
-              <>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  style={{ width: '100%', marginBottom: '10px' }}
-                  onClick={() => handleModeChange(EDIT_MODE)}>
-                  continue
-                </Button>
-
-                <Button
-                  variant='outlined'
-                  color='gray'
-                  style={{ width: '100%' }}
-                  onClick={() => handleModeChange(INIT_MODE)}>
-                  cancel
-                </Button>
-              </>
-            }
-
-            {
-              addEntityMode === EDIT_MODE &&
-              <>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  style={{ width: '100%', marginBottom: '10px' }}
-                  onClick={() => handleModeChange(LOCATIONS_MODE)}>
-                  save locations
-                </Button>
-
-                <Button
-                  variant='outlined'
-                  color='gray'
-                  style={{ width: '100%' }}
-                  onClick={() => handleModeChange(INIT_MODE)}>
-                  cancel
-                </Button>
-              </>
-            }
+            <TBPButtons addEntityMode={addEntityMode} handleModeChange={handleModeChange} />
           </Box>
 
 
