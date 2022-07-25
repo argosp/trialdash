@@ -20,9 +20,16 @@ import { ReactComponent as DnDIcon } from './DnDIcon.svg';
 import { makeStyles } from "@material-ui/core/styles";
 import { styles } from './styles'
 import { styles as dndStyles } from '../../../AddSetForm/styles'
+import {
+  INIT_MODE,
+  SELECT_MODE,
+  EDIT_MODE,
+  LOCATIONS_MODE
+} from './utils/constants'
 
 const useStyles = makeStyles(styles);
 const useDNDStyles = makeStyles(dndStyles);
+
 
 const WidthDivider = () => <Divider light style={{ position: 'absolute', left: 0, width: '100%' }} />
 
@@ -33,12 +40,13 @@ function ToBePositionTable({ entities }) {
 
   const [dropZoneClassName, setDropZoneClassName] = useState(classnames(dndClasses.dropZone))
   const [mapType, setMapType] = useState("concourse");
-  const [addDeviceMode, setAddDeviceMode] = useState(false)
+  const [addEntityMode, setAddEntityMode] = useState(INIT_MODE)
   const [isDragging, setIsDragging] = useState(false)
   const [TBPEntities, setTBPEntities] = useState([]);
   const [filteredTBPEntities, setFilteredTBPEntities] = useState([]);
-  const entitiesTypesInstances = entities.reduce((prev, curr) => [...prev, ...curr.items], [])
-
+  const [entitiesTypesInstances, setEntitiesTypesInstances] = useState([])
+  useEffect(() => setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], [])), [entities])
+  useEffect(() => console.log(entitiesTypesInstances), [entitiesTypesInstances])
   const handleFilterDevices = (filter) => {
     console.log(filter)
     // setFilteredTBPEntities(filter)
@@ -48,28 +56,22 @@ function ToBePositionTable({ entities }) {
     setMapType(value)
   }
 
+  const handleModeChange = (mode) => {
+
+    if (mode === EDIT_MODE && TBPEntities.length < 1) {
+      alert('No entities to position!')
+      return
+    }
+    if (mode === INIT_MODE && TBPEntities.length > 0) {
+      if (!window.confirm('This action will cancel all the process so far. Continue?'))
+        return
+      setTBPEntities([]);
+    }
+    setAddEntityMode(mode)
+
+  }
+
   const findEntityTypeName = (key) => entities.find(e => e.key === key)
-  // const reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
-  //   const result = Array.from(list);
-  //   const [removed] = result.splice(startIndex, 1);
-  //   result.splice(endIndex, 0, removed);
-
-  //   return result;
-  // };
-
-  // const moveFieldType = (source, destination, droppableSource, droppableDestination) => {
-  //   console.log("moveFieldType:", { source, destination })
-  //   const sourceClone = Array.from(source);
-  //   const destClone = Array.from(destination);
-  //   const fieldType = sourceClone[droppableSource.index];
-
-  //   destClone.splice(droppableDestination.index, 0, {
-  //     ...fieldType,
-  //     key: uuid(),
-  //   });
-
-  //   return destClone;
-  // };
 
   const onDragStart = () => {
     setIsDragging(true);
@@ -89,6 +91,7 @@ function ToBePositionTable({ entities }) {
         ...prev,
         draggedEntity
       ]));
+      setEntitiesTypesInstances(p => p.filter(({ key }) => key !== draggedEntity.key))
     }
   };
   useEffect(() => {
@@ -101,6 +104,8 @@ function ToBePositionTable({ entities }) {
       setDropZoneClassName(classnames(dndClasses.dropZoneEmpty))
     }
   }, [isDragging])
+
+
 
   return (
     <>
@@ -130,7 +135,7 @@ function ToBePositionTable({ entities }) {
 
 
             {
-              !!addDeviceMode &&
+              addEntityMode === SELECT_MODE &&
               <Droppable droppableId="edit-table-droppable">
                 {droppableProvided => (
                   <div
@@ -199,49 +204,72 @@ function ToBePositionTable({ entities }) {
 
           <Box sx={{ width: '100%' }} bgcolor='inherit' >
             {
-              !!addDeviceMode ?
-                <>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    style={{ width: '100%', marginBottom: '10px' }}
-                    onClick={() => setAddDeviceMode(false)}>
-                    continue
-                  </Button>
+              addEntityMode === INIT_MODE &&
+              <>
+                <label>
+                  <input type="checkbox" />
+                  Entities show name
+                </label>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  style={{ width: '100%' }}
+                  onClick={() => handleModeChange(SELECT_MODE)}
+                >
+                  add device
+                </Button>
+              </>
+            }
+            {
+              addEntityMode === SELECT_MODE &&
+              <>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  style={{ width: '100%', marginBottom: '10px' }}
+                  onClick={() => handleModeChange(EDIT_MODE)}>
+                  continue
+                </Button>
 
-                  <Button
-                    variant='outlined'
-                    color='gray'
-                    style={{ width: '100%' }}
-                    onClick={() => setAddDeviceMode(false)}>
-                    cancel
-                  </Button>
-                </>
-                :
-                <>
-                  <label>
-                    <input type="checkbox" />
-                    Entities show name
-                  </label>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    style={{ width: '100%' }}
-                    onClick={() => setAddDeviceMode(true)}
-                  >
-                    add device
-                  </Button>
-                </>
+                <Button
+                  variant='outlined'
+                  color='gray'
+                  style={{ width: '100%' }}
+                  onClick={() => handleModeChange(INIT_MODE)}>
+                  cancel
+                </Button>
+              </>
+            }
+
+            {
+              addEntityMode === EDIT_MODE &&
+              <>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  style={{ width: '100%', marginBottom: '10px' }}
+                  onClick={() => handleModeChange(LOCATIONS_MODE)}>
+                  save locations
+                </Button>
+
+                <Button
+                  variant='outlined'
+                  color='gray'
+                  style={{ width: '100%' }}
+                  onClick={() => handleModeChange(INIT_MODE)}>
+                  cancel
+                </Button>
+              </>
             }
           </Box>
 
 
           {
-            !!addDeviceMode &&
+            addEntityMode === SELECT_MODE &&
             <EntitiesTypesTable
               entities={entities}
               entitiesTypesInstances={entitiesTypesInstances}
-              setAddDeviceMode={setAddDeviceMode}
+              setAddEntityMode={setAddEntityMode}
 
             />
           }

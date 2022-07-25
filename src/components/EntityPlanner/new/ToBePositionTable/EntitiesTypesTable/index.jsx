@@ -11,10 +11,11 @@ import EntitiesTypesList from './EntitiesTypesList'
 
 import { makeStyles } from '@material-ui/core/styles';
 import { styles } from './styles'
+import { INIT_MODE } from '../utils/constants'
 
 const useStyles = makeStyles(styles);
 
-function EntitiesTypesTable({ entities, entitiesTypesInstances,setAddDeviceMode }) {
+function EntitiesTypesTable({ entities, entitiesTypesInstances, setAddEntityMode }) {
 
   const [tabValue, setTabValue] = React.useState(0);
 
@@ -35,7 +36,7 @@ function EntitiesTypesTable({ entities, entitiesTypesInstances,setAddDeviceMode 
                   Device Types
                 </Box>
               </Typography>
-              <IconButton color='black' onClick={() => setAddDeviceMode(false)}>
+              <IconButton color='black' onClick={() => setAddEntityMode(INIT_MODE)}>
                 <CloseIcon />
               </IconButton>
             </>
