@@ -30,13 +30,21 @@ const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeN
         if (isEmpty(TBPEntities) && !isDragging) {
             setDropZoneClassName(classnames(classes.dropZoneEmpty))
         }
-    }, [isDragging])
+
+        if (addEntityMode === EDIT_MODE) {
+            setDropZoneClassName(classnames(classes.dropZoneFull))
+        }
+
+    }, [isDragging, addEntityMode])
 
     return (
         <>
             {
-                addEntityMode === SELECT_MODE &&
-                <Droppable droppableId="edit-table-droppable">
+                (addEntityMode === SELECT_MODE || addEntityMode === EDIT_MODE) &&
+                <Droppable
+                    droppableId="select-mode-droppable"
+                    isDropDisabled={addEntityMode !== SELECT_MODE}
+                >
                     {droppableProvided => (
                         <div
                             ref={droppableProvided.innerRef}
@@ -78,7 +86,6 @@ const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeN
                                                     <TBPEntity
                                                         entity={entity}
                                                         entityType={findEntityTypeName(entity.entitiesTypeKey)}
-                                                        classes={classes.tbpEntity}
                                                     />
                                                 </div>
                                             )}

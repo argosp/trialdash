@@ -13,6 +13,10 @@ export const styles = theme => ({
     width: '70%',
     marginBottom: 150,
   },
+  dropZoneFull: {
+    outline: `${theme.palette.gray.main} dashed 1px`,
+    color: theme.palette.black.dark,
+  },
   dropZoneEmpty: {
     width: '70%',
     height: 300,
