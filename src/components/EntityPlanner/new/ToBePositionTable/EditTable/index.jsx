@@ -1,21 +1,13 @@
 import React, { useState } from 'react'
 
 import Box from '@material-ui/core/Box'
-import { Divider, IconButton, Popper, Typography } from '@material-ui/core'
+import { Divider, IconButton, Typography } from '@material-ui/core'
 import { icons } from './utils'
-import {
-  ONCLICK_MODE,
-  DOT_MODE,
-  CURVE_MODE,
-  LINE_MODE,
-  RECTANGLE_MODE,
-  MATRIX_MODE,
-  CLONE_MODE,
-  EDIT_ENTITY_MODE
-} from '../utils/constants'
+
 import classnames from 'classnames';
 
-const PopperBox = ({ value, children }) => {
+const PopperBox = ({ title, children }) => {
+  
   return (
     <Box sx={{ position: 'absolute', top: 0, left: '100%' }}>
       {children}
@@ -42,7 +34,7 @@ function EditTable({ classes }) {
             <IconButton key={value} onClick={() => handleClick(value)}>{icon}</IconButton>
             {editTableMode === value &&
               <PopperBox
-                value={value}
+                title={value}
                 children={
                   React.cloneElement(component, { text: 'gell!' })
                 } />

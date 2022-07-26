@@ -1,6 +1,6 @@
 export { default as Curve } from './Curve'
 export { default as Dot } from './Dot'
-export { default as Line } from './Line'
+export { default as DistrubteAlongLine } from './DistrubteAlongLine'
 export { default as Matrix } from './Matrix'
-export { default as Onclick } from './Onclick'
+export { default as FreePositioning } from './FreePositioning'
 export { default as Rectangle } from './Rectangle'

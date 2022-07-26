@@ -1,37 +1,37 @@
 import React from 'react'
 import { ReactComponent as CurveIcon } from './icons/CurveIcon.svg'
 import { ReactComponent as DotIcon } from './icons/DotIcon.svg'
-import { ReactComponent as LineIcon } from './icons/LineIcon.svg'
+import { ReactComponent as DistrubteAlongLineIcon } from './icons/DistrubteAlongLineIcon.svg'
 import { ReactComponent as MatrixIcon } from './icons/MatrixIcon.svg'
-import { ReactComponent as OnclickIcon } from './icons/OnclickIcon.svg'
+import { ReactComponent as FreePositioningIcon } from './icons/FreePositioningIcon.svg'
 import { ReactComponent as RectangleIcon } from './icons/RectangleIcon.svg'
-import { default as CloneIcon } from '@material-ui/icons/FilterNone';
-import EditIcon from '@material-ui/icons/Edit';
+import { default as CloneTrialsIcon } from '@material-ui/icons/FilterNone';
+import { default as EditEntityIcon } from '@material-ui/icons/Edit';
 import {
-    ONCLICK_MODE,
+    FREEPOSITIONING_MODE,
     DOT_MODE,
     CURVE_MODE,
-    LINE_MODE,
+    DISTRUBTE_ALONG_LINE_MODE,
     RECTANGLE_MODE,
     MATRIX_MODE,
-    CLONE_MODE,
+    CLONE_TRIALS_MODE,
     EDIT_ENTITY_MODE,
 } from '../../utils/constants'
 
 import {
-    Onclick,
+    FreePositioning,
     Dot,
     Curve,
-    Line,
+    DistrubteAlongLine,
     Rectangle,
     Matrix
-} from '../sub_cmps'
+} from '../ToolsBar'
 
 export const icons = [
     {
-        icon: <OnclickIcon />,
-        value: ONCLICK_MODE,
-        component: <Onclick />
+        icon: <FreePositioningIcon />,
+        value: FREEPOSITIONING_MODE,
+        component: <FreePositioning />
     },
     {
         icon: <DotIcon />,
@@ -46,9 +46,9 @@ export const icons = [
 
     },
     {
-        icon: <LineIcon />,
-        value: LINE_MODE,
-        component: <Line />
+        icon: <DistrubteAlongLineIcon />,
+        value: DISTRUBTE_ALONG_LINE_MODE,
+        component: <DistrubteAlongLine />
     },
     {
 
@@ -62,12 +62,12 @@ export const icons = [
         component: <Matrix />
     },
     {
-        icon: <CloneIcon htmlColor='black' />,
-        value: CLONE_MODE,
+        icon: <CloneTrialsIcon htmlColor='black' />,
+        value: CLONE_TRIALS_MODE,
         component: <h2></h2>
     },
     {
-        icon: <EditIcon htmlColor='black' />,
+        icon: <EditEntityIcon htmlColor='black' />,
         value: EDIT_ENTITY_MODE,
         component: <h2></h2>
     }
