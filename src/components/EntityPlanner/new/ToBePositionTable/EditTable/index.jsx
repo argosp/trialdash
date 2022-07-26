@@ -1,17 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Box from '@material-ui/core/Box'
+import { Divider, IconButton, Typography } from '@material-ui/core'
+import { icons } from './utils'
 
-import { makeStyles } from '@material-ui/core/styles';
-// import { styles } from '../styles'
+import classnames from 'classnames';
 
-// const useStyles = makeStyles(styles);
+
 
 function EditTable({ classes }) {
-  // const classes = useStyles();
+  const [editTableMode, setEditTableMode] = useState('')
 
   return (
-    <Box className={classes.root}>EditTable</Box >
+    <Box className={classnames(classes.root, classes.editTable)} >
+      <Typography variant="overline">
+        tools
+      </Typography>
+
+      {
+        icons.map(({ icon, value }) => (
+          <>
+            <IconButton key={value}>{icon}</IconButton>
+            {value === 'matrix' && <Divider variant="middle" light />}
+          </>
+
+        ))
+      }
+
+    </Box >
   )
 }
 

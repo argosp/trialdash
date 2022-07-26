@@ -70,7 +70,7 @@ export const styles = (theme) => ({
     height: 350,
     overflow: 'auto'
   }
-  ,container: {
+  , container: {
     width: '100%',
     height: '100%',
     backgroundColor: 'white',
@@ -104,5 +104,11 @@ export const styles = (theme) => ({
     '& .titles': {
       marginRight: 'auto'
     }
+  },
+  editTable:
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 50
   }
 })
