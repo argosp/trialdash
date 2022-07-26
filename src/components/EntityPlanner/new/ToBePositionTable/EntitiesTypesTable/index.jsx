@@ -9,17 +9,16 @@ import CloseIcon from '@material-ui/icons/Close';
 import EntitiesTypesTabs from './EntitiesTypesTabs';
 import EntitiesTypesList from './EntitiesTypesList'
 
-import { makeStyles } from '@material-ui/core/styles';
-import { styles } from './styles'
 import { INIT_MODE } from '../utils/constants'
 
-const useStyles = makeStyles(styles);
+// const useStyles = makeStyles(styles);
 
-function EntitiesTypesTable({ entities, entitiesTypesInstances, setAddEntityMode }) {
+function EntitiesTypesTable({ entities, entitiesTypesInstances, setAddEntityMode, classes }) {
 
   const [tabValue, setTabValue] = React.useState(0);
 
-  const classes = useStyles();
+  // const classes = useStyles();
+  console.log(classes)
 
   return (
     <Box className={classes.root}>

@@ -5,18 +5,19 @@ import Box from '@material-ui/core/Box'
 import Container from '@material-ui/core/Container'
 import Divider from '@material-ui/core/Divider'
 
+import EntitiesTypesTable from './EntitiesTypesTable';
+import EditTable from './EditTable'
 import MapTypesList from './MapTypesList'
 import EntityTypeFilter from './EntityTypeFilter';
 import SearchInput from './SearchInput';
 import DeviceRow from './EntityTypeRow';
-import EntitiesTypesTable from './EntitiesTypesTable';
 import TBPButtons from './TBPButtons'
 import DnDEntityZone from './DnDEntityZone'
 
 
 import { makeStyles } from "@material-ui/core/styles";
 import { styles } from './styles'
-import { styles as dndStyles } from '../../../AddSetForm/styles'
+
 import {
   INIT_MODE,
   SELECT_MODE,
@@ -151,6 +152,18 @@ function ToBePositionTable({ entities }) {
           {
             addEntityMode === SELECT_MODE &&
             <EntitiesTypesTable
+              classes={classes}
+              entities={entities}
+              entitiesTypesInstances={entitiesTypesInstances}
+              setAddEntityMode={setAddEntityMode}
+
+            />
+          }
+
+          {
+            addEntityMode === EDIT_MODE &&
+            <EditTable
+              classes={classes}
               entities={entities}
               entitiesTypesInstances={entitiesTypesInstances}
               setAddEntityMode={setAddEntityMode}
