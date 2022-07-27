@@ -109,6 +109,37 @@ export const styles = (theme) => ({
   {
     display: 'flex',
     flexDirection: 'column',
+    boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.04), 0px 20px 25px rgba(0, 0, 0, 0.1)',
     width: 50
+  },
+  tool: {
+    backgroundColor: theme.palette.white.main,
+    boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.04), 0px 20px 25px rgba(0, 0, 0, 0.1)',
+    display: 'flex',
+    flexDirection: 'row',
+    width: 250,
+    marginTop: 6,
+    gap: 5,
+    '& .toolItem': {
+      display: 'flex',
+      justifyContent: 'space-around',
+      '& > *': {
+        width: '40%'
+      }
+    },
+    '& .button': {
+      width: '95%',
+      margin: '10px auto'
+    }
+
+  },
+  toolBoxContainer: {
+    backgroundColor: theme.palette.white.main
+  },
+  toolBoxItem: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+
   }
 })

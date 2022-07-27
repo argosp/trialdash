@@ -1,16 +1,25 @@
 import React, { useState } from 'react'
 
 import Box from '@material-ui/core/Box'
-import { Divider, IconButton, Typography } from '@material-ui/core'
+import { Divider, Grid, IconButton, Typography } from '@material-ui/core'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { icons } from './utils'
 
 import classnames from 'classnames';
 
-const PopperBox = ({ title, children }) => {
-  
+const PopperBox = ({ title, handleClick, classes, children }) => {
+
   return (
     <Box sx={{ position: 'absolute', top: 0, left: '100%' }}>
-      {children}
+      <Grid container className={classes.toolBoxContainer} >
+        <Grid item className={classes.toolBoxItem} >
+          <IconButton onClick={() => handleClick(title)} children={<ChevronLeftIcon />} />
+          <Typography component="span" children={<Box sx={{ fontWeight: '700' }}>{title}</Box>} />
+        </Grid>
+        <Grid item>
+          {children}
+        </Grid>
+      </Grid>
     </Box>
   )
 }
@@ -20,6 +29,10 @@ function EditTable({ classes }) {
 
   const handleClick = (value) => {
     setEditTableMode(value !== editTableMode ? value : '')
+  }
+
+  const onSubmit = () => {
+
   }
 
   return (
@@ -35,8 +48,10 @@ function EditTable({ classes }) {
             {editTableMode === value &&
               <PopperBox
                 title={value}
+                handleClick={handleClick}
+                classes={classes}
                 children={
-                  React.cloneElement(component, { text: 'gell!' })
+                  React.cloneElement(component, { toolClasses: classes, onSubmit })
                 } />
             }
             {value === 'matrix' && <Divider variant="middle" light />}
