@@ -109,7 +109,7 @@ export const styles = (theme) => ({
   {
     display: 'flex',
     flexDirection: 'column',
-    boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.04), 0px 20px 25px rgba(0, 0, 0, 0.1)',
+    outline: '1px solid #E0E0E0',
     width: 50
   },
   tool: {

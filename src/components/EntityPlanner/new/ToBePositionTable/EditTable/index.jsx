@@ -37,7 +37,7 @@ function EditTable({ classes }) {
 
   return (
     <Box className={classnames(classes.root, classes.editTable)}>
-      <Typography variant="overline">
+      <Typography variant="overline" align="center">
         tools
       </Typography>
 
@@ -51,7 +51,7 @@ function EditTable({ classes }) {
                 handleClick={handleClick}
                 classes={classes}
                 children={
-                  React.cloneElement(component, { toolClasses: classes, onSubmit })
+                  React.cloneElement(component, { toolClasses: classes.tool, onSubmit })
                 } />
             }
             {value === 'matrix' && <Divider variant="middle" light />}

@@ -5,7 +5,7 @@ const DistributeAlongLine = ({ toolClasses, onSubmit }) => {
 
   const mock = { x: 23.34546, y: 45.34342 }
   return (
-    <Grid container className={toolClasses.tool}>
+    <Grid container className={toolClasses}>
       <Grid item className="toolItem">
         <TextField id="x-input" label="x" defaultValue={mock.x} InputLabelProps={{ shrink: true }} />
         <TextField id="y-input" label="y" defaultValue={mock.y} InputLabelProps={{ shrink: true }} />
