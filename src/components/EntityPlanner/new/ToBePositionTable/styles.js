@@ -119,6 +119,7 @@ export const styles = (theme) => ({
     flexDirection: 'row',
     width: 250,
     marginTop: 6,
+    height: '100%',
     gap: 5,
     '& .toolItem': {
       display: 'flex',
