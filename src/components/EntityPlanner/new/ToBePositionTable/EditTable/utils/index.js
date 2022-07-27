@@ -24,7 +24,10 @@ import {
     Curve,
     DistrubteAlongLine,
     Rectangle,
-    Matrix
+    Matrix,
+    CloneTrials,
+    EditEntity
+
 } from '../ToolsBar'
 
 export const icons = [
@@ -64,11 +67,11 @@ export const icons = [
     {
         icon: <CloneTrialsIcon htmlColor='black' />,
         value: CLONE_TRIALS_MODE,
-        component: <h2></h2>
+        component: <CloneTrials />
     },
     {
         icon: <EditEntityIcon htmlColor='black' />,
         value: EDIT_ENTITY_MODE,
-        component: <h2></h2>
+        component: <EditEntity />
     }
 ]

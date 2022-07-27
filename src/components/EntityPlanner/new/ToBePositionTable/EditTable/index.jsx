@@ -6,6 +6,12 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { icons } from './utils'
 
 import classnames from 'classnames';
+import { makeStyles } from "@material-ui/core/styles";
+import { styles } from './styles'
+
+
+const useStyles = makeStyles(styles);
+
 
 const PopperBox = ({ title, handleClick, classes, children }) => {
 
@@ -24,8 +30,9 @@ const PopperBox = ({ title, handleClick, classes, children }) => {
   )
 }
 
-function EditTable({ classes }) {
+function EditTable() {
   const [editTableMode, setEditTableMode] = useState('')
+  const classes = useStyles();
 
   const handleClick = (value) => {
     setEditTableMode(value !== editTableMode ? value : '')
@@ -51,7 +58,7 @@ function EditTable({ classes }) {
                 handleClick={handleClick}
                 classes={classes}
                 children={
-                  React.cloneElement(component, { toolClasses: classes.tool, onSubmit })
+                  React.cloneElement(component, { classes, onSubmit })
                 } />
             }
             {value === 'matrix' && <Divider variant="middle" light />}
