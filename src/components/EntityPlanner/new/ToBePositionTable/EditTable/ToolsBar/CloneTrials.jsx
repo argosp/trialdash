@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Grid, Typography, Box, Switch } from '@material-ui/core'
+import { Button } from './Button'
+
 import { withStyles } from '@material-ui/styles';
 
 import classnames from 'classnames';
@@ -39,11 +41,7 @@ const AntSwitch = withStyles((theme) => ({
     checked: {},
 }))(Switch);
 
-const TrialRow = ({ classes, children }) => (<div className={classes}>{children}</div>)
-
-const Column = ({ classes, children }) => (<div className={classes}>{children}</div>)
-
-const CloneTrials = ({classes}) => {
+const CloneTrials = ({ classes }) => {
 
     const [trialsState, setTrialsState] = useState({ trial1: false })
 
@@ -54,40 +52,46 @@ const CloneTrials = ({classes}) => {
     }
 
     return (
-        <>
-            <Box classes={classes.cloneTrialsContainer}>
-                <Column classes={classes.cloneTrialsCol}>
-                    <Typography variant="overline" color="textSecondary">
-                        trials name
-                    </Typography>
-                </Column>
-                <Column classes={classes.cloneTrialsCol}>
-                    <Typography variant="overline" color="textSecondary">
-                        state
-                    </Typography>
-                </Column>
+        <Box className={classes.cloneTrialsContainer} flexDirection={'column'}>
+            {/* mapping on trials */}
+            <Box
+                className={classes.cloneTrialsContainer}
+                flexDirection={'row'}
+            >
+                <Typography variant="overline" color="textPrimary">
+                    <Box fontSize={10} fontWeight={500} >trials name</Box>
+                </Typography>
+                <Typography variant="overline" color="textPrimary">
+                    <Box fontSize={10} fontWeight={500} > state </Box>
+                </Typography>
             </Box>
-            <Box className={classes.cloneTrialsContainer}>
-                <TrialRow classes={classnames(classes.cloneTrialsContainer, classes.cloneTrialsRow)}>
-                    <Typography className={classes.cloneTrialsCol} variant="overline" component="div">
-                        trial one
+            <Box 
+            className={classnames(classes.cloneTrialsContainer, classes.cloneTrialsRow)}
+            flexDirection={'row'}>
+                <Typography variant="overline" component="span">
+                    <Box fontSize={12} fontWeight={700} > trial one</Box>
+                </Typography>
+                <Box
+                    component="span"
+                    display="flex"
+                    alignItems="center"
+                    gridGap={4}
+                >
+                    <Typography component="span" >
+                        <Box fontSize={12} >Design</Box>
                     </Typography>
-                    <Typography className={classes.cloneTrialsCol} component="div">
-                        <Grid component="label" container alignItems="center" spacing={1}>
-                            <Grid item>Design</Grid>
-                            <Grid item>
-                                <AntSwitch
-                                    checked={trialsState.trial1}
-                                    onChange={handleChange}
-                                    name="trial1"
-                                />
-                            </Grid>
-                            <Grid item>Deploy</Grid>
-                        </Grid>
+                    <AntSwitch
+                        checked={trialsState.trial1}
+                        onChange={handleChange}
+                        name="trial1"
+                    />
+                    <Typography children="Display" component="span">
+                        <Box fontSize={12} >Display</Box>
                     </Typography>
-                </TrialRow>
+                </Box>
             </Box>
-        </>
+            <Button text="clone trial" onClick={() => { }} />
+        </Box>
     )
 }
 

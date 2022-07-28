@@ -20,7 +20,6 @@ export const styles = (theme) => ({
         boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.04), 0px 20px 25px rgba(0, 0, 0, 0.1)',
         display: 'flex',
         flexDirection: 'row',
-        width: 250,
         marginTop: 6,
         height: '100%',
         gap: 5,
@@ -31,14 +30,12 @@ export const styles = (theme) => ({
                 width: '40%'
             }
         },
-        '& .button': {
-            width: '95%',
-            margin: '10px auto'
-        }
 
     },
     toolBoxContainer: {
-        backgroundColor: theme.palette.white.main
+        backgroundColor: theme.palette.white.main,
+        minWidth: 250,
+        minHeight: `calc(100% + 20px)`,
     },
     toolBoxItem: {
         display: 'flex',
@@ -47,13 +44,21 @@ export const styles = (theme) => ({
 
     },
     cloneTrialsContainer: {
-        display: 'flex'
+        padding: '6px 8px',
+        display: 'flex',
+        '&>*': {
+            flex: 1
+        }
+
     },
     cloneTrialsCol: {
         flex: .5
     },
     cloneTrialsRow: {
-        flex: 1
+        justifyContent: 'space-between',
+        backgroundColor: theme.palette.background.default,
+        minWidth: '250px',
+        borderBottom: '1px solid #E0E0E0'
     },
-    
+
 })

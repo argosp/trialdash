@@ -1,5 +1,6 @@
-import { Box, Button, Grid, TextField, Typography } from '@material-ui/core'
 import React from 'react'
+import { Box, Grid, TextField, Typography } from '@material-ui/core'
+import { Button } from './Button'
 
 const DistributeAlongLine = ({ classes, onSubmit }) => {
 
@@ -10,10 +11,8 @@ const DistributeAlongLine = ({ classes, onSubmit }) => {
         <TextField id="x-input" label="x" defaultValue={mock.x} InputLabelProps={{ shrink: true }} />
         <TextField id="y-input" label="y" defaultValue={mock.y} InputLabelProps={{ shrink: true }} />
       </Grid>
+      <Button className="button" text="distribute" onClick={onSubmit} />
 
-      <Button className="button" variant="outlined" color="primary" onClick={onSubmit} >
-        distribute
-      </Button>
     </Grid>
   )
 }
