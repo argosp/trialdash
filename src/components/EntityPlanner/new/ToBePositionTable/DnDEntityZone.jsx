@@ -69,29 +69,29 @@ const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeN
                                     </>
                                     :
 
-                                    TBPEntities.map((entity, index) => (
-                                        <Draggable
-                                            key={entity.key}
-                                            draggableId={entity.key}
-                                            index={index}
-                                        // isDragDisabled={isDragDisabled}
-                                        >
-                                            {draggableProvided => (
-                                                <div
-                                                    ref={draggableProvided.innerRef}
-                                                    {...draggableProvided.draggableProps}
-                                                    {...draggableProvided.dragHandleProps}
-                                                    style={{ width: '100%' }}
-                                                >
-                                                    <TBPEntity
-                                                        entity={entity}
-                                                        entityType={findEntityTypeName(entity.entitiesTypeKey)}
-                                                    />
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    )
-                                    )
+                                    TBPEntities.map(
+                                        (entityType => entityType.items.map((entity, index) => (
+                                            <Draggable
+                                                key={entity.key}
+                                                draggableId={entity.key}
+                                                index={index}
+                                            // isDragDisabled={isDragDisabled}
+                                            >
+                                                {draggableProvided => (
+                                                    <div
+                                                        ref={draggableProvided.innerRef}
+                                                        {...draggableProvided.draggableProps}
+                                                        {...draggableProvided.dragHandleProps}
+                                                        style={{ width: '100%' }}
+                                                    >
+                                                        <TBPEntity
+                                                            entity={entity}
+                                                            entityType={findEntityTypeName(entity.entitiesTypeKey)}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))))
 
                             }
                             {droppableProvided.placeholder}

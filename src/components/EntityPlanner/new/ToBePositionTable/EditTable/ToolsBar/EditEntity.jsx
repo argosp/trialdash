@@ -38,11 +38,47 @@ function createData(name, type, weight, height, positionX, positionY, icon) {
   return { name, type, weight, height, positionX, positionY, icon };
 }
 
-export function EditEntityTool() {
+const EditEntityTool = ({ rows, classes }) => {
 
+
+  return (
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="edit entity table">
+        <TableHead>
+          <TableRow>
+            <TableCell> Name </TableCell>
+            <TableCell> Type </TableCell>
+            <TableCell> Weight </TableCell>
+            <TableCell> Height </TableCell>
+            <TableCell> Position </TableCell>
+            <TableCell> {'  '} </TableCell>
+            <TableCell> {'  '} </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            // name, type, weight, height, positionX, positionY, icon
+            <TableRow key={row.name}>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.type}</TableCell>
+              <TableCell>{row.weight}</TableCell>
+              <TableCell>{row.height}</TableCell>
+              <TableCell>{row.positionX}</TableCell>
+              <TableCell>{row.positionY}</TableCell>
+              <TableCell>{row.icon}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+function EditEntity({ TBPEntities }) {
+  console.log(TBPEntities)
   const classes = useStyles();
 
-  const rows = [
+  const rows = TBPEntities.map(entity =>
     createData(
       <TextField className={classes.inputField} defaultValue="Entity 1" variant="outlined" />,
       <TextField className={classes.inputField} defaultValue="Samsung" variant="outlined" />,
@@ -61,49 +97,11 @@ export function EditEntityTool() {
         }}
       />,
       <IconButton><DeleteIcon /></IconButton>
-    ),
-  ];
+    ))
 
-
-  return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell> Name </TableCell>
-            <TableCell> Type </TableCell>
-            <TableCell> Weight </TableCell>
-            <TableCell> Height </TableCell>
-            <TableCell> Position </TableCell>
-            <TableCell> {'  '} </TableCell>
-            <TableCell> {'  '} </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            // name, type, weight, height, positionX, positionY, icon
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell>{row.type}</TableCell>
-              <TableCell>{row.weight}</TableCell>
-              <TableCell>{row.height}</TableCell>
-              <TableCell>{row.positionX}</TableCell>
-              <TableCell>{row.positionY}</TableCell>
-              <TableCell>{row.icon}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-}
-
-const EditEntity = () => {
   return (
     <div>
-      <EditEntityTool />
+      <EditEntityTool rows={rows} classes={classes} />
       <Button text='save changes' onClick={(() => { })} />
     </div>
   )

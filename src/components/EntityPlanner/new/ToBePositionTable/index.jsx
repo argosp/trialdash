@@ -38,8 +38,8 @@ function ToBePositionTable({ entities }) {
   const [isDragging, setIsDragging] = useState(false)
   const [TBPEntities, setTBPEntities] = useState([]);
   const [filteredTBPEntities, setFilteredTBPEntities] = useState([]);
+  // entitiesTypesInstances => each entity type items, sorted by index for DnD implementation
   const [entitiesTypesInstances, setEntitiesTypesInstances] = useState([])
-
   useEffect(() => setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], [])), [entities])
 
   const handleFilterDevices = (filter) => {
@@ -75,22 +75,41 @@ function ToBePositionTable({ entities }) {
   const onDragEnd = ({ source, destination }) => {
     setIsDragging(false);
 
-    const draggedEntity = entitiesTypesInstances[source.index]
     // dropped outside the list
     if (!destination) {
       return;
     }
 
     if (source.droppableId !== destination.droppableId) {
-      setTBPEntities(prev => ([
-        ...prev,
-        draggedEntity
-      ]));
+      const draggedEntity = entitiesTypesInstances[source.index]
+      const parentEntity = TBPEntities.find(({ key }) => key === draggedEntity.entitiesTypeKey)
+      // if parent in TBPEntities, add the child to items
+      if (parentEntity) {
+        setTBPEntities(prev => {
+          return prev.map(entityType => {
+            if (entityType.key === parentEntity.key) {
+              return { ...parentEntity, items: [...parentEntity.items, draggedEntity] }
+            }
+            return entityType
+          }
+          )
+        });
+      } else {
+        const _parentEntity = entities.find(({ key }) => key === draggedEntity.entitiesTypeKey)
+        setTBPEntities(prev => ([
+          ...prev,
+          {
+            ..._parentEntity,
+            items: [draggedEntity]
+          }
+        ]));
+      }
+      // drop the dragged entity from DnD list
       setEntitiesTypesInstances(p => p.filter(({ key }) => key !== draggedEntity.key))
     }
   };
 
-
+  useEffect(() => console.log(TBPEntities), [TBPEntities])
 
 
   return (
