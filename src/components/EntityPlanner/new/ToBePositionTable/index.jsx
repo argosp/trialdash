@@ -167,6 +167,7 @@ function ToBePositionTable({ entities }) {
               entities={entities}
               entitiesTypesInstances={entitiesTypesInstances}
               setAddEntityMode={setAddEntityMode}
+              TBPEntities={TBPEntities}
 
             />
           }

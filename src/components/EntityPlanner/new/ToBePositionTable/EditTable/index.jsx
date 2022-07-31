@@ -30,7 +30,7 @@ const PopperBox = ({ title, handleClick, classes, children }) => {
   )
 }
 
-function EditTable() {
+function EditTable({ TBPEntities }) {
   const [editTableMode, setEditTableMode] = useState('')
   const classes = useStyles();
 
@@ -58,7 +58,7 @@ function EditTable() {
                 handleClick={handleClick}
                 classes={classes}
                 children={
-                  React.cloneElement(component, { classes, onSubmit })
+                  React.cloneElement(component, { classes, onSubmit, TBPEntities })
                 } />
             }
             {value === 'matrix' && <Divider variant="middle" light />}
