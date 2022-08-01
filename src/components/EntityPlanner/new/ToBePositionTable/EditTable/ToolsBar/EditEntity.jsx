@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { IconButton, InputAdornment, TextField } from '@material-ui/core';
 import { Button } from './Button';
+import { isObject, isArray } from 'lodash';
 
 const useStyles = makeStyles({
   table: {
@@ -57,6 +58,8 @@ const EditEntityTool = ({ rows, classes }) => {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
+            // row.map((row) => (
+
             // name, type, weight, height, positionX, positionY, icon
             <TableRow key={row.name}>
               <TableCell>{row.name}</TableCell>
@@ -67,6 +70,7 @@ const EditEntityTool = ({ rows, classes }) => {
               <TableCell>{row.positionY}</TableCell>
               <TableCell>{row.icon}</TableCell>
             </TableRow>
+            // ))
           ))}
         </TableBody>
       </Table>
@@ -77,28 +81,46 @@ const EditEntityTool = ({ rows, classes }) => {
 function EditEntity({ TBPEntities }) {
   console.log(TBPEntities)
   const classes = useStyles();
+  let rows = []
+  for (const entityType of TBPEntities) {
+    entityType.items.map(
+      entity => {
+        const lastIndex = entity.properties.length - 1;
+        const locations = entity.properties[lastIndex].val;
+        let locationX = null;
+        let locationY = null;
+        if (isObject(locations) && isArray(locations.coordinates)) {
 
-  const rows = TBPEntities.map(entity =>
-    createData(
-      <TextField className={classes.inputField} defaultValue="Entity 1" variant="outlined" />,
-      <TextField className={classes.inputField} defaultValue="Samsung" variant="outlined" />,
-      <TextField className={classes.inputField} defaultValue="20kg" variant="outlined" />,
-      <TextField className={classes.inputField} defaultValue="50cm" variant="outlined" />,
-      <TextField
-        className={classes.inputPositionField}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">x</InputAdornment>,
-        }}
-      />,
-      <TextField
-        className={classes.inputPositionField}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">y</InputAdornment>,
-        }}
-      />,
-      <IconButton><DeleteIcon /></IconButton>
-    ))
-
+          locationX = locations.coordinates[0] || null;
+          locationY = locations.coordinates[1] || null;
+        }
+        rows.push(createData(
+          <TextField className={classes.inputField} defaultValue={entity.name} variant="outlined" />,
+          <TextField className={classes.inputField} defaultValue={entityType.name} variant="outlined" />,
+          <TextField className={classes.inputField} defaultValue="20kg" variant="outlined" />,
+          <TextField className={classes.inputField} defaultValue="50cm" variant="outlined" />,
+          <TextField
+            className={classes.inputPositionField}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">x</InputAdornment>,
+            }}
+            children={locationX}
+          />,
+          <TextField
+            className={classes.inputPositionField}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">y</InputAdornment>,
+            }}
+            children={locationY}
+          />,
+          <IconButton><DeleteIcon /></IconButton>
+        )
+        )
+      }
+    )
+  }
+  // ))
+  console.log(rows)
   return (
     <div>
       <EditEntityTool rows={rows} classes={classes} />
