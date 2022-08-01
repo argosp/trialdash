@@ -60,5 +60,14 @@ export const styles = (theme) => ({
         minWidth: '250px',
         borderBottom: '1px solid #E0E0E0'
     },
+    notActiveButton: {
+        '&>*': {
+            color: '#A9A9A9',
+        }
+    },
+    activeButton: {
+        background: '#F5F5F5',
+        borderLeft: '2px solid #27AE60'
+    },
 
 })

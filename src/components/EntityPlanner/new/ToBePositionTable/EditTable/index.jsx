@@ -8,6 +8,7 @@ import { icons } from './utils'
 import classnames from 'classnames';
 import { makeStyles } from "@material-ui/core/styles";
 import { styles } from './styles'
+import classNames from 'classnames';
 
 
 const useStyles = makeStyles(styles);
@@ -49,22 +50,26 @@ function EditTable({ TBPEntities }) {
       </Typography>
 
       {
-        icons.map(({ icon, value, component }) => (
-          <div style={{ position: 'relative', textAlign: 'center' }}>
-            <IconButton key={value} onClick={() => handleClick(value)}>{icon}</IconButton>
-            {editTableMode === value &&
-              <PopperBox
-                title={value}
-                handleClick={handleClick}
-                classes={classes}
-                children={
-                  React.cloneElement(component, { classes, onSubmit, TBPEntities })
-                } />
-            }
-            {value === 'matrix' && <Divider variant="middle" light />}
-          </div>
+        icons.map(({ icon, value, component }) => {
+          const iconStyle = editTableMode === value ? classes.activeButton : null;
+          const iconButtonStyle = (editTableMode !== '' && editTableMode !== value) ? classes.notActiveButton : null;
+          return (
+            <div style={{ position: 'relative', textAlign: 'center' }} className={iconStyle}>
+              <IconButton key={value} onClick={() => handleClick(value)} className={iconButtonStyle}>{icon}</IconButton>
+              {editTableMode === value &&
+                <PopperBox
+                  title={value}
+                  handleClick={handleClick}
+                  classes={classes}
+                  children={
+                    React.cloneElement(component, { classes, onSubmit, TBPEntities })
+                  } />
+              }
+              {value === 'matrix' && <Divider variant="middle" light />}
+            </div>
 
-        ))
+          )
+        })
       }
 
     </Box >
