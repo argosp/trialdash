@@ -125,7 +125,7 @@ class EntityForm extends React.Component {
     entitiesType.numberOfEntities = n[entitiesType.key];
     updateCache(
       cache,
-      {data: { [ENTITIES_TYPE_MUTATION]: entitiesType } },
+      { data: { [ENTITIES_TYPE_MUTATION]: entitiesType } },
       entitiesTypesQuery(match.params.id),
       ENTITIES_TYPES,
       ENTITIES_TYPE_MUTATION,
@@ -204,10 +204,13 @@ class EntityForm extends React.Component {
         clonedEntity.key = uuid();
         clonedEntity.name = `${prefix}${this.getNumber(numberFormat, i)}${suffix}`;
       }
-      
+
       await client.mutate({
         mutation: entityMutation(clonedEntity),
         update: (cache, mutationResult) => {
+          if (mutationResult && mutationResult.data.addUpdateEntity.error) {
+            return alert(mutationResult.data.addUpdateEntity.error)
+          }
           updateCache(
             cache,
             mutationResult,
@@ -229,7 +232,7 @@ class EntityForm extends React.Component {
     const { properties } = this.state.entity;
     const entityTypeProps = this.state.entitiesType.properties
     const staticProp = ((entityTypeProps && entityTypeProps.length) ? entityTypeProps.findIndex(pr => pr.key === key) : -1);
-    if(staticProp !== -1 && entityTypeProps[staticProp].static) {
+    if (staticProp !== -1 && entityTypeProps[staticProp].static) {
       return entityTypeProps[staticProp].defaultValue
     }
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
@@ -262,8 +265,8 @@ class EntityForm extends React.Component {
           className={classes.header}
         />
         <Typography style={{ marginBottom: '100px' }}>
-          {window.location.href.match('add-multiple-entities') ? 
-            <Grid style={{display: 'flex', justifyContent: 'space-between', width: '80%'}}>
+          {window.location.href.match('add-multiple-entities') ?
+            <Grid style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
               <CustomInput
                 id="number"
                 onChange={e => this.onMultiChange(e, 'number')}
@@ -329,7 +332,7 @@ class EntityForm extends React.Component {
                 invalid={this.getInvalid(property.key)}
                 endAdornment={(['date', 'time', 'datetime-local'].indexOf(property.type) !== -1) ?
                   <InputAdornment position="end">
-                    <Button onClick={()=>this.setCurrent(property)}>
+                    <Button onClick={() => this.setCurrent(property)}>
                       Fill current
                     </Button>
                   </InputAdornment> :

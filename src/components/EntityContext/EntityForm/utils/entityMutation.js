@@ -21,6 +21,7 @@ export default (device) => {
             name
             entitiesTypeKey
             state
+            error
             properties {
               key
               val

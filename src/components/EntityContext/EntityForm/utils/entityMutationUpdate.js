@@ -18,6 +18,7 @@ export default (entity) => {
             name
             entitiesTypeKey
             state
+            error
             properties {
               key
               val
