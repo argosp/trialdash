@@ -100,9 +100,8 @@ function EditEntity({ TBPEntities }) {
         let locationX = null;
         let locationY = null;
         if (isObject(locations) && isArray(locations.coordinates)) {
-
-          locationX = locations.coordinates[0] || null;
-          locationY = locations.coordinates[1] || null;
+          locationX = locations.coordinates[0];
+          locationY = locations.coordinates[1];
         }
         rows.push(createData(
           <TextField className={classes.inputField} defaultValue={entity.name} variant="outlined" />,
@@ -114,14 +113,14 @@ function EditEntity({ TBPEntities }) {
             InputProps={{
               startAdornment: <InputAdornment position="start">x</InputAdornment>,
             }}
-            children={locationX}
+            defaultValue={locationX}
           />,
           <TextField
             className={classes.inputPositionField}
             InputProps={{
               startAdornment: <InputAdornment position="start">y</InputAdornment>,
             }}
-            children={locationY}
+            defaultValue={locationY}
           />,
           <IconButton><DeleteIcon /></IconButton>
         )
