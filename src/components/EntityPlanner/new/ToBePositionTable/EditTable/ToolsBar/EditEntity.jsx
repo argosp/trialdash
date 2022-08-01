@@ -8,16 +8,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { IconButton, InputAdornment, TextField } from '@material-ui/core';
+import { IconButton, InputAdornment, TextField, Box } from '@material-ui/core';
 import { Button } from './Button';
 import { isObject, isArray } from 'lodash';
 
 const useStyles = makeStyles({
   table: {
+    maxWidth: 550,
     minWidth: 350,
   },
   inputField: {
-    width: 150,
+    width: 90,
     height: 30,
     '&>*': {
       width: 'inherit',
@@ -31,6 +32,12 @@ const useStyles = makeStyles({
     '&>*': {
       width: 'inherit',
       height: 'inherit',
+    }
+  },
+  tableRow: {
+    '&>*': {
+      padding: 8,
+      fontSize: 14
     }
   }
 });
@@ -46,7 +53,7 @@ const EditEntityTool = ({ rows, classes }) => {
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="edit entity table">
         <TableHead>
-          <TableRow>
+          <TableRow className={classes.tableRow}>
             <TableCell> Name </TableCell>
             <TableCell> Type </TableCell>
             <TableCell> Weight </TableCell>
@@ -61,7 +68,7 @@ const EditEntityTool = ({ rows, classes }) => {
             // row.map((row) => (
 
             // name, type, weight, height, positionX, positionY, icon
-            <TableRow key={row.name}>
+            <TableRow key={row.name} className={classes.tableRow}>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row.type}</TableCell>
               <TableCell>{row.weight}</TableCell>
@@ -79,7 +86,7 @@ const EditEntityTool = ({ rows, classes }) => {
 }
 
 function EditEntity({ TBPEntities }) {
-  console.log(TBPEntities)
+
   const classes = useStyles();
   let rows = []
   for (const entityType of TBPEntities) {
@@ -122,10 +129,10 @@ function EditEntity({ TBPEntities }) {
   // ))
   console.log(rows)
   return (
-    <div>
+    <>
       <EditEntityTool rows={rows} classes={classes} />
       <Button text='save changes' onClick={(() => { })} />
-    </div>
+    </>
   )
 }
 
