@@ -16,6 +16,9 @@ const useStyles = makeStyles({
   table: {
     maxWidth: 550,
     minWidth: 350,
+    '& .MuiTableCell-root': {
+      borderBottom: 0,
+    }
   },
   inputField: {
     width: 90,
@@ -50,7 +53,7 @@ const EditEntityTool = ({ rows, classes }) => {
 
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={0} >
       <Table className={classes.table} aria-label="edit entity table">
         <TableHead>
           <TableRow className={classes.tableRow}>
