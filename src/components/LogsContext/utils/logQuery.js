@@ -7,6 +7,7 @@ const logQuery = (experimentId, logId) => gql`
         key
         created
         updated
+        startDate
         creator
         state
         comment

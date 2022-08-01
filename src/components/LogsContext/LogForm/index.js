@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
-import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, Chip, Typography } from '@material-ui/core';
+import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, Chip, Typography, IconButton } from '@material-ui/core';
 import { styles } from './styles';
 import addUpdateLog from '../utils/logMutation';
 import SimpleButton from '../../SimpleButton';
@@ -10,16 +10,18 @@ import MDEditor from '@uiw/react-md-editor';
 import FileUpload from './fileUpload';
 import getDate from '../utils/getDate';
 import Labels from '../LabelsDropdown';
+import SettingsIcon from '@material-ui/icons/Settings';
+import { DatePicker } from '@material-ui/pickers';
 
 function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
 
   const [logValues, setLogValues] = useState({ comment: '', title: '', ...log })
+  const [isOpen, setIsOpen] = useState(false);
 
   function handleChange(field, value) {
-    setLogValues(prev => ({
-      ...prev,
-      [field]: value
-    }))
+    const newValue ={...logValues, [field]: value}
+    setLogValues(newValue)
+    return newValue
   }
 
   async function handleSubmit() {
@@ -35,6 +37,13 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
 
   function updateLabels(checked) {
     handleChange('labels', checked)
+  }
+
+  function handleDateChange(val) {
+    const newValues =  handleChange('startDate', val.toISOString())
+    client.mutate({
+      mutation: addUpdateLog(match.params.id, newValues)
+    });
   }
 
 
@@ -77,7 +86,7 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
       <Grid item xs={3}>
         <Paper>
           <List>
-            <ListItem alignItems="flex-start">
+            <ListItem classes={{ root: classes.sideListItem }} alignItems="flex-start">
               <ListItemText
                 primary="Labels"
                 secondary={
@@ -86,12 +95,33 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
                       logValues.labels.map(q => <Chip component="span" key={q.name} classes={{ root: classes.labelChip }} style={{ backgroundColor: q.color }} label={q.name} />)
                       :
                       <span>None yet</span>
-                      }
+                    }
 
                   </span>
                 }
               />
               <Labels log={logValues} updateLabels={updateLabels} />
+            </ListItem>
+            <ListItem alignItems="flex-start">
+              <ListItemText
+                primary="Set start date"
+                secondary={
+                  logValues.startDate && getDate(logValues.startDate)
+                }
+              />
+              <IconButton edge="end" aria-label="delete" onClick={() => setIsOpen(true)}>
+                <SettingsIcon />
+              </IconButton>
+              <DatePicker
+                className={classes.datePickerInput}
+                variant="inline"
+                open={isOpen}
+                autoOk
+                onOpen={() => setIsOpen(true)}
+                onClose={() => setIsOpen(false)}
+                value={logValues.startDate}
+                onChange={handleDateChange}
+              />
             </ListItem>
           </List>
         </Paper>

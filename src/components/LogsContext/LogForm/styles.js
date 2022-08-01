@@ -22,5 +22,12 @@ export const styles = theme => ({
     labelChip: {
         margin: theme.spacing(0.5),
         color: 'white'
+    },
+    sideListItem: {
+        borderBottom: '1px solid #c4c4c4'
+    },
+    datePickerInput: {
+        visibility: 'hidden',
+        width: 1
     }
 });

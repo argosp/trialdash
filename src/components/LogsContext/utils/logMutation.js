@@ -6,7 +6,8 @@ const addUpdateLog = (experimentId, log) => {
     title: log.title,
     comment: log.comment,
     labels: log.labels && log.labels.map(q => q.key || q),
-    state: log.state
+    state: log.state,
+    startDate: log.startDate
   }
 
   return gql`
@@ -19,11 +20,12 @@ const addUpdateLog = (experimentId, log) => {
       .replace(/"key":/g, 'key:')
       .replace(/"comment":/g, 'comment:')
       .replace(/"labels":/g, 'labels:')
+      .replace(/"startDate":/g, 'startDate:')
       .replace(/"state":/g, 'state:')
     }
     ) {
-        title     
-        comment  
+        title
+        comment
       }
       }`
 };
