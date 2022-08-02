@@ -130,10 +130,13 @@ class AddEntityPanel extends React.Component {
   };
 
   addEntity = (entity) => {
-    const { addEntityToTrial, parentEntity } = this.props;
+    const { addEntityToTrial, parentEntity, parentLocation } = this.props;
     const { selectedEntitiesType } = this.state;
     const properties = entity.properties.filter(p => selectedEntitiesType.properties.find(s => s.key === p.key).trialField);
-    addEntityToTrial(entity, selectedEntitiesType.key, properties, parentEntity,'update');
+    const location = selectedEntitiesType.properties.find(q => q.type === 'location');
+    const locationIndex = properties.findIndex(q => q.key === location.key)
+    properties[locationIndex].val = parentLocation
+    addEntityToTrial(entity, selectedEntitiesType.key, properties, parentEntity, 'update');
   }
 
   changeTab = (event, tabValue) => {

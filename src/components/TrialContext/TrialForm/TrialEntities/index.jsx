@@ -44,6 +44,7 @@ class TrialEntities extends React.Component {
     entitiesTypes: {},
     isLoading: true,
     parentEntity: {},
+    parentLocation: '',
     CloneEntitiesDialogOpen: false
   };
 
@@ -75,7 +76,7 @@ class TrialEntities extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-   
+
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     if (prevProps.triggerUpdate !== this.props.triggerUpdate || prevProps.trial[entitiesField].length !== this.props.trial[entitiesField].length || prevProps.trial[entitiesField].length !== this.state.length || prevProps.trial.status !== trial.status || this.state.entitiesField !== entitiesField) {
@@ -94,8 +95,8 @@ class TrialEntities extends React.Component {
     this.props.showFooter(selectedViewIndex !== 3);
   };
 
-  openAddEntitiesPanel = (e,parentEntity) => {
-    this.setState({ isEntitiesPanelOpen: true, parentEntity });
+  openAddEntitiesPanel = (e,parentEntity, parentLocation) => {
+    this.setState({ isEntitiesPanelOpen: true, parentEntity, parentLocation });
   }
 
   closeAddEntitiesPanel = () => {
@@ -132,7 +133,8 @@ class TrialEntities extends React.Component {
       isLoading,
       parentEntity,
       trialEntities,
-      CloneEntitiesDialogOpen
+      CloneEntitiesDialogOpen,
+      parentLocation
     } = this.state;
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
@@ -192,7 +194,7 @@ class TrialEntities extends React.Component {
             </IconButton>
           </Grid>
           {selectedViewIndex !== 3 && <Grid item>
-            <SimpleButton text={"Clone entities"} 
+            <SimpleButton text={"Clone entities"}
              onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
               <CloneEntitiesDialog
                   title={"Clone trial"}
@@ -214,9 +216,9 @@ class TrialEntities extends React.Component {
               onClick={this.openAddEntitiesPanel}
             />
           </Grid>
-          
+
           }
-          
+
         </Grid>
         {selectedViewIndex !== 3 && <AddEntityPanel
           isPanelOpen={this.state.isEntitiesPanelOpen}
@@ -225,6 +227,7 @@ class TrialEntities extends React.Component {
           theme={theme}
           addEntityToTrial={addEntityToTrial}
           parentEntity ={parentEntity}
+          parentLocation={parentLocation}
           entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
         />}
         <TabPanel value={selectedViewIndex} index={2}>
