@@ -9,10 +9,21 @@ class CustomLocation extends React.Component {
   state = {
 
   };
+  isCoordinatesValid = (coordinates) => {
+    const validLat = !coordinates[0] || coordinates[0] > -90 && coordinates[0] < 90
+    const validLong = !coordinates[1] || coordinates[1] > -180 && coordinates[1] < 180
+    return validLat && validLong
+  }
 
   handleChange = (e, name, value) => {
     const etidetValue = value;
-    if (name !== 'name') etidetValue.coordinates[name] = e.target.value;
+    if (name !== 'name') {
+      etidetValue.coordinates= etidetValue.coordinates || []
+      etidetValue.coordinates[name] = e.target.value;
+      if(!this.isCoordinatesValid(etidetValue.coordinates)) {
+        return;
+      }
+    }
     else etidetValue[name] = e.target.value;
     const { onChange } = this.props;
     onChange({ target: { value: JSON.stringify(etidetValue) } });
