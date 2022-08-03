@@ -45,8 +45,8 @@ const useStyles = makeStyles({
   }
 });
 
-function createData(name, type, weight, height, positionX, positionY, icon) {
-  return { name, type, weight, height, positionX, positionY, icon };
+function createData(key, name, type, weight, height, positionX, positionY, icon) {
+  return { key, name, type, weight, height, positionX, positionY, icon };
 }
 
 const EditEntityTool = ({ rows, classes }) => {
@@ -71,7 +71,7 @@ const EditEntityTool = ({ rows, classes }) => {
             // row.map((row) => (
 
             // name, type, weight, height, positionX, positionY, icon
-            <TableRow key={row.name} className={classes.tableRow}>
+            <TableRow key={row.key} className={classes.tableRow}>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row.type}</TableCell>
               <TableCell>{row.weight}</TableCell>
@@ -88,7 +88,7 @@ const EditEntityTool = ({ rows, classes }) => {
   );
 }
 
-function EditEntity({ TBPEntities }) {
+function EditEntity({ TBPEntities, removeEntityFromTBPTable }) {
 
   const classes = useStyles();
   let rows = []
@@ -104,6 +104,7 @@ function EditEntity({ TBPEntities }) {
           locationY = locations.coordinates[1];
         }
         rows.push(createData(
+          `${entity.key}`,
           <TextField disabled className={classes.inputField} defaultValue={entity.name} variant="outlined" />,
           <TextField disabled className={classes.inputField} defaultValue={entityType.name} variant="outlined" />,
           <TextField className={classes.inputField} defaultValue="20kg" variant="outlined" />,
@@ -122,7 +123,7 @@ function EditEntity({ TBPEntities }) {
             }}
             defaultValue={locationY}
           />,
-          <IconButton><DeleteIcon /></IconButton>
+          <IconButton onClick={() => removeEntityFromTBPTable(entity)} ><DeleteIcon /></IconButton>
         )
         )
       }

@@ -3,9 +3,10 @@ import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName }) => (
+export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName,handleMarkerClick }) => (
     <Marker key={entity.name}
         position={devLocation}
+        onclick={() => handleMarkerClick(entity)}
         title={entity.name}
         icon={divIcon({
             iconSize: [20, 20],

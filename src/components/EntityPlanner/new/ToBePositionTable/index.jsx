@@ -29,14 +29,14 @@ const useStyles = makeStyles(styles);
 
 const WidthDivider = () => <Divider light style={{ position: 'absolute', left: 0, width: '100%' }} />
 
-function ToBePositionTable({ entities, selectedType, setSelectedType }) {
+function ToBePositionTable({ entities, TBPEntities, removeEntityFromTBPTable, selectedType, setSelectedType, addEntityMode, setAddEntityMode, addEntityToTBPTable }) {
 
   const classes = useStyles();
 
   const [mapType, setMapType] = useState("concourse");
-  const [addEntityMode, setAddEntityMode] = useState(INIT_MODE)
+  // const [addEntityMode, setAddEntityMode] = useState(INIT_MODE)
   const [isDragging, setIsDragging] = useState(false)
-  const [TBPEntities, setTBPEntities] = useState([]);
+  // const [TBPEntities, setTBPEntities] = useState([]);
   const [filteredTBPEntities, setFilteredTBPEntities] = useState([]);
   // entitiesTypesInstances => each entity type items, sorted by index for DnD implementation
   const [entitiesTypesInstances, setEntitiesTypesInstances] = useState([])
@@ -68,7 +68,7 @@ function ToBePositionTable({ entities, selectedType, setSelectedType }) {
     if (mode === INIT_MODE && TBPEntities.length > 0) {
       if (!window.confirm('This action will cancel all the process so far. Continue?'))
         return
-      setTBPEntities([]);
+      removeEntityFromTBPTable([]);
     }
     setAddEntityMode(mode)
 
@@ -90,29 +90,7 @@ function ToBePositionTable({ entities, selectedType, setSelectedType }) {
 
     if (source.droppableId !== destination.droppableId) {
       const draggedEntity = entitiesTypesInstances[source.index]
-      const parentEntity = TBPEntities.find(({ key }) => key === draggedEntity.entitiesTypeKey)
-      // if parent in TBPEntities, add the child to items
-      if (parentEntity) {
-        setTBPEntities(prev => {
-          return prev.map(entityType => {
-            if (entityType.key === parentEntity.key) {
-              return { ...parentEntity, items: [...parentEntity.items, draggedEntity] }
-            }
-            return entityType
-          }
-          )
-        });
-      } else {
-        const _parentEntity = entities.find(({ key }) => key === draggedEntity.entitiesTypeKey)
-        setTBPEntities(prev => ([
-          ...prev,
-          {
-            ..._parentEntity,
-            items: [draggedEntity]
-          }
-        ]));
-      }
-      // drop the dragged entity from DnD list
+      addEntityToTBPTable(draggedEntity)
       setEntitiesTypesInstances(p => p.filter(({ key }) => key !== draggedEntity.key))
     }
   };
@@ -149,12 +127,15 @@ function ToBePositionTable({ entities, selectedType, setSelectedType }) {
           onDragEnd={onDragEnd}
         >
           <Box overflow='auto' bgcolor='inherit' maxHeight={250} >
-            <DnDEntityZone
-              addEntityMode={addEntityMode}
-              TBPEntities={TBPEntities}
-              isDragging={isDragging}
-              findEntityTypeName={findEntityTypeName}
-            />
+            {
+
+              <DnDEntityZone
+                addEntityMode={addEntityMode}
+                TBPEntities={TBPEntities}
+                isDragging={isDragging}
+                findEntityTypeName={findEntityTypeName}
+              />
+            }
 
             {
               entities.length > 0 ?
@@ -190,11 +171,8 @@ function ToBePositionTable({ entities, selectedType, setSelectedType }) {
           {
             addEntityMode === EDIT_MODE &&
             <EditTable
-              classes={classes}
-              entities={entities}
-              entitiesTypesInstances={entitiesTypesInstances}
-              setAddEntityMode={setAddEntityMode}
               TBPEntities={TBPEntities}
+              removeEntityFromTBPTable={removeEntityFromTBPTable}
 
             />
           }
