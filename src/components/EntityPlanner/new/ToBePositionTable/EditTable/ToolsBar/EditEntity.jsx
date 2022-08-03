@@ -104,8 +104,8 @@ function EditEntity({ TBPEntities }) {
           locationY = locations.coordinates[1];
         }
         rows.push(createData(
-          <TextField className={classes.inputField} defaultValue={entity.name} variant="outlined" />,
-          <TextField className={classes.inputField} defaultValue={entityType.name} variant="outlined" />,
+          <TextField disabled className={classes.inputField} defaultValue={entity.name} variant="outlined" />,
+          <TextField disabled className={classes.inputField} defaultValue={entityType.name} variant="outlined" />,
           <TextField className={classes.inputField} defaultValue="20kg" variant="outlined" />,
           <TextField className={classes.inputField} defaultValue="50cm" variant="outlined" />,
           <TextField

@@ -1,5 +1,5 @@
 import { Button, InputLabel, Switch, Grid } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
@@ -23,9 +23,9 @@ const SimplifiedSwitch = ({ label, value, setValue }) => (
 )
 
 export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
-    const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
+    const [selectedType, setSelectedType] = React.useState(entities.length ? entities.reduce(entityType => ({ [entityType.name]: true }), []) : '');
     const [selection, setSelection] = React.useState([]);
-    const [showAll, setShowAll] = React.useState(false);
+    const [showAll, setShowAll] = React.useState(true);
     const [shape, setShape] = React.useState("Point");
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [rectAngle] = React.useState(0);
@@ -36,6 +36,10 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [showGridMeters, setShowGridMeters] = React.useState(1);
 
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
+
+    useEffect(() => {
+        setSelectedType(() => entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}));
+    }, [entities])
 
     if (selectedType === '' && entities.length > 0) {
         setSelectedType(entities[0].name);
@@ -145,7 +149,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                 >
                     {
                         entities.map(devType => {
-                            if (showAll || (devType.name === selectedType)) {
+                            if (selectedType[devType.name]) {
                                 return devType.items.map((dev, index) => {
                                     const loc = getEntityLocation(dev, devType, layerChosen);
                                     if (!loc) return null;
@@ -176,7 +180,11 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
             </Grid>
             {/* To be position Table */}
             <Grid item xs={3} style={{ overflow: 'inherit', backgroundColor: '#f5f5f5' }}>
-                <ToBePositionTable entities={entities} />
+                <ToBePositionTable
+                    entities={entities}
+                    selectedType={selectedType}
+                    setSelectedType={setSelectedType}
+                />
             </Grid>
 
             {/* <Grid item xs={3} style={{ overflow: 'auto' }}>

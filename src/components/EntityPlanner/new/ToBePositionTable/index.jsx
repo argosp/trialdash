@@ -29,7 +29,7 @@ const useStyles = makeStyles(styles);
 
 const WidthDivider = () => <Divider light style={{ position: 'absolute', left: 0, width: '100%' }} />
 
-function ToBePositionTable({ entities }) {
+function ToBePositionTable({ entities, selectedType, setSelectedType }) {
 
   const classes = useStyles();
 
@@ -49,6 +49,14 @@ function ToBePositionTable({ entities }) {
 
   const handleMapTypeChange = (value) => {
     setMapType(value)
+  }
+
+  const handleShowEntitiesOnMap = (entityTypeName) => {
+
+    setSelectedType(prev => ({
+      ...prev,
+      [entityTypeName]: !selectedType[entityTypeName]
+    }))
   }
 
   const handleModeChange = (mode) => {
@@ -150,7 +158,7 @@ function ToBePositionTable({ entities }) {
 
             {
               entities.length > 0 ?
-                entities.map((entity) => <DeviceRow key={entity.key} entity={entity} />)
+                entities.map((entity) => <DeviceRow key={entity.key} entity={entity} onClick={handleShowEntitiesOnMap} />)
                 :
                 <p> No entities to show</p>
 
