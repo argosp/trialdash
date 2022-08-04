@@ -3,7 +3,7 @@ import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName,handleMarkerClick }) => (
+export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName, handleMarkerClick }) => (
     <Marker key={entity.name}
         position={devLocation}
         onclick={() => handleMarkerClick(entity)}
@@ -13,8 +13,8 @@ export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, 
             iconAnchor: [10, 22],
             html: renderToStaticMarkup(
                 <div>
-                    <i className=" fa fa-map-marker-alt fa-2x"
-                        style={{ color: (isTypeSelected ? (isSelected ? '#297A31' : '#1B2C6F') : '#888888') }}
+                    <i className="fas fa-circle fa-lg"
+                        style={{ color: (isTypeSelected ? (isSelected ? '#9B51E0' : '#2D9CDB') : '#27AE60') }}
                     />
                     {!shouldShowName ? null :
                         <span style={{ backgroundColor: "yellow", padding: 3, borderColor: "black" }}>

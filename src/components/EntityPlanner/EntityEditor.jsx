@@ -253,7 +253,6 @@ return (
                 selectedType={selectedType}
                 setSelectedType={setSelectedType}
                 TBPEntities={TBPEntities}
-                handleTBPEntities={handleTBPEntities}
                 addEntityToTBPTable={addEntityToTBPTable}
                 removeEntityFromTBPTable={removeEntityFromTBPTable}
             />
