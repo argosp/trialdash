@@ -13,7 +13,7 @@ const ListIcon = () => (
   </ListItemIcon>
 )
 
-const MapTypesList = ({ mapType, handleMapTypeChange }) => {
+const MapTypesList = ({ layerChosen, handleMapTypeChange }) => {
 
   return (
     <Container disableGutters fixed className="tbpRow">
@@ -27,11 +27,9 @@ const MapTypesList = ({ mapType, handleMapTypeChange }) => {
         {
           ['OSMMap', 'Concourse', 'Platform']
             .map((type) => {
-              const lowerCaseType = type.toLowerCase();
-              const isMapType = lowerCaseType === mapType
-
+              const isMapType = type === layerChosen
               return (
-                <ListItem disablePadding onClick={() => handleMapTypeChange(lowerCaseType)}>
+                <ListItem disablePadding onClick={() => handleMapTypeChange(type)}>
                   {isMapType && <ListIcon />}
                   <ListItemText fontSize="1rem" inset={!isMapType} primary={type} />
                 </ListItem>
