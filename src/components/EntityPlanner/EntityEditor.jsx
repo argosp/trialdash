@@ -62,16 +62,14 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
     const [TBPEntities, setTBPEntities] = React.useState([]);
-    // const [mapType, setMapType] = React.useState("concourse");
     const [isDragging, setIsDragging] = React.useState(false)
-    const [filteredTBPEntities, setFilteredTBPEntities] = React.useState([]);
-    // entitiesTypesInstances => each entity type items, sorted by index for DnD implementation
+    const [filteredEntities, setFilteredEntities] = React.useState([]);
     const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([])
     useEffect(() => setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], [])), [entities])
 
     const handleFilterDevices = (filter) => {
-        console.log(filter)
-        // setFilteredTBPEntities(filter)
+        const filtered = entities.filter(e => !!filter[e.name])
+        setFilteredEntities(filtered)
     }
 
     const handleMapTypeChange = (value) => {
@@ -298,7 +296,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                     showGridMeters={showGridMeters}
                 >
                     {
-                        entities.map(devType => {
+                        (filteredEntities.length > 0 ? filteredEntities : entities)
+                        .map(devType => {
                             if (selectedType[devType.name]) {
                                 return devType.items.map((dev, index) => {
                                     const loc = getEntityLocation(dev, devType, layerChosen);
@@ -356,7 +355,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                         onDragStart={onDragStart}
                         onDragEnd={onDragEnd}
                     >
-                        <Box overflow='auto' bgcolor='inherit' maxHeight={250} >
+                        <Box overflow='auto' bgcolor='inherit' maxHeight={250} minHeight={200} >
                             {
 
                                 <DnDEntityZone
@@ -369,7 +368,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
                             {
                                 entities.length > 0 ?
-                                    entities.map((entity) => <DeviceRow key={entity.key} entity={entity} onClick={handleShowEntitiesOnMap} />)
+                                    (filteredEntities.length > 0 ? filteredEntities : entities)
+                                        .map((entity) => <DeviceRow key={entity.key} entity={entity} onClick={handleShowEntitiesOnMap} />)
                                     :
                                     <p> No entities to show</p>
 

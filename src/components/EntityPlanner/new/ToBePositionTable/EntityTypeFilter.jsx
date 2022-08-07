@@ -10,26 +10,12 @@ const EntityTypeFilter = ({ classes, entitiesNames, handleFilterDevices }) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [checked, setChecked] = useState(fromPairs(entitiesNames.map((name) => [name, false])))
 
-  const handleChange = (e, val) => {
-    const filter = e.target.name
+  const handleChange = (e) => {
+    const name = e.target.name
     const v = e.target.checked
-
-    setChecked(p => ({ ...p, [filter]: v }))
-    handleFilterDevices({ ...checked, [filter]: v })
+    setChecked(p => ({ ...p, [name]: v }))
+    handleFilterDevices({ ...checked, [name]: v })
   }
-
-  // const StyledCheckbox = ({ deviceName, handleChange, isClicked }) => (
-  //   <div style={{ width: 16, height: 16, border: '0.666667px solid #E0E0E0', display: 'inline' }}>
-  //     <input style={{ display: 'none' }} type="checkbox" name={deviceName} onChange={handleChange} />
-  //     {isClicked && <span style={{ zIndex: 10, display: 'flex', alignItems: 'center' }}>
-  //       <DoneOutlinedIcon style={{ fontSize: 14 }} />
-  //     </span>
-  //     }
-  //   </div>
-  // )
-
-
-  useEffect(() => console.log(checked), [checked])
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center" className="tbpRow">
@@ -58,7 +44,7 @@ const EntityTypeFilter = ({ classes, entitiesNames, handleFilterDevices }) => {
                       gap: 4
                     }}
                     control={<div style={{ width: 16, height: 16, border: '0.666667px solid #E0E0E0', display: 'inline' }}>
-                      <input style={{ display: 'none' }} type="checkbox" name={deviceName} onChange={handleChange} />
+                      <input style={{ display: 'none' }} type="checkbox" name={deviceName} onChange={handleChange} checked={checked[deviceName]} />
                       {checked[deviceName] && <span style={{ zIndex: 10, display: 'flex', alignItems: 'center' }}>
                         <DoneOutlinedIcon style={{ fontSize: 14 }} />
                       </span>
