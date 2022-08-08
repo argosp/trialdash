@@ -11,10 +11,16 @@ const useStyles = makeStyles(styles);
 
 const StyledIcon = ({ icon }) => <IconButton disabled color="#BDBDBD" children={icon} />
 
-const TBPEntity = ({ entity, entityType }) => {
+const TBPEntity = ({ entity, entityType, isSelected, onClick }) => {
     const classes = useStyles();
     return (
-        <div className={classes.tbpEntity}>
+        <div
+            className={classes.tbpEntity}
+            style={{
+                backgroundColor: (isSelected ? '#DDF5FC' : 'inherit')
+            }}
+            onClick={onClick}
+        >
             <StyledIcon icon={<DragIndicatorIcon fontSize="large" />} />
 
             <div className="titles">
@@ -26,7 +32,7 @@ const TBPEntity = ({ entity, entityType }) => {
                 <Typography variant="subtitle2" align="left" color="textSecondary" children={entityType.name} />
             </div>
             <StyledIcon icon={<LocationOnIcon />} />
-        </div>
+        </div >
 
 
     )

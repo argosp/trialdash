@@ -103,7 +103,8 @@ export const styles = (theme) => ({
     borderBottom: '1px solid #E0E0E0',
     '& .titles': {
       marginRight: 'auto'
-    }
+    },
+    cursor: 'pointer'
   },
   
 })

@@ -15,7 +15,7 @@ import { ReactComponent as DnDIcon } from './DnDIcon.svg';
 
 const useStyles = makeStyles(styles);
 
-const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeName }) => {
+const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeName, handleTPEntities, TPEntities }) => {
 
     const classes = useStyles();
     const [dropZoneClassName, setDropZoneClassName] = useState(classnames(classes.dropZone))
@@ -87,6 +87,8 @@ const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeN
                                                         <TBPEntity
                                                             entity={entity}
                                                             entityType={findEntityTypeName(entity.entitiesTypeKey)}
+                                                            isSelected={TPEntities.includes(entity.key)}
+                                                            onClick={() => handleTPEntities(entity.key)}
                                                         />
                                                     </div>
                                                 )}

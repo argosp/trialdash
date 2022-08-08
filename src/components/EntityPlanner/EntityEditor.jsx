@@ -64,6 +64,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [isDragging, setIsDragging] = React.useState(false)
     const [filteredEntities, setFilteredEntities] = React.useState([]);
     const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([])
+    const [TPEntities, setTPEntities] = React.useState([]);
 
     useEffect(() => {
         setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []))
@@ -185,6 +186,12 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     }
     const handleTBPEntities = (tbpEntities) => {
         setTBPEntities(tbpEntities)
+    }
+    // to positions entities, selected to position after TBPEntities 
+    const handleTPEntities = (key) => {
+        TPEntities.includes(key) ? 
+        setTPEntities(p => p.filter(v => v !== key)) :
+         setTPEntities(p => [...p, key])
     }
 
     const changeLocations = (type, indices, newLocations = [undefined]) => {
@@ -374,6 +381,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                     TBPEntities={TBPEntities}
                                     isDragging={isDragging}
                                     findEntityTypeName={findEntityTypeName}
+                                    handleTPEntities={handleTPEntities}
+                                    TPEntities={TPEntities}
                                 />
                             }
 
