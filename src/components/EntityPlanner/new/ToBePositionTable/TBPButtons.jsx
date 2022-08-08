@@ -7,7 +7,7 @@ import {
   LOCATIONS_MODE
 } from './utils/constants'
 
-const TBPButtons = ({ addEntityMode, handleModeChange }) => {
+const TBPButtons = ({ addEntityMode, handleModeChange, setShowName }) => {
 
 
   const ModeButton = ({ text, mode, variant, color, bottom }) => {
@@ -67,7 +67,7 @@ const TBPButtons = ({ addEntityMode, handleModeChange }) => {
   return (
     <>
       <label>
-        <input type="checkbox" />
+        <input type="checkbox" onChange={ e =>setShowName(e.target.checked)} />
         Entities show name
       </label>
       <ModeButton

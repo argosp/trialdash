@@ -261,7 +261,12 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     ];
 
     const shapeData = shapeOptions.find(s => s.name === shape);
-
+    // const handlePutEntities = () => {
+    //     const positions = shapeData.toPositions(markedPoints, selection.length);
+    //     setEntities(changeLocations(selectedType, selection, positions));
+    //     setMarkedPoints([]);
+    //     setSelection([]);
+    // };
     const handlePutEntities = (_shape) => {
         let selectionsCounter = 0;
         const positions = shapeData(_shape)
@@ -388,6 +393,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             <TBPButtons
                                 addEntityMode={addEntityMode}
                                 handleModeChange={handleModeChange}
+                                setShowName={setShowName}
                             />
 
                         </Box>

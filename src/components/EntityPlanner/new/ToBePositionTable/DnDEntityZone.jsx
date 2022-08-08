@@ -75,7 +75,7 @@ const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeN
                                                 key={entity.key}
                                                 draggableId={entity.key}
                                                 index={index}
-                                            // isDragDisabled={isDragDisabled}
+                                                isDragDisabled={true}
                                             >
                                                 {draggableProvided => (
                                                     <div
