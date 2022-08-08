@@ -36,8 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SearchInput = ({ withBorder }) => {
-
+const SearchInput = ({ withBorder, onSearch = () => { }}) => {
   const borderClass = withBorder ? {
     border: '1px solid #E0E0E0',
     borderRadius: 5,
@@ -58,6 +57,7 @@ const SearchInput = ({ withBorder }) => {
           input: classes.inputInput,
         }}
         inputProps={{ 'aria-label': 'search' }}
+        onChange={ e => onSearch(e.target.value)}
       />
     </div>
   )

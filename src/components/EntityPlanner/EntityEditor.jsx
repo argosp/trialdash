@@ -1,7 +1,6 @@
 import { Button, InputLabel, Switch, Grid, Box, Container, Divider } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-
 import EntitiesTypesTable from './new/ToBePositionTable/EntitiesTypesTable';
 import EditTable from './new/ToBePositionTable/EditTable'
 import MapTypesList from './new/ToBePositionTable/MapTypesList'
@@ -10,7 +9,7 @@ import SearchInput from './new/ToBePositionTable/SearchInput';
 import DeviceRow from './new/ToBePositionTable/EntityTypeRow';
 import TBPButtons from './new/ToBePositionTable/TBPButtons'
 import DnDEntityZone from './new/ToBePositionTable/DnDEntityZone'
-import { isEmpty, isArray, isObject } from 'lodash'
+import { isEmpty, isArray, isObject, fromPairs } from 'lodash'
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
@@ -65,10 +64,17 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [isDragging, setIsDragging] = React.useState(false)
     const [filteredEntities, setFilteredEntities] = React.useState([]);
     const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([])
-    useEffect(() => setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], [])), [entities])
 
+    useEffect(() => {
+        setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []))
+        setSelectedType(entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}))
+    }, [entities])
     const handleFilterDevices = (filter) => {
         const filtered = entities.filter(e => !!filter[e.name])
+        setFilteredEntities(filtered)
+    }
+    const handleSearchEntities = (input) => {
+        const filtered = entities.reduce((prev, entityType) => entityType.name.toLowerCase().includes(input.toLowerCase()) ? [...prev, entityType] : [...prev], [])
         setFilteredEntities(filtered)
     }
 
@@ -121,9 +127,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     };
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
 
-    useEffect(() => {
-        setSelectedType(() => entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}));
-    }, [entities])
+
 
     if (selectedType === '' && entities.length > 0) {
         setSelectedType(entities[0].name);
@@ -297,24 +301,24 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                 >
                     {
                         (filteredEntities.length > 0 ? filteredEntities : entities)
-                        .map(devType => {
-                            if (selectedType[devType.name]) {
-                                return devType.items.map((dev, index) => {
-                                    const loc = getEntityLocation(dev, devType, layerChosen);
-                                    if (!loc) return null;
-                                    return <EntityMarker
-                                        key={dev.key} entity={dev}
-                                        devLocation={loc}
-                                        isSelected={selection.includes(index)}
-                                        isTypeSelected={devType.name === selectedType}
-                                        shouldShowName={showName}
-                                        handleMarkerClick={handleMarkerClick}
-                                    />
-                                });
-                            } else {
-                                return null;
-                            }
-                        })
+                            .map(devType => {
+                                if (selectedType[devType.name]) {
+                                    return devType.items.map((dev, index) => {
+                                        const loc = getEntityLocation(dev, devType, layerChosen);
+                                        if (!loc) return null;
+                                        return <EntityMarker
+                                            key={dev.key} entity={dev}
+                                            devLocation={loc}
+                                            isSelected={selection.includes(index)}
+                                            isTypeSelected={devType.name === selectedType}
+                                            shouldShowName={showName}
+                                            handleMarkerClick={handleMarkerClick}
+                                        />
+                                    });
+                                } else {
+                                    return null;
+                                }
+                            })
                     }
 
                     <MarkedShape
@@ -347,7 +351,9 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
                     <WidthDivider />
 
-                    <SearchInput />
+                    <SearchInput
+                        onSearch={handleSearchEntities}
+                    />
 
                     <WidthDivider />
 
