@@ -46,9 +46,10 @@ const WidthDivider = () => <Divider light style={{ position: 'absolute', left: 0
 
 export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
     const classes = useStyles();
+    // older selectType is string selected entity type name
     // selectedType is an object of true values for each key, each key is string of selected entity type
     const [selectedType, setSelectedType] = React.useState({});
-    // selection is array of indexs sorted 
+    // selection is array of indexes sorted, those indexes points to selected entities in specific entity type
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(true);
     const [addEntityMode, setAddEntityMode] = React.useState(INIT_MODE)
@@ -188,14 +189,16 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         setTBPEntities(tbpEntities)
     }
     // to positions entities, selected to position after TBPEntities 
-    const handleTPEntities = (key) => {
-        TPEntities.includes(key) ? 
-        setTPEntities(p => p.filter(v => v !== key)) :
-         setTPEntities(p => [...p, key])
+    const handleTPEntities = (entity) => {
+        !!TPEntities.find(e => e.key === entity.key) ? 
+        setTPEntities(p => p.filter(v => v.key !== entity.key)) :
+         setTPEntities(p => [...p, entity])
     }
 
     const changeLocations = (type, indices, newLocations = [undefined]) => {
+        // deep copy of entities
         let tempEntities = JSON.parse(JSON.stringify(entities));
+        // shallow copy of object in tempEntities (the d copy of entities)
         let typeEntities = tempEntities.find(d => d.name === type);
         for (let i = 0; i < indices.length; ++i) {
             const loc = newLocations[Math.min(i, newLocations.length - 1)];
@@ -206,7 +209,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     };
 
     const handleMapClick = e => {
-        // if (selection.length < 1) return;
+        if (TPEntities.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
             setEntities(changeLocations(selectedType, selection, [currPoint]));

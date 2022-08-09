@@ -87,8 +87,8 @@ const DnDEntityZone = ({ addEntityMode, TBPEntities, isDragging, findEntityTypeN
                                                         <TBPEntity
                                                             entity={entity}
                                                             entityType={findEntityTypeName(entity.entitiesTypeKey)}
-                                                            isSelected={TPEntities.includes(entity.key)}
-                                                            onClick={() => handleTPEntities(entity.key)}
+                                                            isSelected={!!TPEntities.find(e => e.key === entity.key)}
+                                                            onClick={() => handleTPEntities(entity)}
                                                         />
                                                     </div>
                                                 )}
