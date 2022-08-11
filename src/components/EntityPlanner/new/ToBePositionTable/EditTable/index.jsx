@@ -49,28 +49,28 @@ function EditTable({ TBPEntities, removeEntityFromTBPTable }) {
         tools
       </Typography>
 
-      {
-        icons.map(({ icon, value, component }) => {
-          const iconStyle = editTableMode === value ? classes.activeButton : null;
-          const iconButtonStyle = (editTableMode !== '' && editTableMode !== value) ? classes.notActiveButton : null;
-          return (
-            <div style={{ position: 'relative', textAlign: 'center' }} className={iconStyle}>
-              <IconButton key={value} onClick={() => handleClick(value)} className={iconButtonStyle}>{icon}</IconButton>
-              {editTableMode === value &&
-                <PopperBox
-                  title={value}
-                  handleClick={handleClick}
-                  classes={classes}
-                  children={
-                    React.cloneElement(component, { classes, onSubmit, TBPEntities, removeEntityFromTBPTable })
-                  } />
-              }
-              {value === 'matrix' && <Divider variant="middle" light />}
-            </div>
+        {
+          icons.map(({ icon, value, component }) => {
+            const iconStyle = editTableMode === value ? classes.activeButton : null;
+            const iconButtonStyle = (editTableMode !== '' && editTableMode !== value) ? classes.notActiveButton : null;
+            return (
+              <div style={{ position: 'relative', textAlign: 'center' }} className={iconStyle}>
+                <IconButton key={value} onClick={() => handleClick(value)} className={iconButtonStyle}>{icon}</IconButton>
+                {editTableMode === value &&
+                  <PopperBox
+                    title={value}
+                    handleClick={handleClick}
+                    classes={classes}
+                    children={
+                      React.cloneElement(component, { classes, onSubmit, TBPEntities, removeEntityFromTBPTable })
+                    } />
+                }
+                {value === 'matrix' && <Divider variant="middle" light />}
+              </div>
 
-          )
-        })
-      }
+            )
+          })
+        }
 
     </Box >
   )

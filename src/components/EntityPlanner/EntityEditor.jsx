@@ -29,6 +29,7 @@ import {
     EDIT_MODE,
     LOCATIONS_MODE
 } from './new/ToBePositionTable/utils/constants'
+import { MarkContextmenu } from './MarkContextmenu';
 
 const SimplifiedSwitch = ({ label, value, setValue }) => (
     <div style={{ display: 'inline-block', margin: 5 }}>
@@ -64,12 +65,13 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [TBPEntities, setTBPEntities] = React.useState([]);
     const [isDragging, setIsDragging] = React.useState(false)
     const [filteredEntities, setFilteredEntities] = React.useState([]);
-    const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([])
+    const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([]);
+    /**
+     * @type {Array} TPEntities - contains the selected entities
+     */
     const [TPEntities, setTPEntities] = React.useState([]);
     const [toggleMenu, setToggleMenu] = React.useState(false);
-    const [contextMenuLocation, setContextMenuLocation] = React.useState({x: null,y: null});
-    useEffect(() => console.log(toggleMenu), [toggleMenu])
-    useEffect(() => console.log(contextMenuLocation), [contextMenuLocation])
+    const [anchorPoint, setAnchorPoint] = React.useState({});
     useEffect(() => {   
         setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []))
         setSelectedType(entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}))
@@ -147,15 +149,15 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     }
 
     const handleContextMenuClick = e => {
-        console.log(e)
-        const { pageX: x, pageY: y} = e.originalEvent;
+        const { x, y} = e.containerPoint;
+        const { lat, lng} = e.latlng;
         if(!toggleMenu) {
             setToggleMenu(true);
-            setContextMenuLocation({ x, y });
+            setAnchorPoint({ x, y, mapX: lat, mapY: lng });
             return;
         }
-        else if(contextMenuLocation.x !== x || contextMenuLocation.y !== y){
-            setContextMenuLocation({ x, y });
+        else if(anchorPoint.x !== x || anchorPoint.y !== y){
+            setAnchorPoint({ x, y, mapX: lat, mapY: lng });
         }
         else{
             setToggleMenu(p => !p);
@@ -181,7 +183,10 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
             })
         }
     }
-
+    /**
+     * this function add entity type to TBPEntites state with the selected entity
+     * @param {object} entity - item of entity type
+     */
     const addEntityToTBPTable = (entity) => {
         // const draggedEntity = entitiesTypesInstances[source.index]
         const parentEntity = TBPEntities.find(({ key }) => key === entity.entitiesTypeKey)
@@ -218,28 +223,35 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const changeLocations = (type, indices, newLocations = [undefined]) => {
         // deep copy of entities
         let tempEntities = JSON.parse(JSON.stringify(entities));
+        console.log(type)
         // shallow copy of object in tempEntities (the d copy of entities)
         let typeEntities = tempEntities.find(d => d.name === type);
+        console.log(typeEntities)
         for (let i = 0; i < indices.length; ++i) {
             const loc = newLocations[Math.min(i, newLocations.length - 1)];
-            console.log(layerChosen)
+            console.log(typeEntities.items[indices[i]], indices[i], indices, typeEntities)
             changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
         }
         return tempEntities;
     };
 
     const handleMapClick = e => {
+        setToggleMenu(false);
         if (TPEntities.length < 1) return;
         console.log(TPEntities)
+
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
             let _selection = [];
+            let entityType = null;
             for (let i = 0; i < TPEntities.length; i++) {
                 const entity = TPEntities[i];
-                const entityType = findEntityTypeName(entity.entitiesTypeKey)
+                entityType = findEntityTypeName(entity.entitiesTypeKey)
                 _selection.push(entityType.items.findIndex(e => e.key === entity.key))
+                console.log(entityType)
             }
-            // setEntities(changeLocations(entityType.name, [_selection], [currPoint]));
+            setEntities(changeLocations(entityType.name, _selection.sort(), [currPoint]));
+            setTPEntities([])
             setMarkedPoints([]);
             setSelection([]);
         } else {
@@ -328,7 +340,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     }
 
     return (
-        <>
+
         <Grid
             container direction="row-reverse" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
@@ -349,7 +361,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                     return devType.items.map((dev, index) => {
                                         const loc = getEntityLocation(dev, devType, layerChosen);
                                         if (!loc) return null;
-                                        return <EntityMarker
+                                        return( <>
+                                        <EntityMarker
                                             key={dev.key} entity={dev}
                                             devLocation={loc}
                                             isSelected={selection.includes(index)}
@@ -357,7 +370,28 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                             shouldShowName={showName}
                                             handleMarkerClick={handleMarkerClick}
                                             onContextMenu={handleContextMenuClick}
-                                        />
+                                            />
+                                                
+                                            {
+                                            toggleMenu &&
+                                                <MarkContextmenu
+                                                position={{y: anchorPoint.y,x: anchorPoint.x,}}
+                                                menuRows={[
+                                                    {
+                                                        onClick:
+                                                        () => {
+                                                            addEntityToTBPTable(dev);
+                                                            if(TBPEntities.length < 1) setAddEntityMode(EDIT_MODE)
+                                                        }
+                                                    , text: 'Edit'
+                                                },
+                                                ]}
+                                                isShow={loc[0] === anchorPoint.mapX && loc[1] === anchorPoint.mapY}
+                                                onClose={() => setToggleMenu(false)}
+                                                />
+                                            }
+                                            </>
+                                            )
                                     });
                                 } else {
                                     return null;
@@ -527,20 +561,6 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                 }
             </Grid> */}
         </Grid>
-        {
-            toggleMenu && 
-            <div style={{
-                position: 'absolute',
-                top: contextMenuLocation.y,
-                left: contextMenuLocation.x,
-                zIndex: 1999,
-                border: '2px solid black',
-                backgroundColor: 'white'
-                }}>
-                <span>Edit</span>
-                <span onClick={() => setToggleMenu(false)}>Cancel</span>
-            </div>
-        }
-        </>
+
     )
 }
