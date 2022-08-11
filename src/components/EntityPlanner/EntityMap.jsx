@@ -176,7 +176,7 @@ const EntityMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layer
     )
 }
 
-export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen, showGrid, showGridMeters }) => {
+export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen, showGrid, showGridMeters, onContextMenu }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
@@ -226,6 +226,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             zoom={15}
             ref={mapElement}
             style={{ height: "100%" }}
+            oncontextmenu={onContextMenu}
             // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
             onClick={onClick}
             onMouseMove={onMouseMove}

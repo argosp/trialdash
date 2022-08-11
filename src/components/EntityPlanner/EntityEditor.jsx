@@ -66,10 +66,14 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [filteredEntities, setFilteredEntities] = React.useState([]);
     const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([])
     const [TPEntities, setTPEntities] = React.useState([]);
-
-    useEffect(() => {
+    const [toggleMenu, setToggleMenu] = React.useState(false);
+    const [contextMenuLocation, setContextMenuLocation] = React.useState({x: null,y: null});
+    useEffect(() => console.log(toggleMenu), [toggleMenu])
+    useEffect(() => console.log(contextMenuLocation), [contextMenuLocation])
+    useEffect(() => {   
         setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []))
         setSelectedType(entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}))
+        console.log("entities changed", entities)
     }, [entities])
     const handleFilterDevices = (filter) => {
         const filtered = entities.filter(e => !!filter[e.name])
@@ -142,6 +146,22 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         addEntityToTBPTable(entity)
     }
 
+    const handleContextMenuClick = e => {
+        console.log(e)
+        const { pageX: x, pageY: y} = e.originalEvent;
+        if(!toggleMenu) {
+            setToggleMenu(true);
+            setContextMenuLocation({ x, y });
+            return;
+        }
+        else if(contextMenuLocation.x !== x || contextMenuLocation.y !== y){
+            setContextMenuLocation({ x, y });
+        }
+        else{
+            setToggleMenu(p => !p);
+        }
+    }
+
     const removeEntityFromTBPTable = (entity) => {
         if (isArray(entity) && isEmpty(entity)) {
             handleTBPEntities([])
@@ -210,9 +230,16 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
     const handleMapClick = e => {
         if (TPEntities.length < 1) return;
+        console.log(TPEntities)
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
-            setEntities(changeLocations(selectedType, selection, [currPoint]));
+            let _selection = [];
+            for (let i = 0; i < TPEntities.length; i++) {
+                const entity = TPEntities[i];
+                const entityType = findEntityTypeName(entity.entitiesTypeKey)
+                _selection.push(entityType.items.findIndex(e => e.key === entity.key))
+            }
+            // setEntities(changeLocations(entityType.name, [_selection], [currPoint]));
             setMarkedPoints([]);
             setSelection([]);
         } else {
@@ -301,6 +328,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     }
 
     return (
+        <>
         <Grid
             container direction="row-reverse" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
@@ -328,6 +356,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                             isTypeSelected={devType.name === selectedType}
                                             shouldShowName={showName}
                                             handleMarkerClick={handleMarkerClick}
+                                            onContextMenu={handleContextMenuClick}
                                         />
                                     });
                                 } else {
@@ -498,5 +527,20 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                 }
             </Grid> */}
         </Grid>
+        {
+            toggleMenu && 
+            <div style={{
+                position: 'absolute',
+                top: contextMenuLocation.y,
+                left: contextMenuLocation.x,
+                zIndex: 1999,
+                border: '2px solid black',
+                backgroundColor: 'white'
+                }}>
+                <span>Edit</span>
+                <span onClick={() => setToggleMenu(false)}>Cancel</span>
+            </div>
+        }
+        </>
     )
 }
