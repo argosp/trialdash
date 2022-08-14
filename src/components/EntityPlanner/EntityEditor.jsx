@@ -213,6 +213,12 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const handleTBPEntities = (tbpEntities) => {
         setTBPEntities(tbpEntities)
     }
+
+    const cleanTBPTable = () => {
+        setTBPEntities([]);
+        setTPEntities([]);
+    }
+
     // to positions entities, selected to position after TBPEntities 
     const handleTPEntities = (entity) => {
         !!TPEntities.find(e => e.key === entity.key) ?
@@ -363,8 +369,6 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                         const loc = getEntityLocation(dev, devType, layerChosen);
                                         if (!loc) return null;
                                         const isOnEdit = (isObject(tbpParent) && tbpParent.items.findIndex(({ key }) => dev.key === key) !== -1)
-                                        // console.log(tbpParent.length > 0)
-                                        console.log(isOnEdit)
                                         return (<>
                                             <EntityMarker
                                                 key={dev.key} entity={dev}
@@ -389,6 +393,16 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                                                     if (TBPEntities.length < 1) setAddEntityMode(EDIT_MODE)
                                                                 }
                                                             , text: 'Edit'
+                                                        },
+                                                        {
+                                                            onClick:
+                                                                () => {
+
+                                                                    if (TBPEntities.length < 2) { setAddEntityMode(INIT_MODE); cleanTBPTable(); }
+                                                                    const parentEntity = findEntityTypeName(dev.entitiesTypeKey);
+                                                                    setEntities(changeLocations(parentEntity.name, [parentEntity.items.findIndex(({ key }) => key === dev.key)]))
+                                                                }
+                                                            , text: 'Remove'
                                                         },
                                                     ]}
                                                     isShow={loc[0] === anchorPoint.mapX && loc[1] === anchorPoint.mapY}
