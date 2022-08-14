@@ -28,7 +28,7 @@ const style = {
 }
 const useStyles = makeStyles(style)
 
-export const MarkContextmenu = ({ menuRows, isShow, position, onClose }) => {
+export const MarkContextmenu = ({ applyMenuRows, isShow, position, onClose }) => {
     const classes = useStyles();
     const divRef = React.useRef(null);
 
@@ -39,23 +39,23 @@ export const MarkContextmenu = ({ menuRows, isShow, position, onClose }) => {
 
     return (
         isShow &&
-        <div 
+        <div
             className={classes.container}
-            style={{top: position.y,left: position.x,}}
+            style={{ top: position.y, left: position.x, }}
             ref={divRef}
             onClick={onClose}
         >
             {
-                menuRows.map(({ onClick, text }) => (
+                applyMenuRows().map(({ onClick, text }) => (
                     <span
-                    className={classes.row}
-                    onClick={(e) => { onClick(); console.log(e) }}
+                        className={classes.row}
+                        onClick={(e) => { onClick(); console.log(e) }}
                     >
-                    {text}
+                        {text}
                     </span>
                 ))
             }
-            <span  className={classes.row}>Cancel</span>
+            <span className={classes.row}>Cancel</span>
         </div>
     )
 

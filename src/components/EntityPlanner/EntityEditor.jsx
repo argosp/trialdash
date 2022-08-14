@@ -67,22 +67,28 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [filteredEntities, setFilteredEntities] = React.useState([]);
     const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([]);
     /**
-     * @type {Array} TPEntities - contains the selected entities
+     * @const {array} TPEntities - contains the selected entities
      */
     const [TPEntities, setTPEntities] = React.useState([]);
+    /**
+     * @const {array} entitiesTypes - contains the source entities array, for prev presentation of edit
+     */
+    const [entitiesTypes, setEntitiesTypes] = React.useState([]);
     const [toggleMenu, setToggleMenu] = React.useState(false);
     const [anchorPoint, setAnchorPoint] = React.useState({});
     useEffect(() => {
+        setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
         setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []))
         setSelectedType(entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}))
         console.log("entities changed", entities)
     }, [entities])
+    useEffect(() => console.log(entitiesTypes), [entitiesTypes])
     const handleFilterDevices = (filter) => {
-        const filtered = entities.filter(e => !!filter[e.name])
+        const filtered = entitiesTypes.filter(e => !!filter[e.name])
         setFilteredEntities(filtered)
     }
     const handleSearchEntities = (input) => {
-        const filtered = entities.reduce((prev, entityType) => entityType.name.toLowerCase().includes(input.toLowerCase()) ? [...prev, entityType] : [...prev], [])
+        const filtered = entitiesTypes.reduce((prev, entityType) => entityType.name.toLowerCase().includes(input.toLowerCase()) ? [...prev, entityType] : [...prev], [])
         setFilteredEntities(filtered)
     }
 
@@ -113,7 +119,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
     }
 
-    const findEntityTypeName = (key) => entities.find(e => e.key === key)
+    const findEntityTypeName = (key) => entitiesTypes.find(e => e.key === key)
 
     const onDragStart = () => {
         setIsDragging(true);
@@ -137,7 +143,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
 
 
-    if (selectedType === '' && entities.length > 0) {
+    if (selectedType === '' && entitiesTypes.length > 0) {
         setSelectedType(entities[0].name);
     }
 
@@ -200,7 +206,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
             )
             ));
         } else {
-            const _parentEntity = entities.find(({ key }) => key === entity.entitiesTypeKey)
+            const _parentEntity = entitiesTypes.find(({ key }) => key === entity.entitiesTypeKey)
             handleTBPEntities(prev => ([
                 ...prev,
                 {
@@ -225,10 +231,16 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
             setTPEntities(p => p.filter(v => v.key !== entity.key)) :
             setTPEntities(p => [...p, entity])
     }
-
+    /**
+     * 
+     * @param {string} type - the name of parent entity type
+     * @param {array} indices - array of indexes sorted, those indexes points to selected entities in specific entity type
+     * @param {number[][]} newLocations - array of arrays, each array holds 2 values as with type number. Points on new location of selected entities
+     * @returns 
+     */
     const changeLocations = (type, indices, newLocations = [undefined]) => {
         // deep copy of entities
-        let tempEntities = JSON.parse(JSON.stringify(entities));
+        let tempEntities = JSON.parse(JSON.stringify(entitiesTypes));
         console.log(type)
         // shallow copy of object in tempEntities (the d copy of entities)
         let typeEntities = tempEntities.find(d => d.name === type);
@@ -256,7 +268,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                 _selection.push(entityType.items.findIndex(e => e.key === entity.key))
                 console.log(entityType)
             }
-            setEntities(changeLocations(entityType.name, _selection.sort(), [currPoint]));
+            setEntitiesTypes(changeLocations(entityType.name, _selection.sort(), [currPoint]));
+            // setEntities(changeLocations(entityType.name, _selection.sort(), [currPoint]));
             setTPEntities([])
             setMarkedPoints([]);
             setSelection([]);
@@ -322,6 +335,32 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     //     setMarkedPoints([]);
     //     setSelection([]);
     // };
+
+    const applyMenuRows = (dev) => [
+        {
+            onClick:
+                () => {
+                    addEntityToTBPTable(dev);
+                    if (TBPEntities.length < 1) setAddEntityMode(EDIT_MODE)
+                }
+            , text: 'Edit'
+        },
+        {
+            onClick:
+                () => {
+
+                    if (TBPEntities.length < 2) { setAddEntityMode(INIT_MODE); cleanTBPTable(); }
+                    const parentEntity = findEntityTypeName(dev.entitiesTypeKey);
+                    const childIndex = parentEntity.items.findIndex(({ key }) => key === dev.key);
+                    if (addEntityMode !== INIT_MODE)
+                        setEntitiesTypes(changeLocations(parentEntity.name, [childIndex]))
+                    else
+                        setEntities(changeLocations(parentEntity.name, [childIndex]))
+                }
+            , text: 'Remove'
+        },
+    ]
+
     const handlePutEntities = (_shape) => {
         let selectionsCounter = 0;
         const positions = shapeData(_shape)
@@ -361,7 +400,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                     showGridMeters={showGridMeters}
                 >
                     {
-                        (filteredEntities.length > 0 ? filteredEntities : entities)
+                        (filteredEntities.length > 0 ? filteredEntities : entitiesTypes)
                             .map(devType => {
                                 if (selectedType[devType.name]) {
                                     const tbpParent = TBPEntities.find(({ key }) => devType.key === key) || null;
@@ -385,26 +424,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                                 toggleMenu &&
                                                 <MarkContextmenu
                                                     position={{ y: anchorPoint.y, x: anchorPoint.x, }}
-                                                    menuRows={[
-                                                        {
-                                                            onClick:
-                                                                () => {
-                                                                    addEntityToTBPTable(dev);
-                                                                    if (TBPEntities.length < 1) setAddEntityMode(EDIT_MODE)
-                                                                }
-                                                            , text: 'Edit'
-                                                        },
-                                                        {
-                                                            onClick:
-                                                                () => {
-
-                                                                    if (TBPEntities.length < 2) { setAddEntityMode(INIT_MODE); cleanTBPTable(); }
-                                                                    const parentEntity = findEntityTypeName(dev.entitiesTypeKey);
-                                                                    setEntities(changeLocations(parentEntity.name, [parentEntity.items.findIndex(({ key }) => key === dev.key)]))
-                                                                }
-                                                            , text: 'Remove'
-                                                        },
-                                                    ]}
+                                                    applyMenuRows={() => applyMenuRows(dev)}
                                                     isShow={loc[0] === anchorPoint.mapX && loc[1] === anchorPoint.mapY}
                                                     onClose={() => setToggleMenu(false)}
                                                 />
@@ -443,7 +463,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                     <EntityTypeFilter
                         classes={classes}
                         handleFilterDevices={handleFilterDevices}
-                        entitiesNames={entities.map(device => device.name)}
+                        entitiesNames={entitiesTypes.map(device => device.name)}
                     />
 
                     <WidthDivider />
@@ -472,8 +492,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             }
 
                             {
-                                entities.length > 0 ?
-                                    (filteredEntities.length > 0 ? filteredEntities : entities)
+                                entitiesTypes.length > 0 ?
+                                    (filteredEntities.length > 0 ? filteredEntities : entitiesTypes)
                                         .map((entity) => <DeviceRow key={entity.key} entity={entity} onClick={handleShowEntitiesOnMap} />)
                                     :
                                     <p> No entities to show</p>
@@ -495,7 +515,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             addEntityMode === SELECT_MODE &&
                             <EntitiesTypesTable
                                 classes={classes}
-                                entities={entities}
+                                entities={entitiesTypes}
                                 entitiesTypesInstances={entitiesTypesInstances}
                                 setAddEntityMode={setAddEntityMode}
 
