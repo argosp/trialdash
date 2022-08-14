@@ -72,7 +72,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [TPEntities, setTPEntities] = React.useState([]);
     const [toggleMenu, setToggleMenu] = React.useState(false);
     const [anchorPoint, setAnchorPoint] = React.useState({});
-    useEffect(() => {   
+    useEffect(() => {
         setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []))
         setSelectedType(entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}))
         console.log("entities changed", entities)
@@ -149,17 +149,17 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     }
 
     const handleContextMenuClick = e => {
-        const { x, y} = e.containerPoint;
-        const { lat, lng} = e.latlng;
-        if(!toggleMenu) {
+        const { x, y } = e.containerPoint;
+        const { lat, lng } = e.latlng;
+        if (!toggleMenu) {
             setToggleMenu(true);
             setAnchorPoint({ x, y, mapX: lat, mapY: lng });
             return;
         }
-        else if(anchorPoint.x !== x || anchorPoint.y !== y){
+        else if (anchorPoint.x !== x || anchorPoint.y !== y) {
             setAnchorPoint({ x, y, mapX: lat, mapY: lng });
         }
-        else{
+        else {
             setToggleMenu(p => !p);
         }
     }
@@ -215,9 +215,9 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     }
     // to positions entities, selected to position after TBPEntities 
     const handleTPEntities = (entity) => {
-        !!TPEntities.find(e => e.key === entity.key) ? 
-        setTPEntities(p => p.filter(v => v.key !== entity.key)) :
-         setTPEntities(p => [...p, entity])
+        !!TPEntities.find(e => e.key === entity.key) ?
+            setTPEntities(p => p.filter(v => v.key !== entity.key)) :
+            setTPEntities(p => [...p, entity])
     }
 
     const changeLocations = (type, indices, newLocations = [undefined]) => {
@@ -358,40 +358,45 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                         (filteredEntities.length > 0 ? filteredEntities : entities)
                             .map(devType => {
                                 if (selectedType[devType.name]) {
+                                    const tbpParent = TBPEntities.find(({ key }) => devType.key === key) || null;
                                     return devType.items.map((dev, index) => {
                                         const loc = getEntityLocation(dev, devType, layerChosen);
                                         if (!loc) return null;
-                                        return( <>
-                                        <EntityMarker
-                                            key={dev.key} entity={dev}
-                                            devLocation={loc}
-                                            isSelected={selection.includes(index)}
-                                            isTypeSelected={devType.name === selectedType}
-                                            shouldShowName={showName}
-                                            handleMarkerClick={handleMarkerClick}
-                                            onContextMenu={handleContextMenuClick}
+                                        const isOnEdit = (isObject(tbpParent) && tbpParent.items.findIndex(({ key }) => dev.key === key) !== -1)
+                                        // console.log(tbpParent.length > 0)
+                                        console.log(isOnEdit)
+                                        return (<>
+                                            <EntityMarker
+                                                key={dev.key} entity={dev}
+                                                devLocation={loc}
+                                                isSelected={selection.includes(index)}
+                                                isTypeSelected={devType.name === selectedType}
+                                                isOnEdit={isOnEdit}
+                                                shouldShowName={showName}
+                                                handleMarkerClick={handleMarkerClick}
+                                                onContextMenu={handleContextMenuClick}
                                             />
-                                                
+
                                             {
-                                            toggleMenu &&
+                                                toggleMenu &&
                                                 <MarkContextmenu
-                                                position={{y: anchorPoint.y,x: anchorPoint.x,}}
-                                                menuRows={[
-                                                    {
-                                                        onClick:
-                                                        () => {
-                                                            addEntityToTBPTable(dev);
-                                                            if(TBPEntities.length < 1) setAddEntityMode(EDIT_MODE)
-                                                        }
-                                                    , text: 'Edit'
-                                                },
-                                                ]}
-                                                isShow={loc[0] === anchorPoint.mapX && loc[1] === anchorPoint.mapY}
-                                                onClose={() => setToggleMenu(false)}
+                                                    position={{ y: anchorPoint.y, x: anchorPoint.x, }}
+                                                    menuRows={[
+                                                        {
+                                                            onClick:
+                                                                () => {
+                                                                    addEntityToTBPTable(dev);
+                                                                    if (TBPEntities.length < 1) setAddEntityMode(EDIT_MODE)
+                                                                }
+                                                            , text: 'Edit'
+                                                        },
+                                                    ]}
+                                                    isShow={loc[0] === anchorPoint.mapX && loc[1] === anchorPoint.mapY}
+                                                    onClose={() => setToggleMenu(false)}
                                                 />
                                             }
-                                            </>
-                                            )
+                                        </>
+                                        )
                                     });
                                 } else {
                                     return null;
