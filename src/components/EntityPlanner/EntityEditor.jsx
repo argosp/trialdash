@@ -223,6 +223,10 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const cleanTBPTable = () => {
         setTBPEntities([]);
         setTPEntities([]);
+        setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []))
+        setSelectedType(entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {}))
+        if (addEntityMode !== INIT_MODE) setEntitiesTypes(JSON.parse(JSON.stringify(entities)))
+
     }
 
     // to positions entities, selected to position after TBPEntities 
@@ -361,21 +365,29 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         },
     ]
 
-    const handlePutEntities = (_shape) => {
-        let selectionsCounter = 0;
-        const positions = shapeData(_shape)
-            .toPositions(TBPEntities.reduce((prev, curr) => {
-                selectionsCounter++;
-                const locations = curr.properties[curr.properties.length - 1].val;
-                if (isObject(locations) && isArray(locations.coordinates)) {
-                    return [...prev, locations.coordinates]
-                }
-                return [...prev, [24, 24]]
-
-            }, []), selectionsCounter);
-        setEntities(changeLocations(selectedType, selectionsCounter, positions));
+    const handlePutEntitiesOnPrev = (_shape) => {
+        let selectionsCounter = [];
+        console.log(TPEntities);
+        const parentEntity = findEntityTypeName(TPEntities[0].entitiesTypeKey);
+        const _positions = TPEntities.reduce((prev, curr) => {
+            selectionsCounter.push(parentEntity.items.findIndex(({ key }) => key === curr.key));
+            const locations = curr.properties[curr.properties.length - 1].val;
+            if (isObject(locations) && isArray(locations.coordinates)) {
+                return [...prev, locations.coordinates]
+            }
+            return [...prev, [34, 32]]
+        }, [])
+        const positions = shapeData.toPositions(_positions, selectionsCounter.length);
+        setEntitiesTypes(changeLocations(parentEntity.name, selectionsCounter, positions));
         setMarkedPoints([]);
         setSelection([]);
+    };
+
+    const handlePutEntities = (_shape) => {
+        setEntities(entitiesTypes);
+        setMarkedPoints([]);
+        setSelection([]);
+        cleanTBPTable();
     };
 
 
@@ -508,6 +520,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                 addEntityMode={addEntityMode}
                                 handleModeChange={handleModeChange}
                                 setShowName={setShowName}
+                                onCancel={() => cleanTBPTable()}
+                                onSubmit={() => handlePutEntities('Point')}
                             />
 
                         </Box>
