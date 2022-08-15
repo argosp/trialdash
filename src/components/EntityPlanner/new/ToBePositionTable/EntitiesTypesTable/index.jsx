@@ -13,10 +13,12 @@ import { INIT_MODE } from '../utils/constants'
 
 // const useStyles = makeStyles(styles);
 
-function EntitiesTypesTable({ entities, entitiesTypesInstances, setAddEntityMode, classes }) {
+function EntitiesTypesTable({ entities, entitiesTypesInstances, setAddEntityMode, classes, addEntityToTBPTableFromDnD }) {
 
   const [tabValue, setTabValue] = React.useState(0);
-
+  const addEntityToTBPTable = (entity) => {
+    addEntityToTBPTableFromDnD(entity)
+  }
   // const classes = useStyles();
   console.log(classes)
 
@@ -49,7 +51,7 @@ function EntitiesTypesTable({ entities, entitiesTypesInstances, setAddEntityMode
         />
 
         {
-          tabValue === 0 && <EntitiesTypesList entities={entities} entitiesTypesInstances={entitiesTypesInstances} classes={classes} />
+          tabValue === 0 && <EntitiesTypesList entities={entities} entitiesTypesInstances={entitiesTypesInstances} classes={classes} addEntityToTBPTable={addEntityToTBPTable} />
         }
 
       </Container>

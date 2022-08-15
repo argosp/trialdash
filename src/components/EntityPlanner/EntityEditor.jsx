@@ -134,9 +134,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         }
 
         if (source.droppableId !== destination.droppableId) {
-            const draggedEntity = entitiesTypesInstances[source.index]
-            addEntityToTBPTable(draggedEntity)
-            setEntitiesTypesInstances(p => p.filter(({ key }) => key !== draggedEntity.key))
+            addEntityToTBPTableFromDnD(entitiesTypesInstances[source.index])
         }
     };
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
@@ -216,6 +214,12 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
             ]));
         }
     }
+
+    const addEntityToTBPTableFromDnD = (entity) => {
+        addEntityToTBPTable(entity)
+        setEntitiesTypesInstances(p => p.filter(({ key }) => key !== entity.key))
+    }
+
     const handleTBPEntities = (tbpEntities) => {
         setTBPEntities(tbpEntities)
     }
@@ -383,7 +387,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         setSelection([]);
     };
 
-    const handlePutEntities = (_shape) => {
+    const handlePutEntities = () => {
         setEntities(entitiesTypes);
         setMarkedPoints([]);
         setSelection([]);
@@ -521,7 +525,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                 handleModeChange={handleModeChange}
                                 setShowName={setShowName}
                                 onCancel={() => cleanTBPTable()}
-                                onSubmit={() => handlePutEntities('Point')}
+                                onSubmit={() => handlePutEntities()}
                             />
 
                         </Box>
@@ -532,7 +536,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                 entities={entitiesTypes}
                                 entitiesTypesInstances={entitiesTypesInstances}
                                 setAddEntityMode={setAddEntityMode}
-
+                                addEntityToTBPTableFromDnD={addEntityToTBPTableFromDnD}
                             />
                         }
                         {

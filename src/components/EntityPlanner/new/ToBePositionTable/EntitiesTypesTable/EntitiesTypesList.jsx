@@ -16,7 +16,7 @@ const Container = ({ classes, children }) => <section className={classes}>{child
 
 const Pane = ({ align, classes, children }) => <div style={{ textAlign: align }} className={classes}>{children}</div>
 
-function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: entitiesList, classes }) {
+function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: entitiesList, classes, addEntityToTBPTable }) {
 
   // const entitiesTypes = entities.reduce((prev, current) => [...prev, ...current.properties], [])
 
@@ -58,39 +58,39 @@ function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: en
                         entitiesList.map((entity, entityIndex) => {
 
                           if (entityType.key === entity.entitiesTypeKey) return (
-                          <Draggable key={entity.key} draggableId={entity.key} index={entityIndex}>
+                            <Draggable key={entity.key} draggableId={entity.key} index={entityIndex}>
 
-                            {
-                              draggableProvided => (
-                                <div
-                                  ref={draggableProvided.innerRef}
-                                  {...draggableProvided.draggableProps}
-                                  {...draggableProvided.dragHandleProps}
-                                >
+                              {
+                                draggableProvided => (
+                                  <div
+                                    ref={draggableProvided.innerRef}
+                                    {...draggableProvided.draggableProps}
+                                    {...draggableProvided.dragHandleProps}
+                                  >
 
-                                  <List className={classes.list} component="div" disablePadding>
+                                    <List className={classes.list} component="div" disablePadding>
 
-                                    <ListItem button className={classes.nested}>
-                                      <ListItemText primary={entity.name} />
-                                      <ListItemText secondary="50cm" />
-                                      <ListItemText secondary="Samsung" />
-                                      <ListItemText secondary="blabla23" />
-                                      <ListItemText secondary="20kg" />
-                                      <IconButton className={classes.iconButton}>
-                                        <LocationOnOutlinedIcon />
-                                      </IconButton>
-
-                                      <ListItemSecondaryAction className={classes.addIconWrapper}>
+                                      <ListItem button className={classes.nested}>
+                                        <ListItemText primary={entity.name} />
+                                        <ListItemText secondary="50cm" />
+                                        <ListItemText secondary="Samsung" />
+                                        <ListItemText secondary="blabla23" />
+                                        <ListItemText secondary="20kg" />
                                         <IconButton className={classes.iconButton}>
-                                          <AddBoxIcon fontSize="large" color="primary" />
+                                          <LocationOnOutlinedIcon />
                                         </IconButton>
-                                      </ListItemSecondaryAction>
-                                    </ListItem>
 
-                                  </List>
-                                </div>
-                              )}
-                          </Draggable>
+                                        <ListItemSecondaryAction className={classes.addIconWrapper}>
+                                          <IconButton className={classes.iconButton} onClick={() => addEntityToTBPTable(entity)} >
+                                            <AddBoxIcon fontSize="large" color="primary" />
+                                          </IconButton>
+                                        </ListItemSecondaryAction>
+                                      </ListItem>
+
+                                    </List>
+                                  </div>
+                                )}
+                            </Draggable>
                           )
                         })
                       }
