@@ -16,10 +16,15 @@ const Container = ({ classes, children }) => <section className={classes}>{child
 
 const Pane = ({ align, classes, children }) => <div style={{ textAlign: align }} className={classes}>{children}</div>
 
-function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: entitiesList, classes, addEntityToTBPTable }) {
+function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: entitiesList, classes, addEntityToTBPTable, removeEntityLocation }) {
 
-  // const entitiesTypes = entities.reduce((prev, current) => [...prev, ...current.properties], [])
+  const handleRemoveEntityLocation = (entity) => {
+    const parentEntity = entitiesTypes.find(({ key }) => key === entity.entitiesTypeKey);
+    const childIndex = parentEntity.items.findIndex(({ key }) => key === entity.key);
+    console.log(parentEntity.name, childIndex)
+    removeEntityLocation(parentEntity.name, [childIndex])
 
+  }
 
   return (
     <Container classes={classes.list}>
@@ -76,7 +81,7 @@ function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: en
                                         <ListItemText secondary="Samsung" />
                                         <ListItemText secondary="blabla23" />
                                         <ListItemText secondary="20kg" />
-                                        <IconButton className={classes.iconButton}>
+                                        <IconButton className={classes.iconButton} onClick={() => handleRemoveEntityLocation(entity)} >
                                           <LocationOnOutlinedIcon />
                                         </IconButton>
 

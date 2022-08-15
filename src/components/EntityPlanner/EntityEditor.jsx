@@ -249,7 +249,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const changeLocations = (type, indices, newLocations = [undefined]) => {
         // deep copy of entities
         let tempEntities = JSON.parse(JSON.stringify(entitiesTypes));
-        console.log(type)
+        console.log(type, indices)
         // shallow copy of object in tempEntities (the d copy of entities)
         let typeEntities = tempEntities.find(d => d.name === type);
         console.log(typeEntities)
@@ -537,6 +537,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                                 entitiesTypesInstances={entitiesTypesInstances}
                                 setAddEntityMode={setAddEntityMode}
                                 addEntityToTBPTableFromDnD={addEntityToTBPTableFromDnD}
+                                removeEntityLocation={(entityTypeName, indices) => setEntities(changeLocations(entityTypeName, indices))}
                             />
                         }
                         {
