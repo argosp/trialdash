@@ -1,6 +1,6 @@
 import React from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-
+import { getEntityLocationProp } from '../../../EntityUtils'
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 
@@ -61,6 +61,8 @@ function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: en
                     <EntitiesTypesListRow key={entityType.key} classes={classes} entityType={entityType}>
                       {
                         entitiesList.map((entity, entityIndex) => {
+                          const prop = getEntityLocationProp(entity, entityType);
+                          const entityLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
 
                           if (entityType.key === entity.entitiesTypeKey) return (
                             <Draggable key={entity.key} draggableId={entity.key} index={entityIndex}>
@@ -81,9 +83,9 @@ function EntitiesTypesList({ entities: entitiesTypes, entitiesTypesInstances: en
                                         <ListItemText secondary="Samsung" />
                                         <ListItemText secondary="blabla23" />
                                         <ListItemText secondary="20kg" />
-                                        <IconButton className={classes.iconButton} onClick={() => handleRemoveEntityLocation(entity)} >
+                                        {entityLocation && <IconButton className={classes.iconButton} onClick={() => handleRemoveEntityLocation(entity)} >
                                           <LocationOnOutlinedIcon />
-                                        </IconButton>
+                                        </IconButton>}
 
                                         <ListItemSecondaryAction className={classes.addIconWrapper}>
                                           <IconButton className={classes.iconButton} onClick={() => addEntityToTBPTable(entity)} >
