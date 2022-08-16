@@ -263,11 +263,11 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
     const handleMapClick = e => {
         setToggleMenu(false);
-        if (TPEntities.length < 1) return;
+        if ((shape === 'Point' && shape === 'Free') && TPEntities.length < 1) return;
         console.log(TPEntities)
 
         const currPoint = [e.latlng.lat, e.latlng.lng];
-        if (shape === 'Point') {
+        if (shape === 'Point' || shape === 'Free') {
             let _selection = [];
             let entityType = null;
             for (let i = 0; i < TPEntities.length; i++) {
@@ -287,6 +287,11 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     };
 
     const shapeOptions = [
+        {
+            name: 'Free',
+            toLine: points => [],
+            toPositions: (points, amount) => amount && points.length ? [points[0]] : []
+        },
         {
             name: 'Point',
             toLine: points => [],
@@ -369,20 +374,29 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         },
     ]
 
-    const handlePutEntitiesOnPrev = (_shape) => {
-        let selectionsCounter = [];
-        console.log(TPEntities);
+    const handlePutEntitiesOnPrev = () => {
+        //        const positions = shapeData.toPositions(markedPoints, selection.length);
+        // to -> 
+        //        const positions = shapeData.toPositions(markedPoints, TPEntities.length);
+
+        const positions = shapeData.toPositions(markedPoints, TPEntities.length);
+        let _selection = [];
         const parentEntity = findEntityTypeName(TPEntities[0].entitiesTypeKey);
-        const _positions = TPEntities.reduce((prev, curr) => {
-            selectionsCounter.push(parentEntity.items.findIndex(({ key }) => key === curr.key));
-            const locations = curr.properties[curr.properties.length - 1].val;
-            if (isObject(locations) && isArray(locations.coordinates)) {
-                return [...prev, locations.coordinates]
-            }
-            return [...prev, [34, 32]]
-        }, [])
-        const positions = shapeData.toPositions(_positions, selectionsCounter.length);
-        setEntitiesTypes(changeLocations(parentEntity.name, selectionsCounter, positions));
+        let entityType = null;
+        for (let i = 0; i < TPEntities.length; i++) {
+            const { key } = TPEntities[i];
+            _selection.push(entityType.items.findIndex(e => e.key === key))
+        }
+        // const _positions = TPEntities.reduce((prev, curr) => {
+        //     selectionsCounter.push(parentEntity.items.findIndex(({ key }) => key === curr.key));
+        //     const locations = curr.properties[curr.properties.length - 1].val;
+        //     if (isObject(locations) && isArray(locations.coordinates)) {
+        //         return [...prev, locations.coordinates]
+        //     }
+        //     return [...prev, [34, 32]]
+        // }, [])
+        // const positions = shapeData.toPositions(_positions, selectionsCounter.length);
+        setEntitiesTypes(changeLocations(parentEntity.name, _selection.sort(), positions));
         setMarkedPoints([]);
         setSelection([]);
     };
@@ -545,7 +559,9 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             <EditTable
                                 TBPEntities={TBPEntities}
                                 removeEntityFromTBPTable={removeEntityFromTBPTable}
-
+                                onShapeChange={v => setShape(v)}
+                                onSingleShapeSubmit={handleMapClick}
+                                handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
                             />
                         }
                     </DragDropContext>
