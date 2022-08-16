@@ -263,7 +263,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
     const handleMapClick = e => {
         setToggleMenu(false);
-        if ((shape === 'Point' && shape === 'Free') && TPEntities.length < 1) return;
+        if ((shape === 'Point' || shape === 'Free') && TPEntities.length < 1) return;
         console.log(TPEntities)
 
         const currPoint = [e.latlng.lat, e.latlng.lng];
