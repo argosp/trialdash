@@ -14,7 +14,7 @@ export const styles = (theme) => ({
   },
   nested: {
     // paddingLeft: theme.spacing(4),
-    backgroundColor: 'rgba(245, 245, 245, 0.5)',
+    backgroundColor: theme.palette.background.default,
     margin: '2px 14px',
     borderBottom: '1px solid #E0E0E0',
   },
