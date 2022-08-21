@@ -30,8 +30,7 @@ const TabPanel = ({ children, value, index, ...other }) => (
     id={`trial-tabpanel-${index}`}
     aria-labelledby={`trial-tab-${index}`}
     style={{ marginBottom: '100px' }}
-    {...other}
-  >
+    {...other}>
     <Box>{children}</Box>
   </Typography>
 );
@@ -44,7 +43,7 @@ class TrialEntities extends React.Component {
     entitiesTypes: {},
     isLoading: true,
     parentEntity: {},
-    CloneEntitiesDialogOpen: false
+    CloneEntitiesDialogOpen: false,
   };
 
   componentWillMount() {
@@ -53,7 +52,7 @@ class TrialEntities extends React.Component {
       const entitiesTypes = groupBy(data.data.entitiesTypes, 'key');
       let entities = [];
       client.query({ query: entitiesQuery(match.params.id) }).then((entitiesData) => {
-        entities =  entitiesData.data.entities;
+        entities = entitiesData.data.entities;
         this.setState({
           entities: groupBy(entities, 'key'),
         });
@@ -67,9 +66,7 @@ class TrialEntities extends React.Component {
   componentDidMount() {
     const { client, showFooter } = this.props;
     this.orderEntities();
-    client
-      .query({ query: experimentsQuery })
-      .then(() => this.setState({ isLoading: false }));
+    client.query({ query: experimentsQuery }).then(() => this.setState({ isLoading: false }));
     showFooter(false);
     this.cloneEntitiesRef = React.createRef();
   }
@@ -77,37 +74,45 @@ class TrialEntities extends React.Component {
   componentDidUpdate(prevProps) {
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    if (prevProps.trial[entitiesField].length !== this.state.length || prevProps.trial.status !== trial.status || this.state.entitiesField !== entitiesField) {
+    if (
+      prevProps.trial[entitiesField].length !== this.state.length ||
+      prevProps.trial.status !== trial.status ||
+      this.state.entitiesField !== entitiesField
+    ) {
       this.orderEntities();
     }
   }
 
   orderEntities = () => {
-
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.setState({ update: true, length: trial[entitiesField].length, trialEntities: groupBy(trial[entitiesField], 'entitiesTypeKey'), entitiesField });
-  }
+    this.setState({
+      update: true,
+      length: trial[entitiesField].length,
+      trialEntities: groupBy(trial[entitiesField], 'entitiesTypeKey'),
+      entitiesField,
+    });
+  };
 
   changeView = (selectedViewIndex) => {
     this.setState({ selectedViewIndex });
     this.props.showFooter(selectedViewIndex !== 3);
   };
 
-  openAddEntitiesPanel = (e,parentEntity) => {
+  openAddEntitiesPanel = (e, parentEntity) => {
     this.setState({ isEntitiesPanelOpen: true, parentEntity });
-  }
+  };
 
   closeAddEntitiesPanel = () => {
     this.setState({ isEntitiesPanelOpen: false });
-  }
+  };
 
   setUpdated = () => {
     this.setState({ update: false });
-  }
+  };
   SetCloneEntitiesDialogOpen = () => {
-    this.cloneEntitiesRef.current.openDialog()
-  }
+    this.cloneEntitiesRef.current.openDialog();
+  };
 
   render() {
     const {
@@ -131,19 +136,17 @@ class TrialEntities extends React.Component {
       update,
       isLoading,
       parentEntity,
-      CloneEntitiesDialogOpen
+      CloneEntitiesDialogOpen,
     } = this.state;
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-    const currentExperiment = experiments? experiments.find(experiment => experiment.project.id === trial.experimentId): '';
+    const currentExperiment = experiments
+      ? experiments.find((experiment) => experiment.project.id === trial.experimentId)
+      : '';
     return (
       <>
-        <Grid
-          container
-          justifyContent="space-between"
-          className={classes.entitiesPanelHeader}
-        >
+        <Grid container justifyContent="space-between" className={classes.entitiesPanelHeader}>
           <Grid item>
             {/* <IconButton
                 disableRipple
@@ -174,8 +177,7 @@ class TrialEntities extends React.Component {
                   ? classnames(classes.viewButton, classes.viewButtonSelected)
                   : classes.viewButton
               }
-              onClick={() => this.changeView(2)}
-            >
+              onClick={() => this.changeView(2)}>
               <GridIcon />
             </IconButton>
             <IconButton
@@ -185,79 +187,80 @@ class TrialEntities extends React.Component {
                   ? classnames(classes.viewButton, classes.viewButtonSelected)
                   : classes.viewButton
               }
-              onClick={() => this.changeView(3)}
-            >
+              onClick={() => this.changeView(3)}>
               <EditLocationIcon className={classes.locationIcon} />
             </IconButton>
           </Grid>
-          {selectedViewIndex !== 3 && <Grid item>
-            <SimpleButton text={"Clone entities"} 
-             onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
+          {selectedViewIndex !== 3 && (
+            <Grid item>
+              <SimpleButton
+                text={'Clone entities'}
+                onClick={() =>
+                  this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)
+                }></SimpleButton>
               <CloneEntitiesDialog
-                  title={"Clone trial"}
-                  open={CloneEntitiesDialogOpen}
-                  setOpen={this.SetCloneEntitiesDialogOpen}
-                  ref={this.cloneEntitiesRef}
-                  onConfirm={(updateTrial) => submitTrial(updateTrial)}
-                  entitiesTypes={entitiesTypes}
-                  trialEntities={trialEntities}
-                  currentTrial = {trial}
-                  client ={client}
-                  match ={match}
-                >
-               </CloneEntitiesDialog>
-            <SimpleButton
-              className={classes.trialActionBtn}
-              text="Add"
-              colorVariant="primary"
-              onClick={this.openAddEntitiesPanel}
-            />
-          </Grid>
-          
-          }
-          
+                title={'Clone trial'}
+                open={CloneEntitiesDialogOpen}
+                setOpen={this.SetCloneEntitiesDialogOpen}
+                ref={this.cloneEntitiesRef}
+                onConfirm={(updateTrial) => submitTrial(updateTrial)}
+                entitiesTypes={entitiesTypes}
+                trialEntities={trialEntities}
+                currentTrial={trial}
+                client={client}
+                match={match}></CloneEntitiesDialog>
+              <SimpleButton
+                className={classes.trialActionBtn}
+                text="Add"
+                colorVariant="primary"
+                onClick={this.openAddEntitiesPanel}
+              />
+            </Grid>
+          )}
         </Grid>
-        {selectedViewIndex !== 3 && <AddEntityPanel
-          isPanelOpen={this.state.isEntitiesPanelOpen}
-          onClose={this.closeAddEntitiesPanel}
-          match={match}
-          theme={theme}
-          addEntityToTrial={addEntityToTrial}
-          parentEntity ={parentEntity}
-          entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
-        />}
+        {selectedViewIndex !== 3 && (
+          <AddEntityPanel
+            isPanelOpen={this.state.isEntitiesPanelOpen}
+            onClose={this.closeAddEntitiesPanel}
+            match={match}
+            theme={theme}
+            addEntityToTrial={addEntityToTrial}
+            parentEntity={parentEntity}
+            entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(
+              (e) => e.key
+            )}
+          />
+        )}
         <TabPanel value={selectedViewIndex} index={2}>
-          {selectedViewIndex === 2 &&
+          {selectedViewIndex === 2 && (
             <EntitiesGrid
               {...this.props}
               trial={trial}
               removeEntity={removeEntity}
-              updateEntityInParent ={updateEntityInParent}
+              updateEntityInParent={updateEntityInParent}
               onEntityPropertyChange={onEntityPropertyChange}
               trialEntities={trialEntities}
               entities={entities}
               entitiesTypes={entitiesTypes}
               update={update}
               setUpdated={this.setUpdated}
-              openAddEntitiesPanel ={this.openAddEntitiesPanel}
-              submitTrial = {(updateTrial) => submitTrial(updateTrial)}
-              client ={client}
-              match ={match}
+              openAddEntitiesPanel={this.openAddEntitiesPanel}
+              submitTrial={(updateTrial) => submitTrial(updateTrial)}
+              client={client}
+              match={match}
             />
-          }
+          )}
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
-          {
-            (selectedViewIndex === 3 && Object.keys(entitiesTypes).length) ?
-              <EntityPlanner
-                updateLocation={updateLocation}
-                trial={trial}
-                trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
-                entitiesTypes={entitiesTypes}
-                experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
-              />
-              : null
-          }
+          {selectedViewIndex === 3 && Object.keys(entitiesTypes).length ? (
+            <EntityPlanner
+              updateLocation={updateLocation}
+              trial={trial}
+              trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
+              entitiesTypes={entitiesTypes}
+              experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
+            />
+          ) : null}
         </TabPanel>
       </>
     );
@@ -267,5 +270,5 @@ class TrialEntities extends React.Component {
 export default compose(
   withRouter,
   withApollo,
-  withStyles(styles, { withTheme: true }),
+  withStyles(styles, { withTheme: true })
 )(TrialEntities);

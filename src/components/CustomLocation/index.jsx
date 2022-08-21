@@ -5,10 +5,7 @@ import CustomInput from '../CustomInput';
 import { styles } from './styles';
 
 class CustomLocation extends React.Component {
-
-  state = {
-
-  };
+  state = {};
 
   handleChange = (e, name, value) => {
     const etidetValue = value;
@@ -24,15 +21,11 @@ class CustomLocation extends React.Component {
     if (!value) value = { name: 'OSMMap', coordinates: [] };
     else value = JSON.parse(value);
     return (
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-      >
+      <Grid container direction="row" alignItems="center">
         <CustomInput
           id={`location-name-${id}`}
           className={classes.property}
-          onChange={e => this.handleChange(e, 'name', value)}
+          onChange={(e) => this.handleChange(e, 'name', value)}
           value={value.name}
           values="OSMMap"
           type="selectList"
@@ -41,7 +34,7 @@ class CustomLocation extends React.Component {
         <CustomInput
           id={`location-coords-x-${id}`}
           className={classes.property}
-          onChange={e => this.handleChange(e, 0, value)}
+          onChange={(e) => this.handleChange(e, 0, value)}
           label={label ? 'x' : null}
           placeholder="x"
           value={value.coordinates ? value.coordinates[0] : null}
@@ -51,7 +44,7 @@ class CustomLocation extends React.Component {
         <CustomInput
           id={`location-coords-y-${id}`}
           className={classes.property}
-          onChange={e => this.handleChange(e, 1, value)}
+          onChange={(e) => this.handleChange(e, 1, value)}
           label={label ? 'y' : null}
           placeholder="y"
           value={value.coordinates ? value.coordinates[1] : null}

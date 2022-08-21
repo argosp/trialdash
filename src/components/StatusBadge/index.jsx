@@ -9,8 +9,7 @@ const StatusBadge = ({ classes, className, title, color, onClick, onMouseEnter, 
     style={{ color, border: `2px solid ${color}` }}
     onClick={onClick}
     onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}
-  >
+    onMouseLeave={onMouseLeave}>
     {title}
   </div>
 );

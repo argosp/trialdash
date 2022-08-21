@@ -14,16 +14,12 @@ const CustomHeadline = ({
   className,
 }) => (
   <div className={className}>
-    <p
-      style={{ fontSize: titleFontSize, color: titleColor }}
-      className={classes.title}
-    >
+    <p style={{ fontSize: titleFontSize, color: titleColor }} className={classes.title}>
       {title}
     </p>
     <p
       style={{ fontSize: descriptionFontSize, color: descriptionColor }}
-      className={classes.description}
-    >
+      className={classes.description}>
       {description}
     </p>
   </div>

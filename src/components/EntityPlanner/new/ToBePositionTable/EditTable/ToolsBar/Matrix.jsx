@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const Matrix = () => {
-  return (
-    <div>Matrix</div>
-  )
-}
+  return <div>Matrix</div>;
+};
 
-export default Matrix
+export default Matrix;

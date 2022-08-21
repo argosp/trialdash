@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const Dot = () => {
-  return (
-    <div>Dot</div>
-  )
-}
+  return <div>Dot</div>;
+};
 
-export default Dot
+export default Dot;

@@ -10,7 +10,6 @@ export const styles = () => ({
     cursor: 'pointer',
   },
   actionsCell: {
-    display:"flex"
-
-  }
+    display: 'flex',
+  },
 });

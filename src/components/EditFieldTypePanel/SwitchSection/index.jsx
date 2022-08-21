@@ -12,8 +12,7 @@ const SwitchSection = ({ title, description, classes, className, onChange, isChe
     container
     justifyContent="space-between"
     wrap="nowrap"
-    className={classnames(classes.root, className)}
-  >
+    className={classnames(classes.root, className)}>
     <Grid item>
       <p className={classes.title}>{title}</p>
       <p className={classes.description}>{description}</p>

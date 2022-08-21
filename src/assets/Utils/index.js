@@ -1,5 +1,5 @@
 export const getCurrentEntitsNameByStatus = (trial) => {
-  return trial.status === "design" ? "entities" : "deployedEntities";
+  return trial.status === 'design' ? 'entities' : 'deployedEntities';
 };
 
 export const getEntitiesByEntitiesTypeKey = (trial, entitiesTypeKey) => {
@@ -16,6 +16,6 @@ export const getEntitiesTypeArrayFromSelectedTrial = (trial, entitiesTypes) => {
     .map((item) => item[1][0]);
 };
 
-export const getTrialNameByKey = (trialKey, trialsArr)=> {
- return trialsArr.filter(e=>e.key === trialKey)[0].name;
-}
+export const getTrialNameByKey = (trialKey, trialsArr) => {
+  return trialsArr.filter((e) => e.key === trialKey)[0].name;
+};

@@ -13,9 +13,8 @@ export default (device) => {
             entitiesTypeKey: "${device.entitiesTypeKey}"
             ${device.state ? `state:"${device.state}"` : ''}
             properties: ${JSON.stringify(device.properties)
-    .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')
-}
+              .replace(/"key":/g, 'key:')
+              .replace(/"val":/g, 'val:')}
             ){
             key
             name

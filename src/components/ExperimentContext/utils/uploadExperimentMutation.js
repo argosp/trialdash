@@ -1,10 +1,17 @@
 import gql from 'graphql-tag';
 import uuid from 'uuid/v4';
 
-const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials, logs, labels }) => {
-
+const uploadExperiment = ({
+  experiment,
+  entities,
+  entityTypes,
+  trialSets,
+  trials,
+  logs,
+  labels,
+}) => {
   let entityTypesStr = '';
-  entityTypes.forEach(e => {
+  entityTypes.forEach((e) => {
     entityTypesStr += `{
       key: "${e.key}",
       name: "${e.name}",
@@ -25,13 +32,12 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
         .replace(/"defaultValue":/g, 'defaultValue:')
         .replace(/"defaultProperty":/g, 'defaultProperty:')
         .replace(/"inheritable":/g, 'inheritable:')
-        .replace(/"static":/g, 'static:')
-      }
-    }`
+        .replace(/"static":/g, 'static:')}
+    }`;
   });
 
   let entitiesStr = '';
-  entities.forEach(e => {
+  entities.forEach((e) => {
     entitiesStr += `{
       key: "${e.key}",
       name: "${e.name}",
@@ -39,13 +45,12 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
       ${e.state ? `state:"${e.state}"` : ''}
       properties: ${JSON.stringify(e.properties)
         .replace(/"key":/g, 'key:')
-        .replace(/"val":/g, 'val:')
-      }
-    }`
+        .replace(/"val":/g, 'val:')}
+    }`;
   });
 
   let trialSetsStr = '';
-  trialSets.forEach(e => {
+  trialSets.forEach((e) => {
     trialSetsStr += `{
       key: "${e.key}",
       name: "${e.name}",
@@ -63,13 +68,12 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
         .replace(/"value":/g, 'value:')
         .replace(/"defaultValue":/g, 'defaultValue:')
         .replace(/"inheritable":/g, 'inheritable:')
-        .replace(/"static":/g, 'static:')
-      }
-    }`
+        .replace(/"static":/g, 'static:')}
+    }`;
   });
 
   let trialsStr = '';
-  trials.forEach(e => {
+  trials.forEach((e) => {
     trialsStr += `{
       key: "${e.key}",
       name: "${e.name}",
@@ -77,13 +81,17 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
       trialSetKey: "${e.trialSetKey}",
       numberOfEntities:${e.numberOfEntities},
       ${e.state ? `state:"${e.state}"` : ''},
-      ${e.changedEntities ? `changedEntities: ${JSON.stringify(e.changedEntities)
-        .replace(/"key":/g, 'key:')
-        .replace(/"val":/g, 'val:')
-        .replace(/"type":/g, 'type:')
-        .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-        .replace(/"properties":/g, 'properties:')
-        .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
+      ${
+        e.changedEntities
+          ? `changedEntities: ${JSON.stringify(e.changedEntities)
+              .replace(/"key":/g, 'key:')
+              .replace(/"val":/g, 'val:')
+              .replace(/"type":/g, 'type:')
+              .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+              .replace(/"properties":/g, 'properties:')
+              .replace(/"containsEntities":/g, 'containsEntities:')}`
+          : ''
+      },
       properties: ${JSON.stringify(e.properties)
         .replace(/"key":/g, 'key:')
         .replace(/"val":/g, 'val:')},
@@ -101,26 +109,29 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
         .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
         .replace(/"properties":/g, 'properties:')
         .replace(/"containsEntities":/g, 'containsEntities:')}
-    }`
+    }`;
   });
 
   let logsStr = '';
-  logs.forEach(e => {
-    logsStr += `${JSON.stringify({ title: e.title, key: e.key, comment: e.comment, labels: e.labels.map(q => q.key) })
+  logs.forEach((e) => {
+    logsStr += `${JSON.stringify({
+      title: e.title,
+      key: e.key,
+      comment: e.comment,
+      labels: e.labels.map((q) => q.key),
+    })
       .replace(/"title":/g, 'title:')
       .replace(/"key":/g, 'key:')
       .replace(/"comment":/g, 'comment:')
-      .replace(/"labels":/g, 'labels:')
-      }`
+      .replace(/"labels":/g, 'labels:')}`;
   });
 
   let labelsStr = '';
-  labels.forEach(e => {
+  labels.forEach((e) => {
     labelsStr += `${JSON.stringify({ name: e.name, key: e.key, color: e.color })
       .replace(/"name":/g, 'name:')
       .replace(/"key":/g, 'key:')
-      .replace(/"color":/g, 'color:')
-      }`
+      .replace(/"color":/g, 'color:')}`;
   });
 
   return gql`
@@ -136,16 +147,20 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
                 numberOfTrials: ${experiment.numberOfTrials},
                 ${experiment.status ? `status:"${experiment.status}"` : ''},
                 ${experiment.state ? `state:"${experiment.state}"` : ''},
-                ${experiment.maps ? `maps: ${JSON.stringify(experiment.maps)
-      .replace(/"imageUrl":/g, 'imageUrl:')
-      .replace(/"imageName":/g, 'imageName:')
-      .replace(/"lower":/g, 'lower:')
-      .replace(/"upper":/g, 'upper:')
-      .replace(/"right":/g, 'right:')
-      .replace(/"left":/g, 'left:')
-      .replace(/"width":/g, 'width:')
-      .replace(/"height":/g, 'height:')
-      .replace(/"embedded":/g, 'embedded:')}` : ''}
+                ${
+                  experiment.maps
+                    ? `maps: ${JSON.stringify(experiment.maps)
+                        .replace(/"imageUrl":/g, 'imageUrl:')
+                        .replace(/"imageName":/g, 'imageName:')
+                        .replace(/"lower":/g, 'lower:')
+                        .replace(/"upper":/g, 'upper:')
+                        .replace(/"right":/g, 'right:')
+                        .replace(/"left":/g, 'left:')
+                        .replace(/"width":/g, 'width:')
+                        .replace(/"height":/g, 'height:')
+                        .replace(/"embedded":/g, 'embedded:')}`
+                    : ''
+                }
             },
             entityTypes: [${entityTypesStr}],
             entities: [${entitiesStr}],
@@ -179,6 +194,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
                 description
                 }  
             }
-    }`};
+    }`;
+};
 
 export default uploadExperiment;

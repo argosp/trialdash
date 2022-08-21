@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   headerTitle: {
     fontSize: 18,
     margin: 0,

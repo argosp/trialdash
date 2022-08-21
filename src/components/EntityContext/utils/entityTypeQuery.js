@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-const entitiesTypes = experimentId => gql`
+const entitiesTypes = (experimentId) => gql`
  {
     entitiesTypes(experimentId:"${experimentId}"){
        key

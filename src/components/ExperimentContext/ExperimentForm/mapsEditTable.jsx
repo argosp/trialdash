@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Paper,
   Table,
@@ -10,11 +10,11 @@ import {
   IconButton,
   Icon,
 } from '@material-ui/core';
-import { MapsEditRow } from "./mapsEditRow";
+import { MapsEditRow } from './mapsEditRow';
 
 export const MapsEditTable = ({ data, setData, client }) => {
   if (!data) {
-    data = []
+    data = [];
   }
   return (
     <TableContainer component={Paper} style={{ marginBottom: 100 }}>
@@ -24,17 +24,18 @@ export const MapsEditTable = ({ data, setData, client }) => {
             <TableCell>
               <IconButton
                 onClick={() => {
-                  setData(data.concat({
-                    imageUrl: "",
-                    imageName: 'image ' + (data.length + 1),
-                    lower: 32.08083,
-                    right: 34.78876,
-                    upper: 32.08962,
-                    left: 34.77524,
-                    embedded: true
-                  }))
-                }}
-              >
+                  setData(
+                    data.concat({
+                      imageUrl: '',
+                      imageName: 'image ' + (data.length + 1),
+                      lower: 32.08083,
+                      right: 34.78876,
+                      upper: 32.08962,
+                      left: 34.77524,
+                      embedded: true,
+                    })
+                  );
+                }}>
                 <Icon>add</Icon>
               </IconButton>
             </TableCell>
@@ -60,11 +61,10 @@ export const MapsEditTable = ({ data, setData, client }) => {
                 newdata[i] = row;
                 setData(newdata);
               }}
-              client ={client}
-            ></MapsEditRow>
+              client={client}></MapsEditRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};

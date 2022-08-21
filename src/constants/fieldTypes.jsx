@@ -14,7 +14,7 @@ const FIELD_TYPE_BASE = {
   multipleValues: false,
   static: false,
   trialField: false,
-  inheritable: false
+  inheritable: false,
 };
 
 export const FIELD_TYPES = {

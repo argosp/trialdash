@@ -17,10 +17,29 @@ import CustomLocation from '../CustomLocation';
 const CustomSwitch = withStyles(switcher)(Switch);
 
 const handleToggle = (e, value, onChange, multiple) => {
-  onChange({ target: { value: (multiple ? value.join(',') : value) } });
+  onChange({ target: { value: multiple ? value.join(',') : value } });
 };
 
-const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, placeholder, className, onChange, value, inputProps, disabled, type, values, multiple, invalid, errorText, endAdornment, onClick }) => {
+const renderSwitch = ({
+  label,
+  bottomDescription,
+  id,
+  classes,
+  withBorder,
+  placeholder,
+  className,
+  onChange,
+  value,
+  inputProps,
+  disabled,
+  type,
+  values,
+  multiple,
+  invalid,
+  errorText,
+  endAdornment,
+  onClick,
+}) => {
   let _value;
   if (!errorText) errorText = 'Please select a value';
   switch (type) {
@@ -40,7 +59,9 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             label={label}
           />
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
+          {invalid && (
+            <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>
+          )}
         </Grid>
       );
     case 'selectList':
@@ -58,14 +79,16 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             multiple={multiple}
             id={id}
             options={values ? values.split(',') : []}
-            getOptionLabel={option => option}
+            getOptionLabel={(option) => option}
             style={{ width: 300 }}
-            renderInput={params => <TextField {...params} variant="outlined" />}
-            onChange={((e, v) => handleToggle(e, v, onChange, multiple))}
+            renderInput={(params) => <TextField {...params} variant="outlined" />}
+            onChange={(e, v) => handleToggle(e, v, onChange, multiple)}
             value={_value}
           />
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
+          {invalid && (
+            <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>
+          )}
         </Grid>
       );
     case 'boolean':
@@ -76,18 +99,20 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
           </Typography>
           <FormGroup>
             <FormControlLabel
-              control={(
+              control={
                 <CustomSwitch
                   checked={value && value !== 'false'}
                   onChange={(e, switchName) => onChange(e, switchName)}
                   inputProps={{ 'aria-label': 'switch' }}
                   classes={{ root: classes.switcher }}
                 />
-              )}
+              }
             />
           </FormGroup>
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
+          {invalid && (
+            <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>
+          )}
         </Grid>
       );
     case 'textArea':
@@ -104,7 +129,9 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             className={classes.textArea}
           />
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
-          {invalid && <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>}
+          {invalid && (
+            <FormHelperText classes={{ root: classes.error }}>{errorText}</FormHelperText>
+          )}
         </Grid>
       );
     default:
@@ -139,7 +166,11 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
               endAdornment: endAdornment,
             }}
           />
-          {invalid && <FormHelperText classes={{ root: classnames(classes.error, classes.textFieldError) }}>{errorText}</FormHelperText>}
+          {invalid && (
+            <FormHelperText classes={{ root: classnames(classes.error, classes.textFieldError) }}>
+              {errorText}
+            </FormHelperText>
+          )}
         </Grid>
       );
   }
@@ -163,7 +194,7 @@ const CustomInput = ({
   invalid,
   errorText,
   endAdornment,
-  onClick
+  onClick,
 }) => (
   <div>
     {renderSwitch({
@@ -184,7 +215,7 @@ const CustomInput = ({
       invalid,
       errorText,
       endAdornment,
-      onClick
+      onClick,
     })}
   </div>
 );

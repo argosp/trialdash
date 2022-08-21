@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
     padding: '20px 0 0 40px',
     backgroundColor: theme.palette.white.main,

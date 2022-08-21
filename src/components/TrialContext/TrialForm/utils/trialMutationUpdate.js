@@ -15,30 +15,46 @@ export default (trial, changedEntities) => {
           trialSetKey:"${trial.trialSetKey}",
           ${trial.numberOfEntities ? `numberOfEntities:"${trial.numberOfEntities}"` : ''},
           ${trial.state ? `state:"${trial.state}"` : ''},
-          ${changedEntities ? `changedEntities: ${JSON.stringify(changedEntities)
-            .replace(/"key":/g, 'key:')
-            .replace(/"val":/g, 'val:')
-            .replace(/"type":/g, 'type:')
-            .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-            .replace(/"properties":/g, 'properties:')
-            .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
-          ${trial.properties ? `properties:${JSON.stringify(trial.properties)
-    .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')}` : ''}
-          ${trial.entities ? `entities: ${JSON.stringify(trial.entities)
-    .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')
-    .replace(/"type":/g, 'type:')
-    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-    .replace(/"properties":/g, 'properties:')
-    .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
-        ${trial.deployedEntities ? `deployedEntities: ${JSON.stringify(trial.deployedEntities)
-    .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')
-    .replace(/"type":/g, 'type:')
-    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-    .replace(/"properties":/g, 'properties:')
-    .replace(/"containsEntities":/g, 'containsEntities:')}` : ''}
+          ${
+            changedEntities
+              ? `changedEntities: ${JSON.stringify(changedEntities)
+                  .replace(/"key":/g, 'key:')
+                  .replace(/"val":/g, 'val:')
+                  .replace(/"type":/g, 'type:')
+                  .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+                  .replace(/"properties":/g, 'properties:')
+                  .replace(/"containsEntities":/g, 'containsEntities:')}`
+              : ''
+          },
+          ${
+            trial.properties
+              ? `properties:${JSON.stringify(trial.properties)
+                  .replace(/"key":/g, 'key:')
+                  .replace(/"val":/g, 'val:')}`
+              : ''
+          }
+          ${
+            trial.entities
+              ? `entities: ${JSON.stringify(trial.entities)
+                  .replace(/"key":/g, 'key:')
+                  .replace(/"val":/g, 'val:')
+                  .replace(/"type":/g, 'type:')
+                  .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+                  .replace(/"properties":/g, 'properties:')
+                  .replace(/"containsEntities":/g, 'containsEntities:')}`
+              : ''
+          },
+        ${
+          trial.deployedEntities
+            ? `deployedEntities: ${JSON.stringify(trial.deployedEntities)
+                .replace(/"key":/g, 'key:')
+                .replace(/"val":/g, 'val:')
+                .replace(/"type":/g, 'type:')
+                .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+                .replace(/"properties":/g, 'properties:')
+                .replace(/"containsEntities":/g, 'containsEntities:')}`
+            : ''
+        }
             )
             {
               key

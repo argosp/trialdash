@@ -17,10 +17,7 @@ const DataMainView = (props) => {
           queryRefecth = refetch;
           return (
             <div>
-              <DataForm
-                experimentId={props.experimentId}
-                {...data.experimentData}
-              />
+              <DataForm experimentId={props.experimentId} {...data.experimentData} />
             </div>
           );
         }}

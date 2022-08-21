@@ -10,17 +10,10 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import Radio from '@material-ui/core/Radio';
-import {
-  FIELD_TYPE_ITEM_CHECKBOX_TYPE,
-  FIELD_TYPES_ICONS,
-} from '../../../constants/fieldTypes';
+import { FIELD_TYPE_ITEM_CHECKBOX_TYPE, FIELD_TYPES_ICONS } from '../../../constants/fieldTypes';
 import { styles } from './styles';
 
-const ListContent = ({
-  fieldType,
-  classes,
-  contentType,
-}) => (
+const ListContent = ({ fieldType, classes, contentType }) => (
   <div>
     <Grid container alignItems="center">
       {FIELD_TYPES_ICONS[fieldType.type]}
@@ -31,70 +24,54 @@ const ListContent = ({
       <FormGroup>
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
-              icon={
-                <CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />
-              }
-              checkedIcon={
-                <CheckBoxOutlinedIcon className={classes.checkedIcon} />
-              }
+              icon={<CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />}
+              checkedIcon={<CheckBoxOutlinedIcon className={classes.checkedIcon} />}
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
-              icon={
-                <CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />
-              }
-              checkedIcon={
-                <CheckBoxOutlinedIcon className={classes.checkedIcon} />
-              }
+              icon={<CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />}
+              checkedIcon={<CheckBoxOutlinedIcon className={classes.checkedIcon} />}
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
-              icon={
-                <CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />
-              }
-              checkedIcon={
-                <CheckBoxOutlinedIcon className={classes.checkedIcon} />
-              }
+              icon={<CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />}
+              checkedIcon={<CheckBoxOutlinedIcon className={classes.checkedIcon} />}
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
-              icon={
-                <CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />
-              }
-              checkedIcon={
-                <CheckBoxOutlinedIcon className={classes.checkedIcon} />
-              }
+              icon={<CheckBoxOutlineBlankIcon className={classes.wrapperIcon} />}
+              checkedIcon={<CheckBoxOutlinedIcon className={classes.checkedIcon} />}
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
       </FormGroup>
@@ -103,74 +80,58 @@ const ListContent = ({
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor1"
               disableRipple
               color="default"
               className={classes.itemWrapper}
-              checkedIcon={
-                <RadioButtonCheckedIcon className={classes.checkedIcon} />
-              }
-              icon={
-                <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
-              }
+              checkedIcon={<RadioButtonCheckedIcon className={classes.checkedIcon} />}
+              icon={<RadioButtonUncheckedIcon className={classes.wrapperIcon} />}
             />
-          )}
+          }
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor2"
               disableRipple
               color="default"
               className={classes.itemWrapper}
-              checkedIcon={
-                <RadioButtonCheckedIcon className={classes.checkedIcon} />
-              }
-              icon={
-                <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
-              }
+              checkedIcon={<RadioButtonCheckedIcon className={classes.checkedIcon} />}
+              icon={<RadioButtonUncheckedIcon className={classes.wrapperIcon} />}
             />
-          )}
+          }
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor3"
               disableRipple
               color="default"
               className={classes.itemWrapper}
-              checkedIcon={
-                <RadioButtonCheckedIcon className={classes.checkedIcon} />
-              }
-              icon={
-                <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
-              }
+              checkedIcon={<RadioButtonCheckedIcon className={classes.checkedIcon} />}
+              icon={<RadioButtonUncheckedIcon className={classes.wrapperIcon} />}
             />
-          )}
+          }
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor4"
               disableRipple
               color="default"
               className={classes.itemWrapper}
-              checkedIcon={
-                <RadioButtonCheckedIcon className={classes.checkedIcon} />
-              }
-              icon={
-                <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
-              }
+              checkedIcon={<RadioButtonCheckedIcon className={classes.checkedIcon} />}
+              icon={<RadioButtonUncheckedIcon className={classes.wrapperIcon} />}
             />
-          )}
+          }
         />
       </RadioGroup>
     )}

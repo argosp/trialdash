@@ -54,10 +54,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve": "serve -s build",
-    "lint": "eslint --fix"
+    "lint": "eslint src/ --ext .jsx --ext .js",
+    "lint:fix": "eslint src/ --ext .jsx --ext .js --fix"
   },
   "husky": {
     "hooks": {
+      "pre-commit": "eslint src/ --ext .jsx --ext .js",
       "pre-push": "eslint src/ --ext .jsx --ext .js"
     }
   },

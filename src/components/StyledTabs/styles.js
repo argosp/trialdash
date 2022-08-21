@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   tab: {
     paddingBottom: 30,
     fontWeight: 'bold',
@@ -19,7 +19,7 @@ export const styles = theme => ({
   },
 });
 
-export const tabsStyles = theme => ({
+export const tabsStyles = (theme) => ({
   root: {
     minHeight: 'auto',
   },

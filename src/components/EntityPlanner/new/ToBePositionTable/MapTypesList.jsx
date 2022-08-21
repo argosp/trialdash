@@ -1,20 +1,18 @@
 import React from 'react';
-import { Typography, Box, Container } from '@material-ui/core'
+import { Typography, Box, Container } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import { CheckOutlined } from "@material-ui/icons";
-
+import { CheckOutlined } from '@material-ui/icons';
 
 const ListIcon = () => (
   <ListItemIcon>
     <CheckOutlined />
   </ListItemIcon>
-)
+);
 
 const MapTypesList = ({ layerChosen, handleMapTypeChange }) => {
-
   return (
     <Container disableGutters fixed className="tbpRow">
       <Typography component="span">
@@ -22,22 +20,18 @@ const MapTypesList = ({ layerChosen, handleMapTypeChange }) => {
       </Typography>
       <List
         sx={{ width: '100%', maxWidth: 360, backgroundColor: 'white', cursor: 'pointer' }}
-        aria-label="contacts"
-      >
-        {
-          ['OSMMap', 'Concourse', 'Platform']
-            .map((type) => {
-              const isMapType = type === layerChosen
-              return (
-                <ListItem disablePadding onClick={() => handleMapTypeChange(type)}>
-                  {isMapType && <ListIcon />}
-                  <ListItemText fontSize="1rem" inset={!isMapType} primary={type} />
-                </ListItem>
-              )
-            })
-        }
+        aria-label="contacts">
+        {['OSMMap', 'Concourse', 'Platform'].map((type) => {
+          const isMapType = type === layerChosen;
+          return (
+            <ListItem disablePadding onClick={() => handleMapTypeChange(type)}>
+              {isMapType && <ListIcon />}
+              <ListItemText fontSize="1rem" inset={!isMapType} primary={type} />
+            </ListItem>
+          );
+        })}
       </List>
     </Container>
   );
-}
-export default MapTypesList
+};
+export default MapTypesList;

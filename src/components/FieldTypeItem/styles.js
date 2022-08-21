@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   wrapper: {
     backgroundColor: theme.palette.white.main,
     padding: '25px 30px 25px 20px',

@@ -16,16 +16,15 @@ const MenuProps = {
   },
 };
 
-const Entity = props => (
+const Entity = (props) => (
   <div>
     <h3>{props.entityName}:</h3>
     <InputLabel htmlFor="select-multiple-chip">+ Add {props.entityName}</InputLabel>
     <Select
       value={props.entities}
       onChange={props.handleChangeMultiple(props.entityName)}
-      MenuProps={MenuProps}
-    >
-      {props.entitiesList.map(entity => (
+      MenuProps={MenuProps}>
+      {props.entitiesList.map((entity) => (
         <MenuItem key={entity.id} value={entity}>
           {entity.name}
         </MenuItem>
@@ -35,8 +34,8 @@ const Entity = props => (
       <div key={d.entity.id}>
         <div>{d.name}</div>
         <div>
-          {d.properties
-            && d.properties.map((p, i) => {
+          {d.properties &&
+            d.properties.map((p, i) => {
               if (p.type === 'location') {
                 // return (
                 //   <LeafLetMap
@@ -53,12 +52,7 @@ const Entity = props => (
                     type={p.type}
                     label={p.key}
                     value={p.val}
-                    onChange={props.handleChangeProprty(
-                      i,
-                      'val',
-                      props.entityName,
-                      index,
-                    )}
+                    onChange={props.handleChangeProprty(i, 'val', props.entityName, index)}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -70,9 +64,7 @@ const Entity = props => (
         </div>
         <button
           type="button"
-          onClick={() => props.removeEntity(props.entityName, d.entity.id, d.name)
-          }
-        >
+          onClick={() => props.removeEntity(props.entityName, d.entity.id, d.name)}>
           X
         </button>
       </div>

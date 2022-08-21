@@ -39,18 +39,16 @@ const ContentHeader = (props) => {
   } = props;
 
   return (
-    <Grid container justifyContent="space-between" className={classnames(classes.header, className)} onClick={onClick}>
-      <Box
-        display="flex"
-        alignItems="center"
-      >
+    <Grid
+      container
+      justifyContent="space-between"
+      className={classnames(classes.header, className)}
+      onClick={onClick}>
+      <Box display="flex" alignItems="center">
         {withBackButton ? (
-          <KeyboardBackspaceIcon
-            className={classes.backIcon}
-            onClick={backButtonHandler}
-          />
+          <KeyboardBackspaceIcon className={classes.backIcon} onClick={backButtonHandler} />
         ) : null}
-        
+
         <Box display="inline-block">
           <Box display="inline-block">
             {topDescription ? <p className={classes.topDescription}>{topDescription}</p> : null}
@@ -64,10 +62,10 @@ const ContentHeader = (props) => {
           ) : null}
         </Box>
         {middleDescription ? (
-            <div className={classes.middleDescription}>{middleDescription}</div>
-          ) : null}
+          <div className={classes.middleDescription}>{middleDescription}</div>
+        ) : null}
       </Box>
-      
+
       {withSearchInput ? (
         <div className={classes.search}>
           <div className={classes.searchIcon}>
@@ -82,55 +80,47 @@ const ContentHeader = (props) => {
             }}
             inputProps={{ 'aria-label': searchPlaceholder }}
           />
-          {withAddButton
-            && (
-              <SimpleButton
-                colorVariant="primary"
-                className={classes.addButton}
-                text={addButtonText}
-                onClick={addButtonHandler}
-              />
-            )
-          }
-          {withUploadButton
-            && (
-              <SimpleButton
-                colorVariant="primary"
-                className={classes.addButton}
-                component="label"
-                text={
-                  <>
+          {withAddButton && (
+            <SimpleButton
+              colorVariant="primary"
+              className={classes.addButton}
+              text={addButtonText}
+              onClick={addButtonHandler}
+            />
+          )}
+          {withUploadButton && (
+            <SimpleButton
+              colorVariant="primary"
+              className={classes.addButton}
+              component="label"
+              text={
+                <>
                   {uploadButtonText}
-                  <input
-                    type="file"
-                    onChange={uploadButtonHandler}
-                    hidden
-                  /></>}
-              />
-            )
-          }
-          {withDeleteButton
-            && (
-              <SimpleButton
-                colorVariant="secondary"
-                className={classes.addButton}
-                text={deleteButtonText}
-                onClick={deleteButtonHandler}
-              />
-            )
-          }
-          {withAddMultipleButton
-            && (
-              <SimpleButton
-                colorVariant="primary"
-                className={classes.addButton}
-                text={addMultipleButtonText}
-                onClick={addMultipleButtonHandler}
-              />
-            )
-          }
+                  <input type="file" onChange={uploadButtonHandler} hidden />
+                </>
+              }
+            />
+          )}
+          {withDeleteButton && (
+            <SimpleButton
+              colorVariant="secondary"
+              className={classes.addButton}
+              text={deleteButtonText}
+              onClick={deleteButtonHandler}
+            />
+          )}
+          {withAddMultipleButton && (
+            <SimpleButton
+              colorVariant="primary"
+              className={classes.addButton}
+              text={addMultipleButtonText}
+              onClick={addMultipleButtonHandler}
+            />
+          )}
         </div>
-      ) : rightComponent}
+      ) : (
+        rightComponent
+      )}
     </Grid>
   );
 };

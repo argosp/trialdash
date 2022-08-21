@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   header: {
     marginBottom: 10,
   },
@@ -35,7 +35,7 @@ export const styles = theme => ({
     fontSize: 16,
     verticalAlign: 'bottom',
   },
-  middleDescription:{
+  middleDescription: {
     margin: '0 0 0 15px',
     verticalAlign: 'bottom',
   },

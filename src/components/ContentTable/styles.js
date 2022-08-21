@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   table: {
     borderCollapse: 'separate',
     borderSpacing: '0 3px',

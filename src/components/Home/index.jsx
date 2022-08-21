@@ -20,9 +20,7 @@ class Home extends Component {
   render() {
     const { history } = this.props;
 
-    return (
-      <Dashboard history={history} />
-    );
+    return <Dashboard history={history} />;
   }
 }
 

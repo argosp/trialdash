@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     minWidth: 350,
     '& .MuiTableCell-root': {
       borderBottom: 0,
-    }
+    },
   },
   inputField: {
     width: 90,
@@ -26,23 +26,22 @@ const useStyles = makeStyles({
     '&>*': {
       width: 'inherit',
       height: 'inherit',
-    }
+    },
   },
   inputPositionField: {
     width: 50,
-    height: 30,
     height: 'inherit',
     '&>*': {
       width: 'inherit',
       height: 'inherit',
-    }
+    },
   },
   tableRow: {
     '&>*': {
       padding: 8,
-      fontSize: 14
-    }
-  }
+      fontSize: 14,
+    },
+  },
 });
 
 function createData(key, name, type, weight, height, positionX, positionY, icon) {
@@ -50,10 +49,8 @@ function createData(key, name, type, weight, height, positionX, positionY, icon)
 }
 
 const EditEntityTool = ({ rows, classes }) => {
-
-
   return (
-    <TableContainer component={Paper} elevation={0} >
+    <TableContainer component={Paper} elevation={0}>
       <Table className={classes.table} aria-label="edit entity table">
         <TableHead>
           <TableRow className={classes.tableRow}>
@@ -86,27 +83,36 @@ const EditEntityTool = ({ rows, classes }) => {
       </Table>
     </TableContainer>
   );
-}
+};
 
 function EditEntity({ TBPEntities, removeEntityFromTBPTable }) {
-
   const classes = useStyles();
-  let rows = []
+  let rows = [];
   for (const entityType of TBPEntities) {
-    entityType.items.map(
-      entity => {
-        const lastIndex = entity.properties.length - 1;
-        const locations = entity.properties[lastIndex].val;
-        let locationX = null;
-        let locationY = null;
-        if (isObject(locations) && isArray(locations.coordinates)) {
-          locationX = locations.coordinates[0];
-          locationY = locations.coordinates[1];
-        }
-        rows.push(createData(
+    entityType.items.map((entity) => {
+      const lastIndex = entity.properties.length - 1;
+      const locations = entity.properties[lastIndex].val;
+      let locationX = null;
+      let locationY = null;
+      if (isObject(locations) && isArray(locations.coordinates)) {
+        locationX = locations.coordinates[0];
+        locationY = locations.coordinates[1];
+      }
+      rows.push(
+        createData(
           `${entity.key}`,
-          <TextField disabled className={classes.inputField} defaultValue={entity.name} variant="outlined" />,
-          <TextField disabled className={classes.inputField} defaultValue={entityType.name} variant="outlined" />,
+          <TextField
+            disabled
+            className={classes.inputField}
+            defaultValue={entity.name}
+            variant="outlined"
+          />,
+          <TextField
+            disabled
+            className={classes.inputField}
+            defaultValue={entityType.name}
+            variant="outlined"
+          />,
           <TextField className={classes.inputField} defaultValue="20kg" variant="outlined" />,
           <TextField className={classes.inputField} defaultValue="50cm" variant="outlined" />,
           <TextField
@@ -123,20 +129,21 @@ function EditEntity({ TBPEntities, removeEntityFromTBPTable }) {
             }}
             defaultValue={locationY}
           />,
-          <IconButton onClick={() => removeEntityFromTBPTable(entity)} ><DeleteIcon /></IconButton>
+          <IconButton onClick={() => removeEntityFromTBPTable(entity)}>
+            <DeleteIcon />
+          </IconButton>
         )
-        )
-      }
-    )
+      );
+    });
   }
   // ))
-  console.log(rows)
+  console.log(rows);
   return (
     <>
       <EditEntityTool rows={rows} classes={classes} />
-      <Button text='save changes' onClick={(() => { })} />
+      <Button text="save changes" onClick={() => {}} />
     </>
-  )
+  );
 }
 
-export default EditEntity
+export default EditEntity;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -9,7 +9,6 @@ import { ReactComponent as ExpandMore } from './ExpandMoreIcon.svg';
 import { Divider, IconButton } from '@material-ui/core';
 
 const EntitiesTypesListRow = ({ classes, entityType, children }) => {
-
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
@@ -19,12 +18,13 @@ const EntitiesTypesListRow = ({ classes, entityType, children }) => {
   return (
     <>
       <ListItem style={{ zIndex: 20 }} button onClick={handleClick}>
+        <IconButton disabled>{open ? <ExpandLess /> : <ExpandMore />}</IconButton>
 
-        <IconButton disabled>
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </IconButton>
-
-        <ListItemText className={classes.rowTitleText} disableTypography children={entityType.name} />
+        <ListItemText
+          className={classes.rowTitleText}
+          disableTypography
+          children={entityType.name}
+        />
 
         <ListItemText align="center" className={classes.flexItem1}>
           {/* positioned */}
@@ -46,9 +46,8 @@ const EntitiesTypesListRow = ({ classes, entityType, children }) => {
       </Collapse>
 
       {!open && <Divider light />}
-
     </>
-  )
-}
+  );
+};
 
-export default EntitiesTypesListRow
+export default EntitiesTypesListRow;

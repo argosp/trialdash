@@ -6,7 +6,7 @@ export const styles = (theme) => ({
     position: 'absolute',
     top: 0,
     left: '100%',
-    zIndex: 1000
+    zIndex: 1000,
   },
   list: {
     width: '100%',
@@ -23,17 +23,17 @@ export const styles = (theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    color: 'black'
+    color: 'black',
   },
   row: {
     display: 'flex',
-    padding: '18px 0'
+    padding: '18px 0',
   },
   flexItem1: {
-    flex: 1
+    flex: 1,
   },
   flexItemEx: {
-    flex: 1.6
+    flex: 1.6,
   },
   flexItem2: {
     flex: 2,
@@ -41,44 +41,44 @@ export const styles = (theme) => ({
   colText: {
     color: '#4F4F4F',
     fontSize: 10,
-    fontWeight: 800
+    fontWeight: 800,
   },
   colRowText: {
     color: '#828282',
     fontSize: 14,
-    fontWeight: 500
+    fontWeight: 500,
   },
   rowTitleText: {
     fontWeight: 600,
     fontSize: 14,
     color: 'black',
-    flex: 2
+    flex: 2,
   },
   iconButton: {
     textAlign: 'center',
-    padding: 4
+    padding: 4,
   },
   addIconWrapper: {
-    right: 2
+    right: 2,
   },
   tabs: {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
     paddingBottom: 0,
-    marginBottom: 8
+    marginBottom: 8,
   },
   deviceTypesList: {
     height: 350,
-    overflow: 'auto'
-  }
-  , container: {
+    overflow: 'auto',
+  },
+  container: {
     width: '100%',
     height: '100%',
     backgroundColor: 'white',
     position: 'relative',
     padding: 10,
-    "& .tbpRow": {
-      padding: "10px 0",
-      width: '100%'
+    '& .tbpRow': {
+      padding: '10px 0',
+      width: '100%',
     },
   },
   filterBox: {
@@ -89,10 +89,10 @@ export const styles = (theme) => ({
     width: 125,
     padding: '10px 20px',
     backgroundColor: theme.palette.white.main,
-    boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.04), 0px 20px 25px rgba(0, 0, 0, 0.1)'
+    boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.04), 0px 20px 25px rgba(0, 0, 0, 0.1)',
   },
   containerChild: {
-    padding: '10px 0'
+    padding: '10px 0',
   },
   tbpEntity: {
     width: '100%',
@@ -102,9 +102,8 @@ export const styles = (theme) => ({
     alignItems: 'center',
     borderBottom: '1px solid #E0E0E0',
     '& .titles': {
-      marginRight: 'auto'
+      marginRight: 'auto',
     },
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
-  
-})
+});

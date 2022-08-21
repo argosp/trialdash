@@ -11,15 +11,7 @@ class AuthPage extends React.Component {
     const { children } = this.props;
     const { isAuthorized } = this.state;
 
-    return isAuthorized ? (
-      <AppLayout>
-        {children}
-      </AppLayout>
-    ) : (
-      <Redirect
-        to="/login"
-      />
-    );
+    return isAuthorized ? <AppLayout>{children}</AppLayout> : <Redirect to="/login" />;
   }
 }
 

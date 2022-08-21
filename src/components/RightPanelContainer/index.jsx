@@ -10,18 +10,12 @@ const RightPanelContainer = ({ classes, title, children, isPanelOpen, onClose, c
       container
       justifyContent="space-between"
       alignItems="center"
-      className={classes.headerWrapper}
-    >
+      className={classes.headerWrapper}>
       {title}
-      <CloseIcon
-        fontSize="large"
-        className={classes.closeIcon}
-        onClick={onClose}
-      />
+      <CloseIcon fontSize="large" className={classes.closeIcon} onClick={onClose} />
     </Grid>
     {children}
   </div>
 );
-
 
 export default withStyles(styles)(RightPanelContainer);

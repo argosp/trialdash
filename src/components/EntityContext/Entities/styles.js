@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   checkboxWrapper: {
     height: 24,
     width: 24,

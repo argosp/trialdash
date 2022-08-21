@@ -25,7 +25,7 @@ import {
   TRIALS,
   TRIAL_SET_MUTATION,
   ENTITIES_TYPE_MUTATION,
-  LOGS_DASH
+  LOGS_DASH,
 } from '../constants/base';
 
 const AppRoutes = () => (
@@ -35,11 +35,7 @@ const AppRoutes = () => (
       <AuthPage>
         <Switch>
           <Redirect exact from="/" to="/experiments" />
-          <Redirect
-            exact
-            from="/experiments/:id"
-            to={`/experiments/:id/${TRIAL_SETS_DASH}`}
-          />
+          <Redirect exact from="/experiments/:id" to={`/experiments/:id/${TRIAL_SETS_DASH}`} />
           <Redirect
             exact
             from={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey`}
@@ -57,7 +53,7 @@ const AppRoutes = () => (
         <Route
           path="/experiments/:id/add-trial-set"
           exact
-          render={props => (
+          render={(props) => (
             <AddSetForm
               {...props}
               formType={TRIAL_SETS_DASH}
@@ -70,7 +66,7 @@ const AppRoutes = () => (
         <Route
           path="/experiments/:id/add-entities-type"
           exact
-          render={props => (
+          render={(props) => (
             <AddSetForm
               {...props}
               formType={ENTITIES_TYPES_DASH}
@@ -95,16 +91,8 @@ const AppRoutes = () => (
           exact
           component={EntityForm}
         />
-        <Route
-          path={`/experiments/:id/${TRIAL_SETS_DASH}`}
-          component={TrialSets}
-          exact
-        />
-        <Route
-          path={`/experiments/:id/${ENTITIES_TYPES_DASH}`}
-          component={EntitiesTypes}
-          exact
-        />
+        <Route path={`/experiments/:id/${TRIAL_SETS_DASH}`} component={TrialSets} exact />
+        <Route path={`/experiments/:id/${ENTITIES_TYPES_DASH}`} component={EntitiesTypes} exact />
         {/* <Route path={`/experiments/:id/${ASSETS}`} component={Assets} exact /> */}
         <Route
           path={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey/${TRIALS}`}
@@ -116,16 +104,8 @@ const AppRoutes = () => (
           component={Entities}
           exact
         />
-        <Route
-          path={`/experiments/:id/${LOGS_DASH}`}
-          component={Logs}
-          exact
-        />
-        <Route
-          path={`/experiments/:id/${LOGS_DASH}/new`}
-          exact
-          component={NewLog}
-        />
+        <Route path={`/experiments/:id/${LOGS_DASH}`} component={Logs} exact />
+        <Route path={`/experiments/:id/${LOGS_DASH}/new`} exact component={NewLog} />
         <Route
           path={`/experiments/:id/${LOGS_DASH}/:logKey([0-9a-zA-Z-]{5,})`}
           exact

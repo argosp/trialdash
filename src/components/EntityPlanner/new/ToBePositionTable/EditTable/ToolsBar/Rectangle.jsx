@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const Rectangle = () => {
-  return (
-    <div>Rectangle</div>
-  )
-}
+  return <div>Rectangle</div>;
+};
 
-export default Rectangle
+export default Rectangle;
