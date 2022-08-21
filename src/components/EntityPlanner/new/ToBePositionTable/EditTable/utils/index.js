@@ -13,7 +13,7 @@ import {
   CURVE_TITLE,
   DISTRUBTE_ALONG_LINE_TITLE,
   RECTANGLE_TITLE,
-  MATRIX_TITLE,
+  SQUARE_TITLE,
   CLONE_TRIALS_TITLE,
   EDIT_ENTITY_TITLE,
 } from '../../utils/constants';
@@ -24,7 +24,7 @@ import {
   CURVE_SHAPE,
   DISTRUBTE_ALONG_LINE_SHAPE,
   RECTANGLE_SHAPE,
-  MATRIX_SHAPE,
+  SQUARE_SHAPE,
   CLONE_TRIALS_SHAPE,
   EDIT_ENTITY_SHAPE,
 } from '../../utils/constants';
@@ -35,7 +35,7 @@ import {
   Curve,
   DistrubteAlongLine,
   Rectangle,
-  Matrix,
+  Square,
   CloneTrials,
   EditEntity,
 } from '../ToolsBar';
@@ -73,9 +73,9 @@ export const icons = [
   },
   {
     icon: <MatrixIcon />,
-    value: MATRIX_SHAPE,
-    component: <Matrix />,
-    title: MATRIX_TITLE,
+    value: SQUARE_SHAPE,
+    component: <Square />,
+    title: SQUARE_TITLE,
   },
   {
     icon: <CloneTrialsIcon htmlColor="black" />,

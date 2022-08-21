@@ -82,7 +82,7 @@ function EditTable({
                 })}
               />
             )}
-            {value === 'matrix' && <Divider variant="middle" light />}
+            {value === 'square' && <Divider variant="middle" light />}
           </div>
         );
       })}
