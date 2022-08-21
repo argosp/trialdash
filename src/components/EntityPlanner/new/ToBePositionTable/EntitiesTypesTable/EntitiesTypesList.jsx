@@ -82,10 +82,19 @@ function EntitiesTypesList({
                                     <ListItemText secondary="20kg" />
                                     {entityLocation && (
                                       <IconButton
+                                        style={{
+                                          width: '30px',
+                                        }}
                                         className={classes.iconButton}
                                         onClick={() => handleRemoveEntityLocation(entity)}>
                                         <LocationOnOutlinedIcon />
                                       </IconButton>
+                                    )}
+                                    {!entityLocation && (
+                                      <div
+                                        style={{
+                                          width: '30px',
+                                        }}></div>
                                     )}
 
                                     <ListItemSecondaryAction className={classes.addIconWrapper}>
