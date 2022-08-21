@@ -4,8 +4,10 @@ module.exports = {
     es6: true,
   },
   extends: [
-    'react-app',
-    'airbnb',
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
   ],
   globals: {
     Atomics: 'readonly',
@@ -18,14 +20,5 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: [
-    'react',
-  ],
-  rules: {
-    'import/prefer-default-export': 0,
-    'react/prop-types': 0,
-    'react/destructuring-assignment': 0,
-    'object-curly-newline': 0,
-    'react/jsx-one-expression-per-line': 0,
-  },
+  plugins: ['react'],
 };
