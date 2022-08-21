@@ -75,6 +75,8 @@ class TrialEntities extends React.Component {
     const { trial } = this.props;
     const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
     if (
+      prevProps.triggerUpdate !== this.props.triggerUpdate ||
+      prevProps.trial[entitiesField].length !== this.props.trial[entitiesField].length ||
       prevProps.trial[entitiesField].length !== this.state.length ||
       prevProps.trial.status !== trial.status ||
       this.state.entitiesField !== entitiesField
@@ -130,12 +132,12 @@ class TrialEntities extends React.Component {
     } = this.props;
     const {
       selectedViewIndex,
-      trialEntities,
       entities,
       entitiesTypes,
       update,
       isLoading,
       parentEntity,
+      trialEntities,
       CloneEntitiesDialogOpen,
     } = this.state;
     const experiments = !isLoading

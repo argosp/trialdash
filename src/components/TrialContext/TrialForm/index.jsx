@@ -61,7 +61,16 @@ const TabPanel = ({ children, value, index, ...other }) => (
 
 class TrialForm extends React.Component {
   state = {
-    trial: {
+    trial: this.initTrial(),
+    trialSet: {},
+    tabValue: this.props.tabValue || 0,
+    showFooter: true,
+    changedEntities: [],
+    triggerUpdate: 0,
+  };
+
+  initTrial() {
+    return {
       key: this.props.trial ? this.props.trial.key : uuid(),
       trialSetKey: this.props.match.params.trialSetKey,
       experimentId: this.props.match.params.id,
@@ -82,12 +91,8 @@ class TrialForm extends React.Component {
         this.props.trial && this.props.trial.deployedEntities
           ? [...this.props.trial.deployedEntities]
           : [],
-    },
-    trialSet: {},
-    tabValue: this.props.tabValue || 0,
-    showFooter: true,
-    changedEntities: [],
-  };
+    };
+  }
 
   componentDidMount() {
     const { client, match, trial } = this.props;
@@ -204,7 +209,8 @@ class TrialForm extends React.Component {
   updateAfterSubmit = (n, cache, trial) => {
     this.updateTrialSetNumberOfTrials(n, cache);
     trial.experimentId = this.props.match.params.id;
-    this.setState({ trial });
+    //this.setState({ trial });
+    this.props.updateTrial(trial);
   };
 
   updateTrialSetNumberOfTrials = (n, cache) => {
@@ -423,6 +429,14 @@ class TrialForm extends React.Component {
   cancelChangeStatus = () => {
     this.setState({ confirmStatusOpen: false });
   };
+  cancelHandler = () => {
+    this.setState({
+      trial: this.initTrial(),
+      changedEntities: [],
+      changed: false,
+      triggerUpdate: this.state.triggerUpdate + 1,
+    });
+  };
   render() {
     const { classes, theme } = this.props;
     const {
@@ -436,6 +450,7 @@ class TrialForm extends React.Component {
       confirmStatusOpen,
       newStatus,
     } = this.state;
+
     return (
       <>
         <div>
@@ -551,6 +566,7 @@ class TrialForm extends React.Component {
           {tabValue === 1 && (
             <TrialEntities
               trial={trial}
+              triggerUpdate={this.state.triggerUpdate}
               addEntityToTrial={this.addEntityToTrial}
               removeEntity={this.removeEntity}
               updateEntityInParent={this.updateEntityInParent}
@@ -563,10 +579,10 @@ class TrialForm extends React.Component {
         </TabPanel>
         {(tabValue === 0 || showFooter) && (
           <Footer
-            cancelButtonHandler={this.closeForm}
+            cancelButtonHandler={this.cancelHandler}
+            saveButtonDisabled={!this.state.changed}
             saveButtonHandler={() => this.submitTrial(trial)}
-            withDeleteButton={this.props.trial}
-            deleteButtonHandler={() => this.submitTrial(trial, true)}
+            cancelButtonDisabled={!this.state.changed}
           />
         )}
         <ConfirmDialog
