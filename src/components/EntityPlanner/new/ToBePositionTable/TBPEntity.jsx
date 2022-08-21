@@ -5,12 +5,15 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 import { makeStyles } from '@material-ui/core';
 import { styles } from './styles';
+import { getEntityLocationProp } from '../../EntityUtils';
 
 const useStyles = makeStyles(styles);
 
 const StyledIcon = ({ icon }) => <IconButton disabled color="#BDBDBD" children={icon} />;
 
 const TBPEntity = ({ entity, entityType, isSelected, onClick }) => {
+  const prop = getEntityLocationProp(entity, entityType);
+  const entityLocation = prop && prop.val ? prop.val.coordinates : undefined;
   const classes = useStyles();
   return (
     <div
@@ -35,7 +38,22 @@ const TBPEntity = ({ entity, entityType, isSelected, onClick }) => {
           children={entityType.name}
         />
       </div>
-      <StyledIcon icon={<LocationOnIcon />} />
+      {entityLocation && (
+        <IconButton
+          style={{
+            width: '30px',
+          }}
+          className={classes.iconButton}>
+          <LocationOnIcon />
+        </IconButton>
+      )}
+      {!entityLocation && (
+        <div
+          style={{
+            width: '30px',
+          }}></div>
+      )}
+      {/* <StyledIcon icon={<LocationOnIcon />} /> */}
     </div>
   );
 };
