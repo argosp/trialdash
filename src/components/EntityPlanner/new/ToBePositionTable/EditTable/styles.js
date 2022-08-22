@@ -25,8 +25,13 @@ export const styles = (theme) => ({
     '& .toolItem': {
       display: 'flex',
       justifyContent: 'space-around',
+      gap: 5,
       '& > *': {
         width: '40%',
+        alignSelf: 'center',
+        '& > span': {
+          fontSize: 12,
+        },
       },
     },
   },
