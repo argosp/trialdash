@@ -16,8 +16,12 @@ const PopperBox = ({ title, value, handleClick, classes, children }) => {
     <Box sx={{ position: 'absolute', top: 0, left: '100%' }}>
       <Grid container className={classes.toolBoxContainer}>
         <Grid item className={classes.toolBoxItem}>
-          <IconButton onClick={() => handleClick(value)} children={<ChevronLeftIcon />} />
-          <Typography component="span" children={<Box sx={{ fontWeight: '700' }}>{title}</Box>} />
+          <IconButton onClick={() => handleClick(value)}>
+            <ChevronLeftIcon />
+          </IconButton>
+          <Typography component="span">
+            <Box sx={{ fontWeight: '700' }}>{title}</Box>
+          </Typography>
         </Grid>
         <Grid item>{children}</Grid>
       </Grid>
@@ -31,6 +35,7 @@ function EditTable({
   onShapeChange,
   onSingleShapeSubmit,
   handlePutEntitiesOnPrev,
+  markedPoints,
 }) {
   const [editTableMode, setEditTableMode] = useState('point');
   const classes = useStyles();
@@ -59,28 +64,28 @@ function EditTable({
         tools
       </Typography>
 
-      {icons.map(({ icon, value, component, title }) => {
+      {icons.map(({ icon, value, component, title }, index) => {
         const iconStyle = editTableMode === value ? classes.activeButton : null;
         const iconButtonStyle =
           editTableMode !== '' && editTableMode !== value ? classes.notActiveButton : null;
         return (
-          <div style={{ position: 'relative', textAlign: 'center' }} className={iconStyle}>
+          <div
+            style={{ position: 'relative', textAlign: 'center' }}
+            key={index}
+            className={iconStyle}>
             <IconButton key={value} onClick={() => handleClick(value)} className={iconButtonStyle}>
               {icon}
             </IconButton>
             {editTableMode === value && value !== 'point' && (
-              <PopperBox
-                title={title}
-                value={value}
-                handleClick={handleClick}
-                classes={classes}
-                children={React.cloneElement(component, {
+              <PopperBox title={title} value={value} handleClick={handleClick} classes={classes}>
+                {React.cloneElement(component, {
                   classes,
                   onSubmit,
                   TBPEntities,
                   removeEntityFromTBPTable,
+                  markedPoints,
                 })}
-              />
+              </PopperBox>
             )}
             {value === 'square' && <Divider variant="middle" light />}
           </div>
