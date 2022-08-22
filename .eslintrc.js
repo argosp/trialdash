@@ -1,5 +1,3 @@
-const { NoEncryption } = require('@material-ui/icons');
-
 module.exports = {
   env: {
     browser: true,
@@ -16,6 +14,7 @@ module.exports = {
     SharedArrayBuffer: 'readonly',
     process: true,
     it: true,
+    module: true,
   },
   parserOptions: {
     ecmaVersion: 2022,
