@@ -1,41 +1,24 @@
-import { Button, InputLabel, Switch, Grid, Box, Container, Divider } from '@material-ui/core';
+import { Box, Container, Divider, Grid, InputLabel, Switch } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { isArray, isEmpty, isObject } from 'lodash';
 import React, { useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import EntitiesTypesTable from './new/ToBePositionTable/EntitiesTypesTable';
-import EditTable from './new/ToBePositionTable/EditTable';
-import MapTypesList from './new/ToBePositionTable/MapTypesList';
-import EntityTypeFilter from './new/ToBePositionTable/EntityTypeFilter';
-import SearchInput from './new/ToBePositionTable/SearchInput';
-import DeviceRow from './new/ToBePositionTable/EntityTypeRow';
-import TBPButtons from './new/ToBePositionTable/TBPButtons';
-import DnDEntityZone from './new/ToBePositionTable/DnDEntityZone';
-import { isEmpty, isArray, isObject, fromPairs } from 'lodash';
-import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
-import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { changeEntityLocation, getEntityLocation } from './EntityUtils';
-import {
-  arcCurveFromPoints,
-  lerpPoint,
-  rectByAngle,
-  resamplePolyline,
-  splineCurve,
-} from './GeometryUtils';
-import { InputSlider } from './InputSlider';
-import { MarkedShape } from './MarkedShape';
-import ToBePositionTable from './new';
-import { ShapeChooser } from './ShapeChooser';
-import { TypeChooser } from './TypeChooser';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles } from './new/ToBePositionTable/styles';
-import {
-  INIT_MODE,
-  SELECT_MODE,
-  EDIT_MODE,
-  LOCATIONS_MODE,
-} from './new/ToBePositionTable/utils/constants';
+import { lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 import { MarkContextmenu } from './MarkContextmenu';
+import { MarkedShape } from './MarkedShape';
+import DnDEntityZone from './new/ToBePositionTable/DnDEntityZone';
+import EditTable from './new/ToBePositionTable/EditTable';
+import EntitiesTypesTable from './new/ToBePositionTable/EntitiesTypesTable';
+import EntityTypeFilter from './new/ToBePositionTable/EntityTypeFilter';
+import DeviceRow from './new/ToBePositionTable/EntityTypeRow';
+import MapTypesList from './new/ToBePositionTable/MapTypesList';
+import SearchInput from './new/ToBePositionTable/SearchInput';
+import { styles } from './new/ToBePositionTable/styles';
+import TBPButtons from './new/ToBePositionTable/TBPButtons';
+import { EDIT_MODE, INIT_MODE, SELECT_MODE } from './new/ToBePositionTable/utils/constants';
 
 const SimplifiedSwitch = ({ label, value, setValue }) => (
   <div style={{ display: 'inline-block', margin: 5 }}>
@@ -68,7 +51,6 @@ export const EntityEditor = ({
   const [selectedType, setSelectedType] = React.useState({});
   // selection is array of indexes sorted, those indexes points to selected entities in specific entity type
   const [selection, setSelection] = React.useState([]);
-  const [showAll, setShowAll] = React.useState(true);
   const [addEntityMode, setAddEntityMode] = React.useState(INIT_MODE);
   const [shape, setShape] = React.useState('Point');
   const [markedPoints, setMarkedPoints] = React.useState([]);
@@ -116,7 +98,7 @@ export const EntityEditor = ({
     setFilteredEntities(filtered);
   };
 
-  const handleMapTypeChange = (value) => {
+  const handleMapTypeChange = () => {
     // setLayerChosen(value)
   };
 
@@ -279,7 +261,6 @@ export const EntityEditor = ({
   const handleMapClick = (e) => {
     setToggleMenu(false);
     if ((shape === 'Point' || shape === 'Free') && TPEntities.length < 1) return;
-    console.log(TPEntities);
 
     const currPoint = [e.latlng.lat, e.latlng.lng];
     if (shape === 'Point' || shape === 'Free') {
@@ -292,7 +273,6 @@ export const EntityEditor = ({
         console.log(entityType);
       }
       setEntitiesTypes(changeLocations(entityType.name, _selection.sort(), [currPoint]));
-      // setEntities(changeLocations(entityType.name, _selection.sort(), [currPoint]));
       setTPEntities([]);
       setMarkedPoints([]);
       setSelection([]);
@@ -304,12 +284,12 @@ export const EntityEditor = ({
   const shapeOptions = [
     {
       name: 'Free',
-      toLine: (points) => [],
+      toLine: () => [],
       toPositions: (points, amount) => (amount && points.length ? [points[0]] : []),
     },
     {
       name: 'Point',
-      toLine: (points) => [],
+      toLine: () => [],
       toPositions: (points, amount) => (amount && points.length ? [points[0]] : []),
     },
     {
@@ -321,15 +301,6 @@ export const EntityEditor = ({
       name: 'Curve',
       toLine: (points) => [splineCurve(points, 100)],
       toPositions: (points, amount) => resamplePolyline(splineCurve(points, 100), amount),
-    },
-    {
-      name: 'Arc',
-      toLine: (points) => {
-        if (points.length <= 2) return [points];
-        const arc = arcCurveFromPoints(points, 400);
-        return [[points[0], arc[0]], arc];
-      },
-      toPositions: (points, amount) => resamplePolyline(arcCurveFromPoints(points, 400), amount),
     },
     {
       name: 'Rect',
@@ -357,12 +328,6 @@ export const EntityEditor = ({
   ];
 
   const shapeData = shapeOptions.find((s) => s.name === shape);
-  // const handlePutEntities = () => {
-  //     const positions = shapeData.toPositions(markedPoints, selection.length);
-  //     setEntities(changeLocations(selectedType, selection, positions));
-  //     setMarkedPoints([]);
-  //     setSelection([]);
-  // };
 
   const applyMenuRows = (dev) => [
     {
@@ -389,28 +354,16 @@ export const EntityEditor = ({
   ];
 
   const handlePutEntitiesOnPrev = () => {
-    //        const positions = shapeData.toPositions(markedPoints, selection.length);
-    // to ->
-    //        const positions = shapeData.toPositions(markedPoints, TPEntities.length);
-
-    const positions = shapeData.toPositions(markedPoints, TPEntities.length);
-    let _selection = [];
-    const parentEntity = findEntityTypeName(TPEntities[0].entitiesTypeKey);
-    let entityType = null;
-    for (let i = 0; i < TPEntities.length; i++) {
-      const { key } = TPEntities[i];
-      _selection.push(entityType.items.findIndex((e) => e.key === key));
+    if (TPEntities.length > 0) {
+      const positions = shapeData.toPositions(markedPoints, TPEntities.length);
+      let _selection = [];
+      const parentEntity = findEntityTypeName(TPEntities[0].entitiesTypeKey);
+      for (let i = 0; i < TPEntities.length; i++) {
+        const { key } = TPEntities[i];
+        _selection.push(parentEntity.items.findIndex((e) => e.key === key));
+      }
+      setEntitiesTypes(changeLocations(parentEntity.name, _selection.sort(), positions));
     }
-    // const _positions = TPEntities.reduce((prev, curr) => {
-    //     selectionsCounter.push(parentEntity.items.findIndex(({ key }) => key === curr.key));
-    //     const locations = curr.properties[curr.properties.length - 1].val;
-    //     if (isObject(locations) && isArray(locations.coordinates)) {
-    //         return [...prev, locations.coordinates]
-    //     }
-    //     return [...prev, [34, 32]]
-    // }, [])
-    // const positions = shapeData.toPositions(_positions, selectionsCounter.length);
-    setEntitiesTypes(changeLocations(parentEntity.name, _selection.sort(), positions));
     setMarkedPoints([]);
     setSelection([]);
   };
@@ -560,78 +513,12 @@ export const EntityEditor = ({
                 onShapeChange={(v) => setShape(v)}
                 onSingleShapeSubmit={handleMapClick}
                 handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
+                markedPoints={markedPoints}
               />
             )}
           </DragDropContext>
         </Container>
       </Grid>
-
-      {/* <Grid item xs={3} style={{ overflow: 'auto' }}>
-                {console.log(entities)}
-                {!entities.length ? null :
-                    <>
-                        <ShapeChooser
-                            shape={shape}
-                            onChange={(val) => {
-                                if (val === "Point") setMarkedPoints([]);
-                                setShape(val)
-                            }}
-                            shapeOptions={shapeOptions}
-                        />
-                        {shape !== 'Rect' ? null :
-                            <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
-                        }
-                        <Button variant="contained" color="primary"
-                            disabled={shape === 'Point'}
-                            style={{ margin: 5 }}
-                            onClick={handlePutEntities}
-                        >
-                            Put entities
-                        </Button>
-                        <TypeChooser
-                            selectedType={selectedType}
-                            onChange={newType => {
-                                setSelection([]);
-                                setSelectedType(newType);
-                            }}
-                            showAll={showAll}
-                            setShowAll={val => setShowAll(val)}
-                            typeOptions={entities.map(dev => { return { name: dev.name } })}
-                        />
-                        <SimplifiedSwitch
-                            label='Entities show name'
-                            value={showName}
-                            setValue={v => setShowName(v)}
-                        />
-                        <SimplifiedSwitch
-                            label='Show only assigned'
-                            value={showOnlyAssigned}
-                            setValue={v => setShowOnlyAssigned(v)}
-                        />
-                        {layerChosen === 'OSMMap' ? null :
-                            <div style={{ verticalAlign: 'baseline' }}>
-                                <SimplifiedSwitch
-                                    label='Show grid'
-                                    value={showGrid}
-                                    setValue={v => setShowGrid(v)}
-                                />
-                                <NumberTextField
-                                    label='Grid Meters'
-                                    value={showGridMeters}
-                                    onChange={v => setShowGridMeters(v)}
-                                />
-                            </div>
-                        }
-                        <EntityList
-                            selection={selection}
-                            setSelection={setSelection}
-                            entities={entities.filter(d => d.name === selectedType)}
-                            removeEntitiesLocations={(indices) => setEntities(changeLocations(selectedType, indices))}
-                            layerChosen={layerChosen}
-                        />
-                    </>
-                }
-            </Grid> */}
     </Grid>
   );
 };
