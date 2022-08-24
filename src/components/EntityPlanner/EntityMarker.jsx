@@ -3,6 +3,12 @@ import { Marker, Popup } from 'react-leaflet';
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ReactComponent as CellTowerIcon } from './CellTowerIcon.svg';
+import processingDecimalDigits from './utils/processingDecimalDigits';
+import { Grid, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { styles } from './styles';
+
+const useStyles = makeStyles(styles);
 
 export const EntityMarker = ({
   entity,
@@ -13,72 +19,51 @@ export const EntityMarker = ({
   shouldShowName,
   handleMarkerClick,
   onContextMenu,
-}) => (
-  <Marker
-    key={entity.name}
-    position={devLocation}
-    // onclick={() => handleMarkerClick(entity)}
-    oncontextmenu={onContextMenu}
-    title={entity.name}
-    icon={divIcon({
-      iconSize: [20, 20],
-      iconAnchor: [10, 22],
-      html: renderToStaticMarkup(
-        <div>
-          <i
-            className="fas fa-circle fa-lg"
-            style={{ color: isOnEdit ? '#2D9CDB' : '#27AE60' }}
-            // save this comment to future develop with groups
-            // style={{ color: (isTypeSelected ? (isSelected ? '#9B51E0' : '#2D9CDB') : '#27AE60') }}
-          />
-          {!shouldShowName ? null : (
-            <span style={{ backgroundColor: 'yellow', padding: 3, borderColor: 'black' }}>
-              {entity.name.replace(/ /g, '\u00a0')}
-            </span>
-          )}
-        </div>
-      ),
-    })}>
-    <Popup position={[devLocation[0] + 0.0008, devLocation[1]]}>
-      <div style={{ display: 'flex', height: '4vh' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            height: '100%',
-            width: '10%',
-            alignItems: 'center',
-            marginRight: '15px',
-          }}>
-          <CellTowerIcon />
-        </div>
-        <div style={{}}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              height: '50%',
-              fontFamily: 'Inter',
-              fontStyle: 'normal',
-              fontWeight: 600,
-              fontSize: '13px',
-              lineHeight: '16px',
-            }}>
-            {entity.name}
-          </div>
-          <div
-            style={{
-              height: '50%',
-              fontFamily: 'Inter',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              fontSize: '12px',
-              lineHeight: '15px',
-            }}>{`${Math.round(devLocation[0] * 10000000) / 10000000} X ${
-            Math.round(devLocation[1] * 10000000) / 10000000
-          } `}</div>
-        </div>
-      </div>
-    </Popup>
-  </Marker>
-);
+}) => {
+  const classes = useStyles();
+
+  return (
+    <Marker
+      key={entity.name}
+      position={devLocation}
+      // onclick={() => handleMarkerClick(entity)}
+      oncontextmenu={onContextMenu}
+      title={entity.name}
+      icon={divIcon({
+        iconSize: [20, 20],
+        iconAnchor: [10, 22],
+        html: renderToStaticMarkup(
+          <Typography component={'div'}>
+            <i
+              className="fas fa-circle fa-lg"
+              style={{ color: isOnEdit ? '#2D9CDB' : '#27AE60' }}
+              // save this comment to future develop with groups
+              // style={{ color: (isTypeSelected ? (isSelected ? '#9B51E0' : '#2D9CDB') : '#27AE60') }}
+            />
+            {!shouldShowName ? null : (
+              <Typography component={'span'} className={classes.entityName}>
+                {entity.name.replace(/ /g, '\u00a0')}
+              </Typography>
+            )}
+          </Typography>
+        ),
+      })}>
+      <Popup position={[devLocation[0] + 0.0008, devLocation[1]]}>
+        <Grid container className={classes.popup}>
+          <Grid item className={classes.towerIcon}>
+            <CellTowerIcon />
+          </Grid>
+          <Grid item>
+            <Grid className={classes.entityNamePopup}>{entity.name}</Grid>
+            <Grid item className={classes.entityLocation}>
+              {`${processingDecimalDigits(devLocation[0])}
+             X
+              ${processingDecimalDigits(devLocation[1])}
+           `}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Popup>
+    </Marker>
+  );
+};
