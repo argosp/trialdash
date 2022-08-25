@@ -74,19 +74,20 @@ export const EntityEditor = ({
   const [entitiesTypes, setEntitiesTypes] = React.useState([]);
   const [toggleMenu, setToggleMenu] = React.useState(false);
   const [anchorPoint, setAnchorPoint] = React.useState({});
+
   useEffect(() => {
     setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
     setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []));
     setSelectedType(
       entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {})
     );
-    console.log('entities changed', entities);
   }, [entities]);
-  useEffect(() => console.log(entitiesTypes), [entitiesTypes]);
+
   const handleFilterDevices = (filter) => {
     const filtered = entitiesTypes.filter((e) => !!filter[e.name]);
     setFilteredEntities(filtered);
   };
+
   const handleSearchEntities = (input) => {
     const filtered = entitiesTypes.reduce(
       (prev, entityType) =>
@@ -139,7 +140,6 @@ export const EntityEditor = ({
       addEntityToTBPTableFromDnD(entitiesTypesInstances[source.index]);
     }
   };
-  console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid);
 
   if (selectedType === '' && entitiesTypes.length > 0) {
     setSelectedType(entities[0].name);
@@ -243,16 +243,19 @@ export const EntityEditor = ({
    * @param {number[][]} newLocations - array of arrays, each array holds 2 values as with type number. Points on new location of selected entities
    * @returns
    */
-  const changeLocations = (type, indices, newLocations = [undefined]) => {
+
+  const changeLocations = (
+    type,
+    indices,
+    newLocations = [undefined],
+    _entitiesTypes = entitiesTypes
+  ) => {
     // deep copy of entities
-    let tempEntities = JSON.parse(JSON.stringify(entitiesTypes));
-    console.log(type, indices);
+    let tempEntities = JSON.parse(JSON.stringify(_entitiesTypes));
     // shallow copy of object in tempEntities (the d copy of entities)
     let typeEntities = tempEntities.find((d) => d.name === type);
-    console.log(typeEntities);
     for (let i = 0; i < indices.length; ++i) {
       const loc = newLocations[Math.min(i, newLocations.length - 1)];
-      console.log(typeEntities.items[indices[i]], indices[i], indices, typeEntities);
       changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
     }
     return tempEntities;
@@ -270,7 +273,6 @@ export const EntityEditor = ({
         const entity = TPEntities[i];
         entityType = findEntityTypeName(entity.entitiesTypeKey);
         _selection.push(entityType.items.findIndex((e) => e.key === entity.key));
-        console.log(entityType);
       }
       setEntitiesTypes(changeLocations(entityType.name, _selection.sort(), [currPoint]));
       setTPEntities([]);
@@ -353,16 +355,42 @@ export const EntityEditor = ({
     },
   ];
 
+  function findIndexOfEntity(entity, parentEntity) {
+    return parentEntity.items.findIndex((e) => e.key === entity.key);
+  }
+
   const handlePutEntitiesOnPrev = () => {
     if (TPEntities.length > 0) {
       const positions = shapeData.toPositions(markedPoints, TPEntities.length);
-      let _selection = [];
-      const parentEntity = findEntityTypeName(TPEntities[0].entitiesTypeKey);
-      for (let i = 0; i < TPEntities.length; i++) {
-        const { key } = TPEntities[i];
-        _selection.push(parentEntity.items.findIndex((e) => e.key === key));
+      const entities = [];
+      for (let e of TPEntities) {
+        const parentEntity = findEntityTypeName(e.entitiesTypeKey);
+        const parentEntityIndex = entities.findIndex(
+          (entity) => entity.parentEntity.name === parentEntity.name
+        );
+        if (parentEntityIndex > -1) {
+          entities[parentEntityIndex].indices.push(findIndexOfEntity(e, parentEntity));
+        } else {
+          const entity = { parentEntity, indices: [], positions: [] };
+          entity.indices.push(findIndexOfEntity(e, parentEntity));
+          entities.push(entity);
+        }
       }
-      setEntitiesTypes(changeLocations(parentEntity.name, _selection.sort(), positions));
+      for (let entity of entities) {
+        const num = entity.indices.length;
+        entity.positions = positions.slice(0, num);
+        positions.splice(0, num);
+      }
+      let newEntitiesTypes = entitiesTypes;
+      for (let entity of entities) {
+        newEntitiesTypes = changeLocations(
+          entity.parentEntity.name,
+          entity.indices.sort(),
+          entity.positions,
+          newEntitiesTypes
+        );
+      }
+      setEntitiesTypes(newEntitiesTypes);
     }
     setMarkedPoints([]);
     setSelection([]);

@@ -30,14 +30,16 @@ export const changeEntityLocationWithProp = (
   newLocation,
   locationKind
 ) => {
-  const pos = entity.properties.findIndex((pr) => pr.key === locationPropKey);
-  if (pos !== -1) {
-    entity.properties.splice(pos, 1);
+  if (entity && entity.properties) {
+    const pos = entity.properties.findIndex((pr) => pr.key === locationPropKey);
+    if (pos !== -1) {
+      entity.properties.splice(pos, 1);
+    }
+    entity.properties.push({
+      key: locationPropKey,
+      val: { name: locationKind, coordinates: newLocation },
+    });
   }
-  entity.properties.push({
-    key: locationPropKey,
-    val: { name: locationKind, coordinates: newLocation },
-  });
 };
 
 export const sortEntities = (entitiesTypes) => {
