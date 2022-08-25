@@ -64,6 +64,7 @@ export const EntityEditor = ({
   const [isDragging, setIsDragging] = React.useState(false);
   const [filteredEntities, setFilteredEntities] = React.useState([]);
   const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([]);
+  const [isFiltered, setIsFiltered] = React.useState(false);
   /**
    * @const {array} TPEntities - contains the selected entities
    */
@@ -85,6 +86,11 @@ export const EntityEditor = ({
 
   const handleFilterDevices = (filter) => {
     const filtered = entitiesTypes.filter((e) => !!filter[e.name]);
+    if (filtered.length) {
+      setIsFiltered(true);
+    } else {
+      setIsFiltered(false);
+    }
     setFilteredEntities(filtered);
   };
 
@@ -483,6 +489,8 @@ export const EntityEditor = ({
             classes={classes}
             handleFilterDevices={handleFilterDevices}
             entitiesNames={entitiesTypes.map((device) => device.name)}
+            filteredEntities={filteredEntities}
+            isFiltered={isFiltered}
           />
 
           <WidthDivider />
