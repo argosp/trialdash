@@ -21,7 +21,7 @@ import StyledTabs from '../StyledTabs';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
-import { defaultProfile } from '../../assets/images/defaultProfile.png';
+import defaultProfile from '../../assets/images/defaultProfile.png';
 
 const UserData = ({ classes, handleProfileMenuClick }) => (
   <Query

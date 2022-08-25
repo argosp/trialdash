@@ -11,18 +11,6 @@ export const MarkedShape = ({
   deviceNum,
   distanceInMeters,
 }) => {
-  console.log(
-    'markedPoints',
-    markedPoints,
-    'shape',
-    shape,
-    'shapeCreator',
-    shapeCreator,
-    'deviceNum',
-    deviceNum,
-    'distanceInMeters',
-    distanceInMeters
-  );
   const currPolyline = React.useRef(null);
   const auxPolyline = React.useRef(null);
 
