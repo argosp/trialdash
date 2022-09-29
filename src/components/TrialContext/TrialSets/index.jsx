@@ -156,6 +156,9 @@ class TrialSets extends React.Component {
         update: deleted,
       });
     }
+    updateTrialset = (trialSet) => {
+      this.setState({trialSet})
+    }
 
     render() {
       const tableHeadColumns = [
@@ -182,6 +185,7 @@ class TrialSets extends React.Component {
               {...this.props}
               trialSet={this.state.trialSet}
               formType={TRIAL_SETS_DASH}
+              updateTrialset={this.updateTrialset}
               cacheQuery={trialSetsQuery}
               itemsName={TRIAL_SETS}
               mutationName={TRIAL_SET_MUTATION}

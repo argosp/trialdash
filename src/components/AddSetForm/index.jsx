@@ -34,35 +34,39 @@ import { updateCache } from '../../apolloGraphql';
 import ConfirmDialog from '../ConfirmDialog';
 
 class AddSetForm extends React.Component {
+
+  initFormObject = () => {
+    return ENTITIES_TYPES_DASH === this.props.formType ? {
+      key: this.props.entitiesType ? this.props.entitiesType.key : uuid(),
+      name: this.props.entitiesType ? this.props.entitiesType.name : '',
+      experimentId: this.props.match.params.id,
+      numberOfEntities: this.props.entitiesType ? this.props.entitiesType.numberOfEntities : 0,
+      properties: this.props.entitiesType ? this.props.entitiesType.properties : [{
+        description: 'a short description of the field',
+        prefix: '',
+        suffix: '',
+        template: '',
+        trialField: true,
+        key: uuid(),
+        label: 'Location',
+        name: 'Location',
+        type: 'location',
+        defaultProperty: true,
+      }], // this field correspond to the <Droppable droppableId="droppable">
+    }
+      : {
+        key: this.props.trialSet ? this.props.trialSet.key : uuid(),
+        name: this.props.trialSet ? this.props.trialSet.name : '',
+        description: this.props.trialSet ? this.props.trialSet.description : '',
+        experimentId: this.props.match.params.id,
+        numberOfTrials: this.props.trialSet ? this.props.trialSet.numberOfTrials : 0,
+        properties: this.props.trialSet ? this.props.trialSet.properties : [], // this field correspond to the <Droppable droppableId="droppable">
+      }
+
+  }
   state = {
-    formObject:
-      ENTITIES_TYPES_DASH === this.props.formType
-        ? {
-          key: this.props.entitiesType ? this.props.entitiesType.key : uuid(),
-          name: this.props.entitiesType ? this.props.entitiesType.name : '',
-          experimentId: this.props.match.params.id,
-          numberOfEntities: this.props.entitiesType ? this.props.entitiesType.numberOfEntities : 0,
-          properties: this.props.entitiesType ? this.props.entitiesType.properties : [{
-            description: 'a short description of the field',
-            prefix: '',
-            suffix: '',
-            template: '',
-            trialField: true,
-            key: uuid(),
-            label: 'Location',
-            name: 'Location',
-            type: 'location',
-            defaultProperty: true,
-          }], // this field correspond to the <Droppable droppableId="droppable">
-        }
-        : {
-          key: this.props.trialSet ? this.props.trialSet.key : uuid(),
-          name: this.props.trialSet ? this.props.trialSet.name : '',
-          description: this.props.trialSet ? this.props.trialSet.description : '',
-          experimentId: this.props.match.params.id,
-          numberOfTrials: this.props.trialSet ? this.props.trialSet.numberOfTrials : 0,
-          properties: this.props.trialSet ? this.props.trialSet.properties : [], // this field correspond to the <Droppable droppableId="droppable">
-        },
+    formObject: this.initFormObject(),
+
 
     // this field correspond to the <Droppable droppableId="droppable2">
     fieldTypes: FIELD_TYPES_ARRAY,
@@ -73,6 +77,11 @@ class AddSetForm extends React.Component {
     isFieldTypesPanelOpen: true,
     isEditFieldTypePanelOpen: false,
   };
+
+  closeForm = () => {
+    if (this.props.returnFunc) this.props.returnFunc(true);
+    else this.props.history.push(`/experiments/${this.props.match.params.id}/${this.props.formType}`);
+  }
 
   openFieldTypesPanel = () => {
     this.setState({ isFieldTypesPanelOpen: true });
@@ -132,8 +141,12 @@ class AddSetForm extends React.Component {
           ? { ...fieldType, [property]: value }
           : fieldType)),
       },
+      changed: true
     }));
   };
+  updateAfterSubmit = (n, cache, trialset) => {
+    this.props.updateTrialset(trialset)
+  }
 
   submitEntity = async (entity, deleted) => {
     const newEntity = entity;
@@ -168,12 +181,16 @@ class AddSetForm extends React.Component {
             itemsName,
             mutationName,
             returnFunc,
+            'trialsetKey',
+            this.updateAfterSubmit
           );
         },
       });
 
-    if (returnFunc) returnFunc(true);
-    else history.push(`/experiments/${match.params.id}/${formType}`);
+    this.setState({ changed: false })
+
+    // if (returnFunc) returnFunc(true);
+    // else history.push(`/experiments/${match.params.id}/${formType}`);
   };
 
   reorderDraggedFieldTypes = (list, startIndex, endIndex) => {
@@ -225,6 +242,7 @@ class AddSetForm extends React.Component {
             destination.index,
           ),
         },
+        changed: true
       }));
     } else {
       this.setState(state => ({
@@ -237,6 +255,7 @@ class AddSetForm extends React.Component {
             destination,
           ),
         },
+        changed: true
       }));
     }
   };
@@ -246,6 +265,7 @@ class AddSetForm extends React.Component {
 
     this.setState(state => ({
       formObject: { ...state.formObject, [type]: value },
+      changed: true
     }));
   };
 
@@ -258,8 +278,15 @@ class AddSetForm extends React.Component {
         ...state.formObject,
         properties: [...state.formObject.properties, clonedFieldType],
       },
+      changed: true
     }));
   };
+  cancelHandler = () => {
+    this.setState({
+      formObject: this.initFormObject(),
+      changed: false
+    })
+  }
 
   deleteDraggedFieldType = (fieldType) => {
     this.setState(state => ({
@@ -315,6 +342,8 @@ class AddSetForm extends React.Component {
               : this.props.trialSet ? 'Edit trial set' : 'Add trial set'
           }
           bottomDescription="a short description of what it means to add an item here"
+          backButtonHandler={this.closeForm}
+          withBackButton
         />
         {isEditModeEnabled ? (
           <EditFieldTypePanel
@@ -431,25 +460,23 @@ class AddSetForm extends React.Component {
         </form>
         {!isEditModeEnabled ? (
           <Footer
-            cancelButtonHandler={() => {
-              if (returnFunc) returnFunc();
-              else history.push(`/experiments/${match.params.id}/${formType}`);
-            }}
             saveButtonHandler={() => this.submitEntity(this.state.formObject)}
-            withDeleteButton={this.props.entitiesType || this.props.trialSet}
-            // deleteButtonHandler={() => this.setConfirmOpen(true)}
+            withDeleteButton={this.props.entitiesType || false}
             deleteButtonHandler={() => this.submitEntity(this.state.formObject, true)}
+            cancelButtonHandler={this.cancelHandler}
+            saveButtonDisabled={!this.state.changed}
+            cancelButtonDisabled={!this.state.changed}
           />
         ) : null}
-          <ConfirmDialog
-            title={`Delete ${ENTITIES_TYPES_DASH === formType ? 'Entities Type' : 'Trial Set'}`}
-            open={confirmOpen}
-            setOpen={this.setConfirmOpen}
-            onConfirm={() => this.submitEntity(this.state.formObject, true)}
-            inputValidation
-          >
-            Are you sure you want to delete this {ENTITIES_TYPES_DASH === formType ? 'entities type' : 'trial set'}?
-          </ConfirmDialog>
+        <ConfirmDialog
+          title={`Delete ${ENTITIES_TYPES_DASH === formType ? 'Entities Type' : 'Trial Set'}`}
+          open={confirmOpen}
+          setOpen={this.setConfirmOpen}
+          onConfirm={() => this.submitEntity(this.state.formObject, true)}
+          inputValidation
+        >
+          Are you sure you want to delete this {ENTITIES_TYPES_DASH === formType ? 'entities type' : 'trial set'}?
+        </ConfirmDialog>
       </DragDropContext>
     );
   }

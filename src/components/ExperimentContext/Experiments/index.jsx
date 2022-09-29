@@ -333,6 +333,9 @@ class Experiments extends React.Component {
   setUpdated = () => {
     this.setState({ update: false });
   }
+  updateExperiment = (experiment)=> {
+    this.setState({experiment})
+  }
 
   render() {
     const tableHeadColumns = [
@@ -359,6 +362,7 @@ class Experiments extends React.Component {
           // eslint-disable-next-line react/jsx-wrap-multilines
           ? <ExperimentForm
             {...this.props}
+            updateExperiment={this.updateExperiment}
             experiment={this.state.experiment}
             returnFunc={this.returnFunc}
           />

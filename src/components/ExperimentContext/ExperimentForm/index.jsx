@@ -21,8 +21,10 @@ import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/b
 import { updateCache } from '../../../apolloGraphql';
 
 class ExperimentForm extends React.Component {
-  state = {
-    formObject: {
+
+
+  initFormObject = () => {
+    return {
       key: this.props.experiment ? this.props.experiment.key : uuid(),
       projectId: this.props.experiment ? this.props.experiment.project.id : '',
       name: this.props.experiment ? this.props.experiment.name : '',
@@ -34,11 +36,13 @@ class ExperimentForm extends React.Component {
       maps: this.props.experiment && this.props.experiment.maps ? this.props.experiment.maps : [
         // {imageUrl: "", imageName: 'fdsaf', lower: '3', right: '5', upper: '4', left: '6', embedded: true}
       ]
-    },
+    }
+  }
+  state = {
+    formObject: this.initFormObject(),
     isStartDatePickerOpen: false,
     isEndDatePickerOpen: false
   };
-
 
   startDatePickerRef = React.createRef();
 
@@ -52,6 +56,11 @@ class ExperimentForm extends React.Component {
       history.push('/experiments');
     }
   };
+
+  updateAfterSubmit = (n, cache, experiment) => {
+    this.props.updateExperiment(experiment)
+  }
+
 
   submitExperiment = async (newExperiment, deleted) => {
     const newEntity = newExperiment;
@@ -68,11 +77,14 @@ class ExperimentForm extends React.Component {
           EXPERIMENTS_WITH_DATA,
           EXPERIMENT_MUTATION,
           returnFunc,
+          'experimentKey',
+          this.updateAfterSubmit
         );
       },
     });
+    this.setState({ changed: false });
 
-    this.closeForm(true);
+    //this.closeForm(true);
   };
 
   changeFormObject = (event, field, data) => {
@@ -118,6 +130,7 @@ class ExperimentForm extends React.Component {
         ...state.formObject,
         [field]: value,
       },
+      changed: true
     }));
   };
 
@@ -127,6 +140,12 @@ class ExperimentForm extends React.Component {
 
   setConfirmOpen = (open) => {
     this.setState({ confirmOpen: open });
+  }
+  cancelHandler = () => {
+    this.setState({
+      formObject: this.initFormObject(),
+      changed: false
+    })
   }
 
   render() {
@@ -140,7 +159,11 @@ class ExperimentForm extends React.Component {
 
     return (
       <>
-        <ContentHeader className={classes.header} title={this.props.experiment ? 'Edit experiment' : 'Add experiment'} />
+        <ContentHeader
+          backButtonHandler={this.closeForm}
+          withBackButton
+          className={classes.header}
+          title={this.props.experiment ? 'Edit experiment' : 'Add experiment'} />
         <form>
           <Grid container>
             <Grid item xs={4}>
@@ -233,7 +256,7 @@ class ExperimentForm extends React.Component {
                           'isEndDatePickerOpen',
                           true,
                         )}
-                        
+
                         inputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -270,18 +293,19 @@ class ExperimentForm extends React.Component {
                     ...state.formObject,
                     maps: data,
                   },
+                  changed: true
                 }))}
                 data={formObject.maps}
-               client = {client}
+                client={client}
               />
             </Grid>
           </Grid>
         </form>
         <Footer
-          cancelButtonHandler={this.closeForm}
+          cancelButtonHandler={this.cancelHandler}
+          saveButtonDisabled={!this.state.changed}
           saveButtonHandler={() => this.submitExperiment(formObject)}
-          withDeleteButton={this.props.experiment}
-          deleteButtonHandler={() => this.setConfirmOpen(true)}
+          cancelButtonDisabled={!this.state.changed}
         />
         <ConfirmDialog
           title="Delete Experiment"
