@@ -33,9 +33,9 @@ class Trials extends React.Component {
     confirmOpen: false
   };
 
-  setConfirmOpen = (open, trial) => {
-    if (trial || open) {
-      this.setState({trial})
+  setConfirmOpen = (open, trialToDelete) => {
+    if (trialToDelete || open) {
+      this.setState({trialToDelete})
     }
     this.setState({ confirmOpen: open });
   }
@@ -71,7 +71,7 @@ class Trials extends React.Component {
   };
   displayCloneData = (trial, trialsArray) => {
     return trial.cloneFromTrailKey?
-    `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}`: 
+    `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}`:
     `cloned from ${trial.cloneFrom}`;//state will display
   }
 
@@ -160,7 +160,7 @@ class Trials extends React.Component {
             title={'Delete Trial'}
             open={confirmOpen}
             setOpen={this.setConfirmOpen}
-            onConfirm={() => this.deleteTrial(trial)}
+            onConfirm={() => this.deleteTrial()}
           // inputValidation
           >
             Are you sure you want to delete this trial?
@@ -226,7 +226,7 @@ class Trials extends React.Component {
       update: (cache, mutationResult) => {
         if (mutationResult && mutationResult.data.addUpdateTrial.error) {
           return alert(mutationResult.data.addUpdateTrial.error)
-        } 
+        }
         updateCache(
           cache,
           mutationResult,
@@ -247,9 +247,9 @@ class Trials extends React.Component {
     this.setState({ update: false });
   }
 
-  deleteTrial = async (trial) => {
+  deleteTrial = async () => {
     // const newEntity = this.state.trial;
-    const newEntity = { ...trial };
+    const newEntity = { ...this.state.trialToDelete };
     newEntity.state = 'Deleted';
     const { match, client } = this.props;
     newEntity.experimentId = match.params.id;

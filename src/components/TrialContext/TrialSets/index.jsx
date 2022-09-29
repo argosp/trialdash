@@ -28,7 +28,7 @@ class TrialSets extends React.Component {
 
     setConfirmOpen = (open, trialSet) => {
       if (trialSet || open) {
-        this.setState({trialSet})
+        this.setState({trialSetToDelete: trialSet})
       }
       this.setState({ confirmOpen: open });
     }
@@ -118,7 +118,7 @@ class TrialSets extends React.Component {
     }
 
     deleteTrialSet = async (trialSet) => {
-      const newEntity = trialSet;
+      const newEntity = {...this.state.trialSetToDelete};
       newEntity.state = 'Deleted';
       const { match, client } = this.props;
       newEntity.experimentId = match.params.id;
