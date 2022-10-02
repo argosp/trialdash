@@ -1,3 +1,8 @@
+export const getGroupKey = (entity, entitiesType) => {
+  const prop = getEntityLocationProp(entity, entitiesType);
+  return prop.groupKey;
+};
+
 export const getTypeLocationProp = (entitiesType) => {
   const locationProp = entitiesType.properties.find((prop) => prop.type === 'location');
   if (!locationProp || !locationProp.key || locationProp.key === '') return undefined;
@@ -19,16 +24,17 @@ export const getEntityLocation = (entity, entitiesType, locationKind) => {
   return undefined;
 };
 
-export const changeEntityLocation = (entity, entitiesType, newLocation, locationKind) => {
+export const changeEntityLocation = (entity, entitiesType, newLocation, locationKind, groupKey) => {
   const locationPropKey = getTypeLocationProp(entitiesType);
-  changeEntityLocationWithProp(entity, locationPropKey, newLocation, locationKind);
+  changeEntityLocationWithProp(entity, locationPropKey, newLocation, locationKind, groupKey);
 };
 
 export const changeEntityLocationWithProp = (
   entity,
   locationPropKey,
   newLocation,
-  locationKind
+  locationKind,
+  groupKey
 ) => {
   if (entity && entity.properties) {
     const pos = entity.properties.findIndex((pr) => pr.key === locationPropKey);
@@ -38,6 +44,7 @@ export const changeEntityLocationWithProp = (
     entity.properties.push({
       key: locationPropKey,
       val: { name: locationKind, coordinates: newLocation },
+      groupKey,
     });
   }
 };

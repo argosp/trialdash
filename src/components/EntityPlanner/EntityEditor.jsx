@@ -1,5 +1,6 @@
 import { Box, Container, Divider, Grid, InputLabel, Switch } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { group } from '@uiw/react-md-editor';
 import { isArray, isEmpty, isObject } from 'lodash';
 import React, { useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -19,6 +20,7 @@ import SearchInput from './new/ToBePositionTable/SearchInput';
 import { styles } from './new/ToBePositionTable/styles';
 import TBPButtons from './new/ToBePositionTable/TBPButtons';
 import { EDIT_MODE, INIT_MODE, SELECT_MODE } from './new/ToBePositionTable/utils/constants';
+import uuid from 'uuid/v4';
 
 const SimplifiedSwitch = ({ label, value, setValue }) => (
   <div style={{ display: 'inline-block', margin: 5 }}>
@@ -254,6 +256,7 @@ export const EntityEditor = ({
     type,
     indices,
     newLocations = [undefined],
+    groupKey,
     _entitiesTypes = entitiesTypes
   ) => {
     // deep copy of entities
@@ -262,7 +265,13 @@ export const EntityEditor = ({
     let typeEntities = tempEntities.find((d) => d.name === type);
     for (let i = 0; i < indices.length; ++i) {
       const loc = newLocations[Math.min(i, newLocations.length - 1)];
-      changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
+      changeEntityLocation(
+        typeEntities.items[indices[i]],
+        typeEntities,
+        loc,
+        layerChosen,
+        groupKey
+      );
     }
     return tempEntities;
   };
@@ -275,12 +284,16 @@ export const EntityEditor = ({
     if (shape === 'Point' || shape === 'Free') {
       let _selection = [];
       let entityType = null;
+      let groupKey = null;
+      if (TPEntities.length > 1) {
+        groupKey = uuid();
+      }
       for (let i = 0; i < TPEntities.length; i++) {
         const entity = TPEntities[i];
         entityType = findEntityTypeName(entity.entitiesTypeKey);
         _selection.push(entityType.items.findIndex((e) => e.key === entity.key));
       }
-      setEntitiesTypes(changeLocations(entityType.name, _selection.sort(), [currPoint]));
+      setEntitiesTypes(changeLocations(entityType.name, _selection.sort(), [currPoint], groupKey));
       setTPEntities([]);
       setMarkedPoints([]);
       setSelection([]);
@@ -443,6 +456,7 @@ export const EntityEditor = ({
                     <EntityMarker
                       key={dev.key}
                       entity={dev}
+                      entityType={devType}
                       devLocation={loc}
                       isSelected={selection.includes(index)}
                       isTypeSelected={devType.name === selectedType}
