@@ -36,6 +36,9 @@ const ContentHeader = (props) => {
     withAddMultipleButton,
     addMultipleButtonText,
     addMultipleButtonHandler,
+    withDownloadButton,
+    downloadButtonText,
+    downloadButtonHandler
   } = props;
 
   return (
@@ -50,7 +53,7 @@ const ContentHeader = (props) => {
             onClick={backButtonHandler}
           />
         ) : null}
-        
+
         <Box display="inline-block">
           <Box display="inline-block">
             {topDescription ? <p className={classes.topDescription}>{topDescription}</p> : null}
@@ -64,10 +67,10 @@ const ContentHeader = (props) => {
           ) : null}
         </Box>
         {middleDescription ? (
-            <div className={classes.middleDescription}>{middleDescription}</div>
-          ) : null}
+          <div className={classes.middleDescription}>{middleDescription}</div>
+        ) : null}
       </Box>
-      
+
       {withSearchInput ? (
         <div className={classes.search}>
           <div className={classes.searchIcon}>
@@ -100,15 +103,24 @@ const ContentHeader = (props) => {
                 component="label"
                 text={
                   <>
-                  {uploadButtonText}
-                  <input
-                    type="file"
-                    onChange={uploadButtonHandler}
-                    hidden
-                  /></>}
+                    {uploadButtonText}
+                    <input
+                      type="file"
+                      onChange={uploadButtonHandler}
+                      hidden
+                    /></>}
               />
             )
           }
+          {withDownloadButton
+          && (
+            <SimpleButton
+              colorVariant="primary"
+              className={classes.addButton}
+              text={downloadButtonText}
+              onClick={downloadButtonHandler}
+              />
+          )}
           {withDeleteButton
             && (
               <SimpleButton

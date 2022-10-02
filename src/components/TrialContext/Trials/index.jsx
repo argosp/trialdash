@@ -25,6 +25,7 @@ import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
 import { getTrialNameByKey } from '../../../assets/Utils';
+import downloadCsv from './downloadCsv'
 
 class Trials extends React.Component {
   state = {
@@ -297,7 +298,7 @@ class Trials extends React.Component {
   }
 
   render() {
-    const { history, match } = this.props;
+    const { history, match, client } = this.props;
     const { trialSet, tabValue } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
@@ -324,6 +325,9 @@ class Trials extends React.Component {
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
               rightDescription={trialSet ? trialSet.name : ''}
               addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
+              withDownloadButton
+              downloadButtonText="Download trials"
+              downloadButtonHandler={() => downloadCsv(client, match, trialSet, this.displayCloneData)}
             />
             <ContentTable
               contentType={TRIALS}
