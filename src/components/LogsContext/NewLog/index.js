@@ -6,10 +6,9 @@ import { withStyles } from '@material-ui/core';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 
-import LogForm from '../LogForm'
+import LogForm from '../LogForm';
 
-function NewLog({history, match}) {
-
+function NewLog({ history, match }) {
   return (
     <>
       <ContentHeader
@@ -19,11 +18,7 @@ function NewLog({history, match}) {
       />
       <LogForm submitBtnTxt="Submit new log" />
     </>
-  )
+  );
 }
 
-export default compose(
-  withApollo,
-  withRouter,
-  withStyles(styles),
-)(NewLog);
+export default compose(withApollo, withRouter, withStyles(styles))(NewLog);

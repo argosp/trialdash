@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
     marginBottom: 35,
   },
@@ -15,7 +15,7 @@ export const styles = theme => ({
   },
 });
 
-export const switcher = theme => ({
+export const switcher = (theme) => ({
   root: {
     width: 33,
     height: 16,

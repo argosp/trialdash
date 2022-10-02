@@ -49,7 +49,7 @@ function arrowGenerator(color) {
   };
 }
 
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
     color: theme.palette.black.dark,
 

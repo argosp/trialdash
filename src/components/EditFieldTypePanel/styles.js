@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   header: {
     display: 'flex',
     alignItems: 'center',

@@ -10,10 +10,7 @@ import Box from '@material-ui/core/Box';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
-import {
-  ENTITIES_TYPES_DASH,
-  TRIAL_SETS_DASH,
-} from '../../constants/base';
+import { ENTITIES_TYPES_DASH, TRIAL_SETS_DASH } from '../../constants/base';
 import FieldTypesPanel from '../FieldTypesPanel';
 import entitiesTypeMutation from '../EntityContext/utils/entitiesTypeMutation';
 import {
@@ -38,31 +35,37 @@ class AddSetForm extends React.Component {
     formObject:
       ENTITIES_TYPES_DASH === this.props.formType
         ? {
-          key: this.props.entitiesType ? this.props.entitiesType.key : uuid(),
-          name: this.props.entitiesType ? this.props.entitiesType.name : '',
-          experimentId: this.props.match.params.id,
-          numberOfEntities: this.props.entitiesType ? this.props.entitiesType.numberOfEntities : 0,
-          properties: this.props.entitiesType ? this.props.entitiesType.properties : [{
-            description: 'a short description of the field',
-            prefix: '',
-            suffix: '',
-            template: '',
-            trialField: true,
-            key: uuid(),
-            label: 'Location',
-            name: 'Location',
-            type: 'location',
-            defaultProperty: true,
-          }], // this field correspond to the <Droppable droppableId="droppable">
-        }
+            key: this.props.entitiesType ? this.props.entitiesType.key : uuid(),
+            name: this.props.entitiesType ? this.props.entitiesType.name : '',
+            experimentId: this.props.match.params.id,
+            numberOfEntities: this.props.entitiesType
+              ? this.props.entitiesType.numberOfEntities
+              : 0,
+            properties: this.props.entitiesType
+              ? this.props.entitiesType.properties
+              : [
+                  {
+                    description: 'a short description of the field',
+                    prefix: '',
+                    suffix: '',
+                    template: '',
+                    trialField: true,
+                    key: uuid(),
+                    label: 'Location',
+                    name: 'Location',
+                    type: 'location',
+                    defaultProperty: true,
+                  },
+                ], // this field correspond to the <Droppable droppableId="droppable">
+          }
         : {
-          key: this.props.trialSet ? this.props.trialSet.key : uuid(),
-          name: this.props.trialSet ? this.props.trialSet.name : '',
-          description: this.props.trialSet ? this.props.trialSet.description : '',
-          experimentId: this.props.match.params.id,
-          numberOfTrials: this.props.trialSet ? this.props.trialSet.numberOfTrials : 0,
-          properties: this.props.trialSet ? this.props.trialSet.properties : [], // this field correspond to the <Droppable droppableId="droppable">
-        },
+            key: this.props.trialSet ? this.props.trialSet.key : uuid(),
+            name: this.props.trialSet ? this.props.trialSet.name : '',
+            description: this.props.trialSet ? this.props.trialSet.description : '',
+            experimentId: this.props.match.params.id,
+            numberOfTrials: this.props.trialSet ? this.props.trialSet.numberOfTrials : 0,
+            properties: this.props.trialSet ? this.props.trialSet.properties : [], // this field correspond to the <Droppable droppableId="droppable">
+          },
 
     // this field correspond to the <Droppable droppableId="droppable2">
     fieldTypes: FIELD_TYPES_ARRAY,
@@ -103,12 +106,12 @@ class AddSetForm extends React.Component {
   cancelFieldTypeChanges = (fieldTypeKey) => {
     const initialState = this.state.editedFieldType;
 
-    this.setState(state => ({
+    this.setState((state) => ({
       formObject: {
         ...state.formObject,
-        properties: state.formObject.properties.map(fieldType => (fieldType.key === fieldTypeKey
-          ? { ...initialState }
-          : fieldType)),
+        properties: state.formObject.properties.map((fieldType) =>
+          fieldType.key === fieldTypeKey ? { ...initialState } : fieldType
+        ),
       },
     }));
 
@@ -125,12 +128,12 @@ class AddSetForm extends React.Component {
       if (property === 'defaultValue') value = e.target.checked.toString();
     }
 
-    this.setState(state => ({
+    this.setState((state) => ({
       formObject: {
         ...state.formObject,
-        properties: state.formObject.properties.map(fieldType => (fieldType.key === fieldTypeKey
-          ? { ...fieldType, [property]: value }
-          : fieldType)),
+        properties: state.formObject.properties.map((fieldType) =>
+          fieldType.key === fieldTypeKey ? { ...fieldType, [property]: value } : fieldType
+        ),
       },
     }));
   };
@@ -138,7 +141,8 @@ class AddSetForm extends React.Component {
   submitEntity = async (entity, deleted) => {
     const newEntity = entity;
     if (deleted) newEntity.state = 'Deleted';
-    const { formType, match, history, client, cacheQuery, itemsName, mutationName, returnFunc } = this.props;
+    const { formType, match, history, client, cacheQuery, itemsName, mutationName, returnFunc } =
+      this.props;
     newEntity.properties.forEach((p) => {
       delete p.fields;
       delete p.name;
@@ -153,24 +157,21 @@ class AddSetForm extends React.Component {
       newEntity.numberOfFields = this.state.formObject.properties.length;
     }
 
-    const mutation = ENTITIES_TYPES_DASH === formType
-      ? entitiesTypeMutation
-      : trialSetMutation;
+    const mutation = ENTITIES_TYPES_DASH === formType ? entitiesTypeMutation : trialSetMutation;
 
-    await client
-      .mutate({
-        mutation: mutation(newEntity),
-        update: (cache, mutationResult) => {
-          updateCache(
-            cache,
-            mutationResult,
-            cacheQuery(match.params.id),
-            itemsName,
-            mutationName,
-            returnFunc,
-          );
-        },
-      });
+    await client.mutate({
+      mutation: mutation(newEntity),
+      update: (cache, mutationResult) => {
+        updateCache(
+          cache,
+          mutationResult,
+          cacheQuery(match.params.id),
+          itemsName,
+          mutationName,
+          returnFunc
+        );
+      },
+    });
 
     if (returnFunc) returnFunc(true);
     else history.push(`/experiments/${match.params.id}/${formType}`);
@@ -185,12 +186,7 @@ class AddSetForm extends React.Component {
   };
 
   // Moves an field type from right-side bar to the Attribute list
-  moveFieldType = (
-    source,
-    destination,
-    droppableSource,
-    droppableDestination,
-  ) => {
+  moveFieldType = (source, destination, droppableSource, droppableDestination) => {
     const sourceClone = Array.from(source);
     const destClone = Array.from(destination);
     const fieldType = sourceClone[droppableSource.index];
@@ -216,25 +212,25 @@ class AddSetForm extends React.Component {
     }
 
     if (source.droppableId === destination.droppableId) {
-      this.setState(state => ({
+      this.setState((state) => ({
         formObject: {
           ...state.formObject,
           properties: this.reorderDraggedFieldTypes(
             state.formObject.properties,
             source.index,
-            destination.index,
+            destination.index
           ),
         },
       }));
     } else {
-      this.setState(state => ({
+      this.setState((state) => ({
         formObject: {
           ...state.formObject,
           properties: this.moveFieldType(
             state.fieldTypes,
             state.formObject.properties,
             source,
-            destination,
+            destination
           ),
         },
       }));
@@ -244,7 +240,7 @@ class AddSetForm extends React.Component {
   inputChangeHandler = (e, type) => {
     const { value } = e.target;
 
-    this.setState(state => ({
+    this.setState((state) => ({
       formObject: { ...state.formObject, [type]: value },
     }));
   };
@@ -253,7 +249,7 @@ class AddSetForm extends React.Component {
     const clonedFieldType = { ...fieldType };
     clonedFieldType.key = uuid();
 
-    this.setState(state => ({
+    this.setState((state) => ({
       formObject: {
         ...state.formObject,
         properties: [...state.formObject.properties, clonedFieldType],
@@ -262,11 +258,11 @@ class AddSetForm extends React.Component {
   };
 
   deleteDraggedFieldType = (fieldType) => {
-    this.setState(state => ({
+    this.setState((state) => ({
       formObject: {
         ...state.formObject,
         properties: state.formObject.properties.filter(
-          selectedFieldType => selectedFieldType.key !== fieldType.key,
+          (selectedFieldType) => selectedFieldType.key !== fieldType.key
         ),
       },
     }));
@@ -274,7 +270,7 @@ class AddSetForm extends React.Component {
 
   setConfirmOpen = (open) => {
     this.setState({ confirmOpen: open });
-  }
+  };
 
   render() {
     const {
@@ -292,10 +288,7 @@ class AddSetForm extends React.Component {
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {
-      dropZoneClassName = classnames(
-        classes.dropZoneEmpty,
-        classes.dropZoneEmptyDragging,
-      );
+      dropZoneClassName = classnames(classes.dropZoneEmpty, classes.dropZoneEmptyDragging);
     }
 
     if (isEmpty(formObject.properties) && !isDragging) {
@@ -303,16 +296,17 @@ class AddSetForm extends React.Component {
     }
 
     return (
-      <DragDropContext
-        onDragStart={this.onDragStart}
-        onDragEnd={this.onDragEnd}
-      >
+      <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <ContentHeader
           title={
             // eslint-disable-next-line no-nested-ternary
             ENTITIES_TYPES_DASH === formType
-              ? this.props.entitiesType ? 'Edit entities type' : 'Add entities type'
-              : this.props.trialSet ? 'Edit trial set' : 'Add trial set'
+              ? this.props.entitiesType
+                ? 'Edit entities type'
+                : 'Add entities type'
+              : this.props.trialSet
+              ? 'Edit trial set'
+              : 'Add trial set'
           }
           bottomDescription="a short description of what it means to add an item here"
         />
@@ -320,9 +314,10 @@ class AddSetForm extends React.Component {
           <EditFieldTypePanel
             isPanelOpen={isEditFieldTypePanelOpen}
             deactivateEditMode={this.deactivateEditMode}
-            fieldType={Object.assign(FIELD_TYPES[editedFieldType.type], formObject.properties.find(
-              fieldType => fieldType.key === editedFieldType.key,
-            ))}
+            fieldType={Object.assign(
+              FIELD_TYPES[editedFieldType.type],
+              formObject.properties.find((fieldType) => fieldType.key === editedFieldType.key)
+            )}
             onValueChange={this.fieldTypeValueChangeHandler}
             cancelChanges={this.cancelFieldTypeChanges}
             formType={formType}
@@ -338,7 +333,7 @@ class AddSetForm extends React.Component {
           <Grid container spacing={4}>
             <Grid item xs={3}>
               <CustomInput
-                onChange={e => this.inputChangeHandler(e, 'name')}
+                onChange={(e) => this.inputChangeHandler(e, 'name')}
                 id="entity-name"
                 label="Name"
                 bottomDescription="a short description about the name"
@@ -350,7 +345,7 @@ class AddSetForm extends React.Component {
             <Grid container spacing={4}>
               <Grid item xs={6}>
                 <CustomInput
-                  onChange={e => this.inputChangeHandler(e, 'description')}
+                  onChange={(e) => this.inputChangeHandler(e, 'description')}
                   id="entity-description"
                   label="Description"
                   bottomDescription="a short description"
@@ -359,11 +354,7 @@ class AddSetForm extends React.Component {
               </Grid>
             </Grid>
           ) : null}
-          <Box
-            display="flex"
-            alignItems="center"
-            className={classes.attributesHeadlineWrapper}
-          >
+          <Box display="flex" alignItems="center" className={classes.attributesHeadlineWrapper}>
             <CustomHeadline
               className={classes.attributesHeadline}
               title="Attributes"
@@ -384,11 +375,8 @@ class AddSetForm extends React.Component {
             />
           </Box>
           <Droppable droppableId="droppable">
-            {droppableProvided => (
-              <div
-                ref={droppableProvided.innerRef}
-                className={dropZoneClassName}
-              >
+            {(droppableProvided) => (
+              <div ref={droppableProvided.innerRef} className={dropZoneClassName}>
                 {isEmpty(formObject.properties) ? (
                   <span>Drag and drop field types here to add</span>
                 ) : (
@@ -397,14 +385,12 @@ class AddSetForm extends React.Component {
                       key={fieldType.key}
                       draggableId={fieldType.key}
                       index={index}
-                      isDragDisabled={isDragDisabled}
-                    >
-                      {draggableProvided => (
+                      isDragDisabled={isDragDisabled}>
+                      {(draggableProvided) => (
                         <div
                           ref={draggableProvided.innerRef}
                           {...draggableProvided.draggableProps}
-                          {...draggableProvided.dragHandleProps}
-                        >
+                          {...draggableProvided.dragHandleProps}>
                           <FieldTypeItem
                             editedFieldTypeKey={editedFieldType.key}
                             isEditModeEnabled={isEditModeEnabled}
@@ -441,22 +427,18 @@ class AddSetForm extends React.Component {
             deleteButtonHandler={() => this.submitEntity(this.state.formObject, true)}
           />
         ) : null}
-          <ConfirmDialog
-            title={`Delete ${ENTITIES_TYPES_DASH === formType ? 'Entities Type' : 'Trial Set'}`}
-            open={confirmOpen}
-            setOpen={this.setConfirmOpen}
-            onConfirm={() => this.submitEntity(this.state.formObject, true)}
-            inputValidation
-          >
-            Are you sure you want to delete this {ENTITIES_TYPES_DASH === formType ? 'entities type' : 'trial set'}?
-          </ConfirmDialog>
+        <ConfirmDialog
+          title={`Delete ${ENTITIES_TYPES_DASH === formType ? 'Entities Type' : 'Trial Set'}`}
+          open={confirmOpen}
+          setOpen={this.setConfirmOpen}
+          onConfirm={() => this.submitEntity(this.state.formObject, true)}
+          inputValidation>
+          Are you sure you want to delete this{' '}
+          {ENTITIES_TYPES_DASH === formType ? 'entities type' : 'trial set'}?
+        </ConfirmDialog>
       </DragDropContext>
     );
   }
 }
 
-export default compose(
-  withRouter,
-  withApollo,
-  withStyles(styles, { withTheme: true }),
-)(AddSetForm);
+export default compose(withRouter, withApollo, withStyles(styles, { withTheme: true }))(AddSetForm);

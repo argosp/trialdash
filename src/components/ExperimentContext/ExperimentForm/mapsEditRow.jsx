@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef } from 'react';
 import gql from 'graphql-tag';
-import { BasketIcon, PenIcon } from "../../../constants/icons";
+import { BasketIcon, PenIcon } from '../../../constants/icons';
 import {
   TableRow,
   TableCell,
@@ -10,18 +10,19 @@ import {
   Checkbox,
   TextField,
   Grid,
-  CircularProgress
-} from "@material-ui/core";
-import { MapsEditDetails } from "./mapsEditDetails";
+  CircularProgress,
+} from '@material-ui/core';
+import { MapsEditDetails } from './mapsEditDetails';
 import config from '../../../config';
 
 const UPLOAD_FILE = gql`
-  mutation($file: Upload!) {
-    uploadFile(file: $file){
+  mutation ($file: Upload!) {
+    uploadFile(file: $file) {
       filename
       path
     }
-  }`;
+  }
+`;
 
 const InputImageIcon = ({ onChangeFile, client }) => {
   const inputFile = useRef(null);
@@ -33,14 +34,14 @@ const InputImageIcon = ({ onChangeFile, client }) => {
   };
 
   const getImageSize = async (imageFile) => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => {
-        resolve([img.naturalHeight, img.naturalWidth])
+        resolve([img.naturalHeight, img.naturalWidth]);
       };
       img.src = window.URL.createObjectURL(imageFile);
-    })
-  }
+    });
+  };
 
   const handleChangeFile = async (event) => {
     event.stopPropagation();
@@ -52,7 +53,7 @@ const InputImageIcon = ({ onChangeFile, client }) => {
     if (height && width) {
       const imageServerfFilename = await uploadFileToServer(file);
       if (imageServerfFilename) {
-        onChangeFile(imageServerfFilename.path, height, width)
+        onChangeFile(imageServerfFilename.path, height, width);
       }
     }
     setWorking(false);
@@ -60,10 +61,10 @@ const InputImageIcon = ({ onChangeFile, client }) => {
 
   const uploadFileToServer = async (file) => {
     const data = await client.mutate({ mutation: UPLOAD_FILE, variables: { file } });
-    if (!data || !data.data || !data.data.uploadFile || data.data.uploadFile === "err") {
+    if (!data || !data.data || !data.data.uploadFile || data.data.uploadFile === 'err') {
       return undefined;
     }
-    return data.data.uploadFile
+    return data.data.uploadFile;
   };
 
   return (
@@ -72,15 +73,12 @@ const InputImageIcon = ({ onChangeFile, client }) => {
         type="file"
         id="file"
         ref={inputFile}
-        style={{ display: "none" }}
+        style={{ display: 'none' }}
         onChange={handleChangeFile}
         accept="image/*"
       />
       <IconButton aria-label="expand row" onClick={onButtonClick} disabled={working}>
-        {working ?
-          <CircularProgress size={20} /> :
-          <Icon>folder_open</Icon>
-        }
+        {working ? <CircularProgress size={20} /> : <Icon>folder_open</Icon>}
       </IconButton>
     </>
   );
@@ -88,19 +86,19 @@ const InputImageIcon = ({ onChangeFile, client }) => {
 
 const TextLatLng = ({ lat, lng, setLat, setLng, editable }) => {
   if (!editable) {
-    return lat + "," + lng;
+    return lat + ',' + lng;
   }
   return (
     <Grid container justifyContent="space-evenly" alignItems="center">
       <TextField
         value={lat}
         onChange={(e) => setLat(parseFloat(e.target.value))}
-        style={{ width: "80px" }}
+        style={{ width: '80px' }}
       />
       <TextField
         value={lng}
         onChange={(e) => setLng(parseFloat(e.target.value))}
-        style={{ width: "80px" }}
+        style={{ width: '80px' }}
       />
     </Grid>
   );
@@ -124,8 +122,7 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
             onChangeFile={(imageUrl, height, width) => {
               setRow({ ...row, imageUrl, width, height });
             }}
-            client={client}
-          ></InputImageIcon>
+            client={client}></InputImageIcon>
         </TableCell>
         <TableCell component="th" scope="row" style={{ padding: 0 }}>
           {!open ? (
@@ -142,35 +139,32 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
             <img
               alt=""
               src={config.url + '/' + row.imageUrl}
-              style={{ height: "50px", borderRadius: "50px" }}
+              style={{ height: '50px', borderRadius: '50px' }}
             />
           )}
         </TableCell>
         <TableCell align="right">
           <TextLatLng
             editable={open}
-            lat={row.embedded ? row.lower : (Math.round(row.lower * 10) / 10)}
-            lng={row.embedded ? row.right : (Math.round(row.right * 10) / 10)}
+            lat={row.embedded ? row.lower : Math.round(row.lower * 10) / 10}
+            lng={row.embedded ? row.right : Math.round(row.right * 10) / 10}
             setLat={(val) => setRow({ ...row, lower: val })}
-            setLng={(val) => setRow({ ...row, right: val })}
-          ></TextLatLng>
+            setLng={(val) => setRow({ ...row, right: val })}></TextLatLng>
         </TableCell>
         <TableCell align="right">
           <TextLatLng
             editable={open}
-            lat={row.embedded ? row.upper : (Math.round(row.upper * 10) / 10)}
-            lng={row.embedded ? row.left : (Math.round(row.left * 10) / 10)}
+            lat={row.embedded ? row.upper : Math.round(row.upper * 10) / 10}
+            lng={row.embedded ? row.left : Math.round(row.left * 10) / 10}
             setLat={(val) => setRow({ ...row, upper: val })}
-            setLng={(val) => setRow({ ...row, left: val })}
-          ></TextLatLng>
+            setLng={(val) => setRow({ ...row, left: val })}></TextLatLng>
         </TableCell>
         <TableCell align="right">
           <Checkbox
             disabled={!open}
             onChange={(e, val) => setRow({ ...row, embedded: val })}
             checked={row.embedded}
-            color="primary"
-          ></Checkbox>
+            color="primary"></Checkbox>
         </TableCell>
       </TableRow>
       <TableRow>

@@ -18,9 +18,8 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 });
 
 let httpLink = createUploadLink({
-  uri:  `${config.url}/graphql`
+  uri: `${config.url}/graphql`,
 });
-
 
 let wsLink = new WebSocketLink({
   uri: `${config.ws}/subscriptions`,
@@ -43,7 +42,7 @@ const link = split(
     return kind === 'OperationDefinition' && operation === 'subscription';
   },
   wsLink,
-  httpLink,
+  httpLink
 );
 
 const cache = new InMemoryCache({
@@ -69,7 +68,7 @@ export const updateCache = (
   isExistingItem = false,
   parentField = null,
   callback = null,
-  matchField = 'key',
+  matchField = 'key'
 ) => {
   const items = apolloCache.readQuery({
     query,
@@ -80,7 +79,7 @@ export const updateCache = (
   let updatedItems;
 
   // update the existing item
-  
+
   items.forEach((item, i) => {
     if (item[matchField] === mutationResult.data[mutationName][matchField]) {
       items[i] = mutationResult.data[mutationName];
@@ -90,16 +89,16 @@ export const updateCache = (
 
   updatedItems = items;
 
-  if (!existing) updatedItems = items.concat([mutationResult.data[mutationName]])
+  if (!existing) updatedItems = items.concat([mutationResult.data[mutationName]]);
 
   let a = {};
 
   if (parentField) {
-    for(var i = 0; i < updatedItems.length; i++) {
+    for (var i = 0; i < updatedItems.length; i++) {
       if (updatedItems[i][parentField] && updatedItems[i].state !== 'Deleted') {
-        a[updatedItems[i][parentField]] = (a[updatedItems[i][parentField]]+1) || 1;
+        a[updatedItems[i][parentField]] = a[updatedItems[i][parentField]] + 1 || 1;
       }
-    };
+    }
   }
 
   // update the Apollo cache

@@ -17,7 +17,9 @@ import { updateCache } from '../../../apolloGraphql';
 import {
   ENTITIES_TYPES_DASH,
   ENTITIES_TYPES,
-  ENTITIES, ENTITY_MUTATION, ENTITIES_TYPE_MUTATION,
+  ENTITIES,
+  ENTITY_MUTATION,
+  ENTITIES_TYPE_MUTATION,
 } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
@@ -33,7 +35,8 @@ class EntityForm extends React.Component {
       entitiesTypeKey: this.props.match.params.entitiesTypeKey,
       experimentId: this.props.match.params.id,
       name: this.props.entity ? this.props.entity.name : '',
-      properties: this.props.entity && this.props.entity.properties ? this.props.entity.properties : [],
+      properties:
+        this.props.entity && this.props.entity.properties ? this.props.entity.properties : [],
     },
     entitiesType: {},
     number: '',
@@ -47,18 +50,20 @@ class EntityForm extends React.Component {
 
     client.query({ query: entitiesTypesQuery(match.params.id) }).then((data) => {
       const entitiesType = data.data.entitiesTypes.find(
-        item => item.key === match.params.entitiesTypeKey,
+        (item) => item.key === match.params.entitiesTypeKey
       );
 
       let properties;
       if (!entity) {
         properties = [];
-        entitiesType.properties.forEach(property => properties.push({ key: property.key, val: property.defaultValue }));
+        entitiesType.properties.forEach((property) =>
+          properties.push({ key: property.key, val: property.defaultValue })
+        );
       } else {
         properties = entity.properties;
       }
 
-      this.setState(state => ({
+      this.setState((state) => ({
         entity: {
           ...state.entity,
           properties,
@@ -73,7 +78,7 @@ class EntityForm extends React.Component {
     let { value } = e.target;
     if (e.target.type === 'checkbox') value = e.target.checked.toString();
     let indexOfProperty = this.state.entity.properties.findIndex(
-      property => property.key === propertyKey,
+      (property) => property.key === propertyKey
     );
 
     if (indexOfProperty === -1) {
@@ -81,7 +86,7 @@ class EntityForm extends React.Component {
       indexOfProperty = this.state.entity.properties.length - 1;
     }
 
-    this.setState(state => ({
+    this.setState((state) => ({
       entity: {
         ...state.entity,
         properties: update(state.entity.properties, {
@@ -94,7 +99,7 @@ class EntityForm extends React.Component {
   onInputChange = (e, inputName) => {
     const { value } = e.target;
 
-    this.setState(state => ({
+    this.setState((state) => ({
       entity: {
         ...state.entity,
         [inputName]: value,
@@ -115,7 +120,7 @@ class EntityForm extends React.Component {
 
     if (returnFunc) returnFunc(deleted);
     history.push(
-      `/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.entitiesTypeKey}/${ENTITIES}`,
+      `/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${match.params.entitiesTypeKey}/${ENTITIES}`
     );
   };
 
@@ -125,11 +130,11 @@ class EntityForm extends React.Component {
     entitiesType.numberOfEntities = n[entitiesType.key];
     updateCache(
       cache,
-      {data: { [ENTITIES_TYPE_MUTATION]: entitiesType } },
+      { data: { [ENTITIES_TYPE_MUTATION]: entitiesType } },
       entitiesTypesQuery(match.params.id),
       ENTITIES_TYPES,
       ENTITIES_TYPE_MUTATION,
-      true,
+      true
     );
   };
 
@@ -137,8 +142,10 @@ class EntityForm extends React.Component {
     const startNumber = parseInt(numberFormat, 0);
     const currentNumber = startNumber + i;
     const n = currentNumber.toString();
-    return (n.length >= numberFormat.length ? n : new Array(numberFormat.length - n.length + 1).join('0') + n);
-  }
+    return n.length >= numberFormat.length
+      ? n
+      : new Array(numberFormat.length - n.length + 1).join('0') + n;
+  };
 
   submitEntity = async (newEntity, deleted) => {
     const { match, client, returnFunc } = this.props;
@@ -151,11 +158,11 @@ class EntityForm extends React.Component {
     let invalid;
     if (entitiesType.properties) {
       entitiesType.properties.forEach((p) => {
-        property = newEntity.properties.find(ntp => ntp.key === p.key);
+        property = newEntity.properties.find((ntp) => ntp.key === p.key);
         if (!property) {
           property = {
             key: p.key,
-            val: this.getValue(p.key, p.defaultValue)
+            val: this.getValue(p.key, p.defaultValue),
           };
           newEntity.properties.push(property);
         }
@@ -198,13 +205,17 @@ class EntityForm extends React.Component {
       }
     }
 
-    for (let i = 0; i < (window.location.href.match('add-multiple-entities') ? number : 1); i += 1) {
+    for (
+      let i = 0;
+      i < (window.location.href.match('add-multiple-entities') ? number : 1);
+      i += 1
+    ) {
       const clonedEntity = { ...newEntity };
       if (window.location.href.match('add-multiple-entities')) {
         clonedEntity.key = uuid();
         clonedEntity.name = `${prefix}${this.getNumber(numberFormat, i)}${suffix}`;
       }
-      
+
       await client.mutate({
         mutation: entityMutation(clonedEntity),
         update: (cache, mutationResult) => {
@@ -227,46 +238,48 @@ class EntityForm extends React.Component {
 
   getValue = (key) => {
     const { properties } = this.state.entity;
-    const entityTypeProps = this.state.entitiesType.properties
-    const staticProp = ((entityTypeProps && entityTypeProps.length) ? entityTypeProps.findIndex(pr => pr.key === key) : -1);
-    if(staticProp !== -1 && entityTypeProps[staticProp].static) {
-      return entityTypeProps[staticProp].defaultValue
+    const entityTypeProps = this.state.entitiesType.properties;
+    const staticProp =
+      entityTypeProps && entityTypeProps.length
+        ? entityTypeProps.findIndex((pr) => pr.key === key)
+        : -1;
+    if (staticProp !== -1 && entityTypeProps[staticProp].static) {
+      return entityTypeProps[staticProp].defaultValue;
     }
-    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
-    return (p !== -1 ? properties[p].val : '');
-  }
+    const p = properties && properties.length ? properties.findIndex((pr) => pr.key === key) : -1;
+    return p !== -1 ? properties[p].val : '';
+  };
 
   getInvalid = (key) => {
     const properties = this.state.entity.properties;
-    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
-    return (p !== -1 ? properties[p].invalid : false);
-  }
+    const p = properties && properties.length ? properties.findIndex((pr) => pr.key === key) : -1;
+    return p !== -1 ? properties[p].invalid : false;
+  };
   setCurrent = (property) => {
-    if (property.type === 'time') this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
-    if (property.type === 'date') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key)
-    if (property.type === 'datetime-local') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DDTHH:mm') } }, property.key)
-  }
+    if (property.type === 'time')
+      this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key);
+    if (property.type === 'date')
+      this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key);
+    if (property.type === 'datetime-local')
+      this.onPropertyChange(
+        { target: { value: moment().format('YYYY-MM-DDTHH:mm') } },
+        property.key
+      );
+  };
 
   render() {
     const { classes } = this.props;
     const { entitiesType, entity, loading } = this.state;
     const { number, prefix, numberFormat, suffix } = this.state;
     return (
-      <LoadingOverlay
-        active={loading}
-        spinner
-        text='Saving, please wait...'
-      >
-        <ContentHeader
-          title={`Add ${entitiesType.name}`}
-          className={classes.header}
-        />
+      <LoadingOverlay active={loading} spinner text="Saving, please wait...">
+        <ContentHeader title={`Add ${entitiesType.name}`} className={classes.header} />
         <Typography style={{ marginBottom: '100px' }}>
-          {window.location.href.match('add-multiple-entities') ? 
-            <Grid style={{display: 'flex', justifyContent: 'space-between', width: '80%'}}>
+          {window.location.href.match('add-multiple-entities') ? (
+            <Grid style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
               <CustomInput
                 id="number"
-                onChange={e => this.onMultiChange(e, 'number')}
+                onChange={(e) => this.onMultiChange(e, 'number')}
                 value={number}
                 label="Number of entities to create"
                 type="number"
@@ -275,7 +288,7 @@ class EntityForm extends React.Component {
               />
               <CustomInput
                 id="prefix"
-                onChange={e => this.onMultiChange(e, 'prefix')}
+                onChange={(e) => this.onMultiChange(e, 'prefix')}
                 value={prefix}
                 label="Name Prefix"
                 type="text"
@@ -284,7 +297,7 @@ class EntityForm extends React.Component {
               />
               <CustomInput
                 id="numberFormat"
-                onChange={e => this.onMultiChange(e, 'numberFormat')}
+                onChange={(e) => this.onMultiChange(e, 'numberFormat')}
                 value={numberFormat}
                 label="Name Number format"
                 type="text"
@@ -295,48 +308,50 @@ class EntityForm extends React.Component {
               />
               <CustomInput
                 id="suffix"
-                onChange={e => this.onMultiChange(e, 'suffix')}
+                onChange={(e) => this.onMultiChange(e, 'suffix')}
                 value={suffix}
                 label="Name Suffix"
                 type="text"
                 placeholder="Example: december test"
                 className={classes.property}
               />
-            </Grid> :
+            </Grid>
+          ) : (
             <CustomInput
               id="entity-name"
               className={classes.property}
-              onChange={e => this.onInputChange(e, 'name')}
+              onChange={(e) => this.onInputChange(e, 'name')}
               label="Name"
               bottomDescription="a short description"
               value={entity.name}
             />
-          }
+          )}
           {entitiesType.properties
-            ? entitiesType.properties.filter(p => p.trialField !== true).map(property => (
-              <CustomInput
-                id={`entity-property-${property.key}`}
-                className={classes.property}
-                key={property.key}
-                onChange={e => this.onPropertyChange(e, property.key)}
-                label={property.label}
-                bottomDescription={property.description}
-                value={this.getValue(property.key)}
-                values={property.value}
-                disabled={property.static}
-                type={property.type}
-                multiple={property.multipleValues}
-                invalid={this.getInvalid(property.key)}
-                endAdornment={(['date', 'time', 'datetime-local'].indexOf(property.type) !== -1) ?
-                  <InputAdornment position="end">
-                    <Button onClick={()=>this.setCurrent(property)}>
-                      Fill current
-                    </Button>
-                  </InputAdornment> :
-                  null
-                }
-              />
-            ))
+            ? entitiesType.properties
+                .filter((p) => p.trialField !== true)
+                .map((property) => (
+                  <CustomInput
+                    id={`entity-property-${property.key}`}
+                    className={classes.property}
+                    key={property.key}
+                    onChange={(e) => this.onPropertyChange(e, property.key)}
+                    label={property.label}
+                    bottomDescription={property.description}
+                    value={this.getValue(property.key)}
+                    values={property.value}
+                    disabled={property.static}
+                    type={property.type}
+                    multiple={property.multipleValues}
+                    invalid={this.getInvalid(property.key)}
+                    endAdornment={
+                      ['date', 'time', 'datetime-local'].indexOf(property.type) !== -1 ? (
+                        <InputAdornment position="end">
+                          <Button onClick={() => this.setCurrent(property)}>Fill current</Button>
+                        </InputAdornment>
+                      ) : null
+                    }
+                  />
+                ))
             : null}
         </Typography>
         <Footer
@@ -351,8 +366,4 @@ class EntityForm extends React.Component {
   }
 }
 
-export default compose(
-  withRouter,
-  withApollo,
-  withStyles(styles),
-)(EntityForm);
+export default compose(withRouter, withApollo, withStyles(styles))(EntityForm);

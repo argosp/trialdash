@@ -23,12 +23,12 @@ class CustomTooltip extends React.Component {
       <Tooltip
         placement={placement || 'top'}
         className={classnames(classes.root, className)}
-        title={(
+        title={
           <React.Fragment>
             {title}
             <span className={classes.arrow} ref={this.handleArrowRef} />
           </React.Fragment>
-         )}
+        }
         classes={{
           tooltip: classes.tooltip,
           popper: classes.popper,
@@ -46,13 +46,8 @@ class CustomTooltip extends React.Component {
               },
             },
           },
-        }}
-      >
-        <IconButton
-          aria-label={ariaLabel}
-          onClick={onClick}
-          disableRipple
-        >
+        }}>
+        <IconButton aria-label={ariaLabel} onClick={onClick} disableRipple>
           {children}
         </IconButton>
       </Tooltip>

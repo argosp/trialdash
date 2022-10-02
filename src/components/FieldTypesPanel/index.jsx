@@ -23,36 +23,26 @@ class FieldTypesPanel extends React.Component {
       <RightPanelContainer
         isPanelOpen={isPanelOpen}
         onClose={onClose}
-        title={<h3 className={classes.headerTitle}>Field Types</h3>}
-      >
-        <Droppable
-          droppableId="droppable2"
-          isDropDisabled
-          isCombineEnabled={false}
-        >
-          {droppableProvided => (
+        title={<h3 className={classes.headerTitle}>Field Types</h3>}>
+        <Droppable droppableId="droppable2" isDropDisabled isCombineEnabled={false}>
+          {(droppableProvided) => (
             <div ref={droppableProvided.innerRef}>
               {fieldTypes.map((fieldType, index) => (
-                <Draggable
-                  key={fieldType.key}
-                  draggableId={fieldType.key}
-                  index={index}
-                >
+                <Draggable key={fieldType.key} draggableId={fieldType.key} index={index}>
                   {(draggableProvided, snapshot) => (
                     <>
                       <div
                         ref={draggableProvided.innerRef}
                         {...draggableProvided.draggableProps}
-                        {...draggableProvided.dragHandleProps}
-                      >
+                        {...draggableProvided.dragHandleProps}>
                         <FieldType
                           classes={classes}
                           rootClassName={
                             snapshot.isDragging
                               ? classnames(
-                                classes.fieldTypeWrapper,
-                                classes.fieldTypeWrapperDragging,
-                              )
+                                  classes.fieldTypeWrapper,
+                                  classes.fieldTypeWrapperDragging
+                                )
                               : classes.fieldTypeWrapper
                           }
                           icon={FIELD_TYPES_ICONS[fieldType.type]}
@@ -64,7 +54,7 @@ class FieldTypesPanel extends React.Component {
                           classes={classes}
                           rootClassName={classnames(
                             classes.fieldTypeWrapper,
-                            classes.fieldTypeWrapperCopy,
+                            classes.fieldTypeWrapperCopy
                           )}
                           icon={FIELD_TYPES_ICONS[fieldType.type]}
                           title={fieldType.name}

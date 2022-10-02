@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 
 const addUpdateLabel = (experimentId, labelData) => {
-
   return gql`
   mutation {
     addUpdateLabel(
@@ -16,8 +15,7 @@ const addUpdateLabel = (experimentId, labelData) => {
         name 
         color
       }
-      }`
+      }`;
 };
-
 
 export default addUpdateLabel;

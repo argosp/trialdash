@@ -1,17 +1,17 @@
-import React from "react";
-import Grid from "@material-ui/core/Grid";
-import Collapse from "@material-ui/core/Collapse";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-import ContentHeader from "../../../ContentHeader";
-import ContentTable from "../../../ContentTable";
-import StyledTableCell from "../../../StyledTableCell";
-import CustomTooltip from "../../../CustomTooltip";
-import CustomInput from "../../../CustomInput";
-import { BasketIcon } from "../../../../constants/icons";
-import { PlusIcon } from "../../../../constants/icons";
-import ContainsEntitiesDisplayList from "../TrialEntities/ContainsEntitiesDisplayList";
+import React from 'react';
+import Grid from '@material-ui/core/Grid';
+import Collapse from '@material-ui/core/Collapse';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ContentHeader from '../../../ContentHeader';
+import ContentTable from '../../../ContentTable';
+import StyledTableCell from '../../../StyledTableCell';
+import CustomTooltip from '../../../CustomTooltip';
+import CustomInput from '../../../CustomInput';
+import { BasketIcon } from '../../../../constants/icons';
+import { PlusIcon } from '../../../../constants/icons';
+import ContainsEntitiesDisplayList from '../TrialEntities/ContainsEntitiesDisplayList';
 
-import { ENTITIES } from "../../../../constants/base";
+import { ENTITIES } from '../../../../constants/base';
 
 class EntitiesGrid extends React.Component {
   state = {
@@ -21,11 +21,9 @@ class EntitiesGrid extends React.Component {
 
   entityTableHeadColumns = (entitiesType) => {
     if (!entitiesType || !this) return [];
-    const headers = [{ key: entitiesType.key, title: "entity name" }];
-    entitiesType.properties.forEach((p) =>
-      headers.push({ key: p.key, title: p.label })
-    );
-    headers.push({ key: `${entitiesType.key}-actions`, title: "" });
+    const headers = [{ key: entitiesType.key, title: 'entity name' }];
+    entitiesType.properties.forEach((p) => headers.push({ key: p.key, title: p.label }));
+    headers.push({ key: `${entitiesType.key}-actions`, title: '' });
     return headers;
   };
 
@@ -46,59 +44,45 @@ class EntitiesGrid extends React.Component {
         <StyledTableCell
           classes={{ body: classes.entityGridTd }}
           className={classes.tableCell}
-          align="left"
-        >
+          align="left">
           {entities[entity.key][0].name}
         </StyledTableCell>
         {entitiesTypes[entity.entitiesTypeKey] &&
           entitiesTypes[entity.entitiesTypeKey][0] &&
           entitiesTypes[entity.entitiesTypeKey][0].properties &&
-          entitiesTypes[entity.entitiesTypeKey][0].properties.map(
-            (property) => (
-              <>
-                {property.trialField ? (
-                  <StyledTableCell
-                    classes={{ body: classes.entityGridTd }}
-                    key={`entity-property-${property.key}-${trial.status}`}
-                    align="left"
-                  >
-                    <CustomInput
-                      value={
-                        entity.properties &&
-                        entity.properties.find((p) => p.key === property.key)
-                          ? entity.properties.find(
-                              (p) => p.key === property.key
-                            ).val
-                          : ""
-                      }
-                      onChange={(e) =>
-                        onEntityPropertyChange(entity, e, property.key)
-                      }
-                      id={`entity-property-${property.key}-${trial.status}`}
-                      className={classes.input}
-                      type={property.type}
-                      values={property.value}
-                      multiple={property.multipleValues}
-                    />
-                  </StyledTableCell>
-                ) : (
-                  <StyledTableCell
-                    classes={{ body: classes.entityGridTd }}
-                    key={property.key}
-                    align="left"
-                  >
-                    {entities[entity.key][0].properties.find(
-                      (p) => p.key === property.key
-                    )
-                      ? entities[entity.key][0].properties.find(
-                          (p) => p.key === property.key
-                        ).val
-                      : ""}
-                  </StyledTableCell>
-                )}
-              </>
-            )
-          )}
+          entitiesTypes[entity.entitiesTypeKey][0].properties.map((property) => (
+            <>
+              {property.trialField ? (
+                <StyledTableCell
+                  classes={{ body: classes.entityGridTd }}
+                  key={`entity-property-${property.key}-${trial.status}`}
+                  align="left">
+                  <CustomInput
+                    value={
+                      entity.properties && entity.properties.find((p) => p.key === property.key)
+                        ? entity.properties.find((p) => p.key === property.key).val
+                        : ''
+                    }
+                    onChange={(e) => onEntityPropertyChange(entity, e, property.key)}
+                    id={`entity-property-${property.key}-${trial.status}`}
+                    className={classes.input}
+                    type={property.type}
+                    values={property.value}
+                    multiple={property.multipleValues}
+                  />
+                </StyledTableCell>
+              ) : (
+                <StyledTableCell
+                  classes={{ body: classes.entityGridTd }}
+                  key={property.key}
+                  align="left">
+                  {entities[entity.key][0].properties.find((p) => p.key === property.key)
+                    ? entities[entity.key][0].properties.find((p) => p.key === property.key).val
+                    : ''}
+                </StyledTableCell>
+              )}
+            </>
+          ))}
         <StyledTableCell classes={{ body: classes.entityGridTd }} align="right">
           {entity.containsEntities && entity.containsEntities.length ? (
             <ContainsEntitiesDisplayList
@@ -106,23 +90,17 @@ class EntitiesGrid extends React.Component {
               experimentEntitiesArray={entities}
               trialEntitiesArray={trial.entities}
               classes={classes}
-              removeEntityFromParent={updateEntityInParent}
-            ></ContainsEntitiesDisplayList>
+              removeEntityFromParent={updateEntityInParent}></ContainsEntitiesDisplayList>
           ) : (
-            ""
+            ''
           )}
-          <CustomTooltip
-            title="Delete"
-            ariaLabel="delete"
-            onClick={() => removeEntity(entity.key)}
-          >
+          <CustomTooltip title="Delete" ariaLabel="delete" onClick={() => removeEntity(entity.key)}>
             <BasketIcon />
           </CustomTooltip>
           <CustomTooltip
             title="Add entity"
             ariaLabel="Add entity"
-            onClick={(e) => openAddEntitiesPanel(e, entity)}
-          >
+            onClick={(e) => openAddEntitiesPanel(e, entity)}>
             <PlusIcon />
           </CustomTooltip>
         </StyledTableCell>
@@ -133,19 +111,13 @@ class EntitiesGrid extends React.Component {
   openTable = (e, currentContent) => {
     const tmp = this.state[currentContent];
     tmp[e] = !this.state[currentContent][e];
-    this.setState({[currentContent]: tmp});
+    this.setState({ [currentContent]: tmp });
   };
   SetCloneEntitiesDialogOpen = (open) => {
     this.setState({ CloneEntitiesDialogOpen: open });
   };
   render() {
-    const {
-      classes,
-      trialEntities,
-      entitiesTypes,
-      update,
-      setUpdated,
-    } = this.props;
+    const { classes, trialEntities, entitiesTypes, update, setUpdated } = this.props;
     const { openContentHeader } = this.state;
     return (
       <>
@@ -154,23 +126,18 @@ class EntitiesGrid extends React.Component {
           .map((e) => (
             <Grid className={classes.wrapper} key={e}>
               <ContentHeader
-                onClick={() => this.openTable(e, "openContentHeader")}
+                onClick={() => this.openTable(e, 'openContentHeader')}
                 className={classes.contentHeader}
-                title={
-                  entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].name
-                }
+                title={entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].name}
                 bottomDescription={
-                  entitiesTypes &&
-                  entitiesTypes[e] &&
-                  entitiesTypes[e][0].description
+                  entitiesTypes && entitiesTypes[e] && entitiesTypes[e][0].description
                 }
                 rightComponent={
                   <>
                     <CustomTooltip
                       title="Open"
-                      className={openContentHeader[e] ? classes.arrowDown : ""}
-                      ariaLabel="open"
-                    >
+                      className={openContentHeader[e] ? classes.arrowDown : ''}
+                      ariaLabel="open">
                       <ArrowForwardIosIcon />
                     </CustomTooltip>
                   </>

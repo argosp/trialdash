@@ -8,16 +8,16 @@ import MomentUtils from '@date-io/moment';
 import './App.css';
 import theme from './theme';
 import AppRoutes from './AppRoutes';
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 const App = () => (
   <ApolloProvider client={client}>
     <ThemeProvider theme={theme}>
-    <MuiPickersUtilsProvider utils={MomentUtils}>
-      <CssBaseline />
-      <div className="App">
-        <AppRoutes />
-      </div>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <CssBaseline />
+        <div className="App">
+          <AppRoutes />
+        </div>
       </MuiPickersUtilsProvider>
     </ThemeProvider>
   </ApolloProvider>

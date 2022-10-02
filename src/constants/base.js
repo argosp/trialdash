@@ -13,7 +13,7 @@ export const ENTITIES_TYPE_MUTATION = 'addUpdateEntitiesType';
 
 export const EXPERIMENTS_WITH_DATA = 'experimentsWithData';
 export const EXPERIMENT_MUTATION = 'addUpdateExperiment';
-export const UPLOAD_EXPERIMENT = 'uploadExperiment'
+export const UPLOAD_EXPERIMENT = 'uploadExperiment';
 
 export const UPLOAD_FILE = 'uploadFile';
 

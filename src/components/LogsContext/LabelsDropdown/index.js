@@ -10,22 +10,22 @@ import List from './list';
 
 function Labels({ classes, log, updateLabels }) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [labelsState, setLabelsState] = useState('list')
-  const [labelToEdit, setLabelToEdit] = useState()
+  const [labelsState, setLabelsState] = useState('list');
+  const [labelToEdit, setLabelToEdit] = useState();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-    setLabelsState('list')
+    setLabelsState('list');
     setAnchorEl(null);
   };
 
   const handleEdit = (label) => {
-      setLabelToEdit(label);
-      setLabelsState('create')
-  }
+    setLabelToEdit(label);
+    setLabelsState('create');
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -50,19 +50,24 @@ function Labels({ classes, log, updateLabels }) {
           vertical: 'top',
           horizontal: 'center',
         }}
-        classes={{ paper: classes.popoverPaper }}
-      >
+        classes={{ paper: classes.popoverPaper }}>
         <>
-          {labelsState === 'list' && <List log={log} setLabelsState={setLabelsState} handleEdit={handleEdit} handleClose={handleClose} updateLabels={updateLabels}/>}
-          {labelsState === 'create' && <Create setLabelsState={setLabelsState} label={labelToEdit} handleClose={handleClose}/>}
+          {labelsState === 'list' && (
+            <List
+              log={log}
+              setLabelsState={setLabelsState}
+              handleEdit={handleEdit}
+              handleClose={handleClose}
+              updateLabels={updateLabels}
+            />
+          )}
+          {labelsState === 'create' && (
+            <Create setLabelsState={setLabelsState} label={labelToEdit} handleClose={handleClose} />
+          )}
         </>
       </Popover>
     </>
-  )
+  );
 }
 
-export default compose(
-  withApollo,
-  withRouter,
-  withStyles(styles),
-)(Labels);
+export default compose(withApollo, withRouter, withStyles(styles))(Labels);

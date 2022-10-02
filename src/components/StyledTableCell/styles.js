@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   head: {
     backgroundColor: theme.palette.background.default,
     fontSize: 12,

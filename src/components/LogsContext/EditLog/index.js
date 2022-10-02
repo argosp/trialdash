@@ -5,42 +5,41 @@ import { withApollo } from 'react-apollo';
 import { withStyles, Typography, Divider, Grid } from '@material-ui/core';
 import { styles } from './styles';
 import logQuery from '../utils/logQuery';
-import ContentHeader from '../../ContentHeader'
+import ContentHeader from '../../ContentHeader';
 import getDate from '../utils/getDate';
 import LogForm from '../LogForm';
 import { LOGS_DASH } from '../../../constants/base';
-import SimpleButton from '../../SimpleButton'
+import SimpleButton from '../../SimpleButton';
 
 function EditLog({ client, match, classes, history }) {
-
-  const [log, setLog] = useState()
+  const [log, setLog] = useState();
 
   useEffect(() => {
-    const experimentId = match.params.id
-    const logKey = match.params.logKey
-    client
-      .query({ query: logQuery(experimentId, logKey) })
-      .then((data) => {
-        if (data && data.data && data.data.log) {
-          setLog({ ...data.data.log, comment: fixNewLineSymbol(data.data.log.comment) })
-        }
-      });
-  }, [])
+    const experimentId = match.params.id;
+    const logKey = match.params.logKey;
+    client.query({ query: logQuery(experimentId, logKey) }).then((data) => {
+      if (data && data.data && data.data.log) {
+        setLog({ ...data.data.log, comment: fixNewLineSymbol(data.data.log.comment) });
+      }
+    });
+  }, []);
   function fixNewLineSymbol(comment) {
-    const split = comment.split("\\n")
+    const split = comment.split('\\n');
     return split.join(`
-        `)
+        `);
   }
 
-  return (
-    log ? <>
+  return log ? (
+    <>
       <Grid container justifyContent="space-between" alignItems="center">
         <ContentHeader
           title={log.title}
           withBackButton
           backButtonHandler={() => history.push(`/experiments/${match.params.id}/logs`)}
         />
-        <Typography variant='subtitle1'><strong>{log.creator}</strong> opened this log on {getDate(log.created)}</Typography>
+        <Typography variant="subtitle1">
+          <strong>{log.creator}</strong> opened this log on {getDate(log.created)}
+        </Typography>
         <Grid item>
           <SimpleButton
             colorVariant="primary"
@@ -52,12 +51,10 @@ function EditLog({ client, match, classes, history }) {
 
       <Divider className={classes.divider} />
       <LogForm submitBtnTxt="Update" log={log} />
-    </> : <></>
-  )
+    </>
+  ) : (
+    <></>
+  );
 }
 
-export default compose(
-  withApollo,
-  withRouter,
-  withStyles(styles),
-)(EditLog);
+export default compose(withApollo, withRouter, withStyles(styles))(EditLog);

@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
-import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, Chip, Typography } from '@material-ui/core';
+import {
+  withStyles,
+  Paper,
+  Grid,
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  Chip,
+  Typography,
+} from '@material-ui/core';
 import { styles } from './styles';
 import addUpdateLog from '../utils/logMutation';
 import SimpleButton from '../../SimpleButton';
@@ -12,31 +22,29 @@ import getDate from '../utils/getDate';
 import Labels from '../LabelsDropdown';
 
 function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
-
-  const [logValues, setLogValues] = useState({ comment: '', title: '', ...log })
+  const [logValues, setLogValues] = useState({ comment: '', title: '', ...log });
 
   function handleChange(field, value) {
-    setLogValues(prev => ({
+    setLogValues((prev) => ({
       ...prev,
-      [field]: value
-    }))
+      [field]: value,
+    }));
   }
 
   async function handleSubmit() {
     await client.mutate({
-      mutation: addUpdateLog(match.params.id, logValues)
+      mutation: addUpdateLog(match.params.id, logValues),
     });
-    window.location.href = `/experiments/${match.params.id}/logs`
+    window.location.href = `/experiments/${match.params.id}/logs`;
   }
 
   function addImage(img) {
-    handleChange('comment', `${logValues.comment} ${img}`)
+    handleChange('comment', `${logValues.comment} ${img}`);
   }
 
   function updateLabels(checked) {
-    handleChange('labels', checked)
+    handleChange('labels', checked);
   }
-
 
   return (
     <Grid container justifyContent="space-between" spacing={5}>
@@ -60,9 +68,13 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
             <FileUpload classes={classes} client={client} addImage={addImage} />
           </div>
         </Paper>
-        {logValues.updated && <Paper classes={{ root: classes.paper }}>
-          <Typography variant='subtitle1'><strong>{logValues.creator}</strong> updated this log on {getDate(log.updated)}</Typography>
-        </Paper>}
+        {logValues.updated && (
+          <Paper classes={{ root: classes.paper }}>
+            <Typography variant="subtitle1">
+              <strong>{logValues.creator}</strong> updated this log on {getDate(log.updated)}
+            </Typography>
+          </Paper>
+        )}
         <Paper classes={{ root: classes.paper }}>
           <Grid container direction="row" justifyContent="flex-end">
             <SimpleButton
@@ -82,12 +94,19 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
                 primary="Labels"
                 secondary={
                   <span>
-                    {logValues.labels && logValues.labels.length ?
-                      logValues.labels.map(q => <Chip component="span" key={q.name} classes={{ root: classes.labelChip }} style={{ backgroundColor: q.color }} label={q.name} />)
-                      :
+                    {logValues.labels && logValues.labels.length ? (
+                      logValues.labels.map((q) => (
+                        <Chip
+                          component="span"
+                          key={q.name}
+                          classes={{ root: classes.labelChip }}
+                          style={{ backgroundColor: q.color }}
+                          label={q.name}
+                        />
+                      ))
+                    ) : (
                       <span>None yet</span>
-                      }
-
+                    )}
                   </span>
                 }
               />
@@ -97,11 +116,7 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
         </Paper>
       </Grid>
     </Grid>
-  )
+  );
 }
 
-export default compose(
-  withApollo,
-  withRouter,
-  withStyles(styles),
-)(LogForm);
+export default compose(withApollo, withRouter, withStyles(styles))(LogForm);

@@ -1,10 +1,10 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   dilog: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  list:{
+  list: {
     width: '100%',
     height: 400,
     maxWidth: 300,

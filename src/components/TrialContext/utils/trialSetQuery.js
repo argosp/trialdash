@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-const trialSets = experimentId => gql`
+const trialSets = (experimentId) => gql`
   {
       trialSets(experimentId:"${experimentId}"){
        key

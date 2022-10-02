@@ -14,10 +14,7 @@ import StyledTableCell from '../StyledTableCell';
 import CustomTooltip from '../CustomTooltip';
 import StyledTabs from '../StyledTabs';
 import { PlusIcon, EntityIcon } from '../../constants/icons';
-import {
-  ENTITIES_TYPES,
-  ENTITIES,
-} from '../../constants/base';
+import { ENTITIES_TYPES, ENTITIES } from '../../constants/base';
 import entitiesTypesQuery from '../EntityContext/utils/entityTypeQuery';
 import entitiesQuery from '../EntityContext/Entities/utils/entityQuery';
 import ContentTable from '../ContentTable';
@@ -32,8 +29,7 @@ const TabPanel = ({ children, value, index, ...other }) => (
     id={`trial-tabpanel-${index}`}
     aria-labelledby={`trial-tab-${index}`}
     style={{ marginBottom: '100px', paddingBottom: '1px' }}
-    {...other}
-  >
+    {...other}>
     <Box>{children}</Box>
   </Typography>
 );
@@ -48,7 +44,10 @@ class AddEntityPanel extends React.Component {
     const { classes, theme } = this.props;
     return (
       <React.Fragment key={entitiesType.key}>
-        <StyledTableCell className={classes.tableCell} align="left" onClick={() => this.setState({ selectedEntitiesType: entitiesType })}>
+        <StyledTableCell
+          className={classes.tableCell}
+          align="left"
+          onClick={() => this.setState({ selectedEntitiesType: entitiesType })}>
           <ContentHeader
             title={entitiesType.name}
             bottomDescription={entitiesType.description || 'description'}
@@ -61,8 +60,7 @@ class AddEntityPanel extends React.Component {
             title="Open"
             className={classes.arrowButton}
             ariaLabel="open"
-            onClick={() => this.setState({ selectedEntitiesType: entitiesType })}
-          >
+            onClick={() => this.setState({ selectedEntitiesType: entitiesType })}>
             <ArrowForwardIosIcon style={{ color: theme.palette.gray.main }} />
           </CustomTooltip>
         </StyledTableCell>
@@ -76,34 +74,36 @@ class AddEntityPanel extends React.Component {
     if (entities.indexOf(entity.key) !== -1) return <React.Fragment key={entity.key} />;
     return (
       <React.Fragment key={entity.key}>
-        <StyledTableCell className={classnames(classes.entityTableCell, classes.entityNameTableCell)} align="left">
-          <EntityIcon
-            style={{ color: theme.palette.gray.main, marginRight: 10 }}
-          />
+        <StyledTableCell
+          className={classnames(classes.entityTableCell, classes.entityNameTableCell)}
+          align="left">
+          <EntityIcon style={{ color: theme.palette.gray.main, marginRight: 10 }} />
           {entity.name}
         </StyledTableCell>
-        {selectedEntitiesType && selectedEntitiesType.properties && selectedEntitiesType.properties.map(property => (
-          <>
-            {!property.trialField
-              && (
-                <StyledTableCell className={classes.entityTableCell} key={property.key} align="left">
-                  {entity.properties.find(p => p.key === property.key) ? entity.properties.find(p => p.key === property.key).val : ''}
+        {selectedEntitiesType &&
+          selectedEntitiesType.properties &&
+          selectedEntitiesType.properties.map((property) => (
+            <>
+              {!property.trialField && (
+                <StyledTableCell
+                  className={classes.entityTableCell}
+                  key={property.key}
+                  align="left">
+                  {entity.properties.find((p) => p.key === property.key)
+                    ? entity.properties.find((p) => p.key === property.key).val
+                    : ''}
                 </StyledTableCell>
-              )
-            }
-          </>
-        ))}
-        <StyledTableCell align="right" className={classnames(classes.entityTableCell, classes.entityActionsTableCell)}>
-          <CustomTooltip
-            title="Add"
-            className={classes.arrowButton}
-            ariaLabel="add"
-          >
+              )}
+            </>
+          ))}
+        <StyledTableCell
+          align="right"
+          className={classnames(classes.entityTableCell, classes.entityActionsTableCell)}>
+          <CustomTooltip title="Add" className={classes.arrowButton} ariaLabel="add">
             <IconButton
               disableRipple
               className={classnames(classes.viewButton, classes.viewButtonSelected)}
-              onClick={() => this.addEntity(entity)}
-            >
+              onClick={() => this.addEntity(entity)}>
               <PlusIcon />
             </IconButton>
           </CustomTooltip>
@@ -113,9 +113,7 @@ class AddEntityPanel extends React.Component {
   };
 
   generateTableColumns = (entitiesType) => {
-    const columns = [
-      { key: uuid(), title: 'name' },
-    ];
+    const columns = [{ key: uuid(), title: 'name' }];
 
     if (!isEmpty(entitiesType) && !isEmpty(entitiesType.properties)) {
       entitiesType.properties.forEach((property) => {
@@ -132,9 +130,11 @@ class AddEntityPanel extends React.Component {
   addEntity = (entity) => {
     const { addEntityToTrial, parentEntity } = this.props;
     const { selectedEntitiesType } = this.state;
-    const properties = entity.properties.filter(p => selectedEntitiesType.properties.find(s => s.key === p.key).trialField);
-    addEntityToTrial(entity, selectedEntitiesType.key, properties, parentEntity,'update');
-  }
+    const properties = entity.properties.filter(
+      (p) => selectedEntitiesType.properties.find((s) => s.key === p.key).trialField
+    );
+    addEntityToTrial(entity, selectedEntitiesType.key, properties, parentEntity, 'update');
+  };
 
   changeTab = (event, tabValue) => {
     this.setState({ tabValue });
@@ -150,77 +150,71 @@ class AddEntityPanel extends React.Component {
         className={classes.rootPanel}
         isPanelOpen={isPanelOpen}
         onClose={onClose}
-        title={<h3 className={classes.headerTitle}>Entities Types</h3>}
-      >
+        title={<h3 className={classes.headerTitle}>Entities Types</h3>}>
         <StyledTabs
           className={classes.tabsWrapper}
-          tabs={[
-            { key: 0, label: 'Entities', id: 'trial-tab-0' },
-          ]}
+          tabs={[{ key: 0, label: 'Entities', id: 'trial-tab-0' }]}
           value={tabValue}
           onChange={this.changeTab}
           ariaLabel="trial tabs"
         />
         <TabPanel value={tabValue} index={0}>
-          {!selectedEntitiesType
-            ? (
-              <>
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
-                  </div>
-                  <InputBase
-                    placeholder="search"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput,
-                      focused: classes.inputFocused,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                  />
+          {!selectedEntitiesType ? (
+            <>
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
                 </div>
-                <ContentTable
-                  contentType={ENTITIES_TYPES}
-                  query={entitiesTypesQuery(match.params.id)}
-                  renderRow={this.renderEntitiesTypesTableRow}
-                  classes={classes}
+                <InputBase
+                  placeholder="search"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                    focused: classes.inputFocused,
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
                 />
-              </>
-            )
-            : (
-              <>
-                <ContentHeader
-                  title={selectedEntitiesType.name}
-                  withBackButton
-                  backButtonHandler={() => this.setState({ selectedEntitiesType: null })}
-                  bottomDescription={selectedEntitiesType.description || 'description'}
-                  classes={classes}
-                  className={classes.entitiesTypeTitle}
-                />
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
-                  </div>
-                  <InputBase
-                    placeholder="search"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput,
-                      focused: classes.inputFocused,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                  />
+              </div>
+              <ContentTable
+                contentType={ENTITIES_TYPES}
+                query={entitiesTypesQuery(match.params.id)}
+                renderRow={this.renderEntitiesTypesTableRow}
+                classes={classes}
+              />
+            </>
+          ) : (
+            <>
+              <ContentHeader
+                title={selectedEntitiesType.name}
+                withBackButton
+                backButtonHandler={() => this.setState({ selectedEntitiesType: null })}
+                bottomDescription={selectedEntitiesType.description || 'description'}
+                classes={classes}
+                className={classes.entitiesTypeTitle}
+              />
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
                 </div>
-                <ContentTable
-                  contentType={ENTITIES}
-                  query={entitiesQuery(match.params.id, selectedEntitiesType.key)}
-                  tableHeadColumns={entityTableHeadColumns}
-                  renderRow={this.renderEntitiesTableRow}
-                  classes={classes}
+                <InputBase
+                  placeholder="search"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                    focused: classes.inputFocused,
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
                 />
-              </>
-            )
-          }
+              </div>
+              <ContentTable
+                contentType={ENTITIES}
+                query={entitiesQuery(match.params.id, selectedEntitiesType.key)}
+                tableHeadColumns={entityTableHeadColumns}
+                renderRow={this.renderEntitiesTableRow}
+                classes={classes}
+              />
+            </>
+          )}
         </TabPanel>
       </RightPanelContainer>
     );

@@ -91,7 +91,7 @@ export default createTheme({
       dark: '#4F4F4F',
       medium: '#ADADAD',
       soft: '#474747',
-      light: '#A1A1A1'
+      light: '#A1A1A1',
     },
     red: {
       main: '#EB5757',

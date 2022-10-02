@@ -8,11 +8,8 @@ import Header from '../Header';
 const AppLayout = ({ classes, children }) => (
   <>
     <Header />
-    <div className={classes.contentWrapper}>
-      {children}
-    </div>
+    <div className={classes.contentWrapper}>{children}</div>
   </>
 );
-
 
 export default compose(withRouter, withStyles(styles))(AppLayout);

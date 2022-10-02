@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   main: {
     width: 'auto',
     display: 'block', // Fix IE 11 issue.

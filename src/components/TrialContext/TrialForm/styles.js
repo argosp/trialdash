@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   header: {
     marginBottom: 20,
     borderBottom: `1px solid ${theme.palette.white.dark}`,
@@ -32,7 +32,7 @@ export const styles = theme => ({
     transform: 'scale(1.3)',
   },
   trialActionBtn: {
-     marginLeft: '4px'
+    marginLeft: '4px',
   },
   entitiesPanelHeader: {
     borderBottom: `1px solid ${theme.palette.white.dark}`,

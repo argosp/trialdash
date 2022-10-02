@@ -43,13 +43,13 @@ class ContentTable extends React.Component {
       this.getItemsFromServer();
     }
   }
-  renderTableRow
+  renderTableRow;
   setItems = () => {
     const { items, contentType, update, setUpdated, getData } = this.props;
     this.setState({ [contentType]: items });
     if (getData) getData(items);
     if (setUpdated && update) setUpdated();
-  }
+  };
 
   getItemsFromServer = () => {
     const { query, contentType, client, setUpdated, update, getData } = this.props;
@@ -59,7 +59,9 @@ class ContentTable extends React.Component {
         query,
       })
       .then((data) => {
-        data.data[contentType] = data.data[contentType] ? data.data[contentType].filter(d => d.state !== 'Deleted') : [];
+        data.data[contentType] = data.data[contentType]
+          ? data.data[contentType].filter((d) => d.state !== 'Deleted')
+          : [];
         this.setState({ [contentType]: data.data[contentType] });
         if (getData) getData(data.data[contentType]);
         if (setUpdated && update) setUpdated();
@@ -67,42 +69,36 @@ class ContentTable extends React.Component {
   };
 
   render() {
-    const {
-      tableHeadColumns,
-      renderRow,
-      contentType,
-      classes,
-    } = this.props;
+    const { tableHeadColumns, renderRow, contentType, classes } = this.props;
 
     return (
       <Table className={classes.table}>
-        {tableHeadColumns
-          && (
-            <TableHead>
-              <TableRow>
-                {tableHeadColumns.map(({ title, key }) => (
-                  <StyledTableCell classes={classes} className={classes.headCell} align="left" key={key}>
-                    {title}
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-          )
-        }
-        <TableBody>
-          {this.state[contentType] && this.state[contentType].map(renderRow).map(child => (
-            <TableRow key={child.key} className={classes.tableBodyRow}>
-              {child}
+        {tableHeadColumns && (
+          <TableHead>
+            <TableRow>
+              {tableHeadColumns.map(({ title, key }) => (
+                <StyledTableCell
+                  classes={classes}
+                  className={classes.headCell}
+                  align="left"
+                  key={key}>
+                  {title}
+                </StyledTableCell>
+              ))}
             </TableRow>
-          ))}
+          </TableHead>
+        )}
+        <TableBody>
+          {this.state[contentType] &&
+            this.state[contentType].map(renderRow).map((child) => (
+              <TableRow key={child.key} className={classes.tableBodyRow}>
+                {child}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     );
   }
 }
 
-export default compose(
-  withApollo,
-  withRouter,
-  withStyles(styles),
-)(ContentTable);
+export default compose(withApollo, withRouter, withStyles(styles))(ContentTable);

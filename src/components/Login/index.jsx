@@ -19,10 +19,10 @@ import { styles } from './styles';
 import setAuthToken from './setAuthToken';
 
 class Login extends React.Component {
-    state = {
-      email: '',
-      password: '',
-    };
+  state = {
+    email: '',
+    password: '',
+  };
 
   onInputChange = (e) => {
     this.setState({
@@ -104,8 +104,7 @@ class Login extends React.Component {
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit}
-            >
+              className={classes.submit}>
               Sign in
             </Button>
           </form>
@@ -115,7 +114,4 @@ class Login extends React.Component {
   }
 }
 
-export default compose(
-  withApollo,
-  withStyles(styles),
-)(Login);
+export default compose(withApollo, withStyles(styles))(Login);

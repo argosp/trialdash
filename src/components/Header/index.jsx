@@ -21,7 +21,7 @@ import StyledTabs from '../StyledTabs';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
-import {defaultProfile} from '../../assets/images/defaultProfile.png';
+import defaultProfile from '../../assets/images/defaultProfile.png';
 
 const UserData = ({ classes, handleProfileMenuClick }) => (
   <Query
@@ -33,17 +33,15 @@ const UserData = ({ classes, handleProfileMenuClick }) => (
               avatar
           }
         }
-        `}
-  >
+        `}>
     {({ loading, error, data }) => {
       if (loading) return <p>Loading...</p>;
-      else
-      if (error) return <p> {error}</p>;//TODO check how to set data
+      else if (error) return <p> {error}</p>; //TODO check how to set data
       // else if(Object.entries(data).length != 0)
       return (
         <>
           <Avatar
-            src={data.user.avatar!=null?data.user.avatar:defaultProfile}
+            src={data.user.avatar != null ? data.user.avatar : defaultProfile}
             alt="user avatar"
             className={classes.avatar}
           />
@@ -52,11 +50,7 @@ const UserData = ({ classes, handleProfileMenuClick }) => (
             aria-haspopup="true"
             onClick={handleProfileMenuClick}
             disableRipple
-            className={classnames(
-              classes.expandButton,
-              classes.expandProfileButton,
-            )}
-          >
+            className={classnames(classes.expandButton, classes.expandProfileButton)}>
             {data.user.name}
             <ExpandMoreIcon />
           </Button>
@@ -83,9 +77,7 @@ class Header extends React.Component {
       }
     });
 
-    client
-      .query({ query: experimentsQuery })
-      .then(() => this.setState({ isLoading: false }));
+    client.query({ query: experimentsQuery }).then(() => this.setState({ isLoading: false }));
   }
 
   handleProfileMenuClick = (event) => {
@@ -130,11 +122,7 @@ class Header extends React.Component {
   renderCurrentExperimentName = (currentExperiment) => {
     const { isExperimentHovering } = this.state;
 
-    if (
-      currentExperiment.name
-      && currentExperiment.project.id
-      && isExperimentHovering
-    ) {
+    if (currentExperiment.name && currentExperiment.project.id && isExperimentHovering) {
       return `${currentExperiment.name} (ID: ${currentExperiment.project.id})`;
     }
 
@@ -162,26 +150,19 @@ class Header extends React.Component {
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-    const currentExperiment = withExperiments&&experiments ? experiments.find(
-        experiment => experiment.project.id === pathObj.params.id,
-      )
-      : {};
+    const currentExperiment =
+      withExperiments && experiments
+        ? experiments.find((experiment) => experiment.project.id === pathObj.params.id)
+        : {};
 
     return (
       <Grid
         container
         className={
-          withExperiments
-            ? classes.root
-            : classnames(classes.root, classes.rootWithoutExperiments)
-        }
-      >
+          withExperiments ? classes.root : classnames(classes.root, classes.rootWithoutExperiments)
+        }>
         <Grid item container xs={5} alignItems="flex-start">
-          <Box
-            display="flex"
-            alignItems="center"
-            className={classes.logoWrapper}
-          >
+          <Box display="flex" alignItems="center" className={classes.logoWrapper}>
             <MenuIcon className={classes.menuIcon} />
             <Link to="/" className={classes.logo}>
               Argos
@@ -198,19 +179,13 @@ class Header extends React.Component {
                 aria-haspopup="true"
                 onClick={this.handleExperimentsMenuClick}
                 disableRipple
-                className={classnames(
-                  classes.expandButton,
-                  classes.expandExperimentButton,
-                )}
+                className={classnames(classes.expandButton, classes.expandExperimentButton)}
                 onMouseEnter={this.handleExperimentMouseEnter}
-                onMouseLeave={this.handleExperimentMouseLeave}
-              >
-                {!isEmpty(currentExperiment)
-                  && this.renderCurrentExperimentName(currentExperiment)}
+                onMouseLeave={this.handleExperimentMouseLeave}>
+                {!isEmpty(currentExperiment) && this.renderCurrentExperimentName(currentExperiment)}
                 <ExpandMoreIcon />
               </Button>
-              {!isEmpty(experiments)
-                && (
+              {!isEmpty(experiments) && (
                 <Menu
                   id="experiments-menu"
                   open={Boolean(anchorExperimentsMenu)}
@@ -224,20 +199,17 @@ class Header extends React.Component {
                   transformOrigin={{
                     vertical: 'top',
                     horizontal: 'left',
-                  }}
-                >
-                  {!isEmpty(experiments)
-                    && experiments.map(experiment => (
+                  }}>
+                  {!isEmpty(experiments) &&
+                    experiments.map((experiment) => (
                       <MenuItem
                         key={experiment.project.id}
-                        onClick={() => this.selectExperiment(experiment.project.id)
-                        }
-                      >
+                        onClick={() => this.selectExperiment(experiment.project.id)}>
                         {experiment.name}
                       </MenuItem>
                     ))}
                 </Menu>
-                )}
+              )}
             </>
           ) : null}
         </Grid>
@@ -249,8 +221,7 @@ class Header extends React.Component {
                   {
                     headerTabId @client
                   }
-                `}
-              >
+                `}>
                 {({ data }) => (
                   <StyledTabs
                     tabs={[
@@ -259,8 +230,8 @@ class Header extends React.Component {
                       { key: uuid(), label: 'Logs', id: 'header-tab-2' },
                     ]}
                     value={data.headerTabId}
-                    onChange={
-                      (event, tabId) => this.handleTabChange(event, tabId, pathObj.params.id)
+                    onChange={(event, tabId) =>
+                      this.handleTabChange(event, tabId, pathObj.params.id)
                     }
                     ariaLabel="header tabs"
                   />
@@ -273,10 +244,7 @@ class Header extends React.Component {
             </>
           ) : null}
           <div className={classes.profileWrapper}>
-            <UserData
-              classes={classes}
-              handleProfileMenuClick={this.handleProfileMenuClick}
-            />
+            <UserData classes={classes} handleProfileMenuClick={this.handleProfileMenuClick} />
             <Menu
               id="profile-menu"
               open={Boolean(anchorProfileMenu)}
@@ -290,8 +258,7 @@ class Header extends React.Component {
               transformOrigin={{
                 vertical: 'top',
                 horizontal: 'left',
-              }}
-            >
+              }}>
               <MenuItem onClick={() => this.logout()}>Log out</MenuItem>
             </Menu>
           </div>
@@ -301,8 +268,4 @@ class Header extends React.Component {
   }
 }
 
-export default compose(
-  withRouter,
-  withApollo,
-  withStyles(styles),
-)(Header);
+export default compose(withRouter, withApollo, withStyles(styles))(Header);

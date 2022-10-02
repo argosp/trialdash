@@ -14,9 +14,9 @@ const SimpleButton = ({
   size = 'normal',
   disabled = false,
   component = 'button',
-  fullWidth= false,
+  fullWidth = false,
   labelClassName,
-  href
+  href,
 }) => (
   <Button
     variant={variant}
@@ -30,9 +30,8 @@ const SimpleButton = ({
         : classnames(classes.root, className)
     }
     onClick={onClick}
-    classes={{label: labelClassName}}
-    href={href}
-  >
+    classes={{ label: labelClassName }}
+    href={href}>
     {text}
   </Button>
 );
