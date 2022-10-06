@@ -10,8 +10,8 @@ class CustomLocation extends React.Component {
 
   };
   isCoordinatesValid = (coordinates) => {
-    const validLat = !coordinates[0] || coordinates[0] > -90 && coordinates[0] < 90
-    const validLong = !coordinates[1] || coordinates[1] > -180 && coordinates[1] < 180
+    const validLat = !coordinates[0] || (coordinates[0] > -90 && coordinates[0] < 90)
+    const validLong = !coordinates[1] || (coordinates[1] > -180 && coordinates[1] < 180)
     return validLat && validLong
   }
 

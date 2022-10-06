@@ -1,10 +1,11 @@
 import trialsQuery from '../utils/trialQuery';
+import fullTrialQuery from '../utils/fullTrialQuery';
 import moment from 'moment';
 import { TRIALS } from '../../../constants/base';
 
 function getProperties(trial, trialSet) {
   const _properties = (trialSet && trialSet.properties) || []
-  return _properties.reduce((prev, property)=> {
+  return _properties.reduce((prev, property) => {
     const propInTrial = trial.properties.find(p => p.key === property.key)
     return {
       ...prev,
@@ -14,7 +15,23 @@ function getProperties(trial, trialSet) {
 
 }
 
-function fetchCsvData(client, match, trialSet, displayCloneData) {
+function getEntityProperties(entity) {
+  return entity.properties.reduce((prev, prop) => {
+    return {
+      ...prev,
+      [prop.label]: prop.val
+    }
+  }, {})
+}
+
+function getCsvData(array) {
+  const replacer = (key, value) => value === null ? '' : value
+  return array.map(item =>
+    Object.keys(item).map(key => JSON.stringify(item[key], replacer))
+  )
+}
+
+function fetchTrialsData(client, match, trialSet, displayCloneData) {
   const trials = client.readQuery({
     query: trialsQuery(match.params.id, match.params.trialSetKey)
   })[TRIALS];
@@ -28,42 +45,76 @@ function fetchCsvData(client, match, trialSet, displayCloneData) {
     state: t.status
   }))
 
-  let value;
   return [
     // get csv headers
     Object.keys(fixedTrials[0]),
     // get csv data
-    ...fixedTrials.map(item =>
-      Object.keys(item).map(key => {
+    ...getCsvData(fixedTrials)
+  ].join("\r\n");
+}
 
-        value = item[key];
+function fetchTrialData(trial, trials, trialSet, displayCloneData) {
+  const fixedTrial = {
+    name: trial.name,
+    cloneFrom: trial.cloneFrom ? displayCloneData(trial, trials) : '',
+    numberOfEntities: trial.numberOfEntities,
+    ...getProperties(trial, trialSet),
+    created: moment(trial.created).format('D/M/YYYY'),
+    state: trial.status
+  }
 
-        if (typeof value == 'object' && value) {
-          // convert object to string
-          value = JSON.stringify(value).replace(/"/g, "'");
-        }
-
-        if (typeof value == 'string') {
-          // replace quotation marks, with commas
-          value = value.replace(/"/g, "'");
-          // if find a comma in the value, set quotation marks around the value
-          value = `"${value}"`;
-        }
-
-        return value;
-      })
-    )
+  return [
+    // get csv headers
+    Object.keys(fixedTrial),
+    // get csv data
+    ...getCsvData([fixedTrial])
   ].join("\n");
 }
 
-export default async function downloadCsv(client, match, trialSet, displayCloneData) {
+function fetchEntitiesData(trial) {
 
-  const csvString = await fetchCsvData(client, match, trialSet, displayCloneData);
+  const entities = trial.fullDetailedEntities.map(e => ({
+    entitiesTypeName: e.entitiesTypeName,
+    entitiesTypekey: e.entitiesTypeKey,
+    name: e.name,
+    ...getEntityProperties(e)
+  }))
+
+  return [
+    // get csv headers
+    Object.keys(entities[0]),
+    // get csv data
+    ...getCsvData(entities)
+  ].join("\n");
+}
+
+
+function download(csvString, fileName) {
   const csvData = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
   const csvUrl = URL.createObjectURL(csvData);
   const a = document.createElement('a');
   a.href = csvUrl;
-  a.download = `trials.csv`;
+  a.download = `${fileName}.csv`;
   a.click();
   URL.revokeObjectURL(csvUrl);
+}
+
+async function downloadTrials(client, match, trialSet, displayCloneData) {
+  const csvString = await fetchTrialsData(client, match, trialSet, displayCloneData);
+  download(csvString, 'trials')
+}
+async function downloadTrial(args) {
+  const {data} = await args.client.query({
+    query: fullTrialQuery(args.match.params.id, args.trial.key)
+  });
+  const {trial} = data
+  const csvStringTrial = await fetchTrialData(trial, args.trials, args.trialSet, args.displayCloneData);
+  download(csvStringTrial, `trial_${trial.name}`)
+  const csvStringEntities = await fetchEntitiesData(trial, args.trials, args.trialSet, args.displayCloneData);
+  download(csvStringEntities, `trial_${trial.name}_entities`)
+}
+
+export {
+  downloadTrial,
+  downloadTrials
 }

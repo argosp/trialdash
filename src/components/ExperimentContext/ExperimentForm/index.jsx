@@ -41,7 +41,8 @@ class ExperimentForm extends React.Component {
   state = {
     formObject: this.initFormObject(),
     isStartDatePickerOpen: false,
-    isEndDatePickerOpen: false
+    isEndDatePickerOpen: false,
+    confirmOpen: false
   };
 
   startDatePickerRef = React.createRef();

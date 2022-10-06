@@ -74,6 +74,7 @@ class ContentTable extends React.Component {
       classes,
     } = this.props;
 
+
     return (
       <Table className={classes.table}>
         {tableHeadColumns
@@ -81,7 +82,7 @@ class ContentTable extends React.Component {
             <TableHead>
               <TableRow>
                 {tableHeadColumns.map(({ title, key }) => (
-                  <StyledTableCell classes={classes} className={classes.headCell} align="left" key={key}>
+                  <StyledTableCell className={classes.headCell} align="left" key={key}>
                     {title}
                   </StyledTableCell>
                 ))}

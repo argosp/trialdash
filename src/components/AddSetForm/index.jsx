@@ -151,7 +151,7 @@ class AddSetForm extends React.Component {
   submitEntity = async (entity, deleted) => {
     const newEntity = entity;
     if (deleted) newEntity.state = 'Deleted';
-    const { formType, match, history, client, cacheQuery, itemsName, mutationName, returnFunc } = this.props;
+    const { formType, match, client, cacheQuery, itemsName, mutationName, returnFunc } = this.props;
     newEntity.properties.forEach((p) => {
       delete p.fields;
       delete p.name;
@@ -315,7 +315,7 @@ class AddSetForm extends React.Component {
       isEditFieldTypePanelOpen,
       confirmOpen,
     } = this.state;
-    const { classes, theme, formType, history, match, returnFunc } = this.props;
+    const { classes, theme, formType } = this.props;
     let dropZoneClassName = classes.dropZone;
 
     if (isEmpty(formObject.properties) && isDragging) {

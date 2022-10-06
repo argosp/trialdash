@@ -24,7 +24,9 @@ import trialSetMutation from '../utils/trialSetMutation';
 import ConfirmDialog from '../../ConfirmDialog';
 
 class TrialSets extends React.Component {
-    state = {};
+    state = {
+      confirmOpen: false
+    };
 
     setConfirmOpen = (open, trialSet) => {
       if (trialSet || open) {

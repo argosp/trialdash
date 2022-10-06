@@ -16,7 +16,7 @@ import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
 import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { CloneIcon, GridIcon, PenIcon, BasketIcon } from '../../../constants/icons';
+import { CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
@@ -25,7 +25,7 @@ import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
 import { getTrialNameByKey } from '../../../assets/Utils';
-import downloadCsv from './downloadCsv'
+import { downloadTrial, downloadTrials } from './downloadCsv'
 
 class Trials extends React.Component {
   state = {
@@ -36,7 +36,7 @@ class Trials extends React.Component {
 
   setConfirmOpen = (open, trialToDelete) => {
     if (trialToDelete || open) {
-      this.setState({trialToDelete})
+      this.setState({ trialToDelete })
     }
     this.setState({ confirmOpen: open });
   }
@@ -71,9 +71,9 @@ class Trials extends React.Component {
     this.setState({ [anchor]: null });
   };
   displayCloneData = (trial, trialsArray) => {
-    return trial.cloneFromTrailKey?
-    `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}`:
-    `cloned from ${trial.cloneFrom}`;//state will display
+    return trial.cloneFromTrailKey ?
+      `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}` :
+      `cloned from ${trial.cloneFrom}`;//state will display
   }
 
   renderTableRow = (trial, index, trialsArray) => {
@@ -83,7 +83,7 @@ class Trials extends React.Component {
       // should be uniqe id
       <React.Fragment key={trial.created}>
         <StyledTableCell align="left" className={classes.tableCell} onClick={() => this.activateEditMode(trial)}>{trial.name}</StyledTableCell>
-        <StyledTableCell align="left">{trial.cloneFrom ? this.displayCloneData(trial, trialsArray): ''}</StyledTableCell>
+        <StyledTableCell align="left">{trial.cloneFrom ? this.displayCloneData(trial, trialsArray) : ''}</StyledTableCell>
         <StyledTableCell align="left">{trial.numberOfEntities}</StyledTableCell>
         {trialSet && trialSet.properties && trialSet.properties.map(property => (
           <StyledTableCell key={property.key} align="left">
@@ -98,6 +98,19 @@ class Trials extends React.Component {
         </StyledTableCell>
         <StyledTableCell align="right" className={classes.actionsCell}>
           <CustomTooltip
+            title="Download"
+            ariaLabel="download"
+            onClick={() => downloadTrial({
+              ...this.props,
+              trial,
+              trials: trialsArray,
+              trialSet,
+              displayCloneData: this.displayCloneData
+            })}
+          >
+            <DownloadIcon />
+          </CustomTooltip>
+          <CustomTooltip
             title="Entities"
             ariaLabel="entities"
             onClick={() => this.activateEditMode(trial, true)}
@@ -107,42 +120,42 @@ class Trials extends React.Component {
           <CustomTooltip
             title="Clone from"
             ariaLabel="clone"
-            onClick={(e) => this.handleMenuClick(e,trial)}
+            onClick={(e) => this.handleMenuClick(e, trial)}
           >
-          <CloneIcon />
-        </CustomTooltip>
-            {this.state.currentTrial && <Menu
-              id="clone-menu"
-              classes={{ paper: classes.menu }}
-              open={Boolean(anchorMenu)}
-              onClose={() => this.handleMenuClose('anchorMenu')}
-              anchorEl={anchorMenu}
-              getContentAnchorEl={null}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
+            <CloneIcon />
+          </CustomTooltip>
+          {this.state.currentTrial && <Menu
+            id="clone-menu"
+            classes={{ paper: classes.menu }}
+            open={Boolean(anchorMenu)}
+            onClose={() => this.handleMenuClose('anchorMenu')}
+            anchorEl={anchorMenu}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            {['design', 'deploy'].map((i) => <MenuItem
+              color={theme.palette[this.state.currentTrial.status === 'deploy' ? 'orange' : 'violet'].main}
+              key={uuid()}
+              classes={{ root: classes.menuItem }}
+              onClick={e => this.onInputChange({ target: { value: i } })}
             >
-              {['design', 'deploy'].map((i) => <MenuItem
-                color={theme.palette[this.state.currentTrial.status === 'deploy' ? 'orange' : 'violet'].main}
-                key={uuid()}
-                classes={{ root: classes.menuItem }}
-                onClick={e => this.onInputChange({ target: { value: i } })}
+              <Grid
+                container
+                wrap="nowrap"
+                alignItems="center"
               >
-                <Grid
-                  container
-                  wrap="nowrap"
-                  alignItems="center"
-                >
-                  <div className={(classnames(classes.rect, classes[i]))}></div>
-                  {i}
-                </Grid>
-              </MenuItem>)}
-            </Menu>}
+                <div className={(classnames(classes.rect, classes[i]))}></div>
+                {i}
+              </Grid>
+            </MenuItem>)}
+          </Menu>}
           <CustomTooltip
             title="Edit"
             ariaLabel="edit"
@@ -205,7 +218,7 @@ class Trials extends React.Component {
     trialSet.numberOfTrials = n[trialSet.key];
     updateCache(
       cache,
-      {data: { [TRIAL_SET_MUTATION]: trialSet } },
+      { data: { [TRIAL_SET_MUTATION]: trialSet } },
       trialSetsQuery(match.params.id),
       TRIAL_SETS,
       TRIAL_SET_MUTATION,
@@ -294,7 +307,33 @@ class Trials extends React.Component {
     });
   }
   updateTrial = (trial) => {
-    this.setState({trial})
+    this.setState({ trial })
+  }
+  csvFileToArray = data => {
+    const delimiter = ','
+    const titles = data.slice(0, data.indexOf('\n')).split(delimiter);
+    return data
+      .slice(data.indexOf('\n') + 1)
+      .split('\n')
+      .map(v => {
+        const values = v.split(delimiter);
+        return titles.reduce(
+          (obj, title, index) => (((obj[title] = values[index].replace(/(['"])/g, "")), obj)),
+          {}
+        );
+      });
+  };
+
+  uploadTrial = (e) => {
+    const file = e.target.files[0]
+    const fileReader = new FileReader();
+    fileReader.onload = (event) => {
+      const text = event.target.result;
+      const json = this.csvFileToArray(text);
+      console.log('aaaaaaaaaaaaaaaaa', json)
+    };
+
+    fileReader.readAsText(file);
   }
 
   render() {
@@ -325,9 +364,12 @@ class Trials extends React.Component {
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
               rightDescription={trialSet ? trialSet.name : ''}
               addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
+              withUploadButton
+              uploadButtonText="Upload trial"
+              uploadButtonHandler={this.uploadTrial}
               withDownloadButton
               downloadButtonText="Download trials"
-              downloadButtonHandler={() => downloadCsv(client, match, trialSet, this.displayCloneData)}
+              downloadButtonHandler={() => downloadTrials(client, match, trialSet, this.displayCloneData)}
             />
             <ContentTable
               contentType={TRIALS}

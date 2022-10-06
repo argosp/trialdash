@@ -67,7 +67,8 @@ class TrialForm extends React.Component {
     tabValue: this.props.tabValue || 0,
     showFooter: true,
     changedEntities: [],
-    triggerUpdate: 0
+    triggerUpdate: 0,
+    confirmOpen: false
   };
 
 

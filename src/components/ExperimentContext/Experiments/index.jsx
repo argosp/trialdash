@@ -41,7 +41,7 @@ const UPLOAD_FILE = gql`
 
 class Experiments extends React.Component {
   state = {
-
+    confirmOpen: false
   };
 
   setConfirmOpen = (open, experiment) => {
@@ -344,6 +344,7 @@ class Experiments extends React.Component {
         title: '',
       },
       {
+        key: 1,
         title: 'Start date',
       },
       {
