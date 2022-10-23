@@ -16,39 +16,41 @@ export default (trial, changedEntities) => {
   return gql`mutation {
         ${TRIAL_MUTATION}(
             key:"${key}",
-            uid:"${localStorage.getItem('uid')}"
-            experimentId:"${trial.experimentId}"
-            name:"${trial.name}"
-            status:"${trial.status}"
+            action: "${trial.action}",
+            uid:"${localStorage.getItem('uid')}",
+            experimentId:"${trial.experimentId}",
+            name:"${trial.name}",
+            status:"${trial.status}",
             ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
             ${trial.cloneFromTrailKey ? `cloneFromTrailKey:"${trial.cloneFromTrailKey}"` : ''},
-            trialSetKey:"${trial.trialSetKey}"
-            numberOfEntities:${trial.numberOfEntities}
-            ${trial.state ? `state:"${trial.state}"` : ''}
+            trialSetKey:"${trial.trialSetKey}",
+            numberOfEntities:${trial.numberOfEntities},
+            ${trial.state ? `state:"${trial.state}"` : ''},
             ${changedEntities ? `changedEntities: ${JSON.stringify(changedEntities)
-              .replace(/"key":/g, 'key:')
-              .replace(/"val":/g, 'val:')
-              .replace(/"type":/g, 'type:')
-              .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-              .replace(/"properties":/g, 'properties:')
-              .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
+      .replace(/"key":/g, 'key:')
+      .replace(/"val":/g, 'val:')
+      .replace(/"type":/g, 'type:')
+      .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+      .replace(/"properties":/g, 'properties:')
+      .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
             properties: ${JSON.stringify(trial.properties)
-    .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')},
-            entities: ${JSON.stringify(trial.entities)
-    .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')
-    .replace(/"type":/g, 'type:')
-    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-    .replace(/"properties":/g, 'properties:')
-    .replace(/"containsEntities":/g, 'containsEntities:')},
-            deployedEntities: ${JSON.stringify(trial.deployedEntities)
-    .replace(/"key":/g, 'key:')
-    .replace(/"val":/g, 'val:')
-    .replace(/"type":/g, 'type:')
-    .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-    .replace(/"properties":/g, 'properties:')
-    .replace(/"containsEntities":/g, 'containsEntities:')}
+      .replace(/"key":/g, 'key:')
+      .replace(/"val":/g, 'val:')},
+    ${trial.entities ? `entities: ${JSON.stringify(trial.entities)
+      .replace(/"key":/g, 'key:')
+      .replace(/"val":/g, 'val:')
+      .replace(/"type":/g, 'type:')
+      .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+      .replace(/"properties":/g, 'properties:')
+      .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
+              ${trial.deployedEntities ? `deployedEntities: ${JSON.stringify(trial.deployedEntities)
+      .replace(/"key":/g, 'key:')
+      .replace(/"val":/g, 'val:')
+      .replace(/"type":/g, 'type:')
+      .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
+      .replace(/"properties":/g, 'properties:')
+      .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
+
             )
             {
               key

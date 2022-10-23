@@ -25,9 +25,16 @@ function getEntityProperties(entity) {
 }
 
 function getCsvData(array) {
-  const replacer = (key, value) => value === null ? '' : value
+  let value
   return array.map(item =>
-    Object.keys(item).map(key => JSON.stringify(item[key], replacer))
+    Object.keys(item).map(key => {
+      value = item[key];
+      if (typeof value == 'string') {
+        value = value.replace(/\"/g, "'");
+        value = `"${value}"`;
+      }
+      return value
+    })
   )
 }
 
@@ -42,7 +49,7 @@ function fetchTrialsData(client, match, trialSet, displayCloneData) {
     numberOfEntities: t.numberOfEntities,
     ...getProperties(t, trialSet),
     created: moment(t.created).format('D/M/YYYY'),
-    state: t.status
+    status: t.status
   }))
 
   return [
@@ -50,17 +57,19 @@ function fetchTrialsData(client, match, trialSet, displayCloneData) {
     Object.keys(fixedTrials[0]),
     // get csv data
     ...getCsvData(fixedTrials)
-  ].join("\r\n");
+  ].join("\n");
 }
 
 function fetchTrialData(trial, trials, trialSet, displayCloneData) {
   const fixedTrial = {
     name: trial.name,
+    key: trial.key,
     cloneFrom: trial.cloneFrom ? displayCloneData(trial, trials) : '',
     numberOfEntities: trial.numberOfEntities,
+    trialSetKey: trialSet.key,
     ...getProperties(trial, trialSet),
     created: moment(trial.created).format('D/M/YYYY'),
-    state: trial.status
+    status: trial.status
   }
 
   return [
@@ -74,9 +83,10 @@ function fetchTrialData(trial, trials, trialSet, displayCloneData) {
 function fetchEntitiesData(trial) {
 
   const entities = trial.fullDetailedEntities.map(e => ({
+    name: e.name,
+    key: e.key,
     entitiesTypeName: e.entitiesTypeName,
     entitiesTypekey: e.entitiesTypeKey,
-    name: e.name,
     ...getEntityProperties(e)
   }))
 
@@ -104,14 +114,17 @@ async function downloadTrials(client, match, trialSet, displayCloneData) {
   download(csvString, 'trials')
 }
 async function downloadTrial(args) {
-  const {data} = await args.client.query({
+  const { data } = await args.client.query({
     query: fullTrialQuery(args.match.params.id, args.trial.key)
   });
-  const {trial} = data
+  const { trial } = data
   const csvStringTrial = await fetchTrialData(trial, args.trials, args.trialSet, args.displayCloneData);
   download(csvStringTrial, `trial_${trial.name}`)
-  const csvStringEntities = await fetchEntitiesData(trial, args.trials, args.trialSet, args.displayCloneData);
-  download(csvStringEntities, `trial_${trial.name}_entities`)
+  if (trial.fullDetailedEntities && trial.fullDetailedEntities.length) {
+    const csvStringEntities = await fetchEntitiesData(trial, args.trials, args.trialSet, args.displayCloneData);
+    download(csvStringEntities, `trial_${trial.name}_entities`)
+  }
+
 }
 
 export {

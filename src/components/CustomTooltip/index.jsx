@@ -17,7 +17,7 @@ class CustomTooltip extends React.Component {
   };
 
   render() {
-    const { classes, title, children, className, placement, ariaLabel, onClick } = this.props;
+    const { classes, title,component, children, className, placement, ariaLabel, onClick } = this.props;
 
     return (
       <Tooltip
@@ -52,6 +52,7 @@ class CustomTooltip extends React.Component {
           aria-label={ariaLabel}
           onClick={onClick}
           disableRipple
+          component={component || "button"}
         >
           {children}
         </IconButton>

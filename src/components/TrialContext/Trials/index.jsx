@@ -16,7 +16,7 @@ import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
 import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
+import { AttachFile,UploadIcon, CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
@@ -25,7 +25,8 @@ import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
 import { getTrialNameByKey } from '../../../assets/Utils';
-import { downloadTrial, downloadTrials } from './downloadCsv'
+import { downloadTrial, downloadTrials } from './downloadCsv';
+import { uploadEntities, uploadTrial } from './uploadCsv';
 
 class Trials extends React.Component {
   state = {
@@ -78,7 +79,7 @@ class Trials extends React.Component {
 
   renderTableRow = (trial, index, trialsArray) => {
     const { trialSet, confirmOpen, anchorMenu } = this.state;
-    const { classes, theme } = this.props;
+    const { classes, theme, client, match } = this.props;
     return (
       // should be uniqe id
       <React.Fragment key={trial.created}>
@@ -109,6 +110,34 @@ class Trials extends React.Component {
             })}
           >
             <DownloadIcon />
+          </CustomTooltip>
+          <CustomTooltip
+            title="Upload csv props update"
+            ariaLabel="Upload csv update"
+            component="label"
+          >
+            <>
+              <UploadIcon />
+              <input
+                type="file"
+                onChange={this.updateTrialFromCsv}
+                hidden
+              /></>
+
+          </CustomTooltip>
+          <CustomTooltip
+            title="Upload csv entities update"
+            ariaLabel="Upload csv update"
+            component="label"
+          >
+            <>
+              <AttachFile />
+              <input
+                type="file"
+                onChange={(e) => this.updateEntitiesTrialFromCsv(e, trial)}
+                hidden
+              /></>
+
           </CustomTooltip>
           <CustomTooltip
             title="Entities"
@@ -183,6 +212,15 @@ class Trials extends React.Component {
       </React.Fragment>
     );
   };
+
+  updateTrialFromCsv = async (e) => {
+    await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
+    this.setState({update: true})
+  }
+  updateEntitiesTrialFromCsv = async (e, trial) => {
+    await uploadEntities(e, trial, this.props.client, this.props.match)
+    // this.setState({update: true})
+  }
 
   generateTableColumns = (trialSet) => {
     const columns = [
@@ -309,32 +347,6 @@ class Trials extends React.Component {
   updateTrial = (trial) => {
     this.setState({ trial })
   }
-  csvFileToArray = data => {
-    const delimiter = ','
-    const titles = data.slice(0, data.indexOf('\n')).split(delimiter);
-    return data
-      .slice(data.indexOf('\n') + 1)
-      .split('\n')
-      .map(v => {
-        const values = v.split(delimiter);
-        return titles.reduce(
-          (obj, title, index) => (((obj[title] = values[index].replace(/(['"])/g, "")), obj)),
-          {}
-        );
-      });
-  };
-
-  uploadTrial = (e) => {
-    const file = e.target.files[0]
-    const fileReader = new FileReader();
-    fileReader.onload = (event) => {
-      const text = event.target.result;
-      const json = this.csvFileToArray(text);
-      console.log('aaaaaaaaaaaaaaaaa', json)
-    };
-
-    fileReader.readAsText(file);
-  }
 
   render() {
     const { history, match, client } = this.props;
@@ -364,9 +376,6 @@ class Trials extends React.Component {
               backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
               rightDescription={trialSet ? trialSet.name : ''}
               addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
-              withUploadButton
-              uploadButtonText="Upload trial"
-              uploadButtonHandler={this.uploadTrial}
               withDownloadButton
               downloadButtonText="Download trials"
               downloadButtonHandler={() => downloadTrials(client, match, trialSet, this.displayCloneData)}
