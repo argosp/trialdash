@@ -3,6 +3,7 @@ import { updateCache } from '../../../apolloGraphql';
 import { TRIALS, TRIAL_MUTATION } from '../../../constants/base';
 import trialsQuery from '../utils/trialQuery';
 import entitiesTypesQuery from '../../EntityContext/utils/entityTypeQuery';
+import { reject } from 'lodash';
 
 function csvJSON(csv) {
 
@@ -41,7 +42,6 @@ function csvFileToArray(data) {
     .split('\n')
     .map(v => {
       const values = v.split(delimiter);
-      console.log(values, titles)
       return titles.reduce(
         (obj, title, index) => (((obj[title] = values[index] && values[index].replace(/(['"])/g, "")), obj)),
         {}
@@ -70,25 +70,29 @@ async function submitTrial(trial, client, match) {
 }
 
 function uploadTrial(e, trialSet, client, match) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const file = e.target.files[0]
     const fileReader = new FileReader();
     fileReader.onload = async (event) => {
       const text = event.target.result;
       const json = csvFileToArray(text);
-      const trial = json[0]
-      const properties = trialSet.properties.map(prop => {
-        const propInTrial = Object.keys(trial).find(p => p === prop.label)
-        return { key: prop.key, val: trial[propInTrial] }
-      })
-      const updatedTrial = {
-        ...trial,
-        properties,
-        experimentId: match.params.id,
-        action: "update"
+      if (json && json[0].trialSetKey) {
+        const trial = json[0]
+        const properties = trialSet.properties.map(prop => {
+          const propInTrial = Object.keys(trial).find(p => p === prop.label)
+          return { key: prop.key, val: trial[propInTrial] }
+        })
+        const updatedTrial = {
+          ...trial,
+          properties,
+          experimentId: match.params.id,
+          action: "update"
+        }
+        await submitTrial(updatedTrial, client, match)
+        return resolve(true)
+      } else {
+        return reject()
       }
-      await submitTrial(updatedTrial, client, match)
-      return resolve(true)
     };
     fileReader.readAsText(file);
   })
