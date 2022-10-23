@@ -4,9 +4,9 @@ import { TRIALS, TRIAL_MUTATION } from '../../../constants/base';
 import trialsQuery from '../utils/trialQuery';
 import entitiesTypesQuery from '../../EntityContext/utils/entityTypeQuery';
 
-function csvJSON(csv){
+function csvJSON(csv) {
 
-  var lines=csv.split("\n");
+  var lines = csv.split("\n");
 
   var result = [];
 
@@ -16,23 +16,21 @@ function csvJSON(csv){
 
   var headers = lines[0].split(commaRegex).map(h => h.replace(quotesRegex, "$1"));
 
-  for(var i=1;i<lines.length;i++){
+  for (var i = 1; i < lines.length; i++) {
 
-      var obj = {};
-      var currentline=lines[i].split(commaRegex);
+    var obj = {};
+    var currentline = lines[i].split(commaRegex);
 
 
-      for(var j=0;j<headers.length;j++){
+    for (var j = 0; j < headers.length; j++) {
 
-          obj[headers[j]] = currentline[j] && currentline[j].replace(quotesRegex, "$1");
-      }
+      obj[headers[j]] = currentline[j] && currentline[j].replace(quotesRegex, "$1");
+    }
 
-      result.push(obj);
+    result.push(obj);
 
   }
-  console.log('44444444444444', result)
   return result;
-  //return JSON.stringify(result);
 }
 
 function csvFileToArray(data) {
@@ -100,7 +98,7 @@ async function fetchEntityTypesData(client, match) {
   const { data } = await client.query({
     query: entitiesTypesQuery(match.params.id)
   });
-  return data.entitiesTypes.reduce((prev, curr) => ({...prev,[curr.key]: curr}), {})
+  return data.entitiesTypes.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {})
 
 }
 
@@ -112,13 +110,14 @@ function uploadEntities(e, trial, client, match) {
       const text = event.target.result;
       const json = csvJSON(text);
       const entityTypes = await fetchEntityTypesData(client, match)
-      const entityProps = json.reduce((prev, curr) => ({...prev, [curr.key]: curr}), {})
+      const entityProps = json.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {})
       const entities = trial.entities.map(entity => {
-        const properties = entity.properties.map(prop => {
-          const propLabel = entityTypes[entity.entitiesTypeKey].properties.find(p => p.key === prop.key)
-          const propInEntity = Object.keys(entityProps[entity.key]).find(p => p === propLabel.label)
-          return { key: prop.key, val: entityProps[entity.key][propInEntity].replace(/'/g,"\"") }
-        })
+        const properties = entityTypes[entity.entitiesTypeKey].properties.reduce((prev, curr) => {
+          const propInCsv = entityProps[entity.key][curr.label]
+          if (propInCsv) {
+            return [...prev, { key: curr.key, val: propInCsv.replace(/'/g, "\"") }]
+          }
+        }, [])
         return { ...entity, properties }
       })
       const updatedTrial = {
