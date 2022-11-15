@@ -13,9 +13,13 @@ const pointLatLngToMeters = (p) => {
   return `(${fix(p.lng)}, ${fix(p.lat)}) in meters<br/>(${fix(p.x)}, ${fix(p.y)}) in pixels`;
 }
 
-
 const roundDec = (num) => {
-  return Math.round(num * 10) / 10;
+  return num;//Math.round(num * 10) / 10;
+}
+
+const roundDigits = (num, decimalPlaces) => {
+  var p = Math.pow(10, decimalPlaces);
+  return Math.round(num * p) / p;
 }
 
 export const MapStandalone = ({ row, setRow }) => {
@@ -47,16 +51,23 @@ export const MapStandalone = ({ row, setRow }) => {
   const verticalPoint = { lat: anchor.lat + dlat, lng: anchor.lng, x: anchor.x, y: anchor.y + distances.y };
 
   React.useEffect(() => {
+    // check zero division
     if (Math.min(Math.abs(distances.x), Math.abs(distances.y), Math.abs(distances.lat), Math.abs(distances.lng)) < 1e-6) {
       return;
     }
 
-    const right = Math.round((anchor.lng + dlng / distances.x * (imageSize.x - anchor.x)) * 1e9) / 1e9;
-    const left = Math.round((horizontalPoint.lng - dlng / distances.x * horizontalPoint.x) * 1e9) / 1e9;
-    const lower = Math.round((anchor.lat - dlat / distances.y * anchor.y) * 1e9) / 1e9;
-    const upper = Math.round((verticalPoint.lat + dlat / distances.y * (imageSize.y - verticalPoint.y)) * 1e9) / 1e9;
+    // compute new bounds
+    const right = roundDigits(anchor.lng + dlng * (imageSize.x - anchor.x) / distances.x, 9);
+    const left = roundDigits(horizontalPoint.lng - dlng / distances.x * horizontalPoint.x, 9);
+    const lower = roundDigits(anchor.lat - dlat / distances.y * anchor.y, 9);
+    const upper = roundDigits(verticalPoint.lat + dlat / distances.y * (imageSize.y - verticalPoint.y), 9);
 
-    if (Math.max(Math.abs(right - row.right), Math.abs(left - row.left), Math.abs(lower - row.lower), Math.abs(upper - row.upper)) < 1e-6) {
+    // check bounds are changed from previous
+    const dright = Math.abs(right - row.right);
+    const dleft = Math.abs(left - row.left);
+    const dlower = Math.abs(lower - row.lower);
+    const dupper = Math.abs(upper - row.upper);
+    if (Math.max(dright, dleft, dlower, dupper) < 1e-6) {
       return;
     }
 
@@ -65,6 +76,7 @@ export const MapStandalone = ({ row, setRow }) => {
     // console.log('lower', lower, row.lower);
     // console.log('upper', upper, row.upper);
 
+    // assign new bounds
     setRow(Object.assign({}, row, { lower, right, upper, left }));
     setTimeout(() => {
       mapRef.current.leafletElement.fitBounds([[lower, left], [upper, right]]);
@@ -176,7 +188,9 @@ export const MapStandalone = ({ row, setRow }) => {
             setLocation={p => {
               const xmeters = p[1] - anchor.lng;
               const x = xmeters / (row.right - row.left) * imageSize.x;
-              setDistances({ ...distances, x, lng: Math.abs(xmeters) })
+              // console.log(xmeters, x, distances);
+              // console.log(row);
+              setDistances({ ...distances, x, lng: Math.abs(xmeters) });
             }}
             locationToShow={pointLatLngToMeters(horizontalPoint)}
           >
@@ -187,7 +201,9 @@ export const MapStandalone = ({ row, setRow }) => {
             setLocation={p => {
               const ymeters = p[0] - anchor.lat;
               const y = ymeters / (row.upper - row.lower) * imageSize.y;
-              setDistances({ ...distances, y, lat: Math.abs(ymeters) })
+              // console.log(ymeters, y, distances);
+              setDistances({ ...distances, y, lat: Math.abs(ymeters) });
+              // setRow({...row, })
             }}
             locationToShow={pointLatLngToMeters(verticalPoint)}
           >
