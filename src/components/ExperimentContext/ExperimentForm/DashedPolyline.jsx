@@ -6,7 +6,7 @@ import {
 
 export const DashedPolyline = ({ positions, children }) => (
     <Polyline
-      positions={positions.map(p => [p.lat, p.lng])}
+      positions={positions.map(p => p.length ? p : [p.lat, p.lng])}
       color={'black'}
       weight={2}
       dashArray={'4 4'}
