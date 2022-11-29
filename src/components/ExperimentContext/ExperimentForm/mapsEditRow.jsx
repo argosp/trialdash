@@ -167,7 +167,13 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
         <TableCell align="right">
           <Checkbox
             disabled={!open}
-            onChange={(e, val) => setRow({ ...row, embedded: val })}
+            onChange={(e, val) => {
+              if (!val && row.height && row.width) {
+                setRow({ ...row, left: 0, right: row.width, lower: 0, upper: row.height, embedded: val });
+              } else {
+                setRow({ ...row, embedded: val });
+              }
+            }}
             checked={row.embedded}
             color="primary"
           ></Checkbox>
