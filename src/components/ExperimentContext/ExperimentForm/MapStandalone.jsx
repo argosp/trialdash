@@ -3,12 +3,8 @@ import {
   Grid,
 } from '@material-ui/core';
 import { MapWithImage } from "./MapWithImage";
-import { NumberTextField } from "./NumberTextField";
 import { AnchorPoints } from "./AnchorPoints.jsx";
-
-const roundDec = (num) => {
-  return Math.round(num * 10) / 10;
-}
+import { InputXY } from "./InputXY.jsx";
 
 export const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
@@ -75,68 +71,44 @@ export const MapStandalone = ({ row, setRow }) => {
             Image size: ({imageSize.x} x {imageSize.y}) <br />
           </Grid>
           <Grid item>
-            <Grid container spacing={2}>
-              <Grid item>
-                <NumberTextField value={roundDec(anchor.lng)} onChange={(num) => setAnchor({ ...anchor, lng: num })} label="Anchor X meters" width='150px' />
-              </Grid>
-              <Grid item>
-                <NumberTextField value={roundDec(anchor.lat)} onChange={(num) => setAnchor({ ...anchor, lat: num })} label="Anchor Y meters" width='150px' />
-              </Grid>
-            </Grid>
+            <InputXY
+              name="Anchor" units="meters"
+              x={anchor.lng} setX={(num) => setAnchor({ ...anchor, lng: num })}
+              y={anchor.lat} setY={(num) => setAnchor({ ...anchor, lat: num })}
+            ></InputXY>
           </Grid>
           <Grid item>
-            <Grid container spacing={2}>
-              <Grid item>
-                <NumberTextField value={roundDec(anchor.x)} onChange={(num) => setAnchor({ ...anchor, x: num })} label="Anchor X pixels" width='150px' />
-              </Grid>
-              <Grid item>
-                <NumberTextField value={roundDec(anchor.y)} onChange={(num) => setAnchor({ ...anchor, y: num })} label="Anchor Y pixels" width='150px' />
-              </Grid>
-            </Grid>
+            <InputXY
+              name="Anchor" units="pixels"
+              x={anchor.x} setX={(num) => setAnchor({ ...anchor, x: num })}
+              y={anchor.y} setY={(num) => setAnchor({ ...anchor, y: num })}
+            ></InputXY>
           </Grid>
           <Grid item>
-            <Grid container spacing={2}>
-              <Grid item>
-                <NumberTextField value={roundDec(distances.lng)}
-                  label="Span X Meters" width='150px'
-                  onChange={(num) => {
-                    const lng = Math.abs(num);
-                    if (lng > 1e-6) {
-                      const lat = distances.lat / distances.lng * lng;
-                      setDistances({ ...distances, lat, lng });
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <NumberTextField value={roundDec(distances.x)}
-                  label="Span X Pixels" width='150px'
-                  onChange={(num) => setDistances({ ...distances, x: num })}
-                />
-              </Grid>
-            </Grid>
+            <InputXY
+              name="Span" units="meters"
+              x={distances.lng} setX={(num) => {
+                const lng = Math.abs(num);
+                if (lng > 1e-6) {
+                  const lat = distances.lat / distances.lng * lng;
+                  setDistances({ ...distances, lat, lng });
+                }
+              }}
+              y={distances.lat} setY={(num) => {
+                const lat = Math.abs(num);
+                if (lat > 1e-6) {
+                  const lng = distances.lng / distances.lat * lat;
+                  setDistances({ ...distances, lat, lng });
+                }
+              }}
+            ></InputXY>
           </Grid>
           <Grid item>
-            <Grid container spacing={2}>
-              <Grid item>
-                <NumberTextField value={roundDec(distances.lat)}
-                  label="Span Y Meters" width='150px'
-                  onChange={(num) => {
-                    const lat = Math.abs(num);
-                    if (lat > 1e-6) {
-                      const lng = distances.lng / distances.lat * lat;
-                      setDistances({ ...distances, lat, lng });
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <NumberTextField value={roundDec(distances.y)}
-                  label="Span Y Pixels" width='150px'
-                  onChange={(num) => setDistances({ ...distances, y: num })}
-                />
-              </Grid>
-            </Grid>
+            <InputXY
+              name="Span" units="pixels"
+              x={distances.x} setX={(num) => setDistances({ ...distances, x: num })}
+              y={distances.y} setY={(num) => setDistances({ ...distances, y: num })}
+            ></InputXY>
           </Grid>
         </Grid>
       </Grid>
@@ -151,7 +123,7 @@ export const MapStandalone = ({ row, setRow }) => {
             anchorLatLng={{ lat: anchor.lat, lng: anchor.lng }}
             horizontalLng={horizontalPoint.lng}
             verticalLat={verticalPoint.lat}
-            setAnchorLatLng={({lat, lng}) => {
+            setAnchorLatLng={({ lat, lng }) => {
               const x = (lng - row.left) / (row.right - row.left) * imageSize.x;
               const y = (lat - row.lower) / (row.upper - row.lower) * imageSize.y;
               setAnchor({ lat, lng, x, y });
