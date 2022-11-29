@@ -106,8 +106,16 @@ const TextLatLng = ({ lat, lng, setLat, setLng, editable }) => {
   );
 };
 
+export const mapDefaultBounds = {
+  lower: 32.08083,
+  right: 34.78876,
+  upper: 32.08962,
+  left: 34.77524
+};
+
 export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
   const [open, setOpen] = useState(false);
+  const [lastEmbeddedBounds, setLastEmbeddedBounds] = useState(mapDefaultBounds);
 
   return (
     <>
@@ -169,9 +177,10 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
             disabled={!open}
             onChange={(e, val) => {
               if (!val && row.height && row.width) {
+                setLastEmbeddedBounds({ left: row.left, right: row.right, upper: row.upper, lower: row.lower });
                 setRow({ ...row, left: 0, right: row.width, lower: 0, upper: row.height, embedded: val });
               } else {
-                setRow({ ...row, embedded: val });
+                setRow({ ...row, ...lastEmbeddedBounds, embedded: val });
               }
             }}
             checked={row.embedded}

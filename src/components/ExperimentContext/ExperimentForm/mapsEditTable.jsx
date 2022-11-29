@@ -10,19 +10,12 @@ import {
   IconButton,
   Icon,
 } from '@material-ui/core';
-import { MapsEditRow } from "./mapsEditRow";
+import { mapDefaultBounds, MapsEditRow } from "./mapsEditRow";
 
 export const MapsEditTable = ({ data, setData, client }) => {
   if (!data) {
     data = []
   }
-
-  const mapDefaultBounds = {
-    lower: 32.08083,
-    right: 34.78876,
-    upper: 32.08962,
-    left: 34.77524
-  };
 
   return (
     <TableContainer component={Paper} style={{ marginBottom: 100 }}>
@@ -65,12 +58,6 @@ export const MapsEditTable = ({ data, setData, client }) => {
               }}
               setRow={(row) => {
                 const newdata = data.slice();
-                // const oldRow = data[i];
-                // if (row.embedded !== oldRow.embedded) {
-                //   if (row.embedded && ) {
-                //     row.left =
-                //   }
-                // }
                 newdata[i] = row;
                 setData(newdata);
               }}
