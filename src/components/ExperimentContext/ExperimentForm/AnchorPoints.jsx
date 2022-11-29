@@ -17,7 +17,7 @@ export const AnchorPoints = ({ anchorLatLng,
     const horizontalPoint = [anchorLatLng.lat, horizontalLng];
     const verticalPoint = [verticalLat, anchorLatLng.lng];
 
-    const fix = (n) => Math.round(n * 1e9) / 1e9;
+    const round9 = (n) => Math.round(n * 1e9) / 1e9;
     // console.log(verticalPoint, anchorPoint, horizontalPoint);
 
     return (
@@ -26,7 +26,7 @@ export const AnchorPoints = ({ anchorLatLng,
                 key='anchor'
                 location={anchorPoint}
                 setLocation={p => setAnchorLatLng({ lat: p[0], lng: p[1] })}
-                locationToShow={`(${fix(anchorLatLng.lng)}, ${fix(anchorLatLng.lat)}) in meters<br/>(${fix(anchorXY.x)}, ${fix(anchorXY.y)}) in pixels`}
+                locationToShow={`(${round9(anchorLatLng.lng)}, ${round9(anchorLatLng.lat)}) in meters<br/>(${round9(anchorXY.x)}, ${round9(anchorXY.y)}) in pixels`}
             >
             </MarkedPoint>
             <ChosenMarker
@@ -37,7 +37,7 @@ export const AnchorPoints = ({ anchorLatLng,
                 key='horiz'
                 location={horizontalPoint}
                 setLocation={p => setHorizontalLng(p[1])}
-                locationToShow={`(${fix(horizontalLng)}, ${fix(anchorLatLng.lat)}) in meters<br/>(${fix(horizontalX)}, ${fix(anchorXY.y)}) in pixels`}
+                locationToShow={`(${round9(horizontalLng)}, ${round9(anchorLatLng.lat)}) in meters<br/>(${round9(horizontalX)}, ${round9(anchorXY.y)}) in pixels`}
             // locationToShow={pointLatLngToMeters(horizontalPoint)}
             >
             </MarkedPoint>
@@ -45,7 +45,7 @@ export const AnchorPoints = ({ anchorLatLng,
                 key='verti'
                 location={verticalPoint}
                 setLocation={p => setVerticalLat(p[0])}
-                locationToShow={`(${fix(anchorLatLng.lng)}, ${fix(verticalLat)}) in meters<br/>(${fix(anchorXY.x)}, ${fix(verticalY)}) in pixels`}
+                locationToShow={`(${round9(anchorLatLng.lng)}, ${round9(verticalLat)}) in meters<br/>(${round9(anchorXY.x)}, ${round9(verticalY)}) in pixels`}
             // locationToShow={pointLatLngToMeters(verticalPoint)}
             >
             </MarkedPoint>

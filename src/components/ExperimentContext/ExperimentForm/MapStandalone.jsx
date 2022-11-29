@@ -15,6 +15,8 @@ export const MapStandalone = ({ row, setRow }) => {
   const [horizontalPoint, setHorizontalPoint] = useState({ lat: row.lower, lng: row.right, x: imageSize.x, y: 0 });
   const [verticalPoint, setVerticalPoint] = useState({ lat: row.upper, lng: row.left, x: 0, y: imageSize.y });
 
+  const round9 = (n) => Math.round(n * 1e9) / 1e9;
+
   // const [distances, setDistances] = useState({
   //   x: imageSize.x,
   //   y: imageSize.y,
@@ -24,7 +26,7 @@ export const MapStandalone = ({ row, setRow }) => {
 
   React.useEffect(() => {
     mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
-  }, []);
+  }, [row]);
 
   // const dlat = Math.abs(distances.lat) * Math.sign(distances.y);
   // const dlng = Math.abs(distances.lng) * Math.sign(distances.x);
@@ -92,8 +94,28 @@ export const MapStandalone = ({ row, setRow }) => {
           <Grid item>
             <InputXY
               name="Span" units="meters"
-              x={horizontalPoint.lng - anchor.lng} setX={(num) => setHorizontalPoint({ ...horizontalPoint, lng: num + anchor.lng })}
-              y={verticalPoint.lat - anchor.lat} setY={(num) => setVerticalPoint({ ...verticalPoint, lat: num + anchor.lat })}
+              x={horizontalPoint.lng - anchor.lng}
+              setX={(dlng) => {
+                const dx = horizontalPoint.x - anchor.x;
+                if (Math.abs(dlng) > 1e-3 && Math.abs(dx) > 1e-3) {
+                  const lng = dlng + anchor.lng;
+                  const left = round9(anchor.lng - anchor.x / dx * dlng);
+                  const right = round9(anchor.lng + (imageSize.x - anchor.x) / dx * dlng);
+                  setRow({ ...row, left, right });
+                  setHorizontalPoint({ ...horizontalPoint, lng });
+                }
+              }}
+              y={verticalPoint.lat - anchor.lat}
+              setY={(dlat) => {
+                const dy = verticalPoint.y - anchor.y;
+                if (Math.abs(dlat) > 1e-3 && Math.abs(dy) > 1e-3) {
+                  const lat = dlat + anchor.lat;
+                  const lower = round9(anchor.lat - anchor.y / dy * dlat);
+                  const upper = round9(anchor.lat + (imageSize.y - anchor.y) / dy * dlat);
+                  setRow({ ...row, lower, upper });
+                  setVerticalPoint({ ...verticalPoint, lat });
+                }
+              }}
             ></InputXY>
           </Grid>
           {/* <Grid item>
