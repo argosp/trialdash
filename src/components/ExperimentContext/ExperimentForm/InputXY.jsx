@@ -5,7 +5,7 @@ import {
 import { NumberTextField } from "./NumberTextField";
 
 const roundDec = (num) => {
-    return Math.round(num * 100) / 100;
+    return Math.round(num * 1000) / 1000;
 }
 
 export const InputXY = ({ x, y, setX, setY, name, units}) => {
