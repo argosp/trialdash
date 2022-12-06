@@ -11,7 +11,7 @@ import { NumberTextField } from "./NumberTextField.jsx";
 export const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
 
-  const imageSize = { x: row.width || 300, y: row.height || 400 };
+  const imageSize = { x: row.width || 400, y: row.height || 300 };
 
   const [anchor, setAnchor] = useState({ lat: row.lower, lng: row.left, x: 0, y: 0 });
   const [anotherPoint, setAnotherPoint] = useState({ lat: row.lower, lng: row.right, x: imageSize.x, y: 0 });
@@ -67,9 +67,9 @@ export const MapStandalone = ({ row, setRow }) => {
   }
 
   const fixNonSquarePixels = () => {
-    setRow({ ...row, left: 0, right: row.width, lower: 0, upper: row.height });
+    setRow({ ...row, left: 0, right: imageSize.x, lower: 0, upper: imageSize.y });
     setAnchor({ lat: 0, lng: 0, x: 0, y: 0 });
-    setAnotherPoint({ lat: 0, lng: row.width, x: row.width, y: 0 });
+    setAnotherPoint({ lat: 0, lng: imageSize.x, x: imageSize.x, y: 0 });
   }
 
   const dx2dy = imageSize.x / imageSize.y;
