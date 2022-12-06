@@ -14,7 +14,9 @@ export const MapStandalone = ({ row, setRow }) => {
   const [anchor, setAnchor] = useState({ lat: row.lower, lng: row.left, x: 0, y: 0 });
   const [anotherPoint, setAnotherPoint] = useState({ lat: row.lower, lng: row.right, x: imageSize.x, y: 0 });
 
-  const round9 = (n) => Math.round(n * 1e9) / 1e9;
+  const round9 = (n) => {
+    return Math.round(n * 1e9) / 1e9;
+  }
 
   const roundDec = (num) => {
     return Math.round(num * 1000) / 1000;
@@ -62,7 +64,13 @@ export const MapStandalone = ({ row, setRow }) => {
     }
   }
 
-  console.log(anchor, anotherPoint);
+
+  const dx2dy = imageSize.x / imageSize.y;
+  const dlng2dlat = (row.right - row.left) / (row.upper - row.lower);
+  const squarePixels = dx2dy / dlng2dlat;
+  const nonSquarePixels = Math.abs(squarePixels - 1) > 1e-7;
+
+  console.log(anchor, anotherPoint, squarePixels);
 
   return (
     <Grid container>
@@ -75,8 +83,13 @@ export const MapStandalone = ({ row, setRow }) => {
           <Grid item>
             Image size: ({imageSize.x} x {imageSize.y}) <br />
             in meters: ({roundDec(row.right - row.left)} x {roundDec(row.upper - row.lower)}) <br />
-            dx/dy: ({round9(imageSize.x / imageSize.y)}) <br />
-            dlng/dlat: ({round9((row.right - row.left) / (row.upper - row.lower))}) <br />
+            dx/dy: ({round9(dx2dy)}) <br />
+            dlng/dlat: ({round9(dlng2dlat)}) <br />
+            {nonSquarePixels &&
+              <span style={{ color: 'red' }}>
+                non-square pixels!
+              </span>
+            }
           </Grid>
           <Grid item>
             <NumberTextField
