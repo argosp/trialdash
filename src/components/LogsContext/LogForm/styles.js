@@ -9,9 +9,9 @@ export const styles = (theme) => ({
   wrapperEditor: {
     border: `1px solid ${theme.palette.action.disabled}`,
   },
-  mdEditor: {
-    boxShadow: 'none',
-  },
+  // mdEditor: {
+  //   boxShadow: 'none',
+  // },
   labelBtn: {
     justifyContent: 'flex-start',
     fontWeight: 'normal',
