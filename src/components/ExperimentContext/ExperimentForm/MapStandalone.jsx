@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { BasketIcon } from "../../../constants/icons";
 import {
   Grid,
+  IconButton,
 } from '@material-ui/core';
 import { MapWithImage } from "./MapWithImage";
 import { AnchorPointsDiagonal } from "./AnchorPointsDiagonal.jsx";
@@ -64,6 +66,11 @@ export const MapStandalone = ({ row, setRow }) => {
     }
   }
 
+  const fixNonSquarePixels = () => {
+    setRow({ ...row, left: 0, right: row.width, lower: 0, upper: row.height });
+    setAnchor({ lat: 0, lng: 0, x: 0, y: 0 });
+    setAnotherPoint({ lat: 0, lng: row.width, x: row.width, y: 0 });
+  }
 
   const dx2dy = imageSize.x / imageSize.y;
   const dlng2dlat = (row.right - row.left) / (row.upper - row.lower);
@@ -86,9 +93,14 @@ export const MapStandalone = ({ row, setRow }) => {
             dx/dy: ({round9(dx2dy)}) <br />
             dlng/dlat: ({round9(dlng2dlat)}) <br />
             {nonSquarePixels &&
-              <span style={{ color: 'red' }}>
-                non-square pixels!
-              </span>
+              <>
+                <span style={{ color: 'red' }}>
+                  non-square pixels!
+                </span>
+                <IconButton aria-label="expand row" onClick={() => fixNonSquarePixels()}>
+                  <BasketIcon></BasketIcon>
+                </IconButton>
+              </>
             }
           </Grid>
           <Grid item>
