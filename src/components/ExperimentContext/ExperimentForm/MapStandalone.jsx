@@ -3,8 +3,8 @@ import {
   Grid,
 } from '@material-ui/core';
 import { MapWithImage } from "./MapWithImage";
-import { AnchorPoints } from "./AnchorPoints.jsx";
 import { InputXY } from "./InputXY.jsx";
+import { AnchorPointsOrtho } from "./AnchorPointsOrtho.jsx";
 
 export const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
@@ -76,7 +76,7 @@ export const MapStandalone = ({ row, setRow }) => {
           imageUrl={row.imageUrl}
           imageBounds={[[row.upper, row.left], [row.lower, row.right]]}
         >
-          <AnchorPoints
+          <AnchorPointsOrtho
             anchorLatLng={{ lat: anchor.lat, lng: anchor.lng }}
             horizontalLng={horizontalPoint.lng}
             verticalLat={verticalPoint.lat}
@@ -86,7 +86,7 @@ export const MapStandalone = ({ row, setRow }) => {
             setHorizontalLng={lng => setPointWithoutChange(setHorizontalPoint, anchor.lat, lng)}
             setVerticalLat={lat => setPointWithoutChange(setVerticalPoint, lat, anchor.lng)}
             setAnchorLatLng={({ lat, lng }) => setPointWithoutChange(setAnchor, lat, lng)}
-          ></AnchorPoints>
+          ></AnchorPointsOrtho>
         </MapWithImage>
       </Grid>
     </Grid >

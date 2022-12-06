@@ -8,7 +8,7 @@ import { DashedPolyline } from "./DashedPolyline.jsx";
 //     return `(${fix(p.lng)}, ${fix(p.lat)}) in meters<br/>(${fix(p.x)}, ${fix(p.y)}) in pixels`;
 // }
 
-export const AnchorPoints = ({ anchorLatLng,
+export const AnchorPointsOrtho = ({ anchorLatLng,
     horizontalLng, verticalLat,
     setAnchorLatLng, setHorizontalLng, setVerticalLat,
     anchorXY, horizontalX, verticalY
