@@ -3,8 +3,9 @@ import {
   Grid,
 } from '@material-ui/core';
 import { MapWithImage } from "./MapWithImage";
-import { InputXY } from "./InputXY.jsx";
-import { AnchorPointsOrtho } from "./AnchorPointsOrtho.jsx";
+// import { InputXY } from "./InputXY.jsx";
+import { AnchorPointsDiagonal } from "./AnchorPointsDiagonal.jsx";
+import { NumberTextField } from "./NumberTextField.jsx";
 
 export const MapStandalone = ({ row, setRow }) => {
   const mapRef = React.useRef(null);
@@ -12,10 +13,13 @@ export const MapStandalone = ({ row, setRow }) => {
   const imageSize = { x: row.width || 300, y: row.height || 400 };
 
   const [anchor, setAnchor] = useState({ lat: row.lower, lng: row.left, x: 0, y: 0 });
-  const [horizontalPoint, setHorizontalPoint] = useState({ lat: row.lower, lng: row.right, x: imageSize.x, y: 0 });
-  const [verticalPoint, setVerticalPoint] = useState({ lat: row.upper, lng: row.left, x: 0, y: imageSize.y });
+  const [anotherPoint, setAnotherPoint] = useState({ lat: row.lower, lng: row.right, x: imageSize.x, y: 0 });
 
   const round9 = (n) => Math.round(n * 1e9) / 1e9;
+
+  const roundDec = (num) => {
+    return Math.round(num * 1000) / 1000;
+  }
 
   React.useEffect(() => {
     mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
@@ -27,7 +31,33 @@ export const MapStandalone = ({ row, setRow }) => {
     setter({ lat, lng, x, y });
   }
 
-  console.log(anchor, horizontalPoint, verticalPoint);
+  const distLatLng = (p0, p1) => {
+    return Math.sqrt(Math.pow(p0.lat - p1.lat, 2) + Math.pow(p0.lng - p1.lng, 2));
+  }
+
+  // const distXY = (p0, p1) => {
+  //   return Math.sqrt(Math.pow(p0.x - p1.x, 2) + Math.pow(p0.y - p1.y, 2));
+  // }
+
+  const changeDist = (newDist) => {
+    const dx = anotherPoint.x - anchor.x;
+    const dy = anotherPoint.y - anchor.y;
+    if (newDist > 1e-3 && Math.abs(dx) > 1e-3 && Math.abs(dy) > 1e-3) {
+      const oldDist = distLatLng(anchor, anotherPoint);
+      const dlng = (anotherPoint.lng - anchor.lng) * newDist / oldDist;
+      const dlat = (anotherPoint.lat - anchor.lat) * newDist / oldDist;
+      const left = round9(anchor.lng - anchor.x / dx * dlng);
+      const right = round9(anchor.lng + (imageSize.x - anchor.x) / dx * dlng);
+      const lower = round9(anchor.lat - anchor.y / dy * dlat);
+      const upper = round9(anchor.lat + (imageSize.y - anchor.y) / dy * dlat);
+      setRow({ ...row, lower, upper, left, right });
+      const lng = anchor.lng + dlng;
+      const lat = anchor.lat + dlat;
+      setAnotherPoint({ ...anotherPoint, lng, lat });
+    }
+  }
+
+  console.log(anchor, anotherPoint);
 
   return (
     <Grid container>
@@ -41,7 +71,13 @@ export const MapStandalone = ({ row, setRow }) => {
             Image size: ({imageSize.x} x {imageSize.y}) <br />
           </Grid>
           <Grid item>
-            <InputXY
+            <NumberTextField
+              value={roundDec(distLatLng(anchor, anotherPoint))}
+              onChange={(newDist) => changeDist(newDist)}
+              label={"Span in meters"}
+              width='150px'
+            />
+            {/* <InputXY
               name="Span" units="meters"
               x={horizontalPoint.lng - anchor.lng}
               setX={(dlng) => {
@@ -65,7 +101,7 @@ export const MapStandalone = ({ row, setRow }) => {
                   setVerticalPoint({ ...verticalPoint, lat });
                 }
               }}
-            ></InputXY>
+            ></InputXY> */}
           </Grid>
         </Grid>
       </Grid>
@@ -76,17 +112,14 @@ export const MapStandalone = ({ row, setRow }) => {
           imageUrl={row.imageUrl}
           imageBounds={[[row.upper, row.left], [row.lower, row.right]]}
         >
-          <AnchorPointsOrtho
+          <AnchorPointsDiagonal
             anchorLatLng={{ lat: anchor.lat, lng: anchor.lng }}
-            horizontalLng={horizontalPoint.lng}
-            verticalLat={verticalPoint.lat}
+            anotherLatLng={{ lat: anotherPoint.lat, lng: anotherPoint.lng }}
             anchorXY={{ x: anchor.x, y: anchor.y }}
-            horizontalX={horizontalPoint.x}
-            verticalY={verticalPoint.y}
-            setHorizontalLng={lng => setPointWithoutChange(setHorizontalPoint, anchor.lat, lng)}
-            setVerticalLat={lat => setPointWithoutChange(setVerticalPoint, lat, anchor.lng)}
+            anotherXY={{ x: anotherPoint.x, y: anotherPoint.y }}
             setAnchorLatLng={({ lat, lng }) => setPointWithoutChange(setAnchor, lat, lng)}
-          ></AnchorPointsOrtho>
+            setAnotherLatLng={({ lat, lng }) => setPointWithoutChange(setAnotherPoint, lat, lng)}
+          ></AnchorPointsDiagonal>
         </MapWithImage>
       </Grid>
     </Grid >

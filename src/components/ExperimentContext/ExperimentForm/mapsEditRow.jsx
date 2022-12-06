@@ -113,6 +113,10 @@ export const mapDefaultBounds = {
   left: 34.77524
 };
 
+const roundDec = (num) => {
+  return Math.round(num * 1000) / 1000;
+}
+
 export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
   const [open, setOpen] = useState(false);
   const [lastEmbeddedBounds, setLastEmbeddedBounds] = useState(mapDefaultBounds);
@@ -157,8 +161,8 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
         <TableCell align="right">
           <TextLatLng
             editable={open}
-            lat={row.embedded ? row.lower : (Math.round(row.lower * 10) / 10)}
-            lng={row.embedded ? row.right : (Math.round(row.right * 10) / 10)}
+            lat={row.embedded ? row.lower : roundDec(row.lower)}
+            lng={row.embedded ? row.right : roundDec(row.right)}
             setLat={(val) => setRow({ ...row, lower: val })}
             setLng={(val) => setRow({ ...row, right: val })}
           ></TextLatLng>
@@ -166,8 +170,8 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
         <TableCell align="right">
           <TextLatLng
             editable={open}
-            lat={row.embedded ? row.upper : (Math.round(row.upper * 10) / 10)}
-            lng={row.embedded ? row.left : (Math.round(row.left * 10) / 10)}
+            lat={row.embedded ? row.upper : roundDec(row.upper)}
+            lng={row.embedded ? row.left : roundDec(row.left)}
             setLat={(val) => setRow({ ...row, upper: val })}
             setLng={(val) => setRow({ ...row, left: val })}
           ></TextLatLng>
