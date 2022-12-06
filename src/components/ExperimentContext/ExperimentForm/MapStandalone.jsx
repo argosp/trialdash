@@ -34,26 +34,26 @@ export const MapStandalone = ({ row, setRow }) => {
     return Math.sqrt(Math.pow(p0.lat - p1.lat, 2) + Math.pow(p0.lng - p1.lng, 2));
   }
 
+  const distXY = (p0, p1) => {
+    return Math.sqrt(Math.pow(p0.x - p1.x, 2) + Math.pow(p0.y - p1.y, 2));
+  }
+
   const changeDist = (newDist) => {
-    if (newDist > 1e-3) {
-      let { left, right, upper, lower } = row;
+    const dxy = distXY(anotherPoint, anchor);
+    // const dx = Math.abs(anotherPoint.x - anchor.x);
+    // const dy = Math.abs(anotherPoint.y - anchor.y);
+    if (newDist > 1e-3 && dxy > 1e-3) {
 
       const oldDist = distLatLng(anchor, anotherPoint);
-      const dlng = (anotherPoint.lng - anchor.lng) * newDist / oldDist;
-      const dlat = (anotherPoint.lat - anchor.lat) * newDist / oldDist;
+      const factorOldToNew = newDist / oldDist;
+      const dlng = (anotherPoint.lng - anchor.lng) * factorOldToNew;
+      const dlat = (anotherPoint.lat - anchor.lat) * factorOldToNew;
 
-      const dx = anotherPoint.x - anchor.x;
-      if (Math.abs(dx) > 1e-3) {
-        left = round9(anchor.lng - anchor.x / dx * dlng);
-        right = round9(anchor.lng + (imageSize.x - anchor.x) / dx * dlng);
-      }
-
-      const dy = anotherPoint.y - anchor.y;
-      if (Math.abs(dy) > 1e-3) {
-        lower = round9(anchor.lat - anchor.y / dy * dlat);
-        upper = round9(anchor.lat + (imageSize.y - anchor.y) / dy * dlat);
-      }
-
+      const factorPixelToMeter = newDist / dxy;
+      const left = round9(anchor.lng - anchor.x * factorPixelToMeter);
+      const lower = round9(anchor.lat - anchor.y * factorPixelToMeter);
+      const right = round9(left + imageSize.x * factorPixelToMeter);
+      const upper = round9(lower + imageSize.y * factorPixelToMeter);
       setRow({ ...row, lower, upper, left, right });
 
       const lng = anchor.lng + dlng;
@@ -74,6 +74,9 @@ export const MapStandalone = ({ row, setRow }) => {
         >
           <Grid item>
             Image size: ({imageSize.x} x {imageSize.y}) <br />
+            in meters: ({roundDec(row.right - row.left)} x {roundDec(row.upper - row.lower)}) <br />
+            dx/dy: ({round9(imageSize.x / imageSize.y)}) <br />
+            dlng/dlat: ({round9((row.right - row.left) / (row.upper - row.lower))}) <br />
           </Grid>
           <Grid item>
             <NumberTextField
