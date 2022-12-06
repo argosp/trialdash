@@ -1,6 +1,6 @@
 import React from "react";
 import { MarkedPoint } from "../../EntityPlanner/MarkedPoint.jsx";
-// import { ChosenMarker } from "./ChosenMarker.jsx";
+import { ChosenMarker } from "./ChosenMarker.jsx";
 import { DashedPolyline } from "./DashedPolyline.jsx";
 
 export const AnchorPointsDiagonal = ({ anchorLatLng, anotherLatLng, setAnchorLatLng, setAnotherLatLng, anchorXY, anotherXY }) => {
@@ -19,10 +19,10 @@ export const AnchorPointsDiagonal = ({ anchorLatLng, anotherLatLng, setAnchorLat
                 locationToShow={`(${round9(anchorLatLng.lng)}, ${round9(anchorLatLng.lat)}) in meters<br/>(${round9(anchorXY.x)}, ${round9(anchorXY.y)}) in pixels`}
             >
             </MarkedPoint>
-            {/* <ChosenMarker
+            <ChosenMarker
                 key='chosen'
                 center={anchorPoint}
-            /> */}
+            />
             <MarkedPoint
                 key='another'
                 location={anotherPoint}

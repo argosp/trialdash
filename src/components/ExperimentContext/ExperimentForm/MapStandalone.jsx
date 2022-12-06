@@ -3,7 +3,6 @@ import {
   Grid,
 } from '@material-ui/core';
 import { MapWithImage } from "./MapWithImage";
-// import { InputXY } from "./InputXY.jsx";
 import { AnchorPointsDiagonal } from "./AnchorPointsDiagonal.jsx";
 import { NumberTextField } from "./NumberTextField.jsx";
 
@@ -35,22 +34,28 @@ export const MapStandalone = ({ row, setRow }) => {
     return Math.sqrt(Math.pow(p0.lat - p1.lat, 2) + Math.pow(p0.lng - p1.lng, 2));
   }
 
-  // const distXY = (p0, p1) => {
-  //   return Math.sqrt(Math.pow(p0.x - p1.x, 2) + Math.pow(p0.y - p1.y, 2));
-  // }
-
   const changeDist = (newDist) => {
-    const dx = anotherPoint.x - anchor.x;
-    const dy = anotherPoint.y - anchor.y;
-    if (newDist > 1e-3 && Math.abs(dx) > 1e-3 && Math.abs(dy) > 1e-3) {
+    if (newDist > 1e-3) {
+      let { left, right, upper, lower } = row;
+
       const oldDist = distLatLng(anchor, anotherPoint);
       const dlng = (anotherPoint.lng - anchor.lng) * newDist / oldDist;
       const dlat = (anotherPoint.lat - anchor.lat) * newDist / oldDist;
-      const left = round9(anchor.lng - anchor.x / dx * dlng);
-      const right = round9(anchor.lng + (imageSize.x - anchor.x) / dx * dlng);
-      const lower = round9(anchor.lat - anchor.y / dy * dlat);
-      const upper = round9(anchor.lat + (imageSize.y - anchor.y) / dy * dlat);
+
+      const dx = anotherPoint.x - anchor.x;
+      if (Math.abs(dx) > 1e-3) {
+        left = round9(anchor.lng - anchor.x / dx * dlng);
+        right = round9(anchor.lng + (imageSize.x - anchor.x) / dx * dlng);
+      }
+
+      const dy = anotherPoint.y - anchor.y;
+      if (Math.abs(dy) > 1e-3) {
+        lower = round9(anchor.lat - anchor.y / dy * dlat);
+        upper = round9(anchor.lat + (imageSize.y - anchor.y) / dy * dlat);
+      }
+
       setRow({ ...row, lower, upper, left, right });
+
       const lng = anchor.lng + dlng;
       const lat = anchor.lat + dlat;
       setAnotherPoint({ ...anotherPoint, lng, lat });
@@ -77,31 +82,6 @@ export const MapStandalone = ({ row, setRow }) => {
               label={"Span in meters"}
               width='150px'
             />
-            {/* <InputXY
-              name="Span" units="meters"
-              x={horizontalPoint.lng - anchor.lng}
-              setX={(dlng) => {
-                const dx = horizontalPoint.x - anchor.x;
-                if (Math.abs(dlng) > 1e-3 && Math.abs(dx) > 1e-3) {
-                  const lng = dlng + anchor.lng;
-                  const left = round9(anchor.lng - anchor.x / dx * dlng);
-                  const right = round9(anchor.lng + (imageSize.x - anchor.x) / dx * dlng);
-                  setRow({ ...row, left, right });
-                  setHorizontalPoint({ ...horizontalPoint, lng });
-                }
-              }}
-              y={verticalPoint.lat - anchor.lat}
-              setY={(dlat) => {
-                const dy = verticalPoint.y - anchor.y;
-                if (Math.abs(dlat) > 1e-3 && Math.abs(dy) > 1e-3) {
-                  const lat = dlat + anchor.lat;
-                  const lower = round9(anchor.lat - anchor.y / dy * dlat);
-                  const upper = round9(anchor.lat + (imageSize.y - anchor.y) / dy * dlat);
-                  setRow({ ...row, lower, upper });
-                  setVerticalPoint({ ...verticalPoint, lat });
-                }
-              }}
-            ></InputXY> */}
           </Grid>
         </Grid>
       </Grid>
