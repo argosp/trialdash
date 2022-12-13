@@ -37,7 +37,7 @@ function EditTable({
   handlePutEntitiesOnPrev,
   markedPoints,
 }) {
-  const [editTableMode, setEditTableMode] = useState('point');
+  const [editTableMode, setEditTableMode] = useState('free');
   const classes = useStyles();
 
   const handleClick = (value) => {
