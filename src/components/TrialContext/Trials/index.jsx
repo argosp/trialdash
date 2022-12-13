@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import LoadingOverlay from 'react-loading-overlay';
 import { withApollo } from 'react-apollo';
 import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
@@ -16,7 +17,7 @@ import StyledTableCell from '../../StyledTableCell';
 import StatusBadge from '../../StatusBadge';
 import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { AttachFile,UploadIcon, CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
+import { AttachFile, UploadIcon, CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
@@ -32,7 +33,8 @@ class Trials extends React.Component {
   state = {
     trialSet: {},
     open: false,
-    confirmOpen: false
+    confirmOpen: false,
+    loading: false
   };
 
   setConfirmOpen = (open, trialToDelete) => {
@@ -214,12 +216,28 @@ class Trials extends React.Component {
   };
 
   updateTrialFromCsv = async (e) => {
-    await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
-    this.setState({update: true})
+    try {
+      this.setState({ loading: true })
+      await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
+      this.setState({ update: true })
+      this.setState({ loading: false })
+    } catch (err) {
+      alert('uploading fail, please check the file')
+      this.setState({ loading: false })
+    }
   }
   updateEntitiesTrialFromCsv = async (e, trial) => {
-    await uploadEntities(e, trial, this.props.client, this.props.match)
-    // this.setState({update: true})
+    try {
+      this.setState({ loading: true })
+      await uploadEntities(e, trial, this.props.client, this.props.match)
+      this.setState({ update: true })
+      this.setState({ loading: false })
+    } catch (err) {
+      alert('uploading fail, please check the file')
+      this.setState({ loading: false })
+    }
+
+
   }
 
   generateTableColumns = (trialSet) => {
@@ -350,11 +368,15 @@ class Trials extends React.Component {
 
   render() {
     const { history, match, client } = this.props;
-    const { trialSet, tabValue } = this.state;
+    const { trialSet, tabValue, loading } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
     return (
-      <>
+      <LoadingOverlay
+        active={loading}
+        spinner
+        text='Updating, please wait...'>
+
         {this.state.isEditModeEnabled
           // eslint-disable-next-line react/jsx-wrap-multilines
           ? <TrialForm
@@ -390,7 +412,7 @@ class Trials extends React.Component {
             />
           </>
         }
-      </>
+      </LoadingOverlay>
     );
   }
 }
