@@ -216,16 +216,27 @@ class Trials extends React.Component {
   };
 
   updateTrialFromCsv = async (e) => {
-    this.setState({loading: true})
-    await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
-    this.setState({ update: true })
-    this.setState({loading: false})
+    try {
+      this.setState({ loading: true })
+      await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
+      this.setState({ update: true })
+      this.setState({ loading: false })
+    } catch (err) {
+      alert('uploading fail, please check the file')
+      this.setState({ loading: false })
+    }
   }
   updateEntitiesTrialFromCsv = async (e, trial) => {
-    this.setState({loading: true})
-    await uploadEntities(e, trial, this.props.client, this.props.match)
-    this.setState({ update: true })
-    this.setState({loading: false})
+    try {
+      this.setState({ loading: true })
+      await uploadEntities(e, trial, this.props.client, this.props.match)
+      this.setState({ update: true })
+      this.setState({ loading: false })
+    } catch (err) {
+      alert('uploading fail, please check the file')
+      this.setState({ loading: false })
+    }
+
 
   }
 
