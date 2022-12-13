@@ -77,7 +77,7 @@ export const MapStandalone = ({ row, setRow }) => {
   const squarePixels = dx2dy / dlng2dlat;
   const nonSquarePixels = Math.abs(squarePixels - 1) > 1e-7;
 
-  console.log(anchor, anotherPoint, squarePixels);
+  // console.log(anchor, anotherPoint, squarePixels);
 
   return (
     <Grid container>
