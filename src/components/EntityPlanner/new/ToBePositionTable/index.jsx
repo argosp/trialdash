@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 
 import EntitiesTypesTable from './EntitiesTypesTable';
-import EditTable from './EditTable';
+import { EditTable } from './EditTable/EditTable';
 import MapTypesList from './MapTypesList';
 import EntityTypeFilter from './EntityTypeFilter';
 import SearchInput from './SearchInput';

@@ -2,41 +2,23 @@ import React, { useState } from 'react';
 
 import Box from '@material-ui/core/Box';
 import { Divider, Grid, IconButton, Typography } from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { icons } from './utils';
 
 import classnames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { styles } from './styles';
+import { PopperBox } from './PopperBox.jsx';
 
 const useStyles = makeStyles(styles);
 
-const PopperBox = ({ title, value, handleClick, classes, children }) => {
-  return (
-    <Box sx={{ position: 'absolute', top: 0, left: '100%' }}>
-      <Grid container className={classes.toolBoxContainer}>
-        <Grid item className={classes.toolBoxItem}>
-          <IconButton onClick={() => handleClick(value)}>
-            <ChevronLeftIcon />
-          </IconButton>
-          <Typography component="span">
-            <Box sx={{ fontWeight: '700' }}>{title}</Box>
-          </Typography>
-        </Grid>
-        <Grid item>{children}</Grid>
-      </Grid>
-    </Box>
-  );
-};
-
-function EditTable({
+export const EditTable = ({
   TBPEntities,
   removeEntityFromTBPTable,
   onShapeChange,
   onSingleShapeSubmit,
   handlePutEntitiesOnPrev,
   markedPoints,
-}) {
+}) => {
   const [editTableMode, setEditTableMode] = useState('free');
   const classes = useStyles();
 
@@ -94,5 +76,3 @@ function EditTable({
     </Box>
   );
 }
-
-export default EditTable;

@@ -11,7 +11,7 @@ import { lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './Geometr
 import { MarkContextmenu } from './MarkContextmenu';
 import { MarkedShape } from './MarkedShape';
 import DnDEntityZone from './new/ToBePositionTable/DnDEntityZone';
-import EditTable from './new/ToBePositionTable/EditTable';
+import { EditTable } from './new/ToBePositionTable/EditTable/EditTable';
 import EntitiesTypesTable from './new/ToBePositionTable/EntitiesTypesTable';
 import EntityTypeFilter from './new/ToBePositionTable/EntityTypeFilter';
 import DeviceRow from './new/ToBePositionTable/EntityTypeRow';
