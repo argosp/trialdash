@@ -6,7 +6,7 @@ import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, Chip,
 import { styles } from './styles';
 import addUpdateLog from '../utils/logMutation';
 import SimpleButton from '../../SimpleButton';
-import MDEditor from '@uiw/react-md-editor';
+// import MDEditor from '@uiw/react-md-editor';
 import FileUpload from './fileUpload';
 import getDate from '../utils/getDate';
 import Labels from '../LabelsDropdown';
@@ -61,11 +61,11 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
         </Paper>
         <Paper classes={{ root: classes.paper }}>
           <div className={classes.wrapperEditor}>
-            <MDEditor
+            {/* <MDEditor
               className={classes.mdEditor}
               value={logValues.comment}
               onChange={(val) => handleChange('comment', val)}
-            />
+            /> */}
             <FileUpload classes={classes} client={client} addImage={addImage} />
           </div>
         </Paper>
