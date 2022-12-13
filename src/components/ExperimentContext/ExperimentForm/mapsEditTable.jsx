@@ -10,12 +10,13 @@ import {
   IconButton,
   Icon,
 } from '@material-ui/core';
-import { MapsEditRow } from "./mapsEditRow";
+import { mapDefaultBounds, MapsEditRow } from "./mapsEditRow";
 
 export const MapsEditTable = ({ data, setData, client }) => {
   if (!data) {
     data = []
   }
+
   return (
     <TableContainer component={Paper} style={{ marginBottom: 100 }}>
       <Table aria-label="collapsible table">
@@ -27,10 +28,10 @@ export const MapsEditTable = ({ data, setData, client }) => {
                   setData(data.concat({
                     imageUrl: "",
                     imageName: 'image ' + (data.length + 1),
-                    lower: 32.08083,
-                    right: 34.78876,
-                    upper: 32.08962,
-                    left: 34.77524,
+                    lower: mapDefaultBounds.lower,
+                    right: mapDefaultBounds.right,
+                    upper: mapDefaultBounds.upper,
+                    left: mapDefaultBounds.left,
                     embedded: true
                   }))
                 }}
