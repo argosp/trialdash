@@ -61,7 +61,7 @@ export const EntityEditor = ({
   const [shape, setShape] = useState('Point');
   const { shapeToLine, shapeToPositions } = useShapeGeometry({ shape, rectAngle, rectRows });
 
-  const { isTypeVisible, toggleTypeVisible, showAllTypes } = useEntityTypeVisible({ entities });
+  const { isTypeVisible, toggleTypeVisible, setAllTypesVisible } = useEntityTypeVisible({ entities });
 
   useEffect(() => {
     setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
@@ -199,7 +199,7 @@ export const EntityEditor = ({
     setTBPEntities([]);
     setTPEntities([]);
     setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []));
-    showAllTypes();
+    setAllTypesVisible();
     // setSelectedType(
     //   entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {})
     // );

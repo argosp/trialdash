@@ -4,14 +4,14 @@ export const useEntityTypeVisible = ({ entities }) => {
     // selectedType is an object of true values for each key, each key is string of selected entity type
     const [selectedType, setSelectedType] = useState({});
 
-    const showAllTypes = useCallback(() => {
+    const setAllTypesVisible = useCallback(() => {
         setSelectedType(
             entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {})
         );
     }, [entities]);
 
     useEffect(() => {
-        showAllTypes();
+        setAllTypesVisible();
     }, [entities]);
 
 
@@ -26,5 +26,5 @@ export const useEntityTypeVisible = ({ entities }) => {
         return selectedType[entityTypeName];
     }
 
-    return { isTypeVisible, toggleTypeVisible, showAllTypes };
+    return { isTypeVisible, toggleTypeVisible, setAllTypesVisible };
 }
