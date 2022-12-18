@@ -26,13 +26,25 @@ const style = {
 };
 const useStyles = makeStyles(style);
 
-export const MarkContextmenu = ({ applyMenuRows, isShow, position, onClose }) => {
+export const MarkContextmenu = ({ deviceLocationRemove, deviceLocationEdit, isShow, position, onClose }) => {
   const classes = useStyles();
   const divRef = React.useRef(null);
 
   React.useEffect(() => {
     if (divRef.current) DomEvent.disableClickPropagation(divRef.current);
   });
+
+
+  const applyMenuRows = [
+    {
+      onClick: deviceLocationEdit,
+      text: 'Edit',
+    },
+    {
+      onClick: deviceLocationRemove,
+      text: 'Remove',
+    },
+  ];
 
   return (
     isShow && (
@@ -41,7 +53,7 @@ export const MarkContextmenu = ({ applyMenuRows, isShow, position, onClose }) =>
         style={{ top: position.y, left: position.x }}
         ref={divRef}
         onClick={onClose}>
-        {applyMenuRows().map(({ onClick, text }) => (
+        {applyMenuRows.map(({ onClick, text }) => (
           <span
             className={classes.row}
             onClick={(e) => {

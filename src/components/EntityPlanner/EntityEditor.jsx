@@ -289,29 +289,28 @@ export const EntityEditor = ({
     }
   };
 
-  const applyMenuRows = (dev) => [
-    {
-      onClick: () => {
-        addEntityToTBPTable(dev);
-        if (TBPEntities.length < 1) setAddEntityMode(EDIT_MODE);
-      },
-      text: 'Edit',
-    },
-    {
-      onClick: () => {
-        if (TBPEntities.length < 2) {
-          setAddEntityMode(INIT_MODE);
-          cleanTBPTable();
-        }
-        const parentEntity = findEntityTypeName(dev.entitiesTypeKey);
-        const childIndex = parentEntity.items.findIndex(({ key }) => key === dev.key);
-        if (addEntityMode !== INIT_MODE)
-          setEntitiesTypes(changeLocations(parentEntity.name, [childIndex]));
-        else setEntities(changeLocations(parentEntity.name, [childIndex]));
-      },
-      text: 'Remove',
-    },
-  ];
+  const deviceLocationRemove = (dev) => {
+    return () => {
+      if (TBPEntities.length < 2) {
+        setAddEntityMode(INIT_MODE);
+        cleanTBPTable();
+      }
+      const parentEntity = findEntityTypeName(dev.entitiesTypeKey);
+      const childIndex = parentEntity.items.findIndex(({ key }) => key === dev.key);
+      if (addEntityMode !== INIT_MODE) {
+        setEntitiesTypes(changeLocations(parentEntity.name, [childIndex]));
+      } else {
+        setEntities(changeLocations(parentEntity.name, [childIndex]));
+      }
+    }
+  }
+
+  const deviceLocationEdit = (dev) => {
+    return () => {
+      addEntityToTBPTable(dev);
+      if (TBPEntities.length < 1) setAddEntityMode(EDIT_MODE);
+    }
+  }
 
   function findIndexOfEntity(entity, parentEntity) {
     return parentEntity.items.findIndex((e) => e.key === entity.key);
@@ -408,7 +407,8 @@ export const EntityEditor = ({
                     {toggleMenu && (
                       <MarkContextmenu
                         position={{ y: anchorPoint.y, x: anchorPoint.x }}
-                        applyMenuRows={() => applyMenuRows(dev)}
+                        deviceLocationEdit={deviceLocationEdit(dev)}
+                        deviceLocationRemove={deviceLocationRemove(dev)}
                         isShow={loc[0] === anchorPoint.mapX && loc[1] === anchorPoint.mapY}
                         onClose={() => setToggleMenu(false)}
                       />
