@@ -68,6 +68,7 @@
   ],
   "devDependencies": {
     "eslint-config-airbnb": "17.1.1",
+    "@babel/helper-call-delegate": "latest",
     "husky": "^3.0.5"
   }
 }
