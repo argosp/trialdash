@@ -1,13 +1,12 @@
+import React, { useEffect, useState } from 'react';
 import { Box, Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 // import { group } from '@uiw/react-md-editor';
 import { isArray, isEmpty, isObject } from 'lodash';
-import React, { useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { changeEntityLocation, getEntityLocation } from './EntityUtils';
-import { lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 import { MarkContextmenu } from './MarkContextmenu';
 import { MarkedShape } from './MarkedShape';
 import DnDEntityZone from './new/ToBePositionTable/DnDEntityZone';
@@ -22,7 +21,7 @@ import TBPButtons from './new/ToBePositionTable/TBPButtons';
 import { EDIT_MODE, INIT_MODE, SELECT_MODE } from './new/ToBePositionTable/utils/constants';
 import uuid from 'uuid/v4';
 import { WidthDivider } from './WidthDivider';
-import { useShape } from './useShape';
+import { useShapeGeometry } from './useShapeGeometry';
 
 const useStyles = makeStyles(styles);
 
@@ -63,7 +62,8 @@ export const EntityEditor = ({
   const [toggleMenu, setToggleMenu] = React.useState(false);
   const [anchorPoint, setAnchorPoint] = React.useState({});
 
-  const {shape, setShape, shapeToLine, shapeToPositions} = useShape(rectAngle, rectRows);
+  const [shape, setShape] = useState('Point');
+  const { shapeToLine, shapeToPositions } = useShapeGeometry({ shape, rectAngle, rectRows });
 
   useEffect(() => {
     setEntitiesTypes(JSON.parse(JSON.stringify(entities)));

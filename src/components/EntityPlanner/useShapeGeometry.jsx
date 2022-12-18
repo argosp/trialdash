@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils.js';
 
-export const useShape = (rectAngle, rectRows) => {
-    const [shape, setShape] = useState('Point');
-
+export const useShapeGeometry = ({ shape, rectAngle, rectRows }) => {
     const shapeOptions = {
         'Free': {
             toLine: () => [],
@@ -52,5 +50,5 @@ export const useShape = (rectAngle, rectRows) => {
     const shapeData = shapeOptions[shape] || shapeOptions['None'];
     const { toLine: shapeToLine, toPositions: shapeToPositions } = shapeData;
 
-    return { shape, setShape, shapeToLine, shapeToPositions };
+    return { shapeToLine, shapeToPositions };
 }
