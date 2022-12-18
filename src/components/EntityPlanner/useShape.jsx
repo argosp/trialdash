@@ -4,29 +4,24 @@ import { lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './Geometr
 export const useShape = (rectAngle, rectRows) => {
     const [shape, setShape] = useState('Point');
 
-    const shapeOptions = [
-        {
-            name: 'Free',
+    const shapeOptions = {
+        'Free': {
             toLine: () => [],
             toPositions: (points, amount) => (amount && points.length ? [points[0]] : []),
         },
-        {
-            name: 'Point',
+        'Point': {
             toLine: () => [],
             toPositions: (points, amount) => (amount && points.length ? [points[0]] : []),
         },
-        {
-            name: 'Poly',
+        'Poly': {
             toLine: (points) => [points],
             toPositions: (points, amount) => resamplePolyline(points, amount),
         },
-        {
-            name: 'Curve',
+        'Curve': {
             toLine: (points) => [splineCurve(points, 100)],
             toPositions: (points, amount) => resamplePolyline(splineCurve(points, 100), amount),
         },
-        {
-            name: 'Rect',
+        'Rect': {
             toLine: (points, angle = rectAngle) => {
                 const [nw, ne, se, sw] = rectByAngle(points, angle);
                 return [[nw, ne, se, sw, nw]];
@@ -48,14 +43,13 @@ export const useShape = (rectAngle, rectRows) => {
                 return ret;
             },
         },
-        {
-            name: 'None',
+        'None': {
             toLine: () => [],
             toPositions: () => []
         }
-    ];
+    };
 
-    const shapeData = shapeOptions.find((s) => s.name === shape) || shapeOptions.at(-1);
+    const shapeData = shapeOptions[shape] || shapeOptions['None'];
     const { toLine: shapeToLine, toPositions: shapeToPositions } = shapeData;
 
     return { shape, setShape, shapeToLine, shapeToPositions };
