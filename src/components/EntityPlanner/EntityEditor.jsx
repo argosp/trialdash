@@ -36,8 +36,6 @@ export const EntityEditor = ({
   // older selectType is string selected entity type name
   // selectedType is an object of true values for each key, each key is string of selected entity type
   const [selectedType, setSelectedType] = useState({});
-  // selection is array of indexes sorted, those indexes points to selected entities in specific entity type
-  const [selection, setSelection] = useState([]);
   const [addEntityMode, setAddEntityMode] = useState(INIT_MODE);
   const [markedPoints, setMarkedPoints] = useState([]);
   const [rectAngle] = useState(0);
@@ -279,7 +277,6 @@ export const EntityEditor = ({
       setEntitiesTypes(changeLocations(entityType.name, _selection.sort(), [currPoint], groupKey));
       setTPEntities([]);
       setMarkedPoints([]);
-      setSelection([]);
     } else {
       setMarkedPoints(markedPoints.concat([currPoint]));
     }
@@ -346,13 +343,11 @@ export const EntityEditor = ({
       setEntitiesTypes(newEntitiesTypes);
     }
     setMarkedPoints([]);
-    setSelection([]);
   };
 
   const handlePutEntities = () => {
     setEntities(entitiesTypes);
     setMarkedPoints([]);
-    setSelection([]);
     cleanTBPTable();
   };
 
@@ -392,7 +387,6 @@ export const EntityEditor = ({
                       entity={dev}
                       entityType={devType}
                       devLocation={loc}
-                      isSelected={selection.includes(index)}
                       isTypeSelected={devType.name === selectedType}
                       isOnEdit={isOnEdit}
                       shouldShowName={showName}
@@ -423,7 +417,6 @@ export const EntityEditor = ({
             shape={shape}
             shapeToLine={shapeToLine}
             shapeToPositions={shapeToPositions}
-            entityNum={selection.length}
             distanceInMeters={distanceInMeters()}
           />
         </EntityMap>
