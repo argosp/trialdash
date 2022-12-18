@@ -12,7 +12,6 @@ import { MarkedShape } from './MarkedShape';
 import DnDEntityZone from './new/ToBePositionTable/DnDEntityZone';
 import { EditTable } from './new/ToBePositionTable/EditTable/EditTable';
 import EntitiesTypesTable from './new/ToBePositionTable/EntitiesTypesTable';
-import EntityTypeFilter from './new/ToBePositionTable/EntityTypeFilter';
 import DeviceRow from './new/ToBePositionTable/EntityTypeRow';
 import MapTypesList from './new/ToBePositionTable/MapTypesList';
 import SearchInput from './new/ToBePositionTable/SearchInput';
@@ -46,7 +45,6 @@ export const EntityEditor = ({
   const [isDragging, setIsDragging] = useState(false);
   const [filteredEntities, setFilteredEntities] = useState([]);
   const [entitiesTypesInstances, setEntitiesTypesInstances] = useState([]);
-  const [isFiltered, setIsFiltered] = useState(false);
   /**
    * @const {array} TPEntities - contains the selected entities
    */
@@ -67,16 +65,6 @@ export const EntityEditor = ({
     setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
     setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []));
   }, [entities]);
-
-  const handleFilterDevices = (filter) => {
-    const filtered = entitiesTypes.filter((e) => !!filter[e.name]);
-    if (filtered.length) {
-      setIsFiltered(true);
-    } else {
-      setIsFiltered(false);
-    }
-    setFilteredEntities(filtered);
-  };
 
   const handleSearchEntities = (input) => {
     const filtered = entitiesTypes.reduce(
@@ -411,16 +399,6 @@ export const EntityEditor = ({
       <Grid item xs={3} style={{ overflow: 'inherit', backgroundColor: '#f5f5f5' }}>
         <Container disableGutters className={classes.container}>
           <MapTypesList layerChosen={layerChosen} handleMapTypeChange={handleMapTypeChange} />
-
-          <WidthDivider />
-
-          <EntityTypeFilter
-            classes={classes}
-            handleFilterDevices={handleFilterDevices}
-            entitiesNames={entitiesTypes.map((device) => device.name)}
-            filteredEntities={filteredEntities}
-            isFiltered={isFiltered}
-          />
 
           <WidthDivider />
 
