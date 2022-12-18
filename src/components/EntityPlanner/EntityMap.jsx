@@ -3,7 +3,7 @@ import {
   Map as LeafletMap,
 } from 'react-leaflet';
 import { CRS } from 'leaflet';
-import { EntityMapLayers } from './Map/EntityMapLayers.jsx';
+import { EntityMapLayers } from './MapLayers/EntityMapLayers.jsx';
 
 const position = [32.081128, 34.779729];
 const posbounds = [
