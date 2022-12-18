@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, InputLabel, Switch } from '@material-ui/core';
+import { Box, Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 // import { group } from '@uiw/react-md-editor';
 import { isArray, isEmpty, isObject } from 'lodash';
@@ -21,24 +21,9 @@ import { styles } from './new/ToBePositionTable/styles';
 import TBPButtons from './new/ToBePositionTable/TBPButtons';
 import { EDIT_MODE, INIT_MODE, SELECT_MODE } from './new/ToBePositionTable/utils/constants';
 import uuid from 'uuid/v4';
-
-const SimplifiedSwitch = ({ label, value, setValue }) => (
-  <div style={{ display: 'inline-block', margin: 5 }}>
-    <InputLabel style={{ fontSize: 10 }}>{label}</InputLabel>
-    <Switch
-      color="primary"
-      inputProps={{ 'aria-label': 'primary checkbox' }}
-      value={value}
-      onChange={(e) => setValue(e.target.checked)}
-    />
-  </div>
-);
+import { WidthDivider } from './WidthDivider';
 
 const useStyles = makeStyles(styles);
-
-const WidthDivider = () => (
-  <Divider light style={{ position: 'absolute', left: 0, width: '100%' }} />
-);
 
 export const EntityEditor = ({
   entities,
