@@ -22,6 +22,7 @@ import { EDIT_MODE, INIT_MODE, SELECT_MODE } from './new/ToBePositionTable/utils
 import uuid from 'uuid/v4';
 import { WidthDivider } from './WidthDivider';
 import { useShapeGeometry } from './useShapeGeometry';
+import { useEntityTypeVisible } from './useEntityTypeVisible';
 
 const useStyles = makeStyles(styles);
 
@@ -33,9 +34,6 @@ export const EntityEditor = ({
   experimentDataMaps,
 }) => {
   const classes = useStyles();
-  // older selectType is string selected entity type name
-  // selectedType is an object of true values for each key, each key is string of selected entity type
-  const [selectedType, setSelectedType] = useState({});
   const [addEntityMode, setAddEntityMode] = useState(INIT_MODE);
   const [markedPoints, setMarkedPoints] = useState([]);
   const [rectAngle] = useState(0);
@@ -63,12 +61,11 @@ export const EntityEditor = ({
   const [shape, setShape] = useState('Point');
   const { shapeToLine, shapeToPositions } = useShapeGeometry({ shape, rectAngle, rectRows });
 
+  const { isTypeVisible, toggleTypeVisible, showAllTypes } = useEntityTypeVisible({ entities });
+
   useEffect(() => {
     setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
     setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []));
-    setSelectedType(
-      entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {})
-    );
   }, [entities]);
 
   const handleFilterDevices = (filter) => {
@@ -94,13 +91,6 @@ export const EntityEditor = ({
 
   const handleMapTypeChange = () => {
     // setLayerChosen(value)
-  };
-
-  const handleShowEntitiesOnMap = (entityTypeName) => {
-    setSelectedType((prev) => ({
-      ...prev,
-      [entityTypeName]: !selectedType[entityTypeName],
-    }));
   };
 
   const handleModeChange = (mode) => {
@@ -133,10 +123,6 @@ export const EntityEditor = ({
       addEntityToTBPTableFromDnD(entitiesTypesInstances[source.index]);
     }
   };
-
-  if (selectedType === '' && entitiesTypes.length > 0) {
-    setSelectedType(entities[0].name);
-  }
 
   const handleMarkerClick = (entity) => {
     if (addEntityMode === INIT_MODE) setAddEntityMode(EDIT_MODE);
@@ -213,9 +199,10 @@ export const EntityEditor = ({
     setTBPEntities([]);
     setTPEntities([]);
     setEntitiesTypesInstances(entities.reduce((prev, curr) => [...prev, ...curr.items], []));
-    setSelectedType(
-      entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {})
-    );
+    showAllTypes();
+    // setSelectedType(
+    //   entities.reduce((prev, entityType) => ({ ...prev, [entityType.name]: true }), {})
+    // );
     if (addEntityMode !== INIT_MODE) setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
   };
 
@@ -372,7 +359,7 @@ export const EntityEditor = ({
           showGrid={showGrid}
           showGridMeters={showGridMeters}>
           {(filteredEntities.length > 0 ? filteredEntities : entitiesTypes).map((devType) => {
-            if (selectedType[devType.name]) {
+            if (isTypeVisible(devType.name)) {
               const tbpParent = TBPEntities.find(({ key }) => devType.key === key) || null;
               return devType.items.map((dev, index) => {
                 const loc = getEntityLocation(dev, devType, layerChosen);
@@ -387,7 +374,6 @@ export const EntityEditor = ({
                       entity={dev}
                       entityType={devType}
                       devLocation={loc}
-                      isTypeSelected={devType.name === selectedType}
                       isOnEdit={isOnEdit}
                       shouldShowName={showName}
                       handleMarkerClick={handleMarkerClick}
@@ -457,7 +443,9 @@ export const EntityEditor = ({
 
               {entitiesTypes.length > 0 ? (
                 (filteredEntities.length > 0 ? filteredEntities : entitiesTypes).map((entity) => (
-                  <DeviceRow key={entity.key} entity={entity} onClick={handleShowEntitiesOnMap} />
+                  <DeviceRow key={entity.key}
+                    entity={entity}
+                    onClick={(typeName) => toggleTypeVisible(typeName)} />
                 ))
               ) : (
                 <p> No entities to show</p>
