@@ -22,6 +22,7 @@ import TBPButtons from './new/ToBePositionTable/TBPButtons';
 import { EDIT_MODE, INIT_MODE, SELECT_MODE } from './new/ToBePositionTable/utils/constants';
 import uuid from 'uuid/v4';
 import { WidthDivider } from './WidthDivider';
+import { useShape } from './useShape';
 
 const useStyles = makeStyles(styles);
 
@@ -39,7 +40,6 @@ export const EntityEditor = ({
   // selection is array of indexes sorted, those indexes points to selected entities in specific entity type
   const [selection, setSelection] = React.useState([]);
   const [addEntityMode, setAddEntityMode] = React.useState(INIT_MODE);
-  const [shape, setShape] = React.useState('Point');
   const [markedPoints, setMarkedPoints] = React.useState([]);
   const [rectAngle] = React.useState(0);
   const [rectRows, setRectRows] = React.useState(3);
@@ -62,6 +62,8 @@ export const EntityEditor = ({
   const [entitiesTypes, setEntitiesTypes] = React.useState([]);
   const [toggleMenu, setToggleMenu] = React.useState(false);
   const [anchorPoint, setAnchorPoint] = React.useState({});
+
+  const {shape, setShape, shapeToLine, shapeToPositions} = useShape(rectAngle, rectRows);
 
   useEffect(() => {
     setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
@@ -287,54 +289,6 @@ export const EntityEditor = ({
     }
   };
 
-  const shapeOptions = [
-    {
-      name: 'Free',
-      toLine: () => [],
-      toPositions: (points, amount) => (amount && points.length ? [points[0]] : []),
-    },
-    {
-      name: 'Point',
-      toLine: () => [],
-      toPositions: (points, amount) => (amount && points.length ? [points[0]] : []),
-    },
-    {
-      name: 'Poly',
-      toLine: (points) => [points],
-      toPositions: (points, amount) => resamplePolyline(points, amount),
-    },
-    {
-      name: 'Curve',
-      toLine: (points) => [splineCurve(points, 100)],
-      toPositions: (points, amount) => resamplePolyline(splineCurve(points, 100), amount),
-    },
-    {
-      name: 'Rect',
-      toLine: (points, angle = rectAngle) => {
-        const [nw, ne, se, sw] = rectByAngle(points, angle);
-        return [[nw, ne, se, sw, nw]];
-      },
-      toPositions: (points, amount, rows = rectRows, angle = rectAngle) => {
-        if (points.length === 0) return [];
-        const [nw, ne, se, sw] = rectByAngle(points, angle);
-        let ret = [];
-        const cols = Math.ceil(amount / rows);
-        if (rows > 1 && cols > 1) {
-          for (let y = 0; y < rows; ++y) {
-            const west = lerpPoint(nw, sw, y / (rows - 1));
-            const east = lerpPoint(ne, se, y / (rows - 1));
-            for (let x = 0; x < cols; ++x) {
-              ret.push(lerpPoint(west, east, x / (cols - 1)));
-            }
-          }
-        }
-        return ret;
-      },
-    },
-  ];
-
-  const shapeData = shapeOptions.find((s) => s.name === shape);
-
   const applyMenuRows = (dev) => [
     {
       onClick: () => {
@@ -365,7 +319,7 @@ export const EntityEditor = ({
 
   const handlePutEntitiesOnPrev = () => {
     if (TPEntities.length > 0) {
-      const positions = shapeData.toPositions(markedPoints, TPEntities.length);
+      const positions = shapeToPositions(markedPoints, TPEntities.length);
       const entities = [];
       for (let e of TPEntities) {
         const parentEntity = findEntityTypeName(e.entitiesTypeKey);
@@ -471,7 +425,8 @@ export const EntityEditor = ({
             markedPoints={markedPoints}
             setMarkedPoints={setMarkedPoints}
             shape={shape}
-            shapeCreator={shapeData}
+            shapeToLine={shapeToLine}
+            shapeToPositions={shapeToPositions}
             entityNum={selection.length}
             distanceInMeters={distanceInMeters()}
           />

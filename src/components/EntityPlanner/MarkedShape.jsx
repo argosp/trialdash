@@ -7,14 +7,15 @@ export const MarkedShape = ({
   markedPoints,
   setMarkedPoints,
   shape,
-  shapeCreator,
+  shapeToLine,
+  shapeToPositions,
   deviceNum,
   distanceInMeters,
 }) => {
   const currPolyline = React.useRef(null);
   const auxPolyline = React.useRef(null);
 
-  let candLocs = shapeCreator.toPositions(markedPoints, deviceNum).filter((x) => x);
+  let candLocs = shapeToPositions(markedPoints, deviceNum).filter((x) => x);
 
   const setLatLngsWithDist = (leafletElement, points) => {
     leafletElement.setLatLngs(points);
@@ -46,7 +47,7 @@ export const MarkedShape = ({
     points = points || markedPoints;
     let shownPolylines = undefined;
     if (points.length) {
-      shownPolylines = shapeCreator.toLine(points);
+      shownPolylines = shapeToLine(points);
     }
     if (!shownPolylines || !shownPolylines.length) {
       unbindTooltip(currPolyline);
@@ -77,16 +78,16 @@ export const MarkedShape = ({
       {shape === 'Point'
         ? null
         : markedPoints.map((p, i) => (
-            <MarkedPoint
-              key={i}
-              location={p}
-              setLocation={(latlng) => {
-                setMarkedPoints(replacePoint(markedPoints, i, latlng));
-              }}
-              dragLocation={(latlng) => {
-                renderShape(replacePoint(markedPoints, i, latlng));
-              }}></MarkedPoint>
-          ))}
+          <MarkedPoint
+            key={i}
+            location={p}
+            setLocation={(latlng) => {
+              setMarkedPoints(replacePoint(markedPoints, i, latlng));
+            }}
+            dragLocation={(latlng) => {
+              renderShape(replacePoint(markedPoints, i, latlng));
+            }}></MarkedPoint>
+        ))}
       <Polyline positions={[]} ref={currPolyline} />
       {shape !== 'Arc' ? null : <Polyline positions={[]} ref={auxPolyline} />}
       {candLocs.map((loc, index) => {
