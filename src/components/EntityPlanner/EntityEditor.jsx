@@ -162,14 +162,14 @@ export const EntityEditor = ({
 
   const removeEntityFromTBPTable = (entity) => {
     if (isArray(entity) && isEmpty(entity)) {
-      handleTBPEntities([]);
+      setTBPEntities([]);
       return;
     }
     const parentEntity = TBPEntities.find(({ key }) => key === entity.entitiesTypeKey);
     if (parentEntity.items.length < 2) {
-      handleTBPEntities((prev) => prev.filter((et) => et.key !== parentEntity.key));
+      setTBPEntities((prev) => prev.filter((et) => et.key !== parentEntity.key));
     } else {
-      handleTBPEntities((prev) => {
+      setTBPEntities((prev) => {
         return prev.map((et) => {
           if (et.key === parentEntity.key)
             return { ...et, items: et.items.filter((e) => e.key !== entity.key) };
@@ -186,7 +186,7 @@ export const EntityEditor = ({
     // const draggedEntity = entitiesTypesInstances[source.index]
     const parentEntity = TBPEntities.find(({ key }) => key === entity.entitiesTypeKey);
     if (parentEntity) {
-      handleTBPEntities((prev) =>
+      setTBPEntities((prev) =>
         prev.map((entityType) => {
           if (entityType.key === parentEntity.key) {
             return { ...parentEntity, items: [...parentEntity.items, entity] };
@@ -196,7 +196,7 @@ export const EntityEditor = ({
       );
     } else {
       const _parentEntity = entitiesTypes.find(({ key }) => key === entity.entitiesTypeKey);
-      handleTBPEntities((prev) => [
+      setTBPEntities((prev) => [
         ...prev,
         {
           ..._parentEntity,
@@ -209,10 +209,6 @@ export const EntityEditor = ({
   const addEntityToTBPTableFromDnD = (entity) => {
     addEntityToTBPTable(entity);
     setEntitiesTypesInstances((p) => p.filter(({ key }) => key !== entity.key));
-  };
-
-  const handleTBPEntities = (tbpEntities) => {
-    setTBPEntities(tbpEntities);
   };
 
   const cleanTBPTable = () => {
