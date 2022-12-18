@@ -35,32 +35,32 @@ export const EntityEditor = ({
   const classes = useStyles();
   // older selectType is string selected entity type name
   // selectedType is an object of true values for each key, each key is string of selected entity type
-  const [selectedType, setSelectedType] = React.useState({});
+  const [selectedType, setSelectedType] = useState({});
   // selection is array of indexes sorted, those indexes points to selected entities in specific entity type
-  const [selection, setSelection] = React.useState([]);
-  const [addEntityMode, setAddEntityMode] = React.useState(INIT_MODE);
-  const [markedPoints, setMarkedPoints] = React.useState([]);
-  const [rectAngle] = React.useState(0);
-  const [rectRows, setRectRows] = React.useState(3);
-  const [showName, setShowName] = React.useState(false);
-  const [layerChosen, setLayerChosen] = React.useState('OSMMap');
-  const [showGrid, setShowGrid] = React.useState(false);
-  const [showGridMeters, setShowGridMeters] = React.useState(1);
-  const [TBPEntities, setTBPEntities] = React.useState([]);
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [filteredEntities, setFilteredEntities] = React.useState([]);
-  const [entitiesTypesInstances, setEntitiesTypesInstances] = React.useState([]);
-  const [isFiltered, setIsFiltered] = React.useState(false);
+  const [selection, setSelection] = useState([]);
+  const [addEntityMode, setAddEntityMode] = useState(INIT_MODE);
+  const [markedPoints, setMarkedPoints] = useState([]);
+  const [rectAngle] = useState(0);
+  const [rectRows, setRectRows] = useState(3);
+  const [showName, setShowName] = useState(false);
+  const [layerChosen, setLayerChosen] = useState('OSMMap');
+  const [showGrid, setShowGrid] = useState(false);
+  const [showGridMeters, setShowGridMeters] = useState(1);
+  const [TBPEntities, setTBPEntities] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [filteredEntities, setFilteredEntities] = useState([]);
+  const [entitiesTypesInstances, setEntitiesTypesInstances] = useState([]);
+  const [isFiltered, setIsFiltered] = useState(false);
   /**
    * @const {array} TPEntities - contains the selected entities
    */
-  const [TPEntities, setTPEntities] = React.useState([]);
+  const [TPEntities, setTPEntities] = useState([]);
   /**
    * @const {array} entitiesTypes - contains the source entities array, for prev presentation of edit
    */
-  const [entitiesTypes, setEntitiesTypes] = React.useState([]);
-  const [toggleMenu, setToggleMenu] = React.useState(false);
-  const [anchorPoint, setAnchorPoint] = React.useState({});
+  const [entitiesTypes, setEntitiesTypes] = useState([]);
+  const [toggleMenu, setToggleMenu] = useState(false);
+  const [anchorPoint, setAnchorPoint] = useState({});
 
   const [shape, setShape] = useState('Point');
   const { shapeToLine, shapeToPositions } = useShapeGeometry({ shape, rectAngle, rectRows });
