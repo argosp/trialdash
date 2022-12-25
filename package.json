@@ -58,7 +58,6 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "eslint src/ --ext .jsx --ext .js",
       "pre-push": "eslint src/ --ext .jsx --ext .js"
     }
   },
