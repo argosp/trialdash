@@ -78,16 +78,16 @@ export const MarkedShape = ({
       {shape === 'Point'
         ? null
         : markedPoints.map((p, i) => (
-          <MarkedPoint
-            key={i}
-            location={p}
-            setLocation={(latlng) => {
-              setMarkedPoints(replacePoint(markedPoints, i, latlng));
-            }}
-            dragLocation={(latlng) => {
-              renderShape(replacePoint(markedPoints, i, latlng));
-            }}></MarkedPoint>
-        ))}
+            <MarkedPoint
+              key={i}
+              location={p}
+              setLocation={(latlng) => {
+                setMarkedPoints(replacePoint(markedPoints, i, latlng));
+              }}
+              dragLocation={(latlng) => {
+                renderShape(replacePoint(markedPoints, i, latlng));
+              }}></MarkedPoint>
+          ))}
       <Polyline positions={[]} ref={currPolyline} />
       {shape !== 'Arc' ? null : <Polyline positions={[]} ref={auxPolyline} />}
       {candLocs.map((loc, index) => {

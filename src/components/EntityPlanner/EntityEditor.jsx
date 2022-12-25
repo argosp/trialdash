@@ -59,7 +59,9 @@ export const EntityEditor = ({
   const [shape, setShape] = useState('Point');
   const { shapeToLine, shapeToPositions } = useShapeGeometry({ shape, rectAngle, rectRows });
 
-  const { isTypeVisible, toggleTypeVisible, setAllTypesVisible } = useEntityTypeVisible({ entities });
+  const { isTypeVisible, toggleTypeVisible, setAllTypesVisible } = useEntityTypeVisible({
+    entities,
+  });
 
   useEffect(() => {
     setEntitiesTypes(JSON.parse(JSON.stringify(entities)));
@@ -270,15 +272,15 @@ export const EntityEditor = ({
       } else {
         setEntities(changeLocations(parentEntity.name, [childIndex]));
       }
-    }
-  }
+    };
+  };
 
   const deviceLocationEdit = (dev) => {
     return () => {
       addEntityToTBPTable(dev);
       if (TBPEntities.length < 1) setAddEntityMode(EDIT_MODE);
-    }
-  }
+    };
+  };
 
   function findIndexOfEntity(entity, parentEntity) {
     return parentEntity.items.findIndex((e) => e.key === entity.key);
@@ -421,9 +423,11 @@ export const EntityEditor = ({
 
               {entitiesTypes.length > 0 ? (
                 (filteredEntities.length > 0 ? filteredEntities : entitiesTypes).map((entity) => (
-                  <DeviceRow key={entity.key}
+                  <DeviceRow
+                    key={entity.key}
                     entity={entity}
-                    onClick={(typeName) => toggleTypeVisible(typeName)} />
+                    onClick={(typeName) => toggleTypeVisible(typeName)}
+                  />
                 ))
               ) : (
                 <p> No entities to show</p>

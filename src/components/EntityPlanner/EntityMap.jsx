@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  Map as LeafletMap,
-} from 'react-leaflet';
+import { Map as LeafletMap } from 'react-leaflet';
 import { CRS } from 'leaflet';
 import { EntityMapLayers } from './MapLayers/EntityMapLayers.jsx';
 
