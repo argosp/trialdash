@@ -102,8 +102,6 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                     <MarkedShape
                         markedPoints={markedPoints}
                         setMarkedPoints={setMarkedPoints}
-                        shape={shape}
-                        shapeCreator={shapeData}
                         entityNum={selection.length}
                         distanceInMeters={distanceInMeters()}
                     />
