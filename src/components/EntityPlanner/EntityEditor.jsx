@@ -112,16 +112,10 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                 {!entities.length ? null :
                     <>
                         <ShapeChooser
-                            shape={shape}
                             onChange={(val) => {
                                 if (val === "Point") setMarkedPoints([]);
-                                setShape(val)
                             }}
-                            shapeOptions={shapeOptions}
                         />
-                        {shape !== 'Rect' ? null :
-                            <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
-                        }
                         <Button variant="contained" color="primary"
                             disabled={shape === 'Point'}
                             style={{ margin: 5 }}
