@@ -3,6 +3,6 @@ export const styles = () => ({
     marginLeft: 20,
   },
   tableCell: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 });

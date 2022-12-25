@@ -14,8 +14,8 @@ export default (trial, parentEntityKey, entity, action) => {
               .replace(/"state":/g, "state:")
               .replace(/"entitiesTypeKey":/g, "entitiesTypeKey:")
               .replace(/"properties":/g, "properties:")
-              .replace(/"key":/g, 'key:')
-              .replace(/"val":/g, 'val:')}           
+              .replace(/"key":/g, "key:")
+              .replace(/"val":/g, "val:")}           
             )
             {
                 key

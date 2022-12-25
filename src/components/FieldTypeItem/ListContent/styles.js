@@ -1,20 +1,20 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   title: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 14,
     marginLeft: 10,
   },
   description: {
-    lineHeight: '15px',
+    lineHeight: "15px",
     color: theme.palette.gray.dark,
     fontSize: 12,
-    margin: '5px 0 15px 0',
+    margin: "5px 0 15px 0",
   },
   itemWrapper: {
     padding: 0,
 
-    '&:hover': {
-      backgroundColor: 'transparent',
+    "&:hover": {
+      backgroundColor: "transparent",
     },
   },
   wrapperIcon: {

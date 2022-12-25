@@ -1,23 +1,32 @@
-import React from 'react';
-import config from '../../../config'
-import SimpleButton from '../../SimpleButton';
-import gql from 'graphql-tag';
+import React from "react";
+import config from "../../../config";
+import SimpleButton from "../../SimpleButton";
+import gql from "graphql-tag";
 
 const UPLOAD_FILE = gql`
-  mutation($file: Upload!) {
-    uploadFile(file: $file){
+  mutation ($file: Upload!) {
+    uploadFile(file: $file) {
       filename
       path
     }
-  }`;
+  }
+`;
 
 export default function fileUpload({ classes, client, addImage }) {
-
   async function handleFileChange(e) {
-    const data = await client.mutate({ mutation: UPLOAD_FILE, variables: { file: e.target.files[0] } });
-    if (data && data.data && data.data.uploadFile && data.data.uploadFile.path) {
-      addImage(`![${e.target.files[0].name}](${config.url}/${data.data.uploadFile.path})`)
-
+    const data = await client.mutate({
+      mutation: UPLOAD_FILE,
+      variables: { file: e.target.files[0] },
+    });
+    if (
+      data &&
+      data.data &&
+      data.data.uploadFile &&
+      data.data.uploadFile.path
+    ) {
+      addImage(
+        `![${e.target.files[0].name}](${config.url}/${data.data.uploadFile.path})`
+      );
     }
   }
 
@@ -32,12 +41,10 @@ export default function fileUpload({ classes, client, addImage }) {
         text={
           <>
             Attach files
-            <input
-              type="file"
-              onChange={handleFileChange}
-              hidden
-            /></>}
+            <input type="file" onChange={handleFileChange} hidden />
+          </>
+        }
       />
     </>
-  )
+  );
 }

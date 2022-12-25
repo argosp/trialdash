@@ -1,13 +1,13 @@
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import Grid from '@material-ui/core/Grid';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import React from 'react';
-import classnames from 'classnames';
-import { withStyles } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import { styles } from './styles';
-import SimpleButton from '../SimpleButton';
+import SearchIcon from "@material-ui/icons/Search";
+import InputBase from "@material-ui/core/InputBase";
+import Grid from "@material-ui/core/Grid";
+import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
+import React from "react";
+import classnames from "classnames";
+import { withStyles } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import { styles } from "./styles";
+import SimpleButton from "../SimpleButton";
 
 const ContentHeader = (props) => {
   const {
@@ -38,15 +38,17 @@ const ContentHeader = (props) => {
     addMultipleButtonHandler,
     withDownloadButton,
     downloadButtonText,
-    downloadButtonHandler
+    downloadButtonHandler,
   } = props;
 
   return (
-    <Grid container justifyContent="space-between" className={classnames(classes.header, className)} onClick={onClick}>
-      <Box
-        display="flex"
-        alignItems="center"
-      >
+    <Grid
+      container
+      justifyContent="space-between"
+      className={classnames(classes.header, className)}
+      onClick={onClick}
+    >
+      <Box display="flex" alignItems="center">
         {withBackButton ? (
           <KeyboardBackspaceIcon
             className={classes.backIcon}
@@ -56,7 +58,9 @@ const ContentHeader = (props) => {
 
         <Box display="inline-block">
           <Box display="inline-block">
-            {topDescription ? <p className={classes.topDescription}>{topDescription}</p> : null}
+            {topDescription ? (
+              <p className={classes.topDescription}>{topDescription}</p>
+            ) : null}
             <h1 className={classes.title}>{title}</h1>
           </Box>
           {rightDescription ? (
@@ -83,66 +87,57 @@ const ContentHeader = (props) => {
               input: classes.inputInput,
               focused: classes.inputFocused,
             }}
-            inputProps={{ 'aria-label': searchPlaceholder }}
+            inputProps={{ "aria-label": searchPlaceholder }}
           />
-          {withAddButton
-            && (
-              <SimpleButton
-                colorVariant="primary"
-                className={classes.addButton}
-                text={addButtonText}
-                onClick={addButtonHandler}
-              />
-            )
-          }
-          {withUploadButton
-            && (
-              <SimpleButton
-                colorVariant="primary"
-                className={classes.addButton}
-                component="label"
-                text={
-                  <>
-                    {uploadButtonText}
-                    <input
-                      type="file"
-                      onChange={uploadButtonHandler}
-                      hidden
-                    /></>}
-              />
-            )
-          }
-          {withDownloadButton
-          && (
+          {withAddButton && (
+            <SimpleButton
+              colorVariant="primary"
+              className={classes.addButton}
+              text={addButtonText}
+              onClick={addButtonHandler}
+            />
+          )}
+          {withUploadButton && (
+            <SimpleButton
+              colorVariant="primary"
+              className={classes.addButton}
+              component="label"
+              text={
+                <>
+                  {uploadButtonText}
+                  <input type="file" onChange={uploadButtonHandler} hidden />
+                </>
+              }
+            />
+          )}
+          {withDownloadButton && (
             <SimpleButton
               colorVariant="primary"
               className={classes.addButton}
               text={downloadButtonText}
               onClick={downloadButtonHandler}
-              />
+            />
           )}
-          {withDeleteButton
-            && (
-              <SimpleButton
-                colorVariant="secondary"
-                className={classes.addButton}
-                text={deleteButtonText}
-                onClick={deleteButtonHandler}
-              />
-            )
-          }
-          {withAddMultipleButton
-            && (
-              <SimpleButton
-                colorVariant="primary"
-                className={classes.addButton}
-                text={addMultipleButtonText}
-                onClick={addMultipleButtonHandler}
-              />
-            )
-          }
+          {withDeleteButton && (
+            <SimpleButton
+              colorVariant="secondary"
+              className={classes.addButton}
+              text={deleteButtonText}
+              onClick={deleteButtonHandler}
+            />
+          )}
+          {withAddMultipleButton && (
+            <SimpleButton
+              colorVariant="primary"
+              className={classes.addButton}
+              text={addMultipleButtonText}
+              onClick={addMultipleButtonHandler}
+            />
+          )}
         </div>
-      ) : rightComponent}
+      ) : (
+        rightComponent
+      )}
     </Grid>
   );
 };

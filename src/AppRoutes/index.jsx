@@ -1,21 +1,21 @@
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import React from 'react';
-import Experiments from '../components/ExperimentContext/Experiments';
-import Login from '../components/Login';
-import TrialSets from '../components/TrialContext/TrialSets';
-import ExperimentForm from '../components/ExperimentContext/ExperimentForm';
-import AuthPage from '../components/AuthPage';
-import AddSetForm from '../components/AddSetForm';
-import EntitiesTypes from '../components/EntityContext/EntitiesTypes';
-import entitiesTypesQuery from '../components/EntityContext/utils/entityTypeQuery';
-import Trials from '../components/TrialContext/Trials';
-import TrialForm from '../components/TrialContext/TrialForm';
-import trialSetsQuery from '../components/TrialContext/utils/trialSetQuery';
-import Entities from '../components/EntityContext/Entities';
-import Logs from '../components/LogsContext/Logs';
-import NewLog from '../components/LogsContext/NewLog';
-import EditLog from '../components/LogsContext/EditLog';
-import EntityForm from '../components/EntityContext/EntityForm';
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import React from "react";
+import Experiments from "../components/ExperimentContext/Experiments";
+import Login from "../components/Login";
+import TrialSets from "../components/TrialContext/TrialSets";
+import ExperimentForm from "../components/ExperimentContext/ExperimentForm";
+import AuthPage from "../components/AuthPage";
+import AddSetForm from "../components/AddSetForm";
+import EntitiesTypes from "../components/EntityContext/EntitiesTypes";
+import entitiesTypesQuery from "../components/EntityContext/utils/entityTypeQuery";
+import Trials from "../components/TrialContext/Trials";
+import TrialForm from "../components/TrialContext/TrialForm";
+import trialSetsQuery from "../components/TrialContext/utils/trialSetQuery";
+import Entities from "../components/EntityContext/Entities";
+import Logs from "../components/LogsContext/Logs";
+import NewLog from "../components/LogsContext/NewLog";
+import EditLog from "../components/LogsContext/EditLog";
+import EntityForm from "../components/EntityContext/EntityForm";
 import {
   ENTITIES_TYPES_DASH,
   ENTITIES_TYPES,
@@ -25,8 +25,8 @@ import {
   TRIALS,
   TRIAL_SET_MUTATION,
   ENTITIES_TYPE_MUTATION,
-  LOGS_DASH
-} from '../constants/base';
+  LOGS_DASH,
+} from "../constants/base";
 
 const AppRoutes = () => (
   <BrowserRouter>
@@ -57,7 +57,7 @@ const AppRoutes = () => (
         <Route
           path="/experiments/:id/add-trial-set"
           exact
-          render={props => (
+          render={(props) => (
             <AddSetForm
               {...props}
               formType={TRIAL_SETS_DASH}
@@ -70,7 +70,7 @@ const AppRoutes = () => (
         <Route
           path="/experiments/:id/add-entities-type"
           exact
-          render={props => (
+          render={(props) => (
             <AddSetForm
               {...props}
               formType={ENTITIES_TYPES_DASH}
@@ -116,11 +116,7 @@ const AppRoutes = () => (
           component={Entities}
           exact
         />
-        <Route
-          path={`/experiments/:id/${LOGS_DASH}`}
-          component={Logs}
-          exact
-        />
+        <Route path={`/experiments/:id/${LOGS_DASH}`} component={Logs} exact />
         <Route
           path={`/experiments/:id/${LOGS_DASH}/new`}
           exact

@@ -1,16 +1,16 @@
-import ApolloClient from 'apollo-client';
-import { WebSocketLink } from 'apollo-link-ws';
-import { ApolloLink, split } from 'apollo-link';
-import { getMainDefinition } from 'apollo-utilities';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createUploadLink } from 'apollo-upload-client';
+import ApolloClient from "apollo-client";
+import { WebSocketLink } from "apollo-link-ws";
+import { ApolloLink, split } from "apollo-link";
+import { getMainDefinition } from "apollo-utilities";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { createUploadLink } from "apollo-upload-client";
 
-import config from '../config';
+import config from "../config";
 
 const middlewareLink = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
-      authorization: localStorage.getItem('jwt') || null,
+      authorization: localStorage.getItem("jwt") || null,
     },
   });
 
@@ -18,16 +18,15 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 });
 
 let httpLink = createUploadLink({
-  uri:  `${config.url}/graphql`
+  uri: `${config.url}/graphql`,
 });
-
 
 let wsLink = new WebSocketLink({
   uri: `${config.ws}/subscriptions`,
   options: {
     reconnect: true,
     headers: {
-      authorization: localStorage.getItem('jwt'),
+      authorization: localStorage.getItem("jwt"),
     },
   },
 });
@@ -40,10 +39,10 @@ const link = split(
   ({ query }) => {
     const { kind, operation } = getMainDefinition(query);
 
-    return kind === 'OperationDefinition' && operation === 'subscription';
+    return kind === "OperationDefinition" && operation === "subscription";
   },
   wsLink,
-  httpLink,
+  httpLink
 );
 
 const cache = new InMemoryCache({
@@ -69,7 +68,7 @@ export const updateCache = (
   isExistingItem = false,
   parentField = null,
   callback = null,
-  matchField = 'key',
+  matchField = "key"
 ) => {
   const items = apolloCache.readQuery({
     query,
@@ -80,7 +79,7 @@ export const updateCache = (
   let updatedItems;
 
   // update the existing item
-  
+
   items.forEach((item, i) => {
     if (item[matchField] === mutationResult.data[mutationName][matchField]) {
       items[i] = mutationResult.data[mutationName];
@@ -90,16 +89,18 @@ export const updateCache = (
 
   updatedItems = items;
 
-  if (!existing) updatedItems = items.concat([mutationResult.data[mutationName]])
+  if (!existing)
+    updatedItems = items.concat([mutationResult.data[mutationName]]);
 
   let a = {};
 
   if (parentField) {
-    for(var i = 0; i < updatedItems.length; i++) {
-      if (updatedItems[i][parentField] && updatedItems[i].state !== 'Deleted') {
-        a[updatedItems[i][parentField]] = (a[updatedItems[i][parentField]]+1) || 1;
+    for (var i = 0; i < updatedItems.length; i++) {
+      if (updatedItems[i][parentField] && updatedItems[i].state !== "Deleted") {
+        a[updatedItems[i][parentField]] =
+          a[updatedItems[i][parentField]] + 1 || 1;
       }
-    };
+    }
   }
 
   // update the Apollo cache

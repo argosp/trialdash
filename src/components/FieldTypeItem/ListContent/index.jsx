@@ -1,26 +1,22 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import Radio from '@material-ui/core/Radio';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxOutlinedIcon from "@material-ui/icons/CheckBoxOutlined";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
+import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked";
+import Radio from "@material-ui/core/Radio";
 import {
   FIELD_TYPE_ITEM_CHECKBOX_TYPE,
   FIELD_TYPES_ICONS,
-} from '../../../constants/fieldTypes';
-import { styles } from './styles';
+} from "../../../constants/fieldTypes";
+import { styles } from "./styles";
 
-const ListContent = ({
-  fieldType,
-  classes,
-  contentType,
-}) => (
+const ListContent = ({ fieldType, classes, contentType }) => (
   <div>
     <Grid container alignItems="center">
       {FIELD_TYPES_ICONS[fieldType.type]}
@@ -31,7 +27,7 @@ const ListContent = ({
       <FormGroup>
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
@@ -43,12 +39,12 @@ const ListContent = ({
               }
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
@@ -60,12 +56,12 @@ const ListContent = ({
               }
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
@@ -77,12 +73,12 @@ const ListContent = ({
               }
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
-          control={(
+          control={
             <Checkbox
               color="default"
               className={classes.itemWrapper}
@@ -94,7 +90,7 @@ const ListContent = ({
               }
               disableRipple
             />
-          )}
+          }
           label="Sensor"
         />
       </FormGroup>
@@ -103,7 +99,7 @@ const ListContent = ({
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor1"
               disableRipple
@@ -116,12 +112,12 @@ const ListContent = ({
                 <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
               }
             />
-          )}
+          }
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor2"
               disableRipple
@@ -134,12 +130,12 @@ const ListContent = ({
                 <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
               }
             />
-          )}
+          }
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor3"
               disableRipple
@@ -152,12 +148,12 @@ const ListContent = ({
                 <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
               }
             />
-          )}
+          }
         />
         <FormControlLabel
           classes={{ label: classes.label, root: classes.labelRoot }}
           label="Sensor"
-          control={(
+          control={
             <Radio
               value="sensor4"
               disableRipple
@@ -170,7 +166,7 @@ const ListContent = ({
                 <RadioButtonUncheckedIcon className={classes.wrapperIcon} />
               }
             />
-          )}
+          }
         />
       </RadioGroup>
     )}

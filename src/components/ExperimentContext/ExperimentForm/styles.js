@@ -1,4 +1,4 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   header: {
     marginBottom: 45,
   },
@@ -15,7 +15,7 @@ export const styles = theme => ({
     padding: 0,
   },
   map: {
-    position: 'absolute',
+    position: "absolute",
     width: 500,
     height: 340,
     zIndex: 0,

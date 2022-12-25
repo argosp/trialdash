@@ -1,13 +1,13 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   input: {
     backgroundColor: theme.palette.white.main,
-    padding: '10px 15px',
+    padding: "10px 15px",
     fontSize: 14,
-    border: '1px solid transparent',
+    border: "1px solid transparent",
   },
   inputWithBorder: {
     backgroundColor: theme.palette.white.main,
-    padding: '10px 15px',
+    padding: "10px 15px",
     border: `1px solid ${theme.palette.white.dark}`,
     fontSize: 14,
   },
@@ -17,25 +17,25 @@ export const styles = theme => ({
   label: {
     fontSize: 18,
     color: theme.palette.black.dark,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   error: {
-    color: '#EB5757',
-    fontWeight: 'bold',
+    color: "#EB5757",
+    fontWeight: "bold",
     fontSize: 13,
   },
   textFieldError: {
-    marginTop: '-12px',
+    marginTop: "-12px",
     marginBottom: 20,
   },
   formControl: {
-    'label + &': {
+    "label + &": {
       marginTop: 20,
     },
   },
   bottomDescription: {
     marginTop: 5,
-    lineHeight: '15px',
+    lineHeight: "15px",
   },
   switcher: {
     marginLeft: 11,
@@ -44,7 +44,7 @@ export const styles = theme => ({
   },
   textArea: {
     padding: 15,
-    width: '100%',
-    maxWidth: '100%',
+    width: "100%",
+    maxWidth: "100%",
   },
 });

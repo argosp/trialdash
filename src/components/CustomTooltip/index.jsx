@@ -1,9 +1,9 @@
-import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import classnames from 'classnames';
-import { withStyles } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import { styles } from './styles';
+import React from "react";
+import Tooltip from "@material-ui/core/Tooltip";
+import classnames from "classnames";
+import { withStyles } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import { styles } from "./styles";
 
 class CustomTooltip extends React.Component {
   state = {
@@ -17,18 +17,27 @@ class CustomTooltip extends React.Component {
   };
 
   render() {
-    const { classes, title,component, children, className, placement, ariaLabel, onClick } = this.props;
+    const {
+      classes,
+      title,
+      component,
+      children,
+      className,
+      placement,
+      ariaLabel,
+      onClick,
+    } = this.props;
 
     return (
       <Tooltip
-        placement={placement || 'top'}
+        placement={placement || "top"}
         className={classnames(classes.root, className)}
-        title={(
+        title={
           <React.Fragment>
             {title}
             <span className={classes.arrow} ref={this.handleArrowRef} />
           </React.Fragment>
-         )}
+        }
         classes={{
           tooltip: classes.tooltip,
           popper: classes.popper,

@@ -1,24 +1,24 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
-    padding: '20px 0 0 40px',
+    padding: "20px 0 0 40px",
     backgroundColor: theme.palette.white.main,
   },
   rootWithoutExperiments: {
-    padding: '20px 0 15px 40px',
+    padding: "20px 0 15px 40px",
   },
   logoWrapper: {
     marginTop: 4,
     marginRight: 20,
   },
   menuIcon: {
-    cursor: 'pointer',
+    cursor: "pointer",
     marginRight: 15,
   },
   logo: {
     color: theme.palette.primary.main,
     fontSize: 24,
-    textTransform: 'uppercase',
-    textDecoration: 'none',
+    textTransform: "uppercase",
+    textDecoration: "none",
     zIndex: 5,
   },
   divider: {
@@ -34,23 +34,23 @@ export const styles = theme => ({
     marginRight: 15,
   },
   expandButton: {
-    '&:hover': {
+    "&:hover": {
       backgroundColor: theme.palette.white.main,
       color: theme.palette.gray.main,
     },
   },
   expandExperimentButton: {
     color: theme.palette.black.main,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingTop: 6,
   },
   expandProfileButton: {
     color: theme.palette.black.dark,
-    textTransform: 'none',
+    textTransform: "none",
     fontSize: 16,
     padding: 0,
-    margin: '3px 20px 0 15px',
-    height: 'fit-content',
+    margin: "3px 20px 0 15px",
+    height: "fit-content",
   },
   avatar: {
     width: 36,
@@ -58,7 +58,7 @@ export const styles = theme => ({
   },
   profileWrapper: {
     marginTop: 3,
-    display: 'flex',
-    alignItems: 'flex-start',
+    display: "flex",
+    alignItems: "flex-start",
   },
 });

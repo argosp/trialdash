@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
-const getAllExperimentData = experimentId => gql`
+const getAllExperimentData = (experimentId) => gql`
   {
     getAllExperimentData(experimentId:"${experimentId}"){
       entityTypes {

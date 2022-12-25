@@ -1,6 +1,6 @@
 export const styles = () => ({
   title: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     margin: 0,
   },
   description: {

@@ -1,31 +1,31 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import classnames from 'classnames';
-import { styles } from './styles';
-import RightPanelContainer from '../RightPanelContainer';
-import { CloneMultipleIcon } from '../../constants/icons';
-import SimpleButton from '../SimpleButton';
-import CustomInput from '../CustomInput';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import classnames from "classnames";
+import { styles } from "./styles";
+import RightPanelContainer from "../RightPanelContainer";
+import { CloneMultipleIcon } from "../../constants/icons";
+import SimpleButton from "../SimpleButton";
+import CustomInput from "../CustomInput";
 
 class CloneMultiplePanel extends React.Component {
   state = {
     number: null,
-    prefix: '',
-    numberFormat: '',
-    suffix: ''
-  }
+    prefix: "",
+    numberFormat: "",
+    suffix: "",
+  };
 
   onInputChange = (e, inputName) => {
     this.setState({ [inputName]: e.target.value });
-  }
+  };
 
   cancel = () => {
     const { onClose } = this.props;
-    this.setState({ number: '', prefix: '', numberFormat: '', suffix: '' });
+    this.setState({ number: "", prefix: "", numberFormat: "", suffix: "" });
     onClose();
-  }
+  };
 
   validateAndCreate = () => {
     const { cloneMultiple } = this.props;
@@ -34,18 +34,18 @@ class CloneMultiplePanel extends React.Component {
     let invalidNumber = false;
     let invalidNumberFormat = false;
     let numberFormatError = null;
-    if (!number || number === '') {
+    if (!number || number === "") {
       invalidNumber = true;
       invalid = true;
     } else {
       invalidNumber = false;
     }
-    if (!numberFormat || numberFormat === '') {
+    if (!numberFormat || numberFormat === "") {
       invalidNumberFormat = true;
       invalid = true;
     } else if (!numberFormat.match(/^\d+$/)) {
       invalidNumberFormat = true;
-      numberFormatError = 'Invalid number format';
+      numberFormatError = "Invalid number format";
       invalid = true;
     } else {
       invalidNumberFormat = false;
@@ -54,9 +54,9 @@ class CloneMultiplePanel extends React.Component {
       this.setState({ invalidNumber, invalidNumberFormat, numberFormatError });
       return;
     }
-    this.setState({ number: '', prefix: '', numberFormat: '', suffix: '' });
+    this.setState({ number: "", prefix: "", numberFormat: "", suffix: "" });
     cloneMultiple(number, `${prefix}{${numberFormat}}${suffix}`);
-  }
+  };
 
   render() {
     const { classes, isPanelOpen, onClose } = this.props;
@@ -67,26 +67,22 @@ class CloneMultiplePanel extends React.Component {
         isPanelOpen={isPanelOpen}
         onClose={onClose}
         title={
-          (
-            <Grid
-              container
-              justifyContent="space-between"
-              alignItems="center"
-              className={classes.headerTitle}
-            >
-              <CloneMultipleIcon style={{ width: 22, height: 26 }} />
-              <Typography className={classes.label}>
-                Create Multiple
-              </Typography>
-            </Grid>
-          )
+          <Grid
+            container
+            justifyContent="space-between"
+            alignItems="center"
+            className={classes.headerTitle}
+          >
+            <CloneMultipleIcon style={{ width: 22, height: 26 }} />
+            <Typography className={classes.label}>Create Multiple</Typography>
+          </Grid>
         }
       >
         <div className={classes.content}>
           <Grid>
             <CustomInput
               id="number"
-              onChange={e => this.onInputChange(e, 'number')}
+              onChange={(e) => this.onInputChange(e, "number")}
               value={number}
               label="Number of entities to create"
               type="number"
@@ -97,7 +93,7 @@ class CloneMultiplePanel extends React.Component {
           <Grid>
             <CustomInput
               id="prefix"
-              onChange={e => this.onInputChange(e, 'prefix')}
+              onChange={(e) => this.onInputChange(e, "prefix")}
               value={prefix}
               label="Name Prefix"
               type="text"
@@ -108,7 +104,7 @@ class CloneMultiplePanel extends React.Component {
           <Grid>
             <CustomInput
               id="numberFormat"
-              onChange={e => this.onInputChange(e, 'numberFormat')}
+              onChange={(e) => this.onInputChange(e, "numberFormat")}
               value={numberFormat}
               label="Name Number format"
               type="text"
@@ -121,7 +117,7 @@ class CloneMultiplePanel extends React.Component {
           <Grid>
             <CustomInput
               id="suffix"
-              onChange={e => this.onInputChange(e, 'suffix')}
+              onChange={(e) => this.onInputChange(e, "suffix")}
               value={suffix}
               label="Name Suffix"
               type="text"

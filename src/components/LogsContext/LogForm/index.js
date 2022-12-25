@@ -1,51 +1,64 @@
-import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
-import { withApollo } from 'react-apollo';
-import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, Chip, Typography, IconButton } from '@material-ui/core';
-import { styles } from './styles';
-import addUpdateLog from '../utils/logMutation';
-import SimpleButton from '../../SimpleButton';
+import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
+import { compose } from "recompose";
+import { withApollo } from "react-apollo";
+import {
+  withStyles,
+  Paper,
+  Grid,
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  Chip,
+  Typography,
+  IconButton,
+} from "@material-ui/core";
+import { styles } from "./styles";
+import addUpdateLog from "../utils/logMutation";
+import SimpleButton from "../../SimpleButton";
 // import MDEditor from '@uiw/react-md-editor';
-import FileUpload from './fileUpload';
-import getDate from '../utils/getDate';
-import Labels from '../LabelsDropdown';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { DatePicker } from '@material-ui/pickers';
+import FileUpload from "./fileUpload";
+import getDate from "../utils/getDate";
+import Labels from "../LabelsDropdown";
+import SettingsIcon from "@material-ui/icons/Settings";
+import { DatePicker } from "@material-ui/pickers";
 
 function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
-
-  const [logValues, setLogValues] = useState({ comment: '', title: '', ...log })
+  const [logValues, setLogValues] = useState({
+    comment: "",
+    title: "",
+    ...log,
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   function handleChange(field, value) {
-    const newValue ={...logValues, [field]: value}
-    setLogValues(newValue)
-    return newValue
+    const newValue = { ...logValues, [field]: value };
+    setLogValues(newValue);
+    return newValue;
   }
 
   async function handleSubmit() {
     await client.mutate({
-      mutation: addUpdateLog(match.params.id, logValues)
+      mutation: addUpdateLog(match.params.id, logValues),
     });
-    window.location.href = `/experiments/${match.params.id}/logs`
+    window.location.href = `/experiments/${match.params.id}/logs`;
   }
 
   function addImage(img) {
-    handleChange('comment', `${logValues.comment} ${img}`)
+    handleChange("comment", `${logValues.comment} ${img}`);
   }
 
   function updateLabels(checked) {
-    handleChange('labels', checked)
+    handleChange("labels", checked);
   }
 
   function handleDateChange(val) {
-    const newValues =  handleChange('startDate', val.toISOString())
+    const newValues = handleChange("startDate", val.toISOString());
     client.mutate({
-      mutation: addUpdateLog(match.params.id, newValues)
+      mutation: addUpdateLog(match.params.id, newValues),
     });
   }
-
 
   return (
     <Grid container justifyContent="space-between" spacing={5}>
@@ -56,7 +69,7 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
             variant="outlined"
             fullWidth
             value={logValues.title}
-            onChange={(e) => handleChange('title', e.target.value)}
+            onChange={(e) => handleChange("title", e.target.value)}
           />
         </Paper>
         <Paper classes={{ root: classes.paper }}>
@@ -69,9 +82,14 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
             <FileUpload classes={classes} client={client} addImage={addImage} />
           </div>
         </Paper>
-        {logValues.updated && <Paper classes={{ root: classes.paper }}>
-          <Typography variant='subtitle1'><strong>{logValues.creator}</strong> updated this log on {getDate(log.updated)}</Typography>
-        </Paper>}
+        {logValues.updated && (
+          <Paper classes={{ root: classes.paper }}>
+            <Typography variant="subtitle1">
+              <strong>{logValues.creator}</strong> updated this log on{" "}
+              {getDate(log.updated)}
+            </Typography>
+          </Paper>
+        )}
         <Paper classes={{ root: classes.paper }}>
           <Grid container direction="row" justifyContent="flex-end">
             <SimpleButton
@@ -86,17 +104,27 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
       <Grid item xs={3}>
         <Paper>
           <List>
-            <ListItem classes={{ root: classes.sideListItem }} alignItems="flex-start">
+            <ListItem
+              classes={{ root: classes.sideListItem }}
+              alignItems="flex-start"
+            >
               <ListItemText
                 primary="Labels"
                 secondary={
                   <span>
-                    {logValues.labels && logValues.labels.length ?
-                      logValues.labels.map(q => <Chip component="span" key={q.name} classes={{ root: classes.labelChip }} style={{ backgroundColor: q.color }} label={q.name} />)
-                      :
+                    {logValues.labels && logValues.labels.length ? (
+                      logValues.labels.map((q) => (
+                        <Chip
+                          component="span"
+                          key={q.name}
+                          classes={{ root: classes.labelChip }}
+                          style={{ backgroundColor: q.color }}
+                          label={q.name}
+                        />
+                      ))
+                    ) : (
                       <span>None yet</span>
-                    }
-
+                    )}
                   </span>
                 }
               />
@@ -105,11 +133,13 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
             <ListItem alignItems="flex-start">
               <ListItemText
                 primary="Set start date"
-                secondary={
-                  logValues.startDate && getDate(logValues.startDate)
-                }
+                secondary={logValues.startDate && getDate(logValues.startDate)}
               />
-              <IconButton edge="end" aria-label="delete" onClick={() => setIsOpen(true)}>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => setIsOpen(true)}
+              >
                 <SettingsIcon />
               </IconButton>
               <DatePicker
@@ -127,11 +157,7 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
         </Paper>
       </Grid>
     </Grid>
-  )
+  );
 }
 
-export default compose(
-  withApollo,
-  withRouter,
-  withStyles(styles),
-)(LogForm);
+export default compose(withApollo, withRouter, withStyles(styles))(LogForm);

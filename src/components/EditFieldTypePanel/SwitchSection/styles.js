@@ -1,11 +1,11 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
     marginBottom: 35,
   },
   title: {
     fontSize: 14,
     color: theme.palette.black.dark,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     margin: 0,
   },
   description: {
@@ -15,40 +15,40 @@ export const styles = theme => ({
   },
 });
 
-export const switcher = theme => ({
+export const switcher = (theme) => ({
   root: {
     width: 33,
     height: 16,
     padding: 0,
-    display: 'flex',
+    display: "flex",
   },
   switchBase: {
     padding: 2,
     color: theme.palette.white.main,
 
-    '&$checked': {
-      transform: 'translateX(17px)',
+    "&$checked": {
+      transform: "translateX(17px)",
       color: theme.palette.white.main,
 
-      '& + $track': {
+      "& + $track": {
         opacity: 1,
         backgroundColor: theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
       },
 
-      '&:hover': {
-        backgroundColor: 'transparent',
+      "&:hover": {
+        backgroundColor: "transparent",
       },
     },
 
-    '&:hover': {
-      backgroundColor: 'transparent',
+    "&:hover": {
+      backgroundColor: "transparent",
     },
   },
   thumb: {
     width: 12,
     height: 12,
-    boxShadow: 'none',
+    boxShadow: "none",
   },
   track: {
     border: `1px solid ${theme.palette.gray.medium}`,

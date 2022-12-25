@@ -1,10 +1,10 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-import AppLayout from '../AppLayout';
+import React from "react";
+import { Redirect } from "react-router-dom";
+import AppLayout from "../AppLayout";
 
 class AuthPage extends React.Component {
   state = {
-    isAuthorized: Boolean(localStorage.getItem('uid')),
+    isAuthorized: Boolean(localStorage.getItem("uid")),
   };
 
   render() {
@@ -12,13 +12,9 @@ class AuthPage extends React.Component {
     const { isAuthorized } = this.state;
 
     return isAuthorized ? (
-      <AppLayout>
-        {children}
-      </AppLayout>
+      <AppLayout>{children}</AppLayout>
     ) : (
-      <Redirect
-        to="/login"
-      />
+      <Redirect to="/login" />
     );
   }
 }

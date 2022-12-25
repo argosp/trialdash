@@ -29,10 +29,14 @@ class EntitiesGrid extends React.Component {
     return headers;
   };
   findLocation = (entity) => {
-    const locationKey = this.props.entitiesTypes[entity.entitiesTypeKey][0].properties.find(q => q.type === 'location')
-    const locationVal = entity.properties.find(q => q.key === locationKey.key)
-    return locationVal.val
-  }
+    const locationKey = this.props.entitiesTypes[
+      entity.entitiesTypeKey
+    ][0].properties.find((q) => q.type === "location");
+    const locationVal = entity.properties.find(
+      (q) => q.key === locationKey.key
+    );
+    return locationVal.val;
+  };
 
   renderEntitiesTableRow = (entity) => {
     const {
@@ -70,10 +74,10 @@ class EntitiesGrid extends React.Component {
                     <CustomInput
                       value={
                         entity.properties &&
-                          entity.properties.find((p) => p.key === property.key)
+                        entity.properties.find((p) => p.key === property.key)
                           ? entity.properties.find(
-                            (p) => p.key === property.key
-                          ).val
+                              (p) => p.key === property.key
+                            ).val
                           : ""
                       }
                       onChange={(e) =>
@@ -96,8 +100,8 @@ class EntitiesGrid extends React.Component {
                       (p) => p.key === property.key
                     )
                       ? entities[entity.key][0].properties.find(
-                        (p) => p.key === property.key
-                      ).val
+                          (p) => p.key === property.key
+                        ).val
                       : ""}
                   </StyledTableCell>
                 )}
@@ -127,8 +131,8 @@ class EntitiesGrid extends React.Component {
             title="Add entity"
             ariaLabel="Add entity"
             onClick={(e) => {
-              const location = this.findLocation(entity)
-              openAddEntitiesPanel(e, entity, location)
+              const location = this.findLocation(entity);
+              openAddEntitiesPanel(e, entity, location);
             }}
           >
             <PlusIcon />
@@ -147,13 +151,8 @@ class EntitiesGrid extends React.Component {
     this.setState({ CloneEntitiesDialogOpen: open });
   };
   render() {
-    const {
-      classes,
-      trialEntities,
-      entitiesTypes,
-      update,
-      setUpdated,
-    } = this.props;
+    const { classes, trialEntities, entitiesTypes, update, setUpdated } =
+      this.props;
     const { openContentHeader } = this.state;
     return (
       <>

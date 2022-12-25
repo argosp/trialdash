@@ -1,8 +1,8 @@
-import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import React from "react";
+import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 // import LeafLetMap from '../../TrialContext/LeafLetMap';
 
 const ITEM_HEIGHT = 48;
@@ -16,16 +16,18 @@ const MenuProps = {
   },
 };
 
-const Entity = props => (
+const Entity = (props) => (
   <div>
     <h3>{props.entityName}:</h3>
-    <InputLabel htmlFor="select-multiple-chip">+ Add {props.entityName}</InputLabel>
+    <InputLabel htmlFor="select-multiple-chip">
+      + Add {props.entityName}
+    </InputLabel>
     <Select
       value={props.entities}
       onChange={props.handleChangeMultiple(props.entityName)}
       MenuProps={MenuProps}
     >
-      {props.entitiesList.map(entity => (
+      {props.entitiesList.map((entity) => (
         <MenuItem key={entity.id} value={entity}>
           {entity.name}
         </MenuItem>
@@ -35,9 +37,9 @@ const Entity = props => (
       <div key={d.entity.id}>
         <div>{d.name}</div>
         <div>
-          {d.properties
-            && d.properties.map((p, i) => {
-              if (p.type === 'location') {
+          {d.properties &&
+            d.properties.map((p, i) => {
+              if (p.type === "location") {
                 // return (
                 //   <LeafLetMap
                 //     onChange={props.handleChangeProprty(i, 'val')}
@@ -47,17 +49,17 @@ const Entity = props => (
               }
               return (
                 // TODO Add id field into p
-                <div key={p.id} style={{ display: 'flex' }}>
+                <div key={p.id} style={{ display: "flex" }}>
                   <TextField
-                    style={{ width: '300px' }}
+                    style={{ width: "300px" }}
                     type={p.type}
                     label={p.key}
                     value={p.val}
                     onChange={props.handleChangeProprty(
                       i,
-                      'val',
+                      "val",
                       props.entityName,
-                      index,
+                      index
                     )}
                     InputLabelProps={{
                       shrink: true,
@@ -70,7 +72,8 @@ const Entity = props => (
         </div>
         <button
           type="button"
-          onClick={() => props.removeEntity(props.entityName, d.entity.id, d.name)
+          onClick={() =>
+            props.removeEntity(props.entityName, d.entity.id, d.name)
           }
         >
           X

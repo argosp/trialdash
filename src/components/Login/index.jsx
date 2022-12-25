@@ -1,28 +1,28 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
-import gql from 'graphql-tag';
-import { compose } from 'recompose';
-import { withApollo } from 'react-apollo';
-import { styles } from './styles';
-import setAuthToken from './setAuthToken';
+import React from "react";
+import { Redirect } from "react-router-dom";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import LockIcon from "@material-ui/icons/LockOutlined";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import withStyles from "@material-ui/core/styles/withStyles";
+import gql from "graphql-tag";
+import { compose } from "recompose";
+import { withApollo } from "react-apollo";
+import { styles } from "./styles";
+import setAuthToken from "./setAuthToken";
 
 class Login extends React.Component {
-    state = {
-      email: '',
-      password: '',
-    };
+  state = {
+    email: "",
+    password: "",
+  };
 
   onInputChange = (e) => {
     this.setState({
@@ -46,19 +46,19 @@ class Login extends React.Component {
     const { data } = await client.mutate({ mutation });
 
     if (data.login && data.login.error) {
-      console.log('Login error', data.login.error);
+      console.log("Login error", data.login.error);
     } else {
-      localStorage.setItem('jwt', data.login.token);
-      localStorage.setItem('uid', data.login.uid);
+      localStorage.setItem("jwt", data.login.token);
+      localStorage.setItem("uid", data.login.uid);
       setAuthToken(data.login.token);
-      history.push('/experiments');
+      history.push("/experiments");
     }
   };
 
   render() {
     const { classes } = this.props;
 
-    if (localStorage.getItem('jwt')) {
+    if (localStorage.getItem("jwt")) {
       return <Redirect to="/" />;
     }
 
@@ -115,7 +115,4 @@ class Login extends React.Component {
   }
 }
 
-export default compose(
-  withApollo,
-  withStyles(styles),
-)(Login);
+export default compose(withApollo, withStyles(styles))(Login);

@@ -1,7 +1,7 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   root: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });

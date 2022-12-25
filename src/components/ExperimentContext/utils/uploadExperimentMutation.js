@@ -1,126 +1,137 @@
-import gql from 'graphql-tag';
-import uuid from 'uuid/v4';
+import gql from "graphql-tag";
+import uuid from "uuid/v4";
 
-const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials, logs, labels }) => {
-
-  let entityTypesStr = '';
-  entityTypes.forEach(e => {
+const uploadExperiment = ({
+  experiment,
+  entities,
+  entityTypes,
+  trialSets,
+  trials,
+  logs,
+  labels,
+}) => {
+  let entityTypesStr = "";
+  entityTypes.forEach((e) => {
     entityTypesStr += `{
       key: "${e.key}",
       name: "${e.name}",
       numberOfEntities: ${e.numberOfEntities},
-      ${e.state ? `state:"${e.state}"` : ''}
+      ${e.state ? `state:"${e.state}"` : ""}
       properties: ${JSON.stringify(e.properties)
-        .replace(/"key":/g, 'key:')
-        .replace(/"type":/g, 'type:')
-        .replace(/"label":/g, 'label:')
-        .replace(/"description":/g, 'description:')
-        .replace(/"prefix":/g, 'prefix:')
-        .replace(/"suffix":/g, 'suffix:')
-        .replace(/"required":/g, 'required:')
-        .replace(/"template":/g, 'template:')
-        .replace(/"multipleValues":/g, 'multipleValues:')
-        .replace(/"trialField":/g, 'trialField:')
-        .replace(/"value":/g, 'value:')
-        .replace(/"defaultValue":/g, 'defaultValue:')
-        .replace(/"defaultProperty":/g, 'defaultProperty:')
-        .replace(/"inheritable":/g, 'inheritable:')
-        .replace(/"static":/g, 'static:')
-      }
-    }`
+        .replace(/"key":/g, "key:")
+        .replace(/"type":/g, "type:")
+        .replace(/"label":/g, "label:")
+        .replace(/"description":/g, "description:")
+        .replace(/"prefix":/g, "prefix:")
+        .replace(/"suffix":/g, "suffix:")
+        .replace(/"required":/g, "required:")
+        .replace(/"template":/g, "template:")
+        .replace(/"multipleValues":/g, "multipleValues:")
+        .replace(/"trialField":/g, "trialField:")
+        .replace(/"value":/g, "value:")
+        .replace(/"defaultValue":/g, "defaultValue:")
+        .replace(/"defaultProperty":/g, "defaultProperty:")
+        .replace(/"inheritable":/g, "inheritable:")
+        .replace(/"static":/g, "static:")}
+    }`;
   });
 
-  let entitiesStr = '';
-  entities.forEach(e => {
+  let entitiesStr = "";
+  entities.forEach((e) => {
     entitiesStr += `{
       key: "${e.key}",
       name: "${e.name}",
       entitiesTypeKey: "${e.entitiesTypeKey}",
-      ${e.state ? `state:"${e.state}"` : ''}
+      ${e.state ? `state:"${e.state}"` : ""}
       properties: ${JSON.stringify(e.properties)
-        .replace(/"key":/g, 'key:')
-        .replace(/"val":/g, 'val:')
-      }
-    }`
+        .replace(/"key":/g, "key:")
+        .replace(/"val":/g, "val:")}
+    }`;
   });
 
-  let trialSetsStr = '';
-  trialSets.forEach(e => {
+  let trialSetsStr = "";
+  trialSets.forEach((e) => {
     trialSetsStr += `{
       key: "${e.key}",
       name: "${e.name}",
       description: "${e.description}",
       numberOfTrials: ${e.numberOfTrials},
-      ${e.state ? `state:"${e.state}"` : ''}
+      ${e.state ? `state:"${e.state}"` : ""}
       properties: ${JSON.stringify(e.properties)
-        .replace(/"key":/g, 'key:')
-        .replace(/"type":/g, 'type:')
-        .replace(/"label":/g, 'label:')
-        .replace(/"description":/g, 'description:')
-        .replace(/"required":/g, 'required:')
-        .replace(/"template":/g, 'template:')
-        .replace(/"multipleValues":/g, 'multipleValues:')
-        .replace(/"value":/g, 'value:')
-        .replace(/"defaultValue":/g, 'defaultValue:')
-        .replace(/"inheritable":/g, 'inheritable:')
-        .replace(/"static":/g, 'static:')
-      }
-    }`
+        .replace(/"key":/g, "key:")
+        .replace(/"type":/g, "type:")
+        .replace(/"label":/g, "label:")
+        .replace(/"description":/g, "description:")
+        .replace(/"required":/g, "required:")
+        .replace(/"template":/g, "template:")
+        .replace(/"multipleValues":/g, "multipleValues:")
+        .replace(/"value":/g, "value:")
+        .replace(/"defaultValue":/g, "defaultValue:")
+        .replace(/"inheritable":/g, "inheritable:")
+        .replace(/"static":/g, "static:")}
+    }`;
   });
 
-  let trialsStr = '';
-  trials.forEach(e => {
+  let trialsStr = "";
+  trials.forEach((e) => {
     trialsStr += `{
       key: "${e.key}",
       name: "${e.name}",
       status:"${e.status}",
       trialSetKey: "${e.trialSetKey}",
       numberOfEntities:${e.numberOfEntities},
-      ${e.state ? `state:"${e.state}"` : ''},
-      ${e.changedEntities ? `changedEntities: ${JSON.stringify(e.changedEntities)
-        .replace(/"key":/g, 'key:')
-        .replace(/"val":/g, 'val:')
-        .replace(/"type":/g, 'type:')
-        .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-        .replace(/"properties":/g, 'properties:')
-        .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
+      ${e.state ? `state:"${e.state}"` : ""},
+      ${
+        e.changedEntities
+          ? `changedEntities: ${JSON.stringify(e.changedEntities)
+              .replace(/"key":/g, "key:")
+              .replace(/"val":/g, "val:")
+              .replace(/"type":/g, "type:")
+              .replace(/"entitiesTypeKey":/g, "entitiesTypeKey:")
+              .replace(/"properties":/g, "properties:")
+              .replace(/"containsEntities":/g, "containsEntities:")}`
+          : ""
+      },
       properties: ${JSON.stringify(e.properties)
-        .replace(/"key":/g, 'key:')
-        .replace(/"val":/g, 'val:')},
+        .replace(/"key":/g, "key:")
+        .replace(/"val":/g, "val:")},
       entities: ${JSON.stringify(e.entities)
-        .replace(/"key":/g, 'key:')
-        .replace(/"val":/g, 'val:')
-        .replace(/"type":/g, 'type:')
-        .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-        .replace(/"properties":/g, 'properties:')
-        .replace(/"containsEntities":/g, 'containsEntities:')},
+        .replace(/"key":/g, "key:")
+        .replace(/"val":/g, "val:")
+        .replace(/"type":/g, "type:")
+        .replace(/"entitiesTypeKey":/g, "entitiesTypeKey:")
+        .replace(/"properties":/g, "properties:")
+        .replace(/"containsEntities":/g, "containsEntities:")},
       deployedEntities: ${JSON.stringify(e.deployedEntities)
-        .replace(/"key":/g, 'key:')
-        .replace(/"val":/g, 'val:')
-        .replace(/"type":/g, 'type:')
-        .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-        .replace(/"properties":/g, 'properties:')
-        .replace(/"containsEntities":/g, 'containsEntities:')}
-    }`
+        .replace(/"key":/g, "key:")
+        .replace(/"val":/g, "val:")
+        .replace(/"type":/g, "type:")
+        .replace(/"entitiesTypeKey":/g, "entitiesTypeKey:")
+        .replace(/"properties":/g, "properties:")
+        .replace(/"containsEntities":/g, "containsEntities:")}
+    }`;
   });
 
-  let logsStr = '';
-  logs.forEach(e => {
-    logsStr += `${JSON.stringify({ title: e.title, key: e.key, comment: e.comment, labels: e.labels.map(q => q.key) })
-      .replace(/"title":/g, 'title:')
-      .replace(/"key":/g, 'key:')
-      .replace(/"comment":/g, 'comment:')
-      .replace(/"labels":/g, 'labels:')
-      }`
+  let logsStr = "";
+  logs.forEach((e) => {
+    logsStr += `${JSON.stringify({
+      title: e.title,
+      key: e.key,
+      comment: e.comment,
+      labels: e.labels.map((q) => q.key),
+    })
+      .replace(/"title":/g, "title:")
+      .replace(/"key":/g, "key:")
+      .replace(/"comment":/g, "comment:")
+      .replace(/"labels":/g, "labels:")}`;
   });
 
-  let labelsStr = '';
-  labels.forEach(e => {
+  let labelsStr = "";
+  labels.forEach((e) => {
     labelsStr += `${JSON.stringify({ name: e.name, key: e.key, color: e.color })
-      .replace(/"name":/g, 'name:')
-      .replace(/"key":/g, 'key:')
-      .replace(/"color":/g, 'color:')
-      }`
+      .replace(/"name":/g, "name:")
+      .replace(/"key":/g, "key:")
+      .replace(/"color":/g, "color:")}`;
   });
 
   return gql`
@@ -134,18 +145,22 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
                 end: "${experiment.end}",
                 location: "${experiment.location}",
                 numberOfTrials: ${experiment.numberOfTrials},
-                ${experiment.status ? `status:"${experiment.status}"` : ''},
-                ${experiment.state ? `state:"${experiment.state}"` : ''},
-                ${experiment.maps ? `maps: ${JSON.stringify(experiment.maps)
-      .replace(/"imageUrl":/g, 'imageUrl:')
-      .replace(/"imageName":/g, 'imageName:')
-      .replace(/"lower":/g, 'lower:')
-      .replace(/"upper":/g, 'upper:')
-      .replace(/"right":/g, 'right:')
-      .replace(/"left":/g, 'left:')
-      .replace(/"width":/g, 'width:')
-      .replace(/"height":/g, 'height:')
-      .replace(/"embedded":/g, 'embedded:')}` : ''}
+                ${experiment.status ? `status:"${experiment.status}"` : ""},
+                ${experiment.state ? `state:"${experiment.state}"` : ""},
+                ${
+                  experiment.maps
+                    ? `maps: ${JSON.stringify(experiment.maps)
+                        .replace(/"imageUrl":/g, "imageUrl:")
+                        .replace(/"imageName":/g, "imageName:")
+                        .replace(/"lower":/g, "lower:")
+                        .replace(/"upper":/g, "upper:")
+                        .replace(/"right":/g, "right:")
+                        .replace(/"left":/g, "left:")
+                        .replace(/"width":/g, "width:")
+                        .replace(/"height":/g, "height:")
+                        .replace(/"embedded":/g, "embedded:")}`
+                    : ""
+                }
             },
             entityTypes: [${entityTypesStr}],
             entities: [${entitiesStr}],
@@ -153,7 +168,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
             trials: [${trialsStr}],
             logs: [${logsStr}],
             labels: [${labelsStr}],
-            uid: "${localStorage.getItem('uid')}"){
+            uid: "${localStorage.getItem("uid")}"){
                 name
                 description
                 begin
@@ -179,6 +194,7 @@ const uploadExperiment = ({ experiment, entities, entityTypes, trialSets, trials
                 description
                 }  
             }
-    }`};
+    }`;
+};
 
 export default uploadExperiment;

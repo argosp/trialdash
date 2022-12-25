@@ -1,34 +1,34 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   wrapper: {
     backgroundColor: theme.palette.white.main,
-    padding: '25px 30px 25px 20px',
-    border: '2px solid transparent',
+    padding: "25px 30px 25px 20px",
+    border: "2px solid transparent",
     marginBottom: 5,
 
-    '&:hover': {
+    "&:hover": {
       border: `2px solid ${theme.palette.blue.main}`,
     },
   },
   wrapperEditMode: {
     border: `2px solid ${theme.palette.primary.main}`,
 
-    '&:hover': {
+    "&:hover": {
       border: `2px solid ${theme.palette.primary.main}`,
     },
   },
   input: {
-    '& svg': {
+    "& svg": {
       marginRight: 10,
     },
   },
   hiddenAttributeButton: {
-    display: 'none',
+    display: "none",
   },
   crossIcon: {
-    display: 'inline-block',
+    display: "inline-block",
     marginRight: 15,
 
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.primary.main,
     },
   },

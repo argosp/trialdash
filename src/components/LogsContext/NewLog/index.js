@@ -1,29 +1,26 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
-import { withApollo } from 'react-apollo';
-import { withStyles } from '@material-ui/core';
-import { styles } from './styles';
-import ContentHeader from '../../ContentHeader';
+import React from "react";
+import { withRouter } from "react-router-dom";
+import { compose } from "recompose";
+import { withApollo } from "react-apollo";
+import { withStyles } from "@material-ui/core";
+import { styles } from "./styles";
+import ContentHeader from "../../ContentHeader";
 
-import LogForm from '../LogForm'
+import LogForm from "../LogForm";
 
-function NewLog({history, match}) {
-
+function NewLog({ history, match }) {
   return (
     <>
       <ContentHeader
         title="New Log"
         withBackButton
-        backButtonHandler={() => history.push(`/experiments/${match.params.id}/logs`)}
+        backButtonHandler={() =>
+          history.push(`/experiments/${match.params.id}/logs`)
+        }
       />
       <LogForm submitBtnTxt="Submit new log" />
     </>
-  )
+  );
 }
 
-export default compose(
-  withApollo,
-  withRouter,
-  withStyles(styles),
-)(NewLog);
+export default compose(withApollo, withRouter, withStyles(styles))(NewLog);

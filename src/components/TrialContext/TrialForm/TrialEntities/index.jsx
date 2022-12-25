@@ -1,26 +1,26 @@
 /* eslint-disable prefer-destructuring */
-import React from 'react';
-import { withStyles } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import EditLocationIcon from '@material-ui/icons/EditLocation';
-import classnames from 'classnames';
-import { compose } from 'recompose';
-import { withRouter } from 'react-router-dom';
-import { withApollo } from 'react-apollo';
-import { groupBy } from 'lodash';
-import entitiesTypesQuery from '../../../EntityContext/utils/entityTypeQuery';
-import entitiesQuery from '../../../EntityContext/Entities/utils/entityQuery';
-import { styles } from '../styles';
-import AddEntityPanel from '../../../AddEntityPanel';
-import EntitiesGrid from './entitiesGrid';
-import SimpleButton from '../../../SimpleButton';
-import { GridIcon } from '../../../../constants/icons';
-import EntityPlanner from '../../../EntityPlanner';
-import CloneEntitiesDialog from '../../../CloneEntitiesDialog';
-import experimentsQuery from '../../../ExperimentContext/utils/experimentsQuery';
+import React from "react";
+import { withStyles } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import EditLocationIcon from "@material-ui/icons/EditLocation";
+import classnames from "classnames";
+import { compose } from "recompose";
+import { withRouter } from "react-router-dom";
+import { withApollo } from "react-apollo";
+import { groupBy } from "lodash";
+import entitiesTypesQuery from "../../../EntityContext/utils/entityTypeQuery";
+import entitiesQuery from "../../../EntityContext/Entities/utils/entityQuery";
+import { styles } from "../styles";
+import AddEntityPanel from "../../../AddEntityPanel";
+import EntitiesGrid from "./entitiesGrid";
+import SimpleButton from "../../../SimpleButton";
+import { GridIcon } from "../../../../constants/icons";
+import EntityPlanner from "../../../EntityPlanner";
+import CloneEntitiesDialog from "../../../CloneEntitiesDialog";
+import experimentsQuery from "../../../ExperimentContext/utils/experimentsQuery";
 
 const TabPanel = ({ children, value, index, ...other }) => (
   <Typography
@@ -29,7 +29,7 @@ const TabPanel = ({ children, value, index, ...other }) => (
     hidden={value !== index}
     id={`trial-tabpanel-${index}`}
     aria-labelledby={`trial-tab-${index}`}
-    style={{ marginBottom: '100px' }}
+    style={{ marginBottom: "100px" }}
     {...other}
   >
     <Box>{children}</Box>
@@ -44,25 +44,29 @@ class TrialEntities extends React.Component {
     entitiesTypes: {},
     isLoading: true,
     parentEntity: {},
-    parentLocation: '',
-    CloneEntitiesDialogOpen: false
+    parentLocation: "",
+    CloneEntitiesDialogOpen: false,
   };
 
   componentWillMount() {
     const { client, match } = this.props;
-    client.query({ query: entitiesTypesQuery(match.params.id) }).then((data) => {
-      const entitiesTypes = groupBy(data.data.entitiesTypes, 'key');
-      let entities = [];
-      client.query({ query: entitiesQuery(match.params.id) }).then((entitiesData) => {
-        entities =  entitiesData.data.entities;
+    client
+      .query({ query: entitiesTypesQuery(match.params.id) })
+      .then((data) => {
+        const entitiesTypes = groupBy(data.data.entitiesTypes, "key");
+        let entities = [];
+        client
+          .query({ query: entitiesQuery(match.params.id) })
+          .then((entitiesData) => {
+            entities = entitiesData.data.entities;
+            this.setState({
+              entities: groupBy(entities, "key"),
+            });
+          });
         this.setState({
-          entities: groupBy(entities, 'key'),
+          entitiesTypes,
         });
       });
-      this.setState({
-        entitiesTypes,
-      });
-    });
   }
 
   componentDidMount() {
@@ -76,42 +80,54 @@ class TrialEntities extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-
     const { trial } = this.props;
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    if (prevProps.triggerUpdate !== this.props.triggerUpdate || prevProps.trial[entitiesField].length !== this.props.trial[entitiesField].length || prevProps.trial[entitiesField].length !== this.state.length || prevProps.trial.status !== trial.status || this.state.entitiesField !== entitiesField) {
+    const entitiesField =
+      trial.status === "deploy" ? "deployedEntities" : "entities";
+    if (
+      prevProps.triggerUpdate !== this.props.triggerUpdate ||
+      prevProps.trial[entitiesField].length !==
+        this.props.trial[entitiesField].length ||
+      prevProps.trial[entitiesField].length !== this.state.length ||
+      prevProps.trial.status !== trial.status ||
+      this.state.entitiesField !== entitiesField
+    ) {
       this.orderEntities();
     }
   }
 
   orderEntities = () => {
     const { trial } = this.props;
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.setState({ update: true, length: trial[entitiesField].length, trialEntities: groupBy(trial[entitiesField], 'entitiesTypeKey'), entitiesField });
-  }
+    const entitiesField =
+      trial.status === "deploy" ? "deployedEntities" : "entities";
+    this.setState({
+      update: true,
+      length: trial[entitiesField].length,
+      trialEntities: groupBy(trial[entitiesField], "entitiesTypeKey"),
+      entitiesField,
+    });
+  };
 
   changeView = (selectedViewIndex) => {
     this.setState({ selectedViewIndex });
     this.props.showFooter(selectedViewIndex !== 3);
   };
 
-  openAddEntitiesPanel = (e,parentEntity, parentLocation) => {
+  openAddEntitiesPanel = (e, parentEntity, parentLocation) => {
     this.setState({ isEntitiesPanelOpen: true, parentEntity, parentLocation });
-  }
+  };
 
   closeAddEntitiesPanel = () => {
     this.setState({ isEntitiesPanelOpen: false });
-  }
+  };
 
   setUpdated = () => {
     this.setState({ update: false });
-  }
+  };
   SetCloneEntitiesDialogOpen = () => {
-    this.cloneEntitiesRef.current.openDialog()
-  }
+    this.cloneEntitiesRef.current.openDialog();
+  };
 
   render() {
-
     const {
       classes,
       theme,
@@ -134,12 +150,16 @@ class TrialEntities extends React.Component {
       parentEntity,
       trialEntities,
       CloneEntitiesDialogOpen,
-      parentLocation
+      parentLocation,
     } = this.state;
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-    const currentExperiment = experiments? experiments.find(experiment => experiment.project.id === trial.experimentId): '';
+    const currentExperiment = experiments
+      ? experiments.find(
+          (experiment) => experiment.project.id === trial.experimentId
+        )
+      : "";
     return (
       <>
         <Grid
@@ -193,75 +213,85 @@ class TrialEntities extends React.Component {
               <EditLocationIcon className={classes.locationIcon} />
             </IconButton>
           </Grid>
-          {selectedViewIndex !== 3 && <Grid item>
-            <SimpleButton text={"Clone entities"}
-             onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
+          {selectedViewIndex !== 3 && (
+            <Grid item>
+              <SimpleButton
+                text={"Clone entities"}
+                onClick={() =>
+                  this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)
+                }
+              ></SimpleButton>
               <CloneEntitiesDialog
-                  title={"Clone trial"}
-                  open={CloneEntitiesDialogOpen}
-                  setOpen={this.SetCloneEntitiesDialogOpen}
-                  ref={this.cloneEntitiesRef}
-                  onConfirm={(updateTrial) => submitTrial(updateTrial)}
-                  entitiesTypes={entitiesTypes}
-                  trialEntities={trialEntities}
-                  currentTrial = {trial}
-                  client ={client}
-                  match ={match}
-                >
-               </CloneEntitiesDialog>
-            <SimpleButton
-              className={classes.trialActionBtn}
-              text="Add"
-              colorVariant="primary"
-              onClick={this.openAddEntitiesPanel}
-            />
-          </Grid>
-
-          }
-
+                title={"Clone trial"}
+                open={CloneEntitiesDialogOpen}
+                setOpen={this.SetCloneEntitiesDialogOpen}
+                ref={this.cloneEntitiesRef}
+                onConfirm={(updateTrial) => submitTrial(updateTrial)}
+                entitiesTypes={entitiesTypes}
+                trialEntities={trialEntities}
+                currentTrial={trial}
+                client={client}
+                match={match}
+              ></CloneEntitiesDialog>
+              <SimpleButton
+                className={classes.trialActionBtn}
+                text="Add"
+                colorVariant="primary"
+                onClick={this.openAddEntitiesPanel}
+              />
+            </Grid>
+          )}
         </Grid>
-        {selectedViewIndex !== 3 && <AddEntityPanel
-          isPanelOpen={this.state.isEntitiesPanelOpen}
-          onClose={this.closeAddEntitiesPanel}
-          match={match}
-          theme={theme}
-          addEntityToTrial={addEntityToTrial}
-          parentEntity ={parentEntity}
-          parentLocation={parentLocation}
-          entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
-        />}
+        {selectedViewIndex !== 3 && (
+          <AddEntityPanel
+            isPanelOpen={this.state.isEntitiesPanelOpen}
+            onClose={this.closeAddEntitiesPanel}
+            match={match}
+            theme={theme}
+            addEntityToTrial={addEntityToTrial}
+            parentEntity={parentEntity}
+            parentLocation={parentLocation}
+            entities={trial[
+              trial.status === "deploy" ? "deployedEntities" : "entities"
+            ].map((e) => e.key)}
+          />
+        )}
         <TabPanel value={selectedViewIndex} index={2}>
-          {selectedViewIndex === 2 &&
+          {selectedViewIndex === 2 && (
             <EntitiesGrid
               {...this.props}
               trial={trial}
               removeEntity={removeEntity}
-              updateEntityInParent ={updateEntityInParent}
+              updateEntityInParent={updateEntityInParent}
               onEntityPropertyChange={onEntityPropertyChange}
               trialEntities={trialEntities}
               entities={entities}
               entitiesTypes={entitiesTypes}
               update={update}
               setUpdated={this.setUpdated}
-              openAddEntitiesPanel ={this.openAddEntitiesPanel}
-              submitTrial = {(updateTrial) => submitTrial(updateTrial)}
-              client ={client}
-              match ={match}
+              openAddEntitiesPanel={this.openAddEntitiesPanel}
+              submitTrial={(updateTrial) => submitTrial(updateTrial)}
+              client={client}
+              match={match}
             />
-          }
+          )}
         </TabPanel>
         <TabPanel value={selectedViewIndex} index={3}>
-          {
-            (selectedViewIndex === 3 && Object.keys(entitiesTypes).length) ?
-              <EntityPlanner
-                updateLocation={updateLocation}
-                trial={trial}
-                trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
-                entitiesTypes={entitiesTypes}
-                experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
-              />
-              : null
-          }
+          {selectedViewIndex === 3 && Object.keys(entitiesTypes).length ? (
+            <EntityPlanner
+              updateLocation={updateLocation}
+              trial={trial}
+              trialEntities={
+                trial[
+                  trial.status === "deploy" ? "deployedEntities" : "entities"
+                ]
+              }
+              entitiesTypes={entitiesTypes}
+              experimentDataMaps={
+                currentExperiment ? currentExperiment.maps : []
+              }
+            />
+          ) : null}
         </TabPanel>
       </>
     );
@@ -271,5 +301,5 @@ class TrialEntities extends React.Component {
 export default compose(
   withRouter,
   withApollo,
-  withStyles(styles, { withTheme: true }),
+  withStyles(styles, { withTheme: true })
 )(TrialEntities);

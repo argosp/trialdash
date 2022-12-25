@@ -1,10 +1,10 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   header: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   headerTitle: {
-    width: '45%',
+    width: "45%",
   },
   label: {
     fontSize: 14,
@@ -13,8 +13,8 @@ export const styles = theme => ({
   input: {
     marginBottom: 25,
 
-    '& div': {
-      backgroundColor: '#FAFAFA',
+    "& div": {
+      backgroundColor: "#FAFAFA",
     },
   },
   content: {
@@ -30,7 +30,7 @@ export const styles = theme => ({
     paddingTop: 30,
   },
   button: {
-    minWidth: '100%',
+    minWidth: "100%",
   },
   cancelButton: {
     color: theme.palette.gray.dark,

@@ -1,9 +1,17 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core';
-import classnames from 'classnames';
-import { styles } from './styles';
+import React from "react";
+import { withStyles } from "@material-ui/core";
+import classnames from "classnames";
+import { styles } from "./styles";
 
-const StatusBadge = ({ classes, className, title, color, onClick, onMouseEnter, onMouseLeave }) => (
+const StatusBadge = ({
+  classes,
+  className,
+  title,
+  color,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+}) => (
   <div
     className={classnames(classes.root, className)}
     style={{ color, border: `2px solid ${color}` }}

@@ -1,49 +1,50 @@
-import trialMutation from '../TrialForm/utils/trialMutation';
-import { updateCache } from '../../../apolloGraphql';
-import { TRIALS, TRIAL_MUTATION } from '../../../constants/base';
-import trialsQuery from '../utils/trialQuery';
-import entitiesTypesQuery from '../../EntityContext/utils/entityTypeQuery';
-import { reject } from 'lodash';
+import trialMutation from "../TrialForm/utils/trialMutation";
+import { updateCache } from "../../../apolloGraphql";
+import { TRIALS, TRIAL_MUTATION } from "../../../constants/base";
+import trialsQuery from "../utils/trialQuery";
+import entitiesTypesQuery from "../../EntityContext/utils/entityTypeQuery";
+import { reject } from "lodash";
 
 function csvJSON(csv) {
-
   var lines = csv.split("\n");
 
   var result = [];
 
-  var commaRegex = /,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g
+  var commaRegex = /,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g;
 
-  var quotesRegex = /^"(.*)"$/g
+  var quotesRegex = /^"(.*)"$/g;
 
-  var headers = lines[0].split(commaRegex).map(h => h.replace(quotesRegex, "$1"));
+  var headers = lines[0]
+    .split(commaRegex)
+    .map((h) => h.replace(quotesRegex, "$1"));
 
   for (var i = 1; i < lines.length; i++) {
-
     var obj = {};
     var currentline = lines[i].split(commaRegex);
 
-
     for (var j = 0; j < headers.length; j++) {
-
-      obj[headers[j]] = currentline[j] && currentline[j].replace(quotesRegex, "$1");
+      obj[headers[j]] =
+        currentline[j] && currentline[j].replace(quotesRegex, "$1");
     }
 
     result.push(obj);
-
   }
   return result;
 }
 
 function csvFileToArray(data) {
-  const delimiter = ','
-  const titles = data.slice(0, data.indexOf('\n')).split(delimiter);
+  const delimiter = ",";
+  const titles = data.slice(0, data.indexOf("\n")).split(delimiter);
   return data
-    .slice(data.indexOf('\n') + 1)
-    .split('\n')
-    .map(v => {
+    .slice(data.indexOf("\n") + 1)
+    .split("\n")
+    .map((v) => {
       const values = v.split(delimiter);
       return titles.reduce(
-        (obj, title, index) => (((obj[title] = values[index] && values[index].replace(/(['"])/g, "")), obj)),
+        (obj, title, index) => (
+          (obj[title] = values[index] && values[index].replace(/(['"])/g, "")),
+          obj
+        ),
         {}
       );
     });
@@ -54,7 +55,7 @@ async function submitTrial(trial, client, match) {
     mutation: trialMutation(trial),
     update: (cache, mutationResult) => {
       if (mutationResult && mutationResult.data.addUpdateTrial.error) {
-        return alert(mutationResult.data.addUpdateTrial.error)
+        return alert(mutationResult.data.addUpdateTrial.error);
       }
       updateCache(
         cache,
@@ -63,7 +64,7 @@ async function submitTrial(trial, client, match) {
         TRIALS,
         TRIAL_MUTATION,
         false,
-        'trialSetKey',
+        "trialSetKey"
       );
     },
   });
@@ -71,78 +72,83 @@ async function submitTrial(trial, client, match) {
 
 function uploadTrial(e, trialSet, client, match) {
   return new Promise((resolve, reject) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     const fileReader = new FileReader();
     fileReader.onload = async (event) => {
       const text = event.target.result;
       const json = csvFileToArray(text);
       if (json && json[0].trialSetKey) {
-        const trial = json[0]
-        const properties = trialSet.properties.map(prop => {
-          const propInTrial = Object.keys(trial).find(p => p === prop.label)
-          return { key: prop.key, val: trial[propInTrial] }
-        })
+        const trial = json[0];
+        const properties = trialSet.properties.map((prop) => {
+          const propInTrial = Object.keys(trial).find((p) => p === prop.label);
+          return { key: prop.key, val: trial[propInTrial] };
+        });
         const updatedTrial = {
           ...trial,
           properties,
           experimentId: match.params.id,
-          action: "update"
-        }
-        await submitTrial(updatedTrial, client, match)
-        return resolve(true)
+          action: "update",
+        };
+        await submitTrial(updatedTrial, client, match);
+        return resolve(true);
       } else {
-        return reject()
+        return reject();
       }
     };
     fileReader.readAsText(file);
-  })
-
+  });
 }
 async function fetchEntityTypesData(client, match) {
   const { data } = await client.query({
-    query: entitiesTypesQuery(match.params.id)
+    query: entitiesTypesQuery(match.params.id),
   });
-  return data.entitiesTypes.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {})
-
+  return data.entitiesTypes.reduce(
+    (prev, curr) => ({ ...prev, [curr.key]: curr }),
+    {}
+  );
 }
 
 function uploadEntities(e, trial, client, match) {
   return new Promise((resolve, reject) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     const fileReader = new FileReader();
     fileReader.onload = async (event) => {
       const text = event.target.result;
       const json = csvJSON(text);
       if (json && json[0].entitiesTypeName) {
-        const entityTypes = await fetchEntityTypesData(client, match)
-        const entityProps = json.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {})
-        const entities = trial.entities.map(entity => {
-          const properties = entityTypes[entity.entitiesTypeKey].properties.reduce((prev, curr) => {
-            const propInCsv = entityProps[entity.key][curr.label]
+        const entityTypes = await fetchEntityTypesData(client, match);
+        const entityProps = json.reduce(
+          (prev, curr) => ({ ...prev, [curr.key]: curr }),
+          {}
+        );
+        const entities = trial.entities.map((entity) => {
+          const properties = entityTypes[
+            entity.entitiesTypeKey
+          ].properties.reduce((prev, curr) => {
+            const propInCsv = entityProps[entity.key][curr.label];
             if (propInCsv) {
-              return [...prev, { key: curr.key, val: propInCsv.replace(/'/g, "\"") }]
+              return [
+                ...prev,
+                { key: curr.key, val: propInCsv.replace(/'/g, '"') },
+              ];
             }
-          }, [])
-          return { ...entity, properties }
-        })
+          }, []);
+          return { ...entity, properties };
+        });
         const updatedTrial = {
           ...trial,
           experimentId: match.params.id,
           entities,
           changedEntities: entities,
-          action: "update"
-        }
-        await submitTrial(updatedTrial, client, match)
-        return resolve(true)
+          action: "update",
+        };
+        await submitTrial(updatedTrial, client, match);
+        return resolve(true);
       } else {
-        return reject(true)
+        return reject(true);
       }
-
     };
     fileReader.readAsText(file);
-  })
+  });
 }
-export {
-  uploadTrial,
-  uploadEntities
-}
+export { uploadTrial, uploadEntities };

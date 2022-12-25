@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 import { BasketIcon, PenIcon } from "../../../constants/icons";
 import {
   TableRow,
@@ -10,18 +10,19 @@ import {
   Checkbox,
   TextField,
   Grid,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
 import { MapsEditDetails } from "./mapsEditDetails";
-import config from '../../../config';
+import config from "../../../config";
 
 const UPLOAD_FILE = gql`
-  mutation($file: Upload!) {
-    uploadFile(file: $file){
+  mutation ($file: Upload!) {
+    uploadFile(file: $file) {
       filename
       path
     }
-  }`;
+  }
+`;
 
 const InputImageIcon = ({ onChangeFile, client }) => {
   const inputFile = useRef(null);
@@ -33,14 +34,14 @@ const InputImageIcon = ({ onChangeFile, client }) => {
   };
 
   const getImageSize = async (imageFile) => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => {
-        resolve([img.naturalHeight, img.naturalWidth])
+        resolve([img.naturalHeight, img.naturalWidth]);
       };
       img.src = window.URL.createObjectURL(imageFile);
-    })
-  }
+    });
+  };
 
   const handleChangeFile = async (event) => {
     event.stopPropagation();
@@ -52,18 +53,26 @@ const InputImageIcon = ({ onChangeFile, client }) => {
     if (height && width) {
       const imageServerfFilename = await uploadFileToServer(file);
       if (imageServerfFilename) {
-        onChangeFile(imageServerfFilename.path, height, width)
+        onChangeFile(imageServerfFilename.path, height, width);
       }
     }
     setWorking(false);
   };
 
   const uploadFileToServer = async (file) => {
-    const data = await client.mutate({ mutation: UPLOAD_FILE, variables: { file } });
-    if (!data || !data.data || !data.data.uploadFile || data.data.uploadFile === "err") {
+    const data = await client.mutate({
+      mutation: UPLOAD_FILE,
+      variables: { file },
+    });
+    if (
+      !data ||
+      !data.data ||
+      !data.data.uploadFile ||
+      data.data.uploadFile === "err"
+    ) {
       return undefined;
     }
-    return data.data.uploadFile
+    return data.data.uploadFile;
   };
 
   return (
@@ -76,11 +85,12 @@ const InputImageIcon = ({ onChangeFile, client }) => {
         onChange={handleChangeFile}
         accept="image/*"
       />
-      <IconButton aria-label="expand row" onClick={onButtonClick} disabled={working}>
-        {working ?
-          <CircularProgress size={20} /> :
-          <Icon>folder_open</Icon>
-        }
+      <IconButton
+        aria-label="expand row"
+        onClick={onButtonClick}
+        disabled={working}
+      >
+        {working ? <CircularProgress size={20} /> : <Icon>folder_open</Icon>}
       </IconButton>
     </>
   );
@@ -110,16 +120,17 @@ export const mapDefaultBounds = {
   lower: 32.08083,
   right: 34.78876,
   upper: 32.08962,
-  left: 34.77524
+  left: 34.77524,
 };
 
 const roundDec = (num) => {
   return Math.round(num * 1000) / 1000;
-}
+};
 
 export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
   const [open, setOpen] = useState(false);
-  const [lastEmbeddedBounds, setLastEmbeddedBounds] = useState(mapDefaultBounds);
+  const [lastEmbeddedBounds, setLastEmbeddedBounds] =
+    useState(mapDefaultBounds);
 
   return (
     <>
@@ -153,7 +164,7 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
           {!row.imageUrl ? null : (
             <img
               alt=""
-              src={config.url + '/' + row.imageUrl}
+              src={config.url + "/" + row.imageUrl}
               style={{ height: "50px", borderRadius: "50px" }}
             />
           )}
@@ -181,8 +192,20 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
             disabled={!open}
             onChange={(e, val) => {
               if (!val && row.height && row.width) {
-                setLastEmbeddedBounds({ left: row.left, right: row.right, upper: row.upper, lower: row.lower });
-                setRow({ ...row, left: 0, right: row.width, lower: 0, upper: row.height, embedded: val });
+                setLastEmbeddedBounds({
+                  left: row.left,
+                  right: row.right,
+                  upper: row.upper,
+                  lower: row.lower,
+                });
+                setRow({
+                  ...row,
+                  left: 0,
+                  right: row.width,
+                  lower: 0,
+                  upper: row.height,
+                  embedded: val,
+                });
               } else {
                 setRow({ ...row, ...lastEmbeddedBounds, embedded: val });
               }

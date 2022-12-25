@@ -1,8 +1,10 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 const devices = (experimentId, entitiesTypeKey) => gql`
   {
-      entities(experimentId:"${experimentId}",${entitiesTypeKey ? `entitiesTypeKey:"${entitiesTypeKey}"` : ''}){
+      entities(experimentId:"${experimentId}",${
+  entitiesTypeKey ? `entitiesTypeKey:"${entitiesTypeKey}"` : ""
+}){
         key
         name
         state

@@ -1,11 +1,11 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
-import classnames from 'classnames';
-import { styles } from './styles';
-import RightPanelContainer from '../RightPanelContainer';
-import { FIELD_TYPES_ICONS } from '../../constants/fieldTypes';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import classnames from "classnames";
+import { styles } from "./styles";
+import RightPanelContainer from "../RightPanelContainer";
+import { FIELD_TYPES_ICONS } from "../../constants/fieldTypes";
 
 // used to style field type when dragging (https://github.com/atlassian/react-beautiful-dnd/issues/216)
 const FieldType = ({ classes, rootClassName, icon, title }) => (
@@ -30,7 +30,7 @@ class FieldTypesPanel extends React.Component {
           isDropDisabled
           isCombineEnabled={false}
         >
-          {droppableProvided => (
+          {(droppableProvided) => (
             <div ref={droppableProvided.innerRef}>
               {fieldTypes.map((fieldType, index) => (
                 <Draggable
@@ -50,9 +50,9 @@ class FieldTypesPanel extends React.Component {
                           rootClassName={
                             snapshot.isDragging
                               ? classnames(
-                                classes.fieldTypeWrapper,
-                                classes.fieldTypeWrapperDragging,
-                              )
+                                  classes.fieldTypeWrapper,
+                                  classes.fieldTypeWrapperDragging
+                                )
                               : classes.fieldTypeWrapper
                           }
                           icon={FIELD_TYPES_ICONS[fieldType.type]}
@@ -64,7 +64,7 @@ class FieldTypesPanel extends React.Component {
                           classes={classes}
                           rootClassName={classnames(
                             classes.fieldTypeWrapper,
-                            classes.fieldTypeWrapperCopy,
+                            classes.fieldTypeWrapperCopy
                           )}
                           icon={FIELD_TYPES_ICONS[fieldType.type]}
                           title={fieldType.name}

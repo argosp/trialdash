@@ -1,30 +1,28 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import CustomInput from '../CustomInput';
-import { styles } from './styles';
+import React from "react";
+import Grid from "@material-ui/core/Grid";
+import { withStyles } from "@material-ui/core/styles";
+import CustomInput from "../CustomInput";
+import { styles } from "./styles";
 
 class CustomLocation extends React.Component {
-
-  state = {
-
-  };
+  state = {};
   isCoordinatesValid = (coordinates) => {
-    const validLat = !coordinates[0] || (coordinates[0] > -90 && coordinates[0] < 90)
-    const validLong = !coordinates[1] || (coordinates[1] > -180 && coordinates[1] < 180)
-    return validLat && validLong
-  }
+    const validLat =
+      !coordinates[0] || (coordinates[0] > -90 && coordinates[0] < 90);
+    const validLong =
+      !coordinates[1] || (coordinates[1] > -180 && coordinates[1] < 180);
+    return validLat && validLong;
+  };
 
   handleChange = (e, name, value) => {
     const etidetValue = value;
-    if (name !== 'name') {
-      etidetValue.coordinates= etidetValue.coordinates || []
+    if (name !== "name") {
+      etidetValue.coordinates = etidetValue.coordinates || [];
       etidetValue.coordinates[name] = e.target.value;
-      if(!this.isCoordinatesValid(etidetValue.coordinates)) {
+      if (!this.isCoordinatesValid(etidetValue.coordinates)) {
         return;
       }
-    }
-    else etidetValue[name] = e.target.value;
+    } else etidetValue[name] = e.target.value;
     const { onChange } = this.props;
     onChange({ target: { value: JSON.stringify(etidetValue) } });
   };
@@ -32,18 +30,14 @@ class CustomLocation extends React.Component {
   render() {
     const { classes, id, withBorder, label } = this.props;
     let { value } = this.props;
-    if (!value) value = { name: 'OSMMap', coordinates: ['', ''] };
+    if (!value) value = { name: "OSMMap", coordinates: ["", ""] };
     else value = JSON.parse(value);
     return (
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-      >
+      <Grid container direction="row" alignItems="center">
         <CustomInput
           id={`location-name-${id}`}
           className={classes.property}
-          onChange={e => this.handleChange(e, 'name', value)}
+          onChange={(e) => this.handleChange(e, "name", value)}
           value={value.name}
           values="OSMMap"
           type="selectList"
@@ -52,8 +46,8 @@ class CustomLocation extends React.Component {
         <CustomInput
           id={`location-coords-x-${id}`}
           className={classes.property}
-          onChange={e => this.handleChange(e, 0, value)}
-          label={label ? 'x' : null}
+          onChange={(e) => this.handleChange(e, 0, value)}
+          label={label ? "x" : null}
           placeholder="x"
           value={value.coordinates ? value.coordinates[0] : null}
           type="text"
@@ -62,8 +56,8 @@ class CustomLocation extends React.Component {
         <CustomInput
           id={`location-coords-y-${id}`}
           className={classes.property}
-          onChange={e => this.handleChange(e, 1, value)}
-          label={label ? 'y' : null}
+          onChange={(e) => this.handleChange(e, 1, value)}
+          label={label ? "y" : null}
           placeholder="y"
           value={value.coordinates ? value.coordinates[1] : null}
           type="text"

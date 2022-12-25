@@ -1,16 +1,15 @@
 export const styles = () => ({
   locationLink: {
-    textDecoration: 'none',
-    color: '#2F80ED',
+    textDecoration: "none",
+    color: "#2F80ED",
   },
   arrowButton: {
     marginLeft: 20,
   },
   tableCell: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   actionsCell: {
-    display:"flex"
-
-  }
+    display: "flex",
+  },
 });

@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
-import { TRIAL_MUTATION } from '../../../../constants/base';
+import gql from "graphql-tag";
+import { TRIAL_MUTATION } from "../../../../constants/base";
 
 /* function cleanEntity(entity) {
   return JSON.stringify(entity)
@@ -17,39 +17,55 @@ export default (trial, changedEntities) => {
         ${TRIAL_MUTATION}(
             key:"${key}",
             action: "${trial.action}",
-            uid:"${localStorage.getItem('uid')}",
+            uid:"${localStorage.getItem("uid")}",
             experimentId:"${trial.experimentId}",
             name:"${trial.name}",
             status:"${trial.status}",
-            ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ''},
-            ${trial.cloneFromTrailKey ? `cloneFromTrailKey:"${trial.cloneFromTrailKey}"` : ''},
+            ${trial.cloneFrom ? `cloneFrom:"${trial.cloneFrom}"` : ""},
+            ${
+              trial.cloneFromTrailKey
+                ? `cloneFromTrailKey:"${trial.cloneFromTrailKey}"`
+                : ""
+            },
             trialSetKey:"${trial.trialSetKey}",
             numberOfEntities:${trial.numberOfEntities},
-            ${trial.state ? `state:"${trial.state}"` : ''},
-            ${changedEntities ? `changedEntities: ${JSON.stringify(changedEntities)
-      .replace(/"key":/g, 'key:')
-      .replace(/"val":/g, 'val:')
-      .replace(/"type":/g, 'type:')
-      .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-      .replace(/"properties":/g, 'properties:')
-      .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
+            ${trial.state ? `state:"${trial.state}"` : ""},
+            ${
+              changedEntities
+                ? `changedEntities: ${JSON.stringify(changedEntities)
+                    .replace(/"key":/g, "key:")
+                    .replace(/"val":/g, "val:")
+                    .replace(/"type":/g, "type:")
+                    .replace(/"entitiesTypeKey":/g, "entitiesTypeKey:")
+                    .replace(/"properties":/g, "properties:")
+                    .replace(/"containsEntities":/g, "containsEntities:")}`
+                : ""
+            },
             properties: ${JSON.stringify(trial.properties)
-      .replace(/"key":/g, 'key:')
-      .replace(/"val":/g, 'val:')},
-    ${trial.entities ? `entities: ${JSON.stringify(trial.entities)
-      .replace(/"key":/g, 'key:')
-      .replace(/"val":/g, 'val:')
-      .replace(/"type":/g, 'type:')
-      .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-      .replace(/"properties":/g, 'properties:')
-      .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
-              ${trial.deployedEntities ? `deployedEntities: ${JSON.stringify(trial.deployedEntities)
-      .replace(/"key":/g, 'key:')
-      .replace(/"val":/g, 'val:')
-      .replace(/"type":/g, 'type:')
-      .replace(/"entitiesTypeKey":/g, 'entitiesTypeKey:')
-      .replace(/"properties":/g, 'properties:')
-      .replace(/"containsEntities":/g, 'containsEntities:')}` : ''},
+              .replace(/"key":/g, "key:")
+              .replace(/"val":/g, "val:")},
+    ${
+      trial.entities
+        ? `entities: ${JSON.stringify(trial.entities)
+            .replace(/"key":/g, "key:")
+            .replace(/"val":/g, "val:")
+            .replace(/"type":/g, "type:")
+            .replace(/"entitiesTypeKey":/g, "entitiesTypeKey:")
+            .replace(/"properties":/g, "properties:")
+            .replace(/"containsEntities":/g, "containsEntities:")}`
+        : ""
+    },
+              ${
+                trial.deployedEntities
+                  ? `deployedEntities: ${JSON.stringify(trial.deployedEntities)
+                      .replace(/"key":/g, "key:")
+                      .replace(/"val":/g, "val:")
+                      .replace(/"type":/g, "type:")
+                      .replace(/"entitiesTypeKey":/g, "entitiesTypeKey:")
+                      .replace(/"properties":/g, "properties:")
+                      .replace(/"containsEntities":/g, "containsEntities:")}`
+                  : ""
+              },
 
             )
             {

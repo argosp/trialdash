@@ -1,13 +1,20 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Switch from '@material-ui/core/Switch';
-import classnames from 'classnames';
-import { styles, switcher } from './styles';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Switch from "@material-ui/core/Switch";
+import classnames from "classnames";
+import { styles, switcher } from "./styles";
 
 const CustomSwitch = withStyles(switcher)(Switch);
 
-const SwitchSection = ({ title, description, classes, className, onChange, isChecked }) => (
+const SwitchSection = ({
+  title,
+  description,
+  classes,
+  className,
+  onChange,
+  isChecked,
+}) => (
   <Grid
     container
     justifyContent="space-between"
@@ -22,7 +29,7 @@ const SwitchSection = ({ title, description, classes, className, onChange, isChe
       <CustomSwitch
         checked={isChecked || false}
         onChange={(e, switchName) => onChange(e, switchName)}
-        inputProps={{ 'aria-label': 'switch' }}
+        inputProps={{ "aria-label": "switch" }}
       />
     </Grid>
   </Grid>

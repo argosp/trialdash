@@ -1,43 +1,43 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   header: {
     marginBottom: 10,
   },
   backIcon: {
-    verticalAlign: 'middle',
+    verticalAlign: "middle",
     marginRight: 10,
-    cursor: 'pointer',
+    cursor: "pointer",
 
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.gray.main,
     },
   },
   topDescription: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 14,
     color: theme.palette.gray.main,
     margin: 0,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   title: {
     fontSize: 24,
-    textTransform: 'uppercase',
-    textAlign: 'left',
-    fontWeight: 'normal',
+    textTransform: "uppercase",
+    textAlign: "left",
+    fontWeight: "normal",
     margin: 0,
     color: theme.palette.black.main,
-    display: 'inline-block',
-    verticalAlign: 'middle',
+    display: "inline-block",
+    verticalAlign: "middle",
   },
   rightDescription: {
-    display: 'inline-block',
+    display: "inline-block",
     color: theme.palette.gray.dark,
-    margin: '0 0 0 15px',
+    margin: "0 0 0 15px",
     fontSize: 16,
-    verticalAlign: 'bottom',
+    verticalAlign: "bottom",
   },
-  middleDescription:{
-    margin: '0 0 0 15px',
-    verticalAlign: 'bottom',
+  middleDescription: {
+    margin: "0 0 0 15px",
+    verticalAlign: "bottom",
   },
   bottomDescription: {
     color: theme.palette.gray.dark,
@@ -45,31 +45,31 @@ export const styles = theme => ({
     marginTop: 5,
   },
   search: {
-    position: 'relative',
+    position: "relative",
   },
   searchIcon: {
     width: theme.spacing(7),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: theme.palette.gray.main,
   },
   inputRoot: {
-    color: 'inherit',
-    height: '100%',
-    padding: '0 14px',
-    backgroundColor: '#FDFDFD',
-    border: '1px solid transparent',
+    color: "inherit",
+    height: "100%",
+    padding: "0 14px",
+    backgroundColor: "#FDFDFD",
+    border: "1px solid transparent",
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create('width'),
-    width: '100%',
+    transition: theme.transitions.create("width"),
+    width: "100%",
     fontSize: 14,
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up("md")]: {
       width: 200,
     },
   },

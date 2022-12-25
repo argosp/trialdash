@@ -1,12 +1,12 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   arrowButtonTooltip: {
     marginLeft: 20,
   },
   arrowButtonLink: {
     color: theme.palette.black.dark,
-    display: 'flex',
+    display: "flex",
 
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.primary.main,
     },
   },
@@ -14,6 +14,6 @@ export const styles = theme => ({
     margin: 0,
   },
   tableCell: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 });

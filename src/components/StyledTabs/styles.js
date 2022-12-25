@@ -1,36 +1,36 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   tab: {
     paddingBottom: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 14,
-    minHeight: 'auto',
+    minHeight: "auto",
 
-    '&.Mui-selected': {
+    "&.Mui-selected": {
       color: theme.palette.black.main,
 
-      '&:hover': {
+      "&:hover": {
         color: theme.palette.black.main,
       },
     },
 
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.gray.main,
     },
   },
 });
 
-export const tabsStyles = theme => ({
+export const tabsStyles = (theme) => ({
   root: {
-    minHeight: 'auto',
+    minHeight: "auto",
   },
   indicator: {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "transparent",
     height: 5,
 
-    '& > div': {
-      width: '100%',
+    "& > div": {
+      width: "100%",
       backgroundColor: theme.palette.primary.main,
     },
   },

@@ -9,12 +9,12 @@ import {
   TableBody,
   IconButton,
   Icon,
-} from '@material-ui/core';
+} from "@material-ui/core";
 import { mapDefaultBounds, MapsEditRow } from "./mapsEditRow";
 
 export const MapsEditTable = ({ data, setData, client }) => {
   if (!data) {
-    data = []
+    data = [];
   }
 
   return (
@@ -25,15 +25,17 @@ export const MapsEditTable = ({ data, setData, client }) => {
             <TableCell>
               <IconButton
                 onClick={() => {
-                  setData(data.concat({
-                    imageUrl: "",
-                    imageName: 'image ' + (data.length + 1),
-                    lower: mapDefaultBounds.lower,
-                    right: mapDefaultBounds.right,
-                    upper: mapDefaultBounds.upper,
-                    left: mapDefaultBounds.left,
-                    embedded: true
-                  }))
+                  setData(
+                    data.concat({
+                      imageUrl: "",
+                      imageName: "image " + (data.length + 1),
+                      lower: mapDefaultBounds.lower,
+                      right: mapDefaultBounds.right,
+                      upper: mapDefaultBounds.upper,
+                      left: mapDefaultBounds.left,
+                      embedded: true,
+                    })
+                  );
                 }}
               >
                 <Icon>add</Icon>
@@ -61,11 +63,11 @@ export const MapsEditTable = ({ data, setData, client }) => {
                 newdata[i] = row;
                 setData(newdata);
               }}
-              client ={client}
+              client={client}
             ></MapsEditRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};

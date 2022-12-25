@@ -1,17 +1,17 @@
-export const styles = theme => ({
+export const styles = (theme) => ({
   header: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   headerTitle: {
     marginLeft: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
     marginBottom: 25,
 
-    '& div': {
-      backgroundColor: '#FAFAFA',
+    "& div": {
+      backgroundColor: "#FAFAFA",
     },
   },
   content: {
@@ -27,7 +27,7 @@ export const styles = theme => ({
     paddingTop: 30,
   },
   button: {
-    minWidth: '100%',
+    minWidth: "100%",
   },
   cancelButton: {
     color: theme.palette.gray.dark,

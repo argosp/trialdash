@@ -1,8 +1,8 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import { styles } from './styles';
-import SimpleButton from '../SimpleButton';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import { styles } from "./styles";
+import SimpleButton from "../SimpleButton";
 
 const Footer = ({
   saveButtonHandler,
@@ -12,7 +12,7 @@ const Footer = ({
   classes,
   loading,
   cancelButtonDisabled,
-  saveButtonDisabled
+  saveButtonDisabled,
 }) => (
   <Grid container justifyContent="space-between" className={classes.root}>
     <div>
