@@ -1,4 +1,4 @@
-import { Button, InputLabel, Switch, Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
 import { EntityList } from './EntityList';
@@ -9,17 +9,8 @@ import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCur
 import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
+import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { TypeChooser } from './TypeChooser';
-
-const SimplifiedSwitch = ({ label, value, setValue }) => (
-    <div style={{ display: 'inline-block', margin: 5 }}>
-        <InputLabel style={{ fontSize: 10 }}>{label}</InputLabel>
-        <Switch color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-            value={value}
-            onChange={e => setValue(e.target.checked)}
-        />
-    </div>
-)
 
 export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
     const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
