@@ -7,6 +7,7 @@ import { EntityEditor } from './EntityEditor';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import { styles } from './styles';
 import entitiesTrialQuery from './utils/entitiesTrialQuery';
+import {ShapeProvider} from './ShapeContext';
 
 const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, entitiesTypes, experimentDataMaps }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
@@ -78,7 +79,7 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
     };
 
     return (
-        <>
+        <ShapeProvider>
             {
                 (entities.length === 0 || working) ?
                 (working === !!working ?
@@ -94,7 +95,7 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
                     experimentDataMaps={experimentDataMaps}
                 />
             }
-        </>
+        </ShapeProvider>
     );
 }
 

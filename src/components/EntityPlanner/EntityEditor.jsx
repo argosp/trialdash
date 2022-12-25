@@ -9,6 +9,7 @@ import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCur
 import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
+import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { TypeChooser } from './TypeChooser';
 
@@ -16,14 +17,12 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
-    const [shape, setShape] = React.useState("Point");
     const [markedPoints, setMarkedPoints] = React.useState([]);
-    const [rectAngle] = React.useState(0);
-    const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
     const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
+    const { shape, setShape, rectAngle, setRectAngle, rectRows, setRectRows } = useShape();
 
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
 
