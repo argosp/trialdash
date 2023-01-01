@@ -12,7 +12,7 @@ import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { TypeChooser } from './TypeChooser';
 
-export const EntityEditor = ({ showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
+export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
 
     const {
@@ -28,6 +28,7 @@ export const EntityEditor = ({ showOnlyAssigned, setShowOnlyAssigned, experiment
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
     const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
+    const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
 
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
 

@@ -10,8 +10,6 @@ import { ShowWorking } from './ShowWorking';
 import { EntitiesProvider } from './EntitiesContext';
 
 const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, entitiesTypes, experimentDataMaps }) => {
-    const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
-
     console.log('EntityPlanner', match.params.id, trial, trialEntities);
 
     return (
@@ -25,8 +23,6 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
             <ShapeProvider>
                 <ShowWorking />
                 <EntityEditor
-                    showOnlyAssigned={showOnlyAssigned}
-                    setShowOnlyAssigned={setShowOnlyAssigned}
                     experimentDataMaps={experimentDataMaps}
                 />
             </ShapeProvider>
