@@ -7,7 +7,8 @@ import { EntityEditor } from './EntityEditor';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import { styles } from './styles';
 import entitiesTrialQuery from './utils/entitiesTrialQuery';
-import {ShapeProvider} from './ShapeContext';
+import { ShapeProvider } from './ShapeContext';
+import { ShowWorking } from './ShowWorking.jsx';
 
 const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, entitiesTypes, experimentDataMaps }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
@@ -80,21 +81,14 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
 
     return (
         <ShapeProvider>
-            {
-                (entities.length === 0 || working) ?
-                (working === !!working ?
-                    <LinearProgress /> :
-                    <LinearProgress variant="determinate" value={working} />) : <></>
-            }
-            {
-                <EntityEditor
-                    entities={entities}
-                    setEntities={handleChangeEntities}
-                    showOnlyAssigned={showOnlyAssigned}
-                    setShowOnlyAssigned={setShowOnlyAssigned}
-                    experimentDataMaps={experimentDataMaps}
-                />
-            }
+            <ShowWorking hasEntities={entities.length > 0} working={working} />
+            <EntityEditor
+                entities={entities}
+                setEntities={handleChangeEntities}
+                showOnlyAssigned={showOnlyAssigned}
+                setShowOnlyAssigned={setShowOnlyAssigned}
+                experimentDataMaps={experimentDataMaps}
+            />
         </ShapeProvider>
     );
 }
