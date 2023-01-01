@@ -17,7 +17,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const {
         entities,
-        setEntityLocations
+        setEntityLocations,
+        getEntityItemsLocations
     } = useEntities();
 
     const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
@@ -58,6 +59,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
+    const shownEntityItems = getEntityItemsLocations(layerChosen, showAll ? undefined : selectedType);
+
     return (
         <Grid
             container direction="row-reverse" justifyContent="flex-start" alignItems="stretch"
@@ -73,23 +76,15 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     showGridMeters={showGridMeters}
                 >
                     {
-                        entities.map(devType => {
-                            if (showAll || (devType.name === selectedType)) {
-                                return devType.items.map((dev, index) => {
-                                    const loc = getEntityLocation(dev, devType, layerChosen);
-                                    if (!loc) return null;
-                                    return <EntityMarker
-                                        key={dev.key} entity={dev}
-                                        devLocation={loc}
-                                        isSelected={selection.includes(index)}
-                                        isTypeSelected={devType.name === selectedType}
-                                        shouldShowName={showName}
-                                    />
-                                });
-                            } else {
-                                return null;
-                            }
-                        })
+                        shownEntityItems.map(t => (
+                            <EntityMarker
+                                key={t.entity.key} entity={t.entity}
+                                devLocation={t.location}
+                                isSelected={selection.includes(t.entityItemIndex)}
+                                isTypeSelected={t.entityType === selectedType}
+                                shouldShowName={showName}
+                            />
+                        ))
                     }
 
                     <MarkedShape

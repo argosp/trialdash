@@ -90,10 +90,26 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         handleChangeEntities(changeLocations(type, indices, layerChosen, newLocations));
     }
 
+    const getEntityItemsLocations = (layerChosen, filterType = undefined) => {
+        const ret = [];
+        entities.forEach(devType => {
+            if (!filterType || (devType.name === filterType)) {
+                devType.items.forEach((dev, index) => {
+                    const loc = getEntityLocation(dev, devType, layerChosen);
+                    if (loc) {
+                        ret.push({ entity: dev, location: loc, entityItemIndex: index, entityType: devType.name });
+                    }
+                });
+            }
+        })
+        return ret;
+    }
+
     const store = {
         working,
         entities,
-        setEntityLocations
+        setEntityLocations,
+        getEntityItemsLocations
     }
 
     return (
