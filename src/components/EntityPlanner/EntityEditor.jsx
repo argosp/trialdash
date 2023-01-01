@@ -41,6 +41,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setSelectedType(entities[0].name);
     }
 
+    // TODO: change setEntityLocations to accept selection of device keys instead of type and indices
+
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
