@@ -1,5 +1,5 @@
-import { LinearProgress, withStyles } from '@material-ui/core';
 import React from 'react';
+import { withStyles } from '@material-ui/core';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -8,7 +8,7 @@ import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationPro
 import { styles } from './styles';
 import entitiesTrialQuery from './utils/entitiesTrialQuery';
 import { ShapeProvider } from './ShapeContext';
-import { ShowWorking } from './ShowWorking.jsx';
+import { ShowWorking } from './ShowWorking';
 
 const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, entitiesTypes, experimentDataMaps }) => {
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
