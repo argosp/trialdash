@@ -1,6 +1,7 @@
 import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
+import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
@@ -11,7 +12,14 @@ import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { TypeChooser } from './TypeChooser';
 
-export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
+export const EntityEditor = ({ showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
+    const { shape, shapeData } = useShape();
+
+    const {
+        entities,
+        handleChangeEntities
+    } = useEntities();
+
     const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
     const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
@@ -20,7 +28,6 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
     const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
-    const { shape, shapeData } = useShape();
 
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
 
@@ -43,7 +50,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
-            setEntities(changeLocations(selectedType, selection, [currPoint]));
+            handleChangeEntities(changeLocations(selectedType, selection, [currPoint]));
             setMarkedPoints([]);
             setSelection([]);
         } else {
@@ -53,7 +60,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
 
     const handlePutEntities = () => {
         const positions = shapeData.toPositions(markedPoints, selection.length);
-        setEntities(changeLocations(selectedType, selection, positions));
+        handleChangeEntities(changeLocations(selectedType, selection, positions));
         setMarkedPoints([]);
         setSelection([]);
     };
@@ -157,7 +164,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                             selection={selection}
                             setSelection={setSelection}
                             entities={entities.filter(d => d.name === selectedType)}
-                            removeEntitiesLocations={(indices) => setEntities(changeLocations(selectedType, indices))}
+                            removeEntitiesLocations={(indices) => handleChangeEntities(changeLocations(selectedType, indices))}
                             layerChosen={layerChosen}
                         />
                     </>
