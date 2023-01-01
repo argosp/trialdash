@@ -41,13 +41,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setSelectedType(entities[0].name);
     }
 
-    // TODO: change setEntityLocations to accept selection of device keys instead of type and indices
-
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
-            setEntityLocations(selectedType, selection, layerChosen, [currPoint]);
+            setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);
         } else {
@@ -57,7 +55,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const handlePutEntities = () => {
         const positions = shapeData.toPositions(markedPoints, selection.length);
-        setEntityLocations(selectedType, selection, layerChosen, positions);
+        setEntityLocations(selection, layerChosen, positions);
         setMarkedPoints([]);
         setSelection([]);
     };
@@ -154,7 +152,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         }
                         <EntityList
                             entities={entities.filter(d => d.name === selectedType)}
-                            removeEntitiesLocations={(indices) => setEntityLocations(selectedType, indices, layerChosen)}
+                            removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
                         />
                     </>

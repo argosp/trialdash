@@ -75,19 +75,27 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         setEntities(newEntities);
     };
 
-    const changeLocations = (type, indices, layerChosen, newLocations = [undefined]) => {
+    const changeLocations = (entityItemKeys, layerChosen, newLocations = [undefined]) => {
         let tempEntities = JSON.parse(JSON.stringify(entities));
-        let typeEntities = tempEntities.find(d => d.name === type);
-        for (let i = 0; i < indices.length; ++i) {
+        // TODO: this can be optimized
+        for (const [i, k] of entityItemKeys.entries()) {
             const loc = newLocations[Math.min(i, newLocations.length - 1)];
-            console.log(layerChosen)
-            changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
+            let found = false;
+            for (let t = 0; !found && t < tempEntities.length; ++t) {
+                const typeEntities = tempEntities[t];
+                for (let j = 0; !found && j < typeEntities.items.length; ++j) {
+                    if (typeEntities.items[j].key === k) {
+                        changeEntityLocation(typeEntities.items[j], typeEntities, loc, layerChosen);
+                        found = true;
+                    }
+                }
+            }
         }
         return tempEntities;
     };
 
-    const setEntityLocations = (type, indices, layerChosen, newLocations = [undefined]) => {
-        handleChangeEntities(changeLocations(type, indices, layerChosen, newLocations));
+    const setEntityLocations = (entityItemKeys, layerChosen, newLocations = [undefined]) => {
+        handleChangeEntities(changeLocations(entityItemKeys, layerChosen, newLocations));
     }
 
     const getEntityItemsLocations = (layerChosen, filterType = undefined) => {
