@@ -217,7 +217,9 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
 
     if (mapElement && mapElement.current && mapElement.current.leafletElement) {
         mapElement.current.leafletElement.options.crs = showMap ? CRS.EPSG3857 : CRS.Simple;
-        mapElement.current.leafletElement.invalidateSize();
+        // console.log('before invalidateSize');
+        // mapElement.current.leafletElement.invalidateSize();
+        // console.log('after invalidateSize');
     }
 
     return (

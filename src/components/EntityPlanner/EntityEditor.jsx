@@ -5,7 +5,6 @@ import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { changeEntityLocation, getEntityLocation } from './EntityUtils';
-import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
 import { useShape } from './ShapeContext.jsx';
@@ -21,7 +20,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
     const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
-    const { shape, setShape, rectAngle, setRectAngle, rectRows, setRectRows, shapeOptions, shapeData } = useShape();
+    const { shape, shapeData } = useShape();
 
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
 

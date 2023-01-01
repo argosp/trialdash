@@ -3,6 +3,8 @@ import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCur
 
 export const ShapeContext = createContext(null)
 
+export const useShape = () => useContext(ShapeContext);
+
 export const ShapeProvider = ({ children }) => {
     const [shape, setShape] = React.useState("Point");
     const [rectAngle, setRectAngle] = React.useState(0);
@@ -71,5 +73,3 @@ export const ShapeProvider = ({ children }) => {
         {children}
     </ShapeContext.Provider>
 }
-
-export const useShape = () => useContext(ShapeContext);
