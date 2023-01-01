@@ -2,28 +2,41 @@ import React from 'react';
 import { List } from '@material-ui/core';
 import { EntityRow } from './EntityRow';
 import { getEntityLocationProp } from './EntityUtils';
+import { useStaging } from './StagingContext.jsx';
 
-export const EntityList = ({ entities, selection, setSelection, removeEntitiesLocations, layerChosen }) => {
+export const EntityList = ({ entities, removeEntitiesLocations, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
-    const handleSelectionClick = (index, doRange) => {
-        let sel = [];
+    const {
+        selection,
+        setSelection
+    } = useStaging();
+
+    const shownItems = entities.flatMap(entity => entity.items.map(item => { return { entity, item }; }));
+
+    const handleSelectionClick = (devkey, index, doRange) => {
         if (!doRange) {
-            if (selection.includes(index)) {
-                sel = selection.filter(s => s !== index);
+            if (selection.includes(devkey)) {
+                setSelection(selection.filter(s => s !== devkey));
             } else {
-                sel = selection.concat([index]);
+                setSelection([...selection, devkey]);
             }
         } else if (lastIndex !== undefined) {
-            const low = Math.min(index, lastIndex), high = Math.max(index, lastIndex);
-            sel = selection.filter(s => s < low);
-            for (let i = low; i <= high; ++i) {
-                sel.push(i);
+            const low = Math.min(index, lastIndex);
+            const high = Math.max(index, lastIndex);
+
+            const sel = [];
+            for (const [index, { entity, item }] of shownItems.entries()) {
+                if ((index < low || index > high) && selection.includes(item.key)) {
+                    sel.push(item.key);
+                }
             }
-            sel.concat(selection.filter(s => s > high));
+            for (let i = low; i <= high; ++i) {
+                sel.push(shownItems[i].item.key);
+            }
+            setSelection(sel);
         }
         setLastIndex(index);
-        setSelection(sel.sort());
     }
 
     return (
@@ -32,26 +45,26 @@ export const EntityList = ({ entities, selection, setSelection, removeEntitiesLo
         >
             <List>
                 {
-                    entities.map(devType =>
-                        devType.items.map((dev, index) => {
-                            const prop = getEntityLocationProp(dev, devType);
-                            const entityLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
-                            const isEntityOnLayer = entityLocation && prop.val.name === layerChosen;
-                            const entityLayerName = entityLocation ? prop.val.name : null;
-                            return <EntityRow
-                                key={dev.key}
-                                dev={dev}
-                                entityLocation={entityLocation}
-                                isEntityOnLayer={isEntityOnLayer}
-                                entityLayerName={entityLayerName}
-                                isSelected={selection.includes(index)}
-                                onClick={e => { handleSelectionClick(index, e.shiftKey) }}
-                                onDisableLocation={(doOnWholeList) => {
-                                    removeEntitiesLocations(doOnWholeList ? selection : [index]);
-                                }}
-                            />
-                        })
-                    )
+                    shownItems.map(({ entity, item }, index) => {
+                        const devType = entity;
+                        const dev = item;
+                        const prop = getEntityLocationProp(dev, devType);
+                        const entityLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
+                        const isEntityOnLayer = entityLocation && prop.val.name === layerChosen;
+                        const entityLayerName = entityLocation ? prop.val.name : null;
+                        return <EntityRow
+                            key={dev.key}
+                            dev={dev}
+                            entityLocation={entityLocation}
+                            isEntityOnLayer={isEntityOnLayer}
+                            entityLayerName={entityLayerName}
+                            isSelected={selection.includes(dev.key)}
+                            onClick={e => { handleSelectionClick(dev.key, index, e.shiftKey) }}
+                            onDisableLocation={(doOnWholeList) => {
+                                removeEntitiesLocations(doOnWholeList ? selection : [index]);
+                            }}
+                        />
+                    })
                 }
             </List >
         </div >

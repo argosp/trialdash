@@ -151,8 +151,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             </div>
                         }
                         <EntityList
-                            selection={selection}
-                            setSelection={setSelection}
                             entities={entities.filter(d => d.name === selectedType)}
                             removeEntitiesLocations={(indices) => setEntityLocations(selectedType, indices, layerChosen)}
                             layerChosen={layerChosen}
