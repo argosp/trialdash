@@ -76,12 +76,13 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     showGridMeters={showGridMeters}
                 >
                     {
-                        shownEntityItems.map(t => (
+                        shownEntityItems.map(({ entityItem, entityItemIndex, entityType, location }) => (
                             <EntityMarker
-                                key={t.entity.key} entity={t.entity}
-                                devLocation={t.location}
-                                isSelected={selection.includes(t.entityItemIndex)}
-                                isTypeSelected={t.entityType === selectedType}
+                                key={entityItem.key}
+                                entity={entityItem}
+                                devLocation={location}
+                                isSelected={selection.includes(entityItemIndex)}
+                                isTypeSelected={entityType === selectedType}
                                 shouldShowName={showName}
                             />
                         ))
