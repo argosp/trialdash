@@ -58,11 +58,8 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
         setSelection([]);
     };
 
-
-    const distanceInMeters = () => {
-        const row = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
-        return row ? !row.embedded : false;
-    }
+    const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
+    const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
     return (
         <Grid
@@ -102,7 +99,7 @@ export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowO
                         markedPoints={markedPoints}
                         setMarkedPoints={setMarkedPoints}
                         entityNum={selection.length}
-                        distanceInMeters={distanceInMeters()}
+                        distanceInMeters={showDistanceInMeters}
                     />
 
                 </EntityMap>
