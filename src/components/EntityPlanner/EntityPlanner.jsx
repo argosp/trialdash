@@ -8,6 +8,7 @@ import { styles } from './styles';
 import { ShapeProvider } from './ShapeContext';
 import { ShowWorking } from './ShowWorking';
 import { EntitiesProvider } from './EntitiesContext';
+import { StagingProvider } from './StagingContext.jsx';
 
 const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, entitiesTypes, experimentDataMaps }) => {
     console.log('EntityPlanner', match.params.id, trial, trialEntities);
@@ -20,12 +21,14 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
             trialEntities={trialEntities}
             updateLocation={updateLocation}
         >
-            <ShapeProvider>
-                <ShowWorking />
-                <EntityEditor
-                    experimentDataMaps={experimentDataMaps}
-                />
-            </ShapeProvider>
+            <StagingProvider>
+                <ShapeProvider>
+                    <ShowWorking />
+                    <EntityEditor
+                        experimentDataMaps={experimentDataMaps}
+                    />
+                </ShapeProvider>
+            </StagingProvider>
         </EntitiesProvider>
     );
 }

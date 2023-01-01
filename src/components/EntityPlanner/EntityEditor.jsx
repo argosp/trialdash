@@ -5,11 +5,11 @@ import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
-import { changeEntityLocation, getEntityLocation } from './EntityUtils';
 import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
 import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
+import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
 
 export const EntityEditor = ({ experimentDataMaps }) => {
@@ -21,8 +21,12 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         getEntityItemsLocations
     } = useEntities();
 
+    const {
+        selection,
+        setSelection
+    } = useStaging();
+
     const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
-    const [selection, setSelection] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [showName, setShowName] = React.useState(false);
