@@ -30,26 +30,26 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
     };
 
     React.useEffect(() => {
-        const experimentId = match.params.id;
-        const entityTypesAsList = Object.values(entitiesTypes).filter(dtlst => dtlst.length).flat();
-        const newdevs = entityTypesAsList.filter(dt => dt.name && dt.key && getTypeLocationProp(dt));
-        newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-        setWorking(0);
-        let done = 0;
-        newdevs.forEach(devtype => {
-            const locationProp = getTypeLocationProp(devtype);
-            client.query({ query: entitiesTrialQuery(experimentId, devtype.key, undefined) })
-                .then(dataDev => {
-                    done += 1
-                    setWorking(done / newdevs.length * 100);
-                    devtype.items = dataDev.data.entities.map(devitem => entityWithTrialLocation(devitem, locationProp));
-                    devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-                    if (done === newdevs.length) {
-                        setEntities(newdevs);
-                    }
-                    setTimeout(() => setWorking(false), 500);
-                })
-        })
+        (async () => {
+            const experimentId = match.params.id;
+            const entityTypesAsList = Object.values(entitiesTypes).filter(dtlst => dtlst.length).flat();
+            const newdevs = entityTypesAsList.filter(dt => dt.name && dt.key && getTypeLocationProp(dt));
+            newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
+            setWorking(0);
+            let done = 0;
+            for (const devtype of newdevs) {
+                const locationProp = getTypeLocationProp(devtype);
+                const dataDev = await client.query({ query: entitiesTrialQuery(experimentId, devtype.key, undefined) });
+                done += 1;
+                setWorking(done / newdevs.length * 100);
+                devtype.items = dataDev.data.entities.map(devitem => entityWithTrialLocation(devitem, locationProp));
+                devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
+                if (done === newdevs.length) {
+                    setEntities(newdevs);
+                }
+                setTimeout(() => setWorking(false), 500);
+            }
+        })()
     }, [showOnlyAssigned, trial, trialEntities]);
 
     const handleChangeEntities = (newEntities) => {
