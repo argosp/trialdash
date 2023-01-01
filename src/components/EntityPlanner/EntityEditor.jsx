@@ -17,7 +17,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const {
         entities,
-        handleChangeEntities
+        setEntityLocations
     } = useEntities();
 
     const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
@@ -36,22 +36,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setSelectedType(entities[0].name);
     }
 
-    const changeLocations = (type, indices, newLocations = [undefined]) => {
-        let tempEntities = JSON.parse(JSON.stringify(entities));
-        let typeEntities = tempEntities.find(d => d.name === type);
-        for (let i = 0; i < indices.length; ++i) {
-            const loc = newLocations[Math.min(i, newLocations.length - 1)];
-            console.log(layerChosen)
-            changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
-        }
-        return tempEntities;
-    };
-
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
-            handleChangeEntities(changeLocations(selectedType, selection, [currPoint]));
+            setEntityLocations(selectedType, selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);
         } else {
@@ -61,7 +50,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const handlePutEntities = () => {
         const positions = shapeData.toPositions(markedPoints, selection.length);
-        handleChangeEntities(changeLocations(selectedType, selection, positions));
+        setEntityLocations(selectedType, selection, layerChosen, positions);
         setMarkedPoints([]);
         setSelection([]);
     };
@@ -165,7 +154,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             selection={selection}
                             setSelection={setSelection}
                             entities={entities.filter(d => d.name === selectedType)}
-                            removeEntitiesLocations={(indices) => handleChangeEntities(changeLocations(selectedType, indices))}
+                            removeEntitiesLocations={(indices) => setEntityLocations(selectedType, indices, layerChosen)}
                             layerChosen={layerChosen}
                         />
                     </>

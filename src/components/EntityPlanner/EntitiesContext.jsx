@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import entitiesTrialQuery from './utils/entitiesTrialQuery';
+import { changeEntityLocation, getEntityLocation } from './EntityUtils';
 
 export const EntitiesContext = createContext(null);
 
@@ -74,10 +75,25 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         setEntities(newEntities);
     };
 
+    const changeLocations = (type, indices, layerChosen, newLocations = [undefined]) => {
+        let tempEntities = JSON.parse(JSON.stringify(entities));
+        let typeEntities = tempEntities.find(d => d.name === type);
+        for (let i = 0; i < indices.length; ++i) {
+            const loc = newLocations[Math.min(i, newLocations.length - 1)];
+            console.log(layerChosen)
+            changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
+        }
+        return tempEntities;
+    };
+
+    const setEntityLocations = (type, indices, layerChosen, newLocations = [undefined]) => {
+        handleChangeEntities(changeLocations(type, indices, layerChosen, newLocations));
+    }
+
     const store = {
         working,
         entities,
-        handleChangeEntities
+        setEntityLocations
     }
 
     return (
