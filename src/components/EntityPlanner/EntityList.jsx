@@ -1,7 +1,6 @@
 import React from 'react';
 import { List } from '@material-ui/core';
 import { EntityRow } from './EntityRow';
-import { getEntityLocationProp } from './EntityUtils';
 import { useStaging } from './StagingContext.jsx';
 import { EntityLocationButton } from './EntityLocationButton.jsx';
 
@@ -31,7 +30,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
                 }
             }
             for (let i = low; i <= high; ++i) {
-                sel.push(entityItems[i].item.key);
+                sel.push(entityItems[i].entityItem.key);
             }
             setSelection(sel);
         }
@@ -39,32 +38,28 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
     }
 
     return (
-        <div style={{ overflow: 'auto', height: '50%', display: 'block' }}
-        // inputProps={{ style: { overflow: 'scroll' } }}
-        >
-            <List>
-                {
-                    entityItems.map(({ entityItem, entityType, location, isOnLayer, layerName }, index) => {
-                        return <EntityRow
-                            key={entityItem.key}
-                            dev={entityItem}
-                            isSelected={selection.includes(entityItem.key)}
-                            onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
-                        >
-                            {!location ? null :
-                                <EntityLocationButton
-                                    entityLocation={location}
-                                    isEntityOnLayer={isOnLayer}
-                                    entityLayerName={layerName}
-                                    onDisableLocation={(doOnWholeList) => {
-                                        removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
-                                    }}
-                                />
-                            }
-                        </EntityRow>
-                    })
-                }
-            </List >
-        </div >
+        <List>
+            {
+                entityItems.map(({ entityItem, location, isOnLayer, layerName }, index) => {
+                    return <EntityRow
+                        key={entityItem.key}
+                        dev={entityItem}
+                        isSelected={selection.includes(entityItem.key)}
+                        onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
+                    >
+                        {!location ? null :
+                            <EntityLocationButton
+                                entityLocation={location}
+                                isEntityOnLayer={isOnLayer}
+                                entityLayerName={layerName}
+                                onDisableLocation={(doOnWholeList) => {
+                                    removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                                }}
+                            />
+                        }
+                    </EntityRow>
+                })
+            }
+        </List >
     )
 }

@@ -27,7 +27,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setSelection
     } = useStaging();
 
-    const [shownEntityTypes, setShownEntityTypes] = React.useState(entities.length ? [entities[0].name] : []);
+    const [shownEntityTypes, setShownEntityTypes] = React.useState([]);
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
@@ -65,7 +65,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
     const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
-    const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s));
+    const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s)).filter(x => x);
 
     return (
         <Grid
@@ -141,12 +141,14 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             </div>
                         }
                         <EntityList
+                            style={{ overflow: 'auto', height: '250px', display: 'block' }}
                             entityItems={shownEntityItems}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
-                        />
+                            />
                         <WidthDivider />
                         <EntityList
+                            style={{ overflow: 'auto', height: '250px', display: 'block' }}
                             entityItems={selectedEntityItems}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
