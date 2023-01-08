@@ -1,5 +1,5 @@
 import { Button, Grid } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
@@ -26,8 +26,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setSelection
     } = useStaging();
 
-    const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
-    const [showAll, setShowAll] = React.useState(false);
+    const [selectedType, setSelectedType] = React.useState(entities.length ? [entities[0].name] : []);
+    // const [showAll, setShowAll] = React.useState(false);
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
@@ -37,9 +37,16 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
 
-    if (selectedType === '' && entities.length > 0) {
-        setSelectedType(entities[0].name);
-    }
+    useEffect(() => {
+        if (selectedType === [] && entities.length > 0) {
+            setSelectedType([entities[0].name]);
+        }
+    }, [selectedType, entities])
+
+    // TODO:
+    // 1. change selection to staging stack
+    // 2. Show all entities from all types
+    // 3. let some type be hidden
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
@@ -63,7 +70,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
-    const shownEntityItems = getEntityItemsLocations(layerChosen, showAll ? undefined : selectedType);
+    const shownEntityItems = getEntityItemsLocations(layerChosen, selectedType);
 
     return (
         <Grid
@@ -86,7 +93,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 entity={entityItem}
                                 devLocation={location}
                                 isSelected={selection.includes(entityItemIndex)}
-                                isTypeSelected={entityType === selectedType}
+                                isTypeSelected={selectedType.includes(entityType)}
                                 shouldShowName={showName}
                             />
                         ))
@@ -122,19 +129,9 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 setSelection([]);
                                 setSelectedType(newType);
                             }}
-                            showAll={showAll}
-                            setShowAll={val => setShowAll(val)}
+                            // showAll={showAll}
+                            // setShowAll={val => setShowAll(val)}
                             typeOptions={entities.map(dev => { return { name: dev.name } })}
-                        />
-                        <SimplifiedSwitch
-                            label='Entities show name'
-                            value={showName}
-                            setValue={v => setShowName(v)}
-                        />
-                        <SimplifiedSwitch
-                            label='Show only assigned'
-                            value={showOnlyAssigned}
-                            setValue={v => setShowOnlyAssigned(v)}
                         />
                         {layerChosen === 'OSMMap' ? null :
                             <div style={{ verticalAlign: 'baseline' }}>
@@ -151,9 +148,19 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             </div>
                         }
                         <EntityList
-                            entities={entities.filter(d => d.name === selectedType)}
+                            entities={entities.filter(d => selectedType.includes(d.name))}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
+                        />
+                        <SimplifiedSwitch
+                            label='Entities show name'
+                            value={showName}
+                            setValue={v => setShowName(v)}
+                        />
+                        <SimplifiedSwitch
+                            label='Show only assigned'
+                            value={showOnlyAssigned}
+                            setValue={v => setShowOnlyAssigned(v)}
                         />
                     </>
                 }

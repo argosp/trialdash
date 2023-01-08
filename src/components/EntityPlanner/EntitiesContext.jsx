@@ -98,11 +98,11 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         handleChangeEntities(changeLocations(entityItemKeys, layerChosen, newLocations));
     }
 
-    const getEntityItemsLocations = (layerChosen, filterType = undefined) => {
+    const getEntityItemsLocations = (layerChosen, filterType) => {
         const ret = [];
         entities.forEach(entityTypeObj => {
             const entityType = entityTypeObj.name;
-            if (!filterType || (entityType === filterType)) {
+            if (filterType.includes(entityType)) {
                 entityTypeObj.items.forEach((entityItem, entityItemIndex) => {
                     const location = getEntityLocation(entityItem, entityTypeObj, layerChosen);
                     if (location) {

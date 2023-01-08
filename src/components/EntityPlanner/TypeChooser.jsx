@@ -1,9 +1,17 @@
 import { InputLabel, MenuItem, Select, Switch } from '@material-ui/core';
 import React from 'react';
+import { EntityTypeRow } from './EntityTypeRow.jsx';
 
 export const TypeChooser = ({ selectedType, onChange, showAll, setShowAll, typeOptions }) => (
     <div style={{ width: '100%' }}>
-        <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
+        {typeOptions.map(entity => (
+            <EntityTypeRow
+                entity={entity}
+                isVisible={selectedType.includes(entity.name)}
+                setIsVisible={ () => onChange([entity.name])}
+            ></EntityTypeRow>
+        ))}
+        {/* <div style={{ display: 'inline-block', verticalAlign: 'text-top', margin: 5 }}>
             <InputLabel id="show-all-types" style={{ fontSize: 10 }}>Show all</InputLabel>
             <Switch id="show-all-types" color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
                 value={showAll}
@@ -25,6 +33,6 @@ export const TypeChooser = ({ selectedType, onChange, showAll, setShowAll, typeO
                     ))
                 }
             </Select>
-        </div>
+        </div> */}
     </div>
 )
