@@ -27,28 +27,26 @@ const NudeTooltip = styled(Tooltip)({
 
 const createRangeArray = (from, to, delta) => {
     let ret = [];
-    if (Math.abs(delta) > 0.1) {
-        const back = []
-        for (let pos = Math.min(-delta, to); pos > from; pos -= delta) {
-            const show = (back.length + 1) % 5 === 0;
-            const thick = show ? 1.2 : 0.5;
-            back.push({ pos, thick, show });
-        }
-        back.push({ pos: from, thick: 2, show: false });
-        back.reverse();
-
-        const zero = (from < 0 && to > 0) ? [{ pos: 0, thick: 2, show: false }] : [];
-
-        const forw = []
-        for (let pos = Math.max(delta, from); pos < to; pos += delta) {
-            const show = (forw.length + 1) % 5 === 0;
-            const thick = show ? 1.2 : 0.5;
-            forw.push({ pos, thick, show });
-        }
-        forw.push({ pos: to, thick: 2.5, show: false });
-
-        ret = back.concat(zero).concat(forw);
+    const back = []
+    for (let pos = Math.min(-delta, to); pos > from && back.length < 1000; pos -= delta) {
+        const show = (back.length + 1) % 5 === 0;
+        const thick = show ? 1.2 : 0.5;
+        back.push({ pos, thick, show });
     }
+    back.push({ pos: from, thick: 2, show: false });
+    back.reverse();
+
+    const zero = (from < 0 && to > 0) ? [{ pos: 0, thick: 2, show: false }] : [];
+
+    const forw = []
+    for (let pos = Math.max(delta, from); pos < to && forw.length < 1000; pos += delta) {
+        const show = (forw.length + 1) % 5 === 0;
+        const thick = show ? 1.2 : 0.5;
+        forw.push({ pos, thick, show });
+    }
+    forw.push({ pos: to, thick: 2.5, show: false });
+
+    ret = back.concat(zero).concat(forw);
     return ret;
 }
 
@@ -70,8 +68,13 @@ export const GridlinesLayer = ({ from, to, delta = 1 }) => {
                     ]}
                 >
                     {!show ? null :
-                        <NudeTooltip permanent direction={'bottom'} offset={[0, -(lng1 + lng0) / 2]}>
-                            {lat}
+                        <NudeTooltip
+                            permanent
+                            direction={'bottom'}
+                            offset={[0, 0]}
+                        >
+                            {/* -(lng1 + lng0) / 2]}> */}
+                            {Math.round(lat * 1e8) / 1e8}
                         </NudeTooltip>
                     }
                 </Polyline>
@@ -87,8 +90,13 @@ export const GridlinesLayer = ({ from, to, delta = 1 }) => {
                     ]}
                 >
                     {!show ? null :
-                        <NudeTooltip permanent direction={'bottom'} offset={[-(lat1 + lat0) / 2, 0]}>
-                            {lng}
+                        <NudeTooltip
+                            permanent
+                            direction={'bottom'}
+                            offset={[0, 0]}
+                        >
+                            {/* // [-(lat1 + lat0) / 2, 0]}> */}
+                            {Math.round(lng * 1e8) / 1e8}
                         </NudeTooltip>
                     }
                 </Polyline>
