@@ -15,7 +15,13 @@ export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities })
                 <EntityTypeRow
                     entity={entity}
                     isVisible={shownEntityTypes.includes(entity.name)}
-                    setIsVisible={() => setShownEntityTypes([entity.name])}
+                    setIsVisible={(toshow) => {
+                        if (toshow) {
+                            setShownEntityTypes([...shownEntityTypes, entity.name]);
+                        } else {
+                            setShownEntityTypes(shownEntityTypes.filter(e => e !== entity.name));
+                        }
+                    }}
                 ></EntityTypeRow>
             ))}
         </div>

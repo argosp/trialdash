@@ -12,7 +12,7 @@ export const EntityTypeRow = ({entity, isVisible, setIsVisible}) => {
             {entity.name}
             </Box>
         </Typography>
-        <IconButton onClick={() => setIsVisible(p => !p)}>
+        <IconButton onClick={() => setIsVisible(!isVisible)}>
             {
                 !!isVisible?
                 <VisibilityOutlined />
