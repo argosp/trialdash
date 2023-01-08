@@ -26,7 +26,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setSelection
     } = useStaging();
 
-    const [selectedType, setSelectedType] = React.useState(entities.length ? [entities[0].name] : []);
+    const [shownEntityTypes, setShownEntityTypes] = React.useState(entities.length ? [entities[0].name] : []);
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
@@ -34,13 +34,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [showGridMeters, setShowGridMeters] = React.useState(1);
     const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
 
-    console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
-
-    useEffect(() => {
-        if (selectedType === [] && entities.length > 0) {
-            setSelectedType([entities[0].name]);
-        }
-    }, [selectedType, entities])
+    console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, shownEntityTypes, showGrid)
 
     // TODO:
     // 1. change selection to staging stack
@@ -69,7 +63,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
-    const shownEntityItems = getEntityItemsLocations(layerChosen, selectedType);
+    const shownEntityItems = getEntityItemsLocations(layerChosen, shownEntityTypes);
 
     return (
         <Grid
@@ -92,7 +86,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 entity={entityItem}
                                 devLocation={location}
                                 isSelected={selection.includes(entityItemIndex)}
-                                isTypeSelected={selectedType.includes(entityType)}
+                                isTypeSelected={shownEntityTypes.includes(entityType)}
                                 shouldShowName={showName}
                             />
                         ))
@@ -123,10 +117,10 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             Put entities
                         </Button>
                         <TypeChooser
-                            selectedType={selectedType}
-                            onChange={newType => {
+                            shownEntityTypes={shownEntityTypes}
+                            setShownEntityTypes={newTypes => {
                                 setSelection([]);
-                                setSelectedType(newType);
+                                setShownEntityTypes(newTypes);
                             }}
                             entities={entities}
                         />
@@ -145,7 +139,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             </div>
                         }
                         <EntityList
-                            entities={entities.filter(d => selectedType.includes(d.name))}
+                            entities={entities.filter(d => shownEntityTypes.includes(d.name))}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
                         />
