@@ -98,27 +98,20 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         handleChangeEntities(changeLocations(entityItemKeys, layerChosen, newLocations));
     }
 
-    const getEntityItemsLocations = (layerChosen, filterType) => {
-        const ret = [];
-        entities.forEach(entityTypeObj => {
-            const entityType = entityTypeObj.name;
-            if (filterType.includes(entityType)) {
-                entityTypeObj.items.forEach((entityItem, entityItemIndex) => {
-                    const location = getEntityLocation(entityItem, entityTypeObj, layerChosen);
-                    if (location) {
-                        ret.push({ entityItem, entityItemIndex, entityType, location });
-                    }
-                });
-            }
-        })
-        return ret;
+    const getEntityItems = (filterEntityType, layerChosen) => {
+        const filteredByType = entities.filter(e => filterEntityType.includes(e.name));
+        const items = filteredByType.flatMap(entityType => entityType.items.map(entityItem => {
+            const location = getEntityLocation(entityItem, entityType, layerChosen);
+            return { entityItem, entityType, location };
+        }));
+        return items;
     }
 
     const store = {
         working,
         entities,
         setEntityLocations,
-        getEntityItemsLocations
+        getEntityItems
     }
 
     return (

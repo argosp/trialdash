@@ -18,7 +18,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const {
         entities,
         setEntityLocations,
-        getEntityItemsLocations
+        getEntityItems
     } = useEntities();
 
     const {
@@ -63,7 +63,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
-    const shownEntityItems = getEntityItemsLocations(layerChosen, shownEntityTypes);
+    const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
 
     return (
         <Grid
@@ -80,13 +80,13 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     showGridMeters={showGridMeters}
                 >
                     {
-                        shownEntityItems.map(({ entityItem, entityItemIndex, entityType, location }) => (
+                        shownEntityItems.filter(x => x.location).map(({ entityItem, entityType, location }) => (
                             <EntityMarker
                                 key={entityItem.key}
                                 entity={entityItem}
                                 devLocation={location}
-                                isSelected={selection.includes(entityItemIndex)}
-                                isTypeSelected={shownEntityTypes.includes(entityType)}
+                                isSelected={selection.includes(entityItem.key)}
+                                isTypeSelected={shownEntityTypes.includes(entityType.name)}
                                 shouldShowName={showName}
                             />
                         ))
@@ -139,7 +139,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             </div>
                         }
                         <EntityList
-                            entityItems={entities.filter(d => shownEntityTypes.includes(d.name)).flatMap(entity => entity.items.map(item => { return { entity, item }; }))}
+                            entityItems={shownEntityItems}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
                         />
