@@ -1,5 +1,5 @@
+import React from 'react';
 import { Button, Grid } from '@material-ui/core';
-import React, { useEffect } from 'react';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
@@ -11,6 +11,7 @@ import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
+import { WidthDivider } from './WidthDivider.jsx';
 
 export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
@@ -36,11 +37,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, shownEntityTypes, showGrid)
 
-    // TODO:
-    // 1. change selection to staging stack
-    // 2. Show all entities from all types
-    // 3. let some type be hidden
-
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
@@ -48,6 +44,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);
+        } else if (shape === 'Pop') {
+            if (selection.length > 0) {
+                setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
+                setSelection(selection.slice(1));
+            }
         } else {
             setMarkedPoints(markedPoints.concat([currPoint]));
         }
@@ -107,11 +108,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     <>
                         <ShapeChooser
                             onChange={(val) => {
-                                if (val === "Point") setMarkedPoints([]);
+                                if (shape === 'Point' || shape === 'Pop') setMarkedPoints([]);
                             }}
                         />
                         <Button variant="contained" color="primary"
-                            disabled={shape === 'Point'}
+                            disabled={shape === 'Point' || shape === 'Pop'}
                             style={{ margin: 5 }}
                             onClick={handlePutEntities}
                         >
@@ -144,6 +145,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
                         />
+                        <WidthDivider />
                         <EntityList
                             entityItems={selectedEntityItems}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}

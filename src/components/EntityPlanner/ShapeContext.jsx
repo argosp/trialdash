@@ -12,6 +12,11 @@ export const ShapeProvider = ({ children }) => {
 
     const shapeOptions = [
         {
+            name: 'Pop',
+            toLine: points => [],
+            toPositions: (points, amount) => amount && points.length ? [points[0]] : []
+        },
+        {
             name: 'Point',
             toLine: points => [],
             toPositions: (points, amount) => amount && points.length ? [points[0]] : []

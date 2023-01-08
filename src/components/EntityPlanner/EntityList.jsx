@@ -39,7 +39,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
     }
 
     return (
-        <div style={{ overflow: 'auto', height: '340px', display: 'block' }}
+        <div style={{ overflow: 'auto', height: '50%', display: 'block' }}
         // inputProps={{ style: { overflow: 'scroll' } }}
         >
             <List>
