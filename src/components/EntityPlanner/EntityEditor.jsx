@@ -64,6 +64,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
     const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
+    const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s));
 
     return (
         <Grid
@@ -140,6 +141,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         }
                         <EntityList
                             entityItems={shownEntityItems}
+                            removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                            layerChosen={layerChosen}
+                        />
+                        <EntityList
+                            entityItems={selectedEntityItems}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
                         />
