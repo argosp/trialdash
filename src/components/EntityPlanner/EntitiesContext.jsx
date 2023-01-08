@@ -101,8 +101,11 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
     const getEntityItems = (filterEntityType, layerChosen) => {
         const filteredByType = entities.filter(e => filterEntityType.includes(e.name));
         const items = filteredByType.flatMap(entityType => entityType.items.map(entityItem => {
-            const location = getEntityLocation(entityItem, entityType, layerChosen);
-            return { entityItem, entityType, location };
+            const prop = getEntityLocationProp(entityItem, entityType);
+            const location = (prop && prop.val) ? prop.val.coordinates : undefined;
+            const isOnLayer = location && prop.val.name === layerChosen;
+            const layerName = location ? prop.val.name : null;
+            return { entityItem, entityType, location, isOnLayer, layerName };
         }));
         return items;
     }

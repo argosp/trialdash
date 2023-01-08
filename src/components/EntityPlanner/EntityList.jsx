@@ -43,17 +43,13 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
         >
             <List>
                 {
-                    entityItems.map(({ entityItem, entityType, location }, index) => {
-                        const prop = getEntityLocationProp(entityItem, entityType);
-                        const entityLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
-                        const isEntityOnLayer = entityLocation && prop.val.name === layerChosen;
-                        const entityLayerName = entityLocation ? prop.val.name : null;
+                    entityItems.map(({ entityItem, entityType, location, isOnLayer, layerName }, index) => {
                         return <EntityRow
                             key={entityItem.key}
                             dev={entityItem}
-                            entityLocation={entityLocation}
-                            isEntityOnLayer={isEntityOnLayer}
-                            entityLayerName={entityLayerName}
+                            entityLocation={location}
+                            isEntityOnLayer={isOnLayer}
+                            entityLayerName={layerName}
                             isSelected={selection.includes(entityItem.key)}
                             onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
                             onDisableLocation={(doOnWholeList) => {

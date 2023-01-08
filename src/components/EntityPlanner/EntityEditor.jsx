@@ -80,7 +80,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     showGridMeters={showGridMeters}
                 >
                     {
-                        shownEntityItems.filter(x => x.location).map(({ entityItem, entityType, location }) => (
+                        shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
                             <EntityMarker
                                 key={entityItem.key}
                                 entity={entityItem}
