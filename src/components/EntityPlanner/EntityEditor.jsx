@@ -140,19 +140,23 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 />
                             </div>
                         }
-                        <EntityList
-                            style={{ overflow: 'auto', height: '250px', display: 'block' }}
-                            entityItems={shownEntityItems}
-                            removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                            layerChosen={layerChosen}
+                        <div style={{ maxHeight: 200, overflow: 'auto' }}>
+                            <EntityList
+                                style={{ overflow: 'auto', height: '250px', display: 'block' }}
+                                entityItems={shownEntityItems}
+                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                                layerChosen={layerChosen}
                             />
+                        </div>
                         <WidthDivider />
-                        <EntityList
-                            style={{ overflow: 'auto', height: '250px', display: 'block' }}
-                            entityItems={selectedEntityItems}
-                            removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                            layerChosen={layerChosen}
-                        />
+                        <div style={{ maxHeight: 200, overflow: 'auto' }}>
+                            <EntityList
+                                style={{ overflow: 'auto', height: '250px', display: 'block' }}
+                                entityItems={selectedEntityItems}
+                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                                layerChosen={layerChosen}
+                            />
+                        </div>
                         <SimplifiedSwitch
                             label='Show name'
                             value={showName}
