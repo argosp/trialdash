@@ -144,7 +144,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             layerChosen={layerChosen}
                         />
                         <SimplifiedSwitch
-                            label='Entities show name'
+                            label='Show name'
                             value={showName}
                             setValue={v => setShowName(v)}
                         />
