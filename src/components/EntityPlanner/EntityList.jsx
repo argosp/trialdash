@@ -4,7 +4,7 @@ import { EntityRow } from './EntityRow';
 import { getEntityLocationProp } from './EntityUtils';
 import { useStaging } from './StagingContext.jsx';
 
-export const EntityList = ({ entities, removeEntitiesLocations, layerChosen }) => {
+export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
     const {
@@ -12,9 +12,7 @@ export const EntityList = ({ entities, removeEntitiesLocations, layerChosen }) =
         setSelection
     } = useStaging();
 
-    const shownItems = entities.flatMap(entity => entity.items.map(item => { return { entity, item }; }));
-
-    const handleSelectionClick = (devkey, index, doRange) => {
+        const handleSelectionClick = (devkey, index, doRange) => {
         if (!doRange) {
             if (selection.includes(devkey)) {
                 setSelection(selection.filter(s => s !== devkey));
@@ -26,13 +24,13 @@ export const EntityList = ({ entities, removeEntitiesLocations, layerChosen }) =
             const high = Math.max(index, lastIndex);
 
             const sel = [];
-            for (const [index, { entity, item }] of shownItems.entries()) {
+            for (const [index, { entity, item }] of entityItems.entries()) {
                 if ((index < low || index > high) && selection.includes(item.key)) {
                     sel.push(item.key);
                 }
             }
             for (let i = low; i <= high; ++i) {
-                sel.push(shownItems[i].item.key);
+                sel.push(entityItems[i].item.key);
             }
             setSelection(sel);
         }
@@ -45,7 +43,7 @@ export const EntityList = ({ entities, removeEntitiesLocations, layerChosen }) =
         >
             <List>
                 {
-                    shownItems.map(({ entity, item }, index) => {
+                    entityItems.map(({ entity, item }, index) => {
                         const prop = getEntityLocationProp(item, entity);
                         const entityLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
                         const isEntityOnLayer = entityLocation && prop.val.name === layerChosen;

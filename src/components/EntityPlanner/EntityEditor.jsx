@@ -139,7 +139,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             </div>
                         }
                         <EntityList
-                            entities={entities.filter(d => shownEntityTypes.includes(d.name))}
+                            entityItems={entities.filter(d => shownEntityTypes.includes(d.name)).flatMap(entity => entity.items.map(item => { return { entity, item }; }))}
                             removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                             layerChosen={layerChosen}
                         />
