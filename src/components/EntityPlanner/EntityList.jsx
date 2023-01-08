@@ -3,6 +3,7 @@ import { List } from '@material-ui/core';
 import { EntityRow } from './EntityRow';
 import { getEntityLocationProp } from './EntityUtils';
 import { useStaging } from './StagingContext.jsx';
+import { EntityLocationButton } from './EntityLocationButton.jsx';
 
 export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
@@ -12,7 +13,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
         setSelection
     } = useStaging();
 
-        const handleSelectionClick = (devkey, index, doRange) => {
+    const handleSelectionClick = (devkey, index, doRange) => {
         if (!doRange) {
             if (selection.includes(devkey)) {
                 setSelection(selection.filter(s => s !== devkey));
@@ -47,15 +48,20 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
                         return <EntityRow
                             key={entityItem.key}
                             dev={entityItem}
-                            entityLocation={location}
-                            isEntityOnLayer={isOnLayer}
-                            entityLayerName={layerName}
                             isSelected={selection.includes(entityItem.key)}
                             onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
-                            onDisableLocation={(doOnWholeList) => {
-                                removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
-                            }}
-                        />
+                        >
+                            {!location ? null :
+                                <EntityLocationButton
+                                    entityLocation={location}
+                                    isEntityOnLayer={isOnLayer}
+                                    entityLayerName={layerName}
+                                    onDisableLocation={(doOnWholeList) => {
+                                        removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                                    }}
+                                />
+                            }
+                        </EntityRow>
                     })
                 }
             </List >
