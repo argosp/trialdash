@@ -27,7 +27,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     } = useStaging();
 
     const [selectedType, setSelectedType] = React.useState(entities.length ? [entities[0].name] : []);
-    // const [showAll, setShowAll] = React.useState(false);
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
@@ -129,9 +128,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 setSelection([]);
                                 setSelectedType(newType);
                             }}
-                            // showAll={showAll}
-                            // setShowAll={val => setShowAll(val)}
-                            typeOptions={entities.map(dev => { return { name: dev.name } })}
+                            entities={entities}
                         />
                         {layerChosen === 'OSMMap' ? null :
                             <div style={{ verticalAlign: 'baseline' }}>
