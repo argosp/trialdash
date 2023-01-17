@@ -26,7 +26,6 @@ export const MapWithImage = React.forwardRef(({ showMap, imageUrl, imageBounds, 
     <LeafletMap
       center={position}
       zoom={15}
-      maxZoom={28}
       style={{ height: "400px", width: '100%' }}
       ref={mapRef}
       crs={showMap ? CRS.EPSG3857 : CRS.Simple}

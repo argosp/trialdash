@@ -135,7 +135,6 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
         <LeafletMap
             bounds={getLayerPosition(layerChosen)}
             zoom={15}
-            maxZoom={28}
             ref={mapElement}
             style={{ height: "100%" }}
             // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
