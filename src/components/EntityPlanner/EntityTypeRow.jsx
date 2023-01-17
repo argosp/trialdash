@@ -11,7 +11,7 @@ const VisibilityButton = ({ isVisible, setIsVisible }) => (
     </IconButton>
 )
 
-export const EntityTypeRow = ({ entity, isVisible, setIsVisible, numberPositioned, numberNotPositioned }) => {
+export const EntityTypeRow = ({ entity, isVisible, setIsVisible, numberPositioned, numberNotPositioned, onClickArrow }) => {
     return (
         <TableRow>
             <TableCell>
@@ -24,7 +24,7 @@ export const EntityTypeRow = ({ entity, isVisible, setIsVisible, numberPositione
                 <VisibilityButton setIsVisible={setIsVisible} isVisible={isVisible} />
             </TableCell>
             <TableCell padding='none' align="right">
-                <IconButton style={{ padding: 0 }}>
+                <IconButton style={{ padding: 0 }} onClick={() => onClickArrow()}>
                     <ArrowForwardIos />
                 </IconButton>
             </TableCell>

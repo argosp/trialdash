@@ -33,6 +33,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
+    const [showTableOfType, setShowTableOfType] = React.useState('');
 
     console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
@@ -65,13 +66,67 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
     const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s)).filter(x => x);
+    const showTable = showTableOfType !== '';
 
     return (
         <Grid
-            container direction="row-reverse" justifyContent="flex-start" alignItems="stretch"
+            container direction="row" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
         >
-            <Grid item xs={9}>
+            <Grid item xs={3} style={{ height: '550px', overflow: 'auto' }}>
+                <>
+                    <ShowWorking />
+                    {!entities.length ? null :
+                        <>
+                            <ShapeChooser
+                                onChange={(val) => {
+                                    if (shape === 'Point' || shape === 'Pop') setMarkedPoints([]);
+                                }}
+                            />
+                            <Button variant="contained" color="primary"
+                                disabled={shape === 'Point' || shape === 'Pop'}
+                                style={{ margin: 5 }}
+                                onClick={handlePutEntities}
+                            >
+                                Put entities
+                            </Button>
+                            <TypeChooser
+                                shownEntityTypes={shownEntityTypes}
+                                setShownEntityTypes={newTypes => {
+                                    setSelection([]);
+                                    setShownEntityTypes(newTypes);
+                                }}
+                                entities={entities}
+                                entityItems={shownEntityItems}
+                                onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
+                            />
+                            <EntityList
+                                style={{
+                                    overflow: 'auto',
+                                    //  height: '250px',
+                                    display: 'block'
+                                }}
+                                entityItems={selectedEntityItems}
+                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                                layerChosen={layerChosen}
+                            />
+                        </>
+                    }
+                </>
+            </Grid>
+            {!showTable ? null :
+                <Grid item xs={3}
+                    style={{ height: '550px', overflow: 'auto' }}
+                >
+                    <EntityList
+                        style={{ overflow: 'auto', height: '250px', display: 'block' }}
+                        entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
+                        removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                        layerChosen={layerChosen}
+                    />
+                </Grid>
+            }
+            <Grid item xs={showTable ? 6 : 9}>
                 <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}
@@ -109,53 +164,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     />
 
                 </EntityMap>
-            </Grid>
-            <Grid item xs={3} style={{ overflow: 'auto' }}>
-                <>
-                    <ShowWorking />
-                    {!entities.length ? null :
-                        <>
-                            <ShapeChooser
-                                onChange={(val) => {
-                                    if (shape === 'Point' || shape === 'Pop') setMarkedPoints([]);
-                                }}
-                            />
-                            <Button variant="contained" color="primary"
-                                disabled={shape === 'Point' || shape === 'Pop'}
-                                style={{ margin: 5 }}
-                                onClick={handlePutEntities}
-                            >
-                                Put entities
-                            </Button>
-                            <TypeChooser
-                                shownEntityTypes={shownEntityTypes}
-                                setShownEntityTypes={newTypes => {
-                                    setSelection([]);
-                                    setShownEntityTypes(newTypes);
-                                }}
-                                entities={entities}
-                                entityItems={shownEntityItems}
-                            />
-                            <div style={{ maxHeight: 200, overflow: 'auto' }}>
-                                <EntityList
-                                    style={{ overflow: 'auto', height: '250px', display: 'block' }}
-                                    entityItems={shownEntityItems}
-                                    removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                                    layerChosen={layerChosen}
-                                />
-                            </div>
-                            <WidthDivider />
-                            <div style={{ maxHeight: 200, overflow: 'auto' }}>
-                                <EntityList
-                                    style={{ overflow: 'auto', height: '250px', display: 'block' }}
-                                    entityItems={selectedEntityItems}
-                                    removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                                    layerChosen={layerChosen}
-                                />
-                            </div>
-                        </>
-                    }
-                </>
             </Grid>
         </Grid>
     )
