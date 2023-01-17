@@ -129,6 +129,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 setShownEntityTypes(newTypes);
                             }}
                             entities={entities}
+                            entityItems={shownEntityItems}
                         />
                         <div style={{ maxHeight: 200, overflow: 'auto' }}>
                             <EntityList

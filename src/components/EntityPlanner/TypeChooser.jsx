@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { EntityTypeRow } from './EntityTypeRow.jsx';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@material-ui/core'
 
-export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities }) => {
+export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, entityItems }) => {
 
     useEffect(() => {
         if (shownEntityTypes.length === 0 && entities.length > 0) {
@@ -10,20 +11,38 @@ export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities })
     }, [shownEntityTypes, entities])
 
     return (
-        <div style={{ width: '100%' }}>
-            {entities.map(entity => (
-                <EntityTypeRow
-                    entity={entity}
-                    isVisible={shownEntityTypes.includes(entity.name)}
-                    setIsVisible={(toshow) => {
-                        if (toshow) {
-                            setShownEntityTypes([...shownEntityTypes, entity.name]);
-                        } else {
-                            setShownEntityTypes(shownEntityTypes.filter(e => e !== entity.name));
-                        }
-                    }}
-                ></EntityTypeRow>
-            ))}
-        </div>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Type</TableCell>
+                        <TableCell align="right">Positioned</TableCell>
+                        <TableCell align="right"></TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {entities.map(entity => {
+                        const items = entityItems.filter(({ entityType }) => entityType.name === entity.name);
+                        const positioned = items.filter(({ location }) => location);
+                        const notPositioned = items.filter(({ location }) => !location);
+                        return (
+                            <EntityTypeRow
+                                entity={entity}
+                                isVisible={shownEntityTypes.includes(entity.name)}
+                                setIsVisible={(toshow) => {
+                                    if (toshow) {
+                                        setShownEntityTypes([...shownEntityTypes, entity.name]);
+                                    } else {
+                                        setShownEntityTypes(shownEntityTypes.filter(e => e !== entity.name));
+                                    }
+                                }}
+                                numberPositioned={positioned.length}
+                                numberNotPositioned={notPositioned.length}
+                            ></EntityTypeRow>
+                        )
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
     )
 }
