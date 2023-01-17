@@ -4,7 +4,7 @@ import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 import '../../assets/fontawesome/css/all.css';
 
-export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName }) => (
+export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName, onClick }) => (
     <Marker key={entity.name}
         position={devLocation}
         title={entity.name}
@@ -25,6 +25,7 @@ export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, 
                 </div>
             )
         })}
+        onclick={() => onClick()}
     >
         <Popup>
             {entity.name + ' at (' + devLocation + ')'}

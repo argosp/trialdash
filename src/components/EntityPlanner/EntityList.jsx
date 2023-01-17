@@ -9,16 +9,13 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
 
     const {
         selection,
-        setSelection
+        setSelection,
+        toggleIsSelected
     } = useStaging();
 
     const handleSelectionClick = (devkey, index, doRange) => {
         if (!doRange) {
-            if (selection.includes(devkey)) {
-                setSelection(selection.filter(s => s !== devkey));
-            } else {
-                setSelection([...selection, devkey]);
-            }
+            toggleIsSelected(devkey);
         } else if (lastIndex !== undefined) {
             const low = Math.min(index, lastIndex);
             const high = Math.max(index, lastIndex);

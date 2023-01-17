@@ -23,9 +23,18 @@ export const StagingProvider = ({ children }) => {
     //     setStagingEntities([]);
     // }
 
+    const toggleIsSelected = (deviceKey) => {
+        if (selection.includes(deviceKey)) {
+            setSelection(selection.filter(s => s !== deviceKey));
+        } else {
+            setSelection([...selection, deviceKey]);
+        }
+    }
+
     const store = {
         selection,
-        setSelection
+        setSelection,
+        toggleIsSelected
     //     StagingEntities,
     //     isInStaging,
     //     addToStaging,

@@ -25,7 +25,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const {
         selection,
-        setSelection
+        setSelection,
+        toggleIsSelected
     } = useStaging();
 
     const [shownEntityTypes, setShownEntityTypes] = React.useState([]);
@@ -86,6 +87,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 isSelected={selection.includes(entityItem.key)}
                                 isTypeSelected={shownEntityTypes.includes(entityType.name)}
                                 shouldShowName={showName}
+                                onClick={() => toggleIsSelected(entityItem.key)}
                             />
                         ))
                     }
