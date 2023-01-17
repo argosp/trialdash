@@ -33,9 +33,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
     const [showGrid, setShowGrid] = React.useState(false);
     const [showGridMeters, setShowGridMeters] = React.useState(1);
-    const [showOnlyAssigned, setShowOnlyAssigned] = React.useState(false);
 
-    console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, shownEntityTypes, showGrid)
+    console.log('EntityEditor', layerChosen, entities, shownEntityTypes, showGrid)
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
@@ -161,11 +160,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             label='Show name'
                             value={showName}
                             setValue={v => setShowName(v)}
-                        />
-                        <SimplifiedSwitch
-                            label='Show only assigned'
-                            value={showOnlyAssigned}
-                            setValue={v => setShowOnlyAssigned(v)}
                         />
                     </>
                 }

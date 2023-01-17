@@ -9,6 +9,7 @@ import {
 import config from '../../config';
 import { CRS } from 'leaflet';
 import { GridlinesLayer } from './GridlinesLayer.jsx';
+import Control from './lib/react-leaflet-control.jsx'
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -154,6 +155,13 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                 showGridMeters={showGridMeters}
                 layerChosen={layerChosen}
             />
+            {/* <Control position="topleft" >
+                <button
+                    // onClick={() => this.setState({ bounds: [51.3, 0.7] })}
+                >
+                    Reset View
+                </button>
+            </Control> */}
             {children}
         </LeafletMap>
     );
