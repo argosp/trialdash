@@ -98,6 +98,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 }}
                                 entities={entities}
                                 entityItems={shownEntityItems}
+                                showTableOfType={showTableOfType}
+                                setShowTableOfType={setShowTableOfType}
                                 onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
                             />
                             <EntityList
