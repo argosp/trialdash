@@ -8,8 +8,10 @@ export const SimplifiedSwitch = ({ label, value, setValue }) => (
                 color="primary"
                 checked={value}
                 onChange={e => setValue(e.target.checked)}
+                size='small'
             />
         }
         label={label}
+        componentsProps={{ typography: { variant: 'h5' } }}
     />
 )

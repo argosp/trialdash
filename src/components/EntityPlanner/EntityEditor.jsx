@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button, Grid } from '@material-ui/core';
-import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
+import { Button, Grid, Paper } from '@material-ui/core';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
@@ -12,6 +11,7 @@ import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
 import { WidthDivider } from './WidthDivider.jsx';
+import Control from './lib/react-leaflet-control.jsx'
 
 export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
@@ -31,10 +31,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [markedPoints, setMarkedPoints] = React.useState([]);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
-    const [showGrid, setShowGrid] = React.useState(false);
-    const [showGridMeters, setShowGridMeters] = React.useState(1);
 
-    console.log('EntityEditor', layerChosen, entities, shownEntityTypes, showGrid)
+    console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
@@ -77,8 +75,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     experimentDataMaps={experimentDataMaps}
                     layerChosen={layerChosen}
                     setLayerChosen={setLayerChosen}
-                    showGrid={showGrid}
-                    showGridMeters={showGridMeters}
                 >
                     {
                         shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
@@ -92,6 +88,15 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             />
                         ))
                     }
+                    <Control position="bottomright" >
+                        <Paper>
+                            <SimplifiedSwitch
+                                label='Show name'
+                                value={showName}
+                                setValue={v => setShowName(v)}
+                            />
+                        </Paper>
+                    </Control>
 
                     <MarkedShape
                         markedPoints={markedPoints}
@@ -125,20 +130,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             }}
                             entities={entities}
                         />
-                        {layerChosen === 'OSMMap' ? null :
-                            <div style={{ verticalAlign: 'baseline' }}>
-                                <SimplifiedSwitch
-                                    label='Show grid'
-                                    value={showGrid}
-                                    setValue={v => setShowGrid(v)}
-                                />
-                                <NumberTextField
-                                    label='Grid Meters'
-                                    value={showGridMeters}
-                                    onChange={v => setShowGridMeters(v)}
-                                />
-                            </div>
-                        }
                         <div style={{ maxHeight: 200, overflow: 'auto' }}>
                             <EntityList
                                 style={{ overflow: 'auto', height: '250px', display: 'block' }}
@@ -156,11 +147,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 layerChosen={layerChosen}
                             />
                         </div>
-                        <SimplifiedSwitch
-                            label='Show name'
-                            value={showName}
-                            setValue={v => setShowName(v)}
-                        />
                     </>
                 }
             </Grid>

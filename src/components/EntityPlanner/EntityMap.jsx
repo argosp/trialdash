@@ -6,10 +6,15 @@ import {
     ImageOverlay,
     LayerGroup,
 } from "react-leaflet";
+import {
+    Paper
+} from '@material-ui/core';
 import config from '../../config';
 import { CRS } from 'leaflet';
 import { GridlinesLayer } from './GridlinesLayer.jsx';
 import Control from './lib/react-leaflet-control.jsx'
+import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
+import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -83,10 +88,12 @@ const EntityMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layer
     )
 }
 
-export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen, showGrid, showGridMeters }) => {
+export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
+    const [showGrid, setShowGrid] = React.useState(false);
+    const [showGridMeters, setShowGridMeters] = React.useState(1);
 
     const getLayerPosition = (layerName) => {
         if (!layerName || layerName === '') return posbounds;
@@ -155,13 +162,23 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                 showGridMeters={showGridMeters}
                 layerChosen={layerChosen}
             />
-            {/* <Control position="topleft" >
-                <button
-                    // onClick={() => this.setState({ bounds: [51.3, 0.7] })}
-                >
-                    Reset View
-                </button>
-            </Control> */}
+            {layerChosen === 'OSMMap' ? null :
+                <Control position="topright" >
+                    <Paper>
+                        <SimplifiedSwitch
+                            label='Show grid'
+                            value={showGrid}
+                            setValue={v => setShowGrid(v)}
+                        />
+                        <br/>
+                        <NumberTextField
+                            label='Grid Meters'
+                            value={showGridMeters}
+                            onChange={v => setShowGridMeters(v)}
+                        />
+                    </Paper>
+                </Control>
+            }
             {children}
         </LeafletMap>
     );
