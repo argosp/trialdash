@@ -6,7 +6,6 @@ import { compose } from 'recompose';
 import { EntityEditor } from './EntityEditor';
 import { styles } from './styles';
 import { ShapeProvider } from './ShapeContext';
-import { ShowWorking } from './ShowWorking';
 import { EntitiesProvider } from './EntitiesContext';
 import { StagingProvider } from './StagingContext.jsx';
 
@@ -23,7 +22,6 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
         >
             <StagingProvider>
                 <ShapeProvider>
-                    <ShowWorking />
                     <EntityEditor
                         experimentDataMaps={experimentDataMaps}
                     />

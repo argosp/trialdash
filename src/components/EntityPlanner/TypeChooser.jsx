@@ -12,7 +12,7 @@ export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, e
 
     return (
         <TableContainer component={Paper}>
-            <Table>
+            <Table size="small">
                 <TableHead>
                     <TableRow>
                         <TableCell>Type</TableCell>
