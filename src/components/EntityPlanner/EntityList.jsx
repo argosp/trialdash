@@ -1,59 +1,62 @@
 import React from 'react';
 import { List } from '@material-ui/core';
 import { EntityRow } from './EntityRow';
-import { getEntityLocationProp } from './EntityUtils';
+import { useStaging } from './StagingContext.jsx';
+import { EntityLocationButton } from './EntityLocationButton.jsx';
 
-export const EntityList = ({ entities, selection, setSelection, removeEntitiesLocations, layerChosen }) => {
+export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
-    const handleSelectionClick = (index, doRange) => {
-        let sel = [];
+    const {
+        selection,
+        setSelection,
+        toggleIsSelected
+    } = useStaging();
+
+    const handleSelectionClick = (devkey, index, doRange) => {
         if (!doRange) {
-            if (selection.includes(index)) {
-                sel = selection.filter(s => s !== index);
-            } else {
-                sel = selection.concat([index]);
-            }
+            toggleIsSelected(devkey);
         } else if (lastIndex !== undefined) {
-            const low = Math.min(index, lastIndex), high = Math.max(index, lastIndex);
-            sel = selection.filter(s => s < low);
-            for (let i = low; i <= high; ++i) {
-                sel.push(i);
+            const low = Math.min(index, lastIndex);
+            const high = Math.max(index, lastIndex);
+
+            const sel = [];
+            for (const [index, { entityItem }] of entityItems.entries()) {
+                if ((index < low || index > high) && selection.includes(entityItem.key)) {
+                    sel.push(entityItem.key);
+                }
             }
-            sel.concat(selection.filter(s => s > high));
+            for (let i = low; i <= high; ++i) {
+                sel.push(entityItems[i].entityItem.key);
+            }
+            setSelection(sel);
         }
         setLastIndex(index);
-        setSelection(sel.sort());
     }
 
     return (
-        <div style={{ overflow: 'auto', height: '340px', display: 'block' }}
-        // inputProps={{ style: { overflow: 'scroll' } }}
-        >
-            <List>
-                {
-                    entities.map(devType =>
-                        devType.items.map((dev, index) => {
-                            const prop = getEntityLocationProp(dev, devType);
-                            const entityLocation = (prop && prop.val) ? prop.val.coordinates : undefined;
-                            const isEntityOnLayer = entityLocation && prop.val.name === layerChosen;
-                            const entityLayerName = entityLocation ? prop.val.name : null;
-                            return <EntityRow
-                                key={dev.key}
-                                dev={dev}
-                                entityLocation={entityLocation}
-                                isEntityOnLayer={isEntityOnLayer}
-                                entityLayerName={entityLayerName}
-                                isSelected={selection.includes(index)}
-                                onClick={e => { handleSelectionClick(index, e.shiftKey) }}
+        <List>
+            {
+                entityItems.map(({ entityItem, location, isOnLayer, layerName }, index) => {
+                    return <EntityRow
+                        key={entityItem.key}
+                        dev={entityItem}
+                        isSelected={selection.includes(entityItem.key)}
+                        onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
+                    >
+                        {!location ? null :
+                            <EntityLocationButton
+                                entityLocation={location}
+                                isEntityOnLayer={isOnLayer}
+                                entityLayerName={layerName}
                                 onDisableLocation={(doOnWholeList) => {
-                                    removeEntitiesLocations(doOnWholeList ? selection : [index]);
+                                    removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
                                 }}
                             />
-                        })
-                    )
-                }
-            </List >
-        </div >
+                        }
+                    </EntityRow>
+                })
+            }
+        </List >
     )
 }

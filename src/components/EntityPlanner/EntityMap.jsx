@@ -5,32 +5,17 @@ import {
     LayersControl,
     ImageOverlay,
     LayerGroup,
-    Polyline,
-    Tooltip
 } from "react-leaflet";
+import {
+    Paper
+} from '@material-ui/core';
 import config from '../../config';
 import { CRS } from 'leaflet';
-import { styled } from '@material-ui/core/styles';
-
-const NudeTooltip = styled(Tooltip)({
-    background: 0,
-    border: 0,
-    borderRadius: 0,
-    boxShadow: 'none',
-    padding: 0,
-    '&.leaflet-tooltip-top:before': {
-        border: 0
-    },
-    '&.leaflet-tooltip-bottom:before': {
-        border: 0
-    },
-    '&.leaflet-tooltip-left:before': {
-        border: 0
-    },
-    '&.leaflet-tooltip-right:before': {
-        border: 0
-    }
-});
+import { GridlinesLayer } from './GridlinesLayer.jsx';
+import Control from './lib/react-leaflet-control.jsx'
+import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
+import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
+import 'leaflet/dist/leaflet.css';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -72,78 +57,6 @@ const RealMapWithImagesLayer = ({ images }) => (
     </>
 )
 
-const createRangeArray = (from, to, delta) => {
-    let ret = [];
-    if (Math.abs(delta) > 0.1) {
-        const back = []
-        for (let pos = Math.min(-delta, to); pos > from; pos -= delta) {
-            const show = (back.length + 1) % 5 === 0;
-            const thick = show ? 1.2 : 0.5;
-            back.push({ pos, thick, show });
-        }
-        back.push({ pos: from, thick: 2, show: false });
-        back.reverse();
-
-        const zero = (from < 0 && to > 0) ? [{ pos: 0, thick: 2, show: false }] : [];
-
-        const forw = []
-        for (let pos = Math.max(delta, from); pos < to; pos += delta) {
-            const show = (forw.length + 1) % 5 === 0;
-            const thick = show ? 1.2 : 0.5;
-            forw.push({ pos, thick, show });
-        }
-        forw.push({ pos: to, thick: 2.5, show: false });
-
-        ret = back.concat(zero).concat(forw);
-    }
-    return ret;
-}
-
-const GridlinesLayer = ({ from, to, delta = 1 }) => {
-    const lat0 = Math.min(from[0], to[0]);
-    const lat1 = Math.max(from[0], to[0]);
-    const lng0 = Math.min(from[1], to[1]);
-    const lng1 = Math.max(from[1], to[1]);
-    const lats = createRangeArray(lat0, lat1, delta);
-    const lngs = createRangeArray(lng0, lng1, delta);
-    return (<>
-        {lats.map(({ pos: lat, thick, show }) => {
-            return (
-                <Polyline
-                    weight={thick}
-                    positions={[
-                        [lat, lng0],
-                        [lat, lng1],
-                    ]}
-                >
-                    {!show ? null :
-                        <NudeTooltip permanent direction={'bottom'} offset={[0, -(lng1 + lng0) / 2]}>
-                            {lat}
-                        </NudeTooltip>
-                    }
-                </Polyline>
-            )
-        })}
-        {lngs.map(({ pos: lng, thick, show }) => {
-            return (
-                <Polyline
-                    weight={thick}
-                    positions={[
-                        [lat0, lng],
-                        [lat1, lng],
-                    ]}
-                >
-                    {!show ? null :
-                        <NudeTooltip permanent direction={'bottom'} offset={[-(lat1 + lat0) / 2, 0]}>
-                            {lng}
-                        </NudeTooltip>
-                    }
-                </Polyline>
-            )
-        })}
-    </>)
-}
-
 const EntityMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layerChosen }) => {
     if (!standalone.length) {
         return <RealMapWithImagesLayer images={embedded} />
@@ -176,10 +89,12 @@ const EntityMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layer
     )
 }
 
-export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen, showGrid, showGridMeters }) => {
+export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
+    const [showGrid, setShowGrid] = React.useState(false);
+    const [showGridMeters, setShowGridMeters] = React.useState(1);
 
     const getLayerPosition = (layerName) => {
         if (!layerName || layerName === '') return posbounds;
@@ -214,12 +129,17 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     }, []);
 
     const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
-
     if (mapElement && mapElement.current && mapElement.current.leafletElement) {
         mapElement.current.leafletElement.options.crs = showMap ? CRS.EPSG3857 : CRS.Simple;
-        mapElement.current.leafletElement.invalidateSize();
     }
 
+    if (mapElement && mapElement.current && mapElement.current.leafletElement) {
+        // console.log('before invalidateSize');
+        mapElement.current.leafletElement.invalidateSize();
+        // console.log('after invalidateSize');
+    }
+
+    // console.log(experimentDataMaps, showMap);
     return (
         <LeafletMap
             bounds={getLayerPosition(layerChosen)}
@@ -243,6 +163,23 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                 showGridMeters={showGridMeters}
                 layerChosen={layerChosen}
             />
+            {layerChosen === 'OSMMap' ? null :
+                <Control position="topright" >
+                    <Paper>
+                        <SimplifiedSwitch
+                            label='Show grid'
+                            value={showGrid}
+                            setValue={v => setShowGrid(v)}
+                        />
+                        <br/>
+                        <NumberTextField
+                            label='Grid Meters'
+                            value={showGridMeters}
+                            onChange={v => setShowGridMeters(v)}
+                        />
+                    </Paper>
+                </Control>
+            }
             {children}
         </LeafletMap>
     );

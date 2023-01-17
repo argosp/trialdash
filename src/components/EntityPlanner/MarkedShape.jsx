@@ -2,10 +2,14 @@ import React from 'react';
 import { Polyline, CircleMarker } from "react-leaflet";
 import { MarkedPoint } from './MarkedPoint';
 import { polylineDistance, distToText, polylineLength } from './GeometryUtils';
+import { useShape } from './ShapeContext.jsx';
 
-export const MarkedShape = ({ markedPoints, setMarkedPoints, shape, shapeCreator, deviceNum, distanceInMeters }) => {
+export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distanceInMeters }) => {
     const currPolyline = React.useRef(null);
     const auxPolyline = React.useRef(null);
+
+    const { shape, shapeData } = useShape();
+    const shapeCreator = shapeData;
 
     let candLocs = shapeCreator.toPositions(markedPoints, deviceNum).filter(x => x);
 

@@ -1,242 +1,171 @@
-import { Button, InputLabel, Switch, Grid } from '@material-ui/core';
 import React from 'react';
-import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField';
+import { Button, Grid, Paper } from '@material-ui/core';
+import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
-import { changeEntityLocation, getEntityLocation } from './EntityUtils';
-import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
-import { InputSlider } from './InputSlider';
 import { MarkedShape } from './MarkedShape';
 import { ShapeChooser } from './ShapeChooser';
+import { useShape } from './ShapeContext.jsx';
+import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
+import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
+import { WidthDivider } from './WidthDivider.jsx';
+import Control from './lib/react-leaflet-control.jsx'
+import { ShowWorking } from './ShowWorking';
 
-const SimplifiedSwitch = ({ label, value, setValue }) => (
-    <div style={{ display: 'inline-block', margin: 5 }}>
-        <InputLabel style={{ fontSize: 10 }}>{label}</InputLabel>
-        <Switch color="primary" inputProps={{ 'aria-label': 'primary checkbox' }}
-            value={value}
-            onChange={e => setValue(e.target.checked)}
-        />
-    </div>
-)
+export const EntityEditor = ({ experimentDataMaps }) => {
+    const { shape, shapeData } = useShape();
 
-export const EntityEditor = ({ entities, setEntities, showOnlyAssigned, setShowOnlyAssigned, experimentDataMaps }) => {
-    const [selectedType, setSelectedType] = React.useState(entities.length ? entities[0].name : '');
-    const [selection, setSelection] = React.useState([]);
-    const [showAll, setShowAll] = React.useState(false);
-    const [shape, setShape] = React.useState("Point");
+    const {
+        entities,
+        setEntityLocations,
+        getEntityItems
+    } = useEntities();
+
+    const {
+        selection,
+        setSelection,
+        toggleIsSelected
+    } = useStaging();
+
+    const [shownEntityTypes, setShownEntityTypes] = React.useState([]);
     const [markedPoints, setMarkedPoints] = React.useState([]);
-    const [rectAngle] = React.useState(0);
-    const [rectRows, setRectRows] = React.useState(3);
     const [showName, setShowName] = React.useState(false);
     const [layerChosen, setLayerChosen] = React.useState('OSMMap');
-    const [showGrid, setShowGrid] = React.useState(false);
-    const [showGridMeters, setShowGridMeters] = React.useState(1);
+    const [showTableOfType, setShowTableOfType] = React.useState('');
 
-    console.log('EntityEditor', layerChosen, entities, showOnlyAssigned, selectedType, showGrid)
-
-    if (selectedType === '' && entities.length > 0) {
-        setSelectedType(entities[0].name);
-    }
-
-    const changeLocations = (type, indices, newLocations = [undefined]) => {
-        let tempEntities = JSON.parse(JSON.stringify(entities));
-        let typeEntities = tempEntities.find(d => d.name === type);
-        for (let i = 0; i < indices.length; ++i) {
-            const loc = newLocations[Math.min(i, newLocations.length - 1)];
-            console.log(layerChosen)
-            changeEntityLocation(typeEntities.items[indices[i]], typeEntities, loc, layerChosen);
-        }
-        return tempEntities;
-    };
+    console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === 'Point') {
-            setEntities(changeLocations(selectedType, selection, [currPoint]));
+            setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);
+        } else if (shape === 'Pop') {
+            if (selection.length > 0) {
+                setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
+                setSelection(selection.slice(1));
+            }
         } else {
             setMarkedPoints(markedPoints.concat([currPoint]));
         }
     };
 
-    const shapeOptions = [
-        {
-            name: 'Point',
-            toLine: points => [],
-            toPositions: (points, amount) => amount && points.length ? [points[0]] : []
-        },
-        {
-            name: 'Poly',
-            toLine: points => [points],
-            toPositions: (points, amount) => resamplePolyline(points, amount)
-        },
-        {
-            name: 'Curve',
-            toLine: points => [splineCurve(points, 100)],
-            toPositions: (points, amount) => resamplePolyline(splineCurve(points, 100), amount)
-        },
-        {
-            name: 'Arc',
-            toLine: points => {
-                if (points.length <= 2) return [points];
-                const arc = arcCurveFromPoints(points, 400);
-                return [[points[0], arc[0]], arc];
-            },
-            toPositions: (points, amount) => resamplePolyline(arcCurveFromPoints(points, 400), amount)
-        },
-        {
-            name: 'Rect',
-            toLine: (points, angle = rectAngle) => {
-                const [nw, ne, se, sw] = rectByAngle(points, angle);
-                return [[nw, ne, se, sw, nw]];
-            },
-            toPositions: (points, amount, rows = rectRows, angle = rectAngle) => {
-                if (points.length === 0) return [];
-                const [nw, ne, se, sw] = rectByAngle(points, angle);
-                let ret = [];
-                const cols = Math.ceil(amount / rows);
-                if (rows > 1 && cols > 1) {
-                    for (let y = 0; y < rows; ++y) {
-                        const west = lerpPoint(nw, sw, y / (rows - 1));
-                        const east = lerpPoint(ne, se, y / (rows - 1));
-                        for (let x = 0; x < cols; ++x) {
-                            ret.push(lerpPoint(west, east, x / (cols - 1)));
-                        }
-                    }
-                }
-                return ret;
-            }
-        }
-    ];
-
-    const shapeData = shapeOptions.find(s => s.name === shape);
-
     const handlePutEntities = () => {
         const positions = shapeData.toPositions(markedPoints, selection.length);
-        setEntities(changeLocations(selectedType, selection, positions));
+        setEntityLocations(selection, layerChosen, positions);
         setMarkedPoints([]);
         setSelection([]);
     };
 
+    const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
+    const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
 
-    const distanceInMeters = () => {
-        const row = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
-        return row ? !row.embedded : false;
-    }
+    const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
+    const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s)).filter(x => x);
+    const showTable = showTableOfType !== '';
 
     return (
         <Grid
-            container direction="row-reverse" justifyContent="flex-start" alignItems="stretch"
+            container direction="row" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
         >
-            <Grid item xs={9}>
+            <Grid item xs={3} style={{ height: '550px', overflow: 'auto' }}>
+                <>
+                    <ShowWorking />
+                    {!entities.length ? null :
+                        <>
+                            <ShapeChooser
+                                onChange={(val) => {
+                                    if (shape === 'Point' || shape === 'Pop') setMarkedPoints([]);
+                                }}
+                            />
+                            <Button variant="contained" color="primary"
+                                disabled={shape === 'Point' || shape === 'Pop'}
+                                style={{ margin: 5 }}
+                                onClick={handlePutEntities}
+                            >
+                                Put entities
+                            </Button>
+                            <TypeChooser
+                                shownEntityTypes={shownEntityTypes}
+                                setShownEntityTypes={newTypes => {
+                                    setSelection([]);
+                                    setShownEntityTypes(newTypes);
+                                }}
+                                entities={entities}
+                                entityItems={shownEntityItems}
+                                showTableOfType={showTableOfType}
+                                setShowTableOfType={setShowTableOfType}
+                                onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
+                            />
+                            <EntityList
+                                style={{
+                                    overflow: 'auto',
+                                    //  height: '250px',
+                                    display: 'block'
+                                }}
+                                entityItems={selectedEntityItems}
+                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                                layerChosen={layerChosen}
+                            />
+                        </>
+                    }
+                </>
+            </Grid>
+            {!showTable ? null :
+                <Grid item xs={3}
+                    style={{ height: '550px', overflow: 'auto' }}
+                >
+                    <EntityList
+                        style={{ overflow: 'auto', height: '250px', display: 'block' }}
+                        entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
+                        removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                        layerChosen={layerChosen}
+                    />
+                </Grid>
+            }
+            <Grid item xs={showTable ? 6 : 9}>
                 <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}
                     layerChosen={layerChosen}
                     setLayerChosen={setLayerChosen}
-                    showGrid={showGrid}
-                    showGridMeters={showGridMeters}
                 >
                     {
-                        entities.map(devType => {
-                            if (showAll || (devType.name === selectedType)) {
-                                return devType.items.map((dev, index) => {
-                                    const loc = getEntityLocation(dev, devType, layerChosen);
-                                    if (!loc) return null;
-                                    return <EntityMarker
-                                        key={dev.key} entity={dev}
-                                        devLocation={loc}
-                                        isSelected={selection.includes(index)}
-                                        isTypeSelected={devType.name === selectedType}
-                                        shouldShowName={showName}
-                                    />
-                                });
-                            } else {
-                                return null;
-                            }
-                        })
+                        shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
+                            <EntityMarker
+                                key={entityItem.key}
+                                entity={entityItem}
+                                devLocation={location}
+                                isSelected={selection.includes(entityItem.key)}
+                                isTypeSelected={shownEntityTypes.includes(entityType.name)}
+                                shouldShowName={showName}
+                                onClick={() => toggleIsSelected(entityItem.key)}
+                            />
+                        ))
                     }
+                    <Control position="bottomright" >
+                        <Paper>
+                            <SimplifiedSwitch
+                                label='Show name'
+                                value={showName}
+                                setValue={v => setShowName(v)}
+                            />
+                        </Paper>
+                    </Control>
 
                     <MarkedShape
                         markedPoints={markedPoints}
                         setMarkedPoints={setMarkedPoints}
-                        shape={shape}
-                        shapeCreator={shapeData}
                         entityNum={selection.length}
-                        distanceInMeters={distanceInMeters()}
+                        distanceInMeters={showDistanceInMeters}
                     />
 
                 </EntityMap>
-            </Grid>
-            <Grid item xs={3} style={{ overflow: 'auto' }}>
-                {!entities.length ? null :
-                    <>
-                        <ShapeChooser
-                            shape={shape}
-                            onChange={(val) => {
-                                if (val === "Point") setMarkedPoints([]);
-                                setShape(val)
-                            }}
-                            shapeOptions={shapeOptions}
-                        />
-                        {shape !== 'Rect' ? null :
-                            <InputSlider text='Rect rows' value={rectRows} setValue={setRectRows} />
-                        }
-                        <Button variant="contained" color="primary"
-                            disabled={shape === 'Point'}
-                            style={{ margin: 5 }}
-                            onClick={handlePutEntities}
-                        >
-                            Put entities
-                        </Button>
-                        <TypeChooser
-                            selectedType={selectedType}
-                            onChange={newType => {
-                                setSelection([]);
-                                setSelectedType(newType);
-                            }}
-                            showAll={showAll}
-                            setShowAll={val => setShowAll(val)}
-                            typeOptions={entities.map(dev => { return { name: dev.name } })}
-                        />
-                        <SimplifiedSwitch
-                            label='Entities show name'
-                            value={showName}
-                            setValue={v => setShowName(v)}
-                        />
-                        <SimplifiedSwitch
-                            label='Show only assigned'
-                            value={showOnlyAssigned}
-                            setValue={v => setShowOnlyAssigned(v)}
-                        />
-                        {layerChosen === 'OSMMap' ? null :
-                            <div style={{ verticalAlign: 'baseline' }}>
-                                <SimplifiedSwitch
-                                    label='Show grid'
-                                    value={showGrid}
-                                    setValue={v => setShowGrid(v)}
-                                />
-                                <NumberTextField
-                                    label='Grid Meters'
-                                    value={showGridMeters}
-                                    onChange={v => setShowGridMeters(v)}
-                                />
-                            </div>
-                        }
-                        <EntityList
-                            selection={selection}
-                            setSelection={setSelection}
-                            entities={entities.filter(d => d.name === selectedType)}
-                            removeEntitiesLocations={(indices) => setEntities(changeLocations(selectedType, indices))}
-                            layerChosen={layerChosen}
-                        />
-                    </>
-                }
             </Grid>
         </Grid>
     )

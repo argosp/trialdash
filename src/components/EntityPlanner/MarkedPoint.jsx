@@ -2,6 +2,7 @@ import React from 'react';
 import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
+import '../../assets/fontawesome/css/all.css';
 
 let dragStartLoc;
 
@@ -37,6 +38,7 @@ export const MarkedPoint = (props) => {
                 dragStartLoc = e.target.getLatLng();
             }}
             icon={divIcon({
+                className: 'argos-leaflet-div-icon',
                 iconSize: [20, 20],
                 html: renderToStaticMarkup(
                     <div>
