@@ -5,6 +5,12 @@ import Box from '@material-ui/core/Box'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@material-ui/icons'
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody } from '@material-ui/core'
 
+const VisibilityButton = ({ isVisible, setIsVisible }) => {
+    <IconButton onClick={() => setIsVisible(!isVisible)}>
+        {!!isVisible ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
+    </IconButton>
+}
+
 export const EntityTypeRow = ({ entity, isVisible, setIsVisible, numberPositioned, numberNotPositioned }) => {
     return (
         <TableRow>
@@ -15,14 +21,7 @@ export const EntityTypeRow = ({ entity, isVisible, setIsVisible, numberPositione
                 {numberPositioned} / {numberPositioned + numberNotPositioned}
             </TableCell>
             <TableCell align="right">
-                <IconButton onClick={() => setIsVisible(!isVisible)}>
-                    {
-                        !!isVisible ?
-                            <VisibilityOutlined />
-                            :
-                            <VisibilityOffOutlined />
-                    }
-                </IconButton>
+                <VisibilityButton setIsVisible={setIsVisible} isVisible={isVisible} />
             </TableCell>
         </TableRow>
     )
