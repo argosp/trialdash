@@ -15,6 +15,7 @@ import { GridlinesLayer } from './GridlinesLayer.jsx';
 import Control from './lib/react-leaflet-control.jsx'
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
+import 'leaflet/dist/leaflet.css';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];

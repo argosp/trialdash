@@ -2,12 +2,14 @@ import React from 'react';
 import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
+import '../../assets/fontawesome/css/all.css';
 
 export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName }) => (
     <Marker key={entity.name}
         position={devLocation}
         title={entity.name}
         icon={divIcon({
+            className: 'argos-leaflet-div-icon',
             iconSize: [20, 20],
             iconAnchor: [10, 22],
             html: renderToStaticMarkup(
