@@ -15,10 +15,10 @@ export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, e
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell padding='none'>Type</TableCell>
-                        <TableCell padding='none' align="right">Positioned</TableCell>
-                        <TableCell padding='none' align="right"></TableCell>
-                        <TableCell padding='none' align="right"></TableCell>
+                        <TableCell>Type</TableCell>
+                        <TableCell align="right">Positioned</TableCell>
+                        <TableCell align="right" padding='none'></TableCell>
+                        <TableCell align="right" padding='none'></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

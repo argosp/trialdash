@@ -6,7 +6,7 @@ import { VisibilityOffOutlined, VisibilityOutlined, ArrowForwardIos } from '@mat
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody } from '@material-ui/core'
 
 const VisibilityButton = ({ isVisible, setIsVisible }) => (
-    <IconButton onClick={() => setIsVisible(!isVisible)}>
+    <IconButton onClick={() => setIsVisible(!isVisible)} style={{ padding: 0 }}>
         {!!isVisible ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
     </IconButton>
 )
@@ -14,17 +14,17 @@ const VisibilityButton = ({ isVisible, setIsVisible }) => (
 export const EntityTypeRow = ({ entity, isVisible, setIsVisible, numberPositioned, numberNotPositioned }) => {
     return (
         <TableRow>
-            <TableCell padding='none'>
+            <TableCell>
                 {entity.name}
             </TableCell>
-            <TableCell padding='none' align="right">
+            <TableCell align="right">
                 {numberPositioned} / {numberPositioned + numberNotPositioned}
             </TableCell>
             <TableCell padding='none' align="right">
                 <VisibilityButton setIsVisible={setIsVisible} isVisible={isVisible} />
             </TableCell>
             <TableCell padding='none' align="right">
-                <IconButton>
+                <IconButton style={{ padding: 0 }}>
                     <ArrowForwardIos />
                 </IconButton>
             </TableCell>
