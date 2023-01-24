@@ -44,6 +44,8 @@ export const sortEntities = (entitiesTypes) => {
 }
 
 export const findEntitiesChanged = (oldEntityTypes, newEntityTypes) => {
+    const start = Date.now();
+
     let ret = [];
     newEntityTypes.forEach(newDevType => {
         const oldDevType = oldEntityTypes.find(ty => ty.key === newDevType.key);
@@ -56,5 +58,7 @@ export const findEntitiesChanged = (oldEntityTypes, newEntityTypes) => {
             })
         }
     });
+
+    console.log('findEntitiesChanged took ', Date.now() - start, 'ms');
     return ret;
 }
