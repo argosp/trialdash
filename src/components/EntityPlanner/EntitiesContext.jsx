@@ -47,17 +47,15 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
     const handleChangeEntities = async (newEntities) => {
         setWorking(true);
         const changedEntities = findEntitiesChanged(entities, newEntities);
-        const changedDetails = changedEntities.map(changed => {
-            const { dev: newDev, type: newDevType } = changed;
-            const locationProp = getEntityLocationProp(newDev, newDevType);
-            const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
-            return { key: newDev.key, type: "entity", entitiesTypeKey: newDevType.key, properties: changeProps };
-        });
 
         // Calling updateLocation one change at a time, otherwise it crushes.
         let done = 0;
-        for await (const ch of changedDetails) {
+        for await (const changed of changedEntities) {
             setWorking((done++ / changedEntities.length) * 100);
+            const { dev: newDev, type: newDevType } = changed;
+            const locationProp = getEntityLocationProp(newDev, newDevType);
+            const changeProps = [{ key: locationProp.key, val: JSON.stringify(locationProp.val) }];
+            const ch = { key: newDev.key, type: "entity", entitiesTypeKey: newDevType.key, properties: changeProps };
             console.log('change', ch);
             await updateLocation(ch);
         }
