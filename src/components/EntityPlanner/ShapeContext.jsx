@@ -66,7 +66,7 @@ export const ShapeProvider = ({ children }) => {
         }
     ];
 
-    const shapeData = shapeOptions.find(s => s.name === shape);
+    const shapeData = shapeOptions.find(s => s.name === shape) || shapeOptions.find(s => s.name === FREEPOSITIONING_SHAPE);
 
     const store = {
         shape, setShape,

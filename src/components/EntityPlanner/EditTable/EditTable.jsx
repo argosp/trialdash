@@ -28,7 +28,7 @@ export const EditTable = ({
     if (value !== '') {
       const state = value !== editTableMode ? value : POINT_SHAPE;
       setEditTableMode(state);
-      setShape(state.charAt(0).toUpperCase() + state.slice(1));
+      setShape(state);
     }
   };
 
