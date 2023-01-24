@@ -66,6 +66,7 @@ export const ShapeProvider = ({ children }) => {
         }
     ];
 
+    // TODO: get default shapeData in a nicer way, maybe convert shapeOptions to struct
     const shapeData = shapeOptions.find(s => s.name === shape) || shapeOptions.find(s => s.name === FREEPOSITIONING_SHAPE);
 
     const store = {
