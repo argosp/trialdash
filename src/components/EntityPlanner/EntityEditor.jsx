@@ -130,12 +130,12 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             }
             <Grid item>
                 <EditTable
-                // TBPEntities={TBPEntities}
-                // removeEntityFromTBPTable={removeEntityFromTBPTable}
-                // onShapeChange={(v) => setShape(v)}
-                // onSingleShapeSubmit={handleMapClick}
-                // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
-                // markedPoints={markedPoints}
+                    // TBPEntities={TBPEntities}
+                    // removeEntityFromTBPTable={removeEntityFromTBPTable}
+                    // onShapeChange={(v) => setShape(v)}
+                    // onSingleShapeSubmit={handleMapClick}
+                    // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
+                    markedPoints={markedPoints}
                 />
             </Grid>
             <Grid item xs={showTable ? 5 : 8}>

@@ -4,6 +4,7 @@ import {
     LayersControl,
     ImageOverlay,
     LayerGroup,
+    ZoomControl,
 } from "react-leaflet";
 import {
     Paper
@@ -140,6 +141,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             // crs={ CRS.Simple}
             minZoom={-10}
+            zoomControl={false}
         >
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
@@ -148,6 +150,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                 showGridMeters={showGridMeters}
                 layerChosen={layerChosen}
             />
+            <ZoomControl position='topright'/>
             {layerChosen === 'OSMMap' ? null :
                 <Control position="topright" >
                     <Paper>
