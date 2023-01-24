@@ -80,10 +80,8 @@ const EditTool = ({ icon, id, component, title, chosenId, classes, markedPoints,
 }
 
 export const EditTable = ({
-    TBPEntities,
-    removeEntityFromTBPTable,
-    onSingleShapeSubmit,
-    handlePutEntitiesOnPrev,
+    handleSetOne,
+    handleSetMany,
     markedPoints,
 }) => {
     const [editTableMode, setEditTableMode] = useState(FREEPOSITIONING_SHAPE);
@@ -98,15 +96,15 @@ export const EditTable = ({
         }
     };
 
-    const onSubmit = (positions) => {
-        if (editTableMode === POINT_SHAPE || editTableMode === FREEPOSITIONING_SHAPE) {
-            onSingleShapeSubmit({ latlng: { lat: positions.x, lng: positions.y } });
-        } else {
-            handlePutEntitiesOnPrev();
-        }
+    // const onSubmit = (positions) => {
+    //     if (editTableMode === POINT_SHAPE || editTableMode === FREEPOSITIONING_SHAPE) {
+    //         handleSetOne({ latlng: { lat: positions.x, lng: positions.y } });
+    //     } else {
+    //         handleSetMany();
+    //     }
 
-        setEditTableMode(POINT_SHAPE);
-    };
+    //     setEditTableMode(POINT_SHAPE);
+    // };
 
     return (
         <Box className={classnames(classes.root, classes.editTable)}>
@@ -117,7 +115,7 @@ export const EditTable = ({
             <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
                 id={FREEPOSITIONING_SHAPE}
                 icon={<FreePositioningIcon />}
-                component={<FreePositioning />}
+                component={<FreePositioning onSubmit={pos => handleSetOne({ latlng: { lat: pos.x, lng: pos.y } })}/>}
                 title={FREEPOSITIONING_TITLE}
             />
             <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
@@ -130,19 +128,19 @@ export const EditTable = ({
             <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
                 id={CURVE_SHAPE}
                 icon={<CurveIcon />}
-                component={<Curve />}
+                component={<Curve onSubmit={handleSetMany}/>}
                 title={CURVE_TITLE}
             />
             <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
                 id={DISTRUBTE_ALONG_LINE_SHAPE}
                 icon={<DistrubteAlongLineIcon />}
-                component={<DistrubteAlongLine />}
+                component={<DistrubteAlongLine onSubmit={handleSetMany}/>}
                 title={DISTRUBTE_ALONG_LINE_TITLE}
             />
             <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
                 id={RECTANGLE_SHAPE}
                 icon={<RectangleIcon />}
-                component={<Rectangle />}
+                component={<Rectangle onSubmit={handleSetMany}/>}
                 title={RECTANGLE_TITLE}
             />
         </Box>

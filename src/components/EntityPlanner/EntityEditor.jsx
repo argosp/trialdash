@@ -79,7 +79,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     <ShowWorking />
                     {!entities.length ? null :
                         <>
-                            <ShapeChooser
+                            {/* <ShapeChooser
                                 onChange={(val) => {
                                     if (shape === POINT_SHAPE || shape === FREEPOSITIONING_SHAPE) setMarkedPoints([]);
                                 }}
@@ -90,7 +90,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 onClick={handlePutEntities}
                             >
                                 Put entities
-                            </Button>
+                            </Button> */}
                             <TypeChooser
                                 shownEntityTypes={shownEntityTypes}
                                 setShownEntityTypes={newTypes => {
@@ -134,7 +134,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     // TBPEntities={TBPEntities}
                     // removeEntityFromTBPTable={removeEntityFromTBPTable}
                     // onShapeChange={(v) => setShape(v)}
-                    onSingleShapeSubmit={handleMapClick}
+                    handleSetOne={handleMapClick}
+                    handleSetMany={handlePutEntities}
                     // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
                     markedPoints={markedPoints}
                 />
