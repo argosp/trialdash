@@ -4,7 +4,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 export const PopperBox = ({ title, value, handleClick, classes, children }) => {
     return (
-      <Box sx={{ position: 'absolute', top: 0, left: '100%' }}>
+      <Box sx={{ position: 'absolute', top: 0, left: '100%', zIndex: 1000 }}>
         <Grid container className={classes.toolBoxContainer}>
           <Grid item className={classes.toolBoxItem}>
             <IconButton onClick={() => handleClick(value)}>

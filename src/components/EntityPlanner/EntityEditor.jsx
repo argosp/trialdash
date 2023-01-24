@@ -138,7 +138,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                 // markedPoints={markedPoints}
                 />
             </Grid>
-            <Grid item xs={showTable ? 6 : 9}>
+            <Grid item xs={showTable ? 5 : 8}>
                 <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}
