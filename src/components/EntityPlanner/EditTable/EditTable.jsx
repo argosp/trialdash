@@ -8,36 +8,37 @@ import classnames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { styles } from './styles';
 import { PopperBox } from './PopperBox.jsx';
+import { useShape } from '../ShapeContext.jsx';
 
 const useStyles = makeStyles(styles);
 
 export const EditTable = ({
   TBPEntities,
   removeEntityFromTBPTable,
-  onShapeChange,
   onSingleShapeSubmit,
   handlePutEntitiesOnPrev,
   markedPoints,
 }) => {
-  const [editTableMode, setEditTableMode] = useState('free');
+  const [editTableMode, setEditTableMode] = useState('Free');
   const classes = useStyles();
+  const { shape, setShape, rectRows, setRectRows, shapeOptions } = useShape();
 
   const handleClick = (value) => {
     if (value !== '') {
-      const state = value !== editTableMode ? value : 'point';
+      const state = value !== editTableMode ? value : 'Point';
       setEditTableMode(state);
-      onShapeChange(state.charAt(0).toUpperCase() + state.slice(1));
+      setShape(state.charAt(0).toUpperCase() + state.slice(1));
     }
   };
 
   const onSubmit = (positions) => {
-    if (editTableMode === 'point' || editTableMode === 'free') {
+    if (editTableMode === 'Point' || editTableMode === 'Free') {
       onSingleShapeSubmit({ latlng: { lat: positions.x, lng: positions.y } });
     } else {
       handlePutEntitiesOnPrev();
     }
 
-    setEditTableMode('point');
+    setEditTableMode('Point');
   };
 
   return (
@@ -58,7 +59,7 @@ export const EditTable = ({
             <IconButton key={value} onClick={() => handleClick(value)} className={iconButtonStyle}>
               {icon}
             </IconButton>
-            {editTableMode === value && value !== 'point' && (
+            {editTableMode === value && value !== 'Point' && (
               <PopperBox title={title} value={value} handleClick={handleClick} classes={classes}>
                 {React.cloneElement(component, {
                   classes,
