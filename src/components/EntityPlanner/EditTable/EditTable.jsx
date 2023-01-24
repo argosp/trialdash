@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 
 import Box from '@material-ui/core/Box';
 import { Divider, IconButton, Typography } from '@material-ui/core';
-import { icons } from './utils';
 
 import classnames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { styles } from './styles';
 import { PopperBox } from './PopperBox.jsx';
 import { useShape } from '../ShapeContext.jsx';
+import { icons } from './utils/icons.js';
+import { FREEPOSITIONING_SHAPE, POINT_SHAPE } from './utils/constants.js';
 
 const useStyles = makeStyles(styles);
 
@@ -19,26 +20,26 @@ export const EditTable = ({
   handlePutEntitiesOnPrev,
   markedPoints,
 }) => {
-  const [editTableMode, setEditTableMode] = useState('Free');
+  const [editTableMode, setEditTableMode] = useState(FREEPOSITIONING_SHAPE);
   const classes = useStyles();
   const { shape, setShape, rectRows, setRectRows, shapeOptions } = useShape();
 
   const handleClick = (value) => {
     if (value !== '') {
-      const state = value !== editTableMode ? value : 'Point';
+      const state = value !== editTableMode ? value : POINT_SHAPE;
       setEditTableMode(state);
       setShape(state.charAt(0).toUpperCase() + state.slice(1));
     }
   };
 
   const onSubmit = (positions) => {
-    if (editTableMode === 'Point' || editTableMode === 'Free') {
+    if (editTableMode === POINT_SHAPE || editTableMode === FREEPOSITIONING_SHAPE) {
       onSingleShapeSubmit({ latlng: { lat: positions.x, lng: positions.y } });
     } else {
       handlePutEntitiesOnPrev();
     }
 
-    setEditTableMode('Point');
+    setEditTableMode(POINT_SHAPE);
   };
 
   return (
@@ -59,7 +60,7 @@ export const EditTable = ({
             <IconButton key={value} onClick={() => handleClick(value)} className={iconButtonStyle}>
               {icon}
             </IconButton>
-            {editTableMode === value && value !== 'Point' && (
+            {editTableMode === value && value !== POINT_SHAPE && (
               <PopperBox title={title} value={value} handleClick={handleClick} classes={classes}>
                 {React.cloneElement(component, {
                   classes,
@@ -70,7 +71,7 @@ export const EditTable = ({
                 })}
               </PopperBox>
             )}
-            {value === 'square' && <Divider variant="middle" light />}
+            {value === POINT_SHAPE && <Divider variant="middle" light />}
           </div>
         );
       })}
