@@ -22,7 +22,7 @@ import {
     CURVE_SHAPE,
     DISTRUBTE_ALONG_LINE_SHAPE,
     RECTANGLE_SHAPE
-} from './utils/constants';
+} from './utils/constants.js';
 
 import {
     FreePositioning,
@@ -88,6 +88,12 @@ export const EditTable = ({
                 icon={<DistrubteAlongLineIcon />}
                 component={<DistrubteAlongLine onSubmit={handleSetMany} />}
                 title={DISTRUBTE_ALONG_LINE_TITLE}
+            />
+            <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
+                id={'Arc'}
+                icon={'Arc'}
+                component={<DistrubteAlongLine onSubmit={handleSetMany} />}
+                title={'Arc'}
             />
             <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
                 id={RECTANGLE_SHAPE}
