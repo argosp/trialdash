@@ -3,7 +3,7 @@ export const styles = (theme) => ({
     height: '100%',
     width: 650,
     backgroundColor: '#fefefe',
-    position: 'absolute',
+    // position: 'absolute',
     top: 0,
     left: '100%',
     zIndex: 1000,
