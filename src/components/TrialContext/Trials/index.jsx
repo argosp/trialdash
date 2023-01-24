@@ -81,7 +81,7 @@ class Trials extends React.Component {
 
   renderTableRow = (trial, index, trialsArray) => {
     const { trialSet, confirmOpen, anchorMenu } = this.state;
-    const { classes, theme, client, match } = this.props;
+    const { classes, theme } = this.props;
     return (
       // should be uniqe id
       <React.Fragment key={trial.created}>

@@ -30,7 +30,7 @@ function getCsvData(array) {
     Object.keys(item).map(key => {
       value = item[key];
       if (typeof value == 'string') {
-        value = value.replace(/\"/g, "'");
+        value = value.replace(/"/g, "'");
         value = `"${value}"`;
       }
       return value

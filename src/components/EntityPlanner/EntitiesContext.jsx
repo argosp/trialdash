@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import entitiesTrialQuery from './utils/entitiesTrialQuery';
-import { changeEntityLocation, getEntityLocation } from './EntityUtils';
+import { changeEntityLocation } from './EntityUtils';
 
 export const EntitiesContext = createContext(null);
 

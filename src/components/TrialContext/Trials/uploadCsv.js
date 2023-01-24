@@ -3,7 +3,6 @@ import { updateCache } from '../../../apolloGraphql';
 import { TRIALS, TRIAL_MUTATION } from '../../../constants/base';
 import trialsQuery from '../utils/trialQuery';
 import entitiesTypesQuery from '../../EntityContext/utils/entityTypeQuery';
-import { reject } from 'lodash';
 
 function csvJSON(csv) {
 
@@ -11,7 +10,7 @@ function csvJSON(csv) {
 
   var result = [];
 
-  var commaRegex = /,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g
+  var commaRegex = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/g
 
   var quotesRegex = /^"(.*)"$/g
 
@@ -122,6 +121,7 @@ function uploadEntities(e, trial, client, match) {
             if (propInCsv) {
               return [...prev, { key: curr.key, val: propInCsv.replace(/'/g, "\"") }]
             }
+            return prev;
           }, [])
           return { ...entity, properties }
         })

@@ -10,7 +10,6 @@ import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
-import { WidthDivider } from './WidthDivider.jsx';
 import Control from './lib/react-leaflet-control.jsx'
 import { ShowWorking } from './ShowWorking';
 
