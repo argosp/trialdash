@@ -344,17 +344,16 @@ class TrialForm extends React.Component {
     this.setState({ changed: true });
   }
 
-  updateLocation = async (entity) => {
+  updateLocation = async (...entities) => {
     const updatedTrial = {};
     const { match, client } = this.props;
     const { trial } = this.state;
     updatedTrial.key = trial.key;
     updatedTrial.experimentId = trial.experimentId;
     updatedTrial.trialSetKey = trial.trialSetKey;
-    updatedTrial[!trial.status || trial.status === 'design' ? 'entities' : 'deployedEntities'] = [entity];
-    const changedEntities = [entity];
+    updatedTrial[!trial.status || trial.status === 'design' ? 'entities' : 'deployedEntities'] = entities;
     await client.mutate({
-      mutation: trialMutationUpdate(updatedTrial, changedEntities),
+      mutation: trialMutationUpdate(updatedTrial, entities),
       update: (cache, mutationResult) => {
         updateCache(
           cache,
@@ -369,17 +368,19 @@ class TrialForm extends React.Component {
 
     let isNew = true;
     let entitiesField = (!trial.status || trial.status === 'design') ? 'entities' : 'deployedEntities'
-    trial[entitiesField].forEach((item, i) => {
-      if (item.key === entity.key) {
-        trial[entitiesField][i].properties.forEach((property, j) => {
-          if (property.key === entity.properties[0].key) {
-            trial[entitiesField][i].properties[j] = entity.properties[0];
-          }
-        });
-        isNew = false;
-      }
+    entities.forEach(entity => {
+      trial[entitiesField].forEach((item, i) => {
+        if (item.key === entity.key) {
+          trial[entitiesField][i].properties.forEach((property, j) => {
+            if (property.key === entity.properties[0].key) {
+              trial[entitiesField][i].properties[j] = entity.properties[0];
+            }
+          });
+          isNew = false;
+        }
+      });
+      if (isNew) trial[entitiesField].push(entity);
     });
-    if (isNew) trial[entitiesField].push(entity);
     this.setState({ trial });
   };
 
