@@ -5,6 +5,7 @@ import {
     Typography,
     Box
 } from '@material-ui/core';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 import classnames from 'classnames';
 import { styles } from './styles';
@@ -93,7 +94,7 @@ export const EditTable = ({
             />
             <EditTool classes={classes} chosenId={shape} onClickIcon={onClickIcon} markedPoints={markedPoints}
                 id={'Arc'}
-                icon={'Arc'}
+                icon={<RotateLeftIcon fontSize="large" color='black' />}
                 component={<DistrubteAlongLine onSubmit={handleSetMany} />}
                 title={'Arc'}
             />
