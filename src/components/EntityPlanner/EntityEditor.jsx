@@ -134,7 +134,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     // TBPEntities={TBPEntities}
                     // removeEntityFromTBPTable={removeEntityFromTBPTable}
                     // onShapeChange={(v) => setShape(v)}
-                    // onSingleShapeSubmit={handleMapClick}
+                    onSingleShapeSubmit={handleMapClick}
                     // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
                     markedPoints={markedPoints}
                 />
