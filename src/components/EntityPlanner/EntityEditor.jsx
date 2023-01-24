@@ -1,18 +1,18 @@
 import React from 'react';
-import { Button, Grid, Paper } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { MarkedShape } from './MarkedShape';
-import { ShapeChooser } from './ShapeChooser';
 import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
-import { WidthDivider } from './WidthDivider.jsx';
-import Control from './lib/react-leaflet-control.jsx'
+import Control from './lib/react-leaflet-control.jsx';
 import { ShowWorking } from './ShowWorking';
+import { EditTable } from './EditTable/EditTable.jsx';
+import { FREEPOSITIONING_SHAPE, POINT_SHAPE } from './EditTable/utils/constants.js';
 
 export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
@@ -40,11 +40,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const handleMapClick = e => {
         // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
-        if (shape === 'Point') {
+        if (shape === POINT_SHAPE) {
             setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);
-        } else if (shape === 'Pop') {
+        } else if (shape === FREEPOSITIONING_SHAPE) {
             if (selection.length > 0) {
                 setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
                 setSelection(selection.slice(1));
@@ -78,18 +78,18 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     <ShowWorking />
                     {!entities.length ? null :
                         <>
-                            <ShapeChooser
+                            {/* <ShapeChooser
                                 onChange={(val) => {
-                                    if (shape === 'Point' || shape === 'Pop') setMarkedPoints([]);
+                                    if (shape === POINT_SHAPE || shape === FREEPOSITIONING_SHAPE) setMarkedPoints([]);
                                 }}
                             />
                             <Button variant="contained" color="primary"
-                                disabled={shape === 'Point' || shape === 'Pop'}
+                                disabled={shape === POINT_SHAPE || shape === FREEPOSITIONING_SHAPE}
                                 style={{ margin: 5 }}
                                 onClick={handlePutEntities}
                             >
                                 Put entities
-                            </Button>
+                            </Button> */}
                             <TypeChooser
                                 shownEntityTypes={shownEntityTypes}
                                 setShownEntityTypes={newTypes => {
@@ -128,7 +128,18 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     />
                 </Grid>
             }
-            <Grid item xs={showTable ? 6 : 9}>
+            <Grid item>
+                <EditTable
+                    // TBPEntities={TBPEntities}
+                    // removeEntityFromTBPTable={removeEntityFromTBPTable}
+                    // onShapeChange={(v) => setShape(v)}
+                    handleSetOne={handleMapClick}
+                    handleSetMany={handlePutEntities}
+                    // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
+                    markedPoints={markedPoints}
+                />
+            </Grid>
+            <Grid item xs={showTable ? 5 : 8}>
                 <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}

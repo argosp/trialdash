@@ -5,7 +5,7 @@ import { useShape } from './ShapeContext.jsx';
 
 export const ShapeChooser = ({ onChange }) => {
 
-    const { shape, setShape, rectAngle, setRectAngle, rectRows, setRectRows, shapeOptions, shapeData } = useShape();
+    const { shape, setShape, rectRows, setRectRows, shapeOptions } = useShape();
 
     return (
         <>

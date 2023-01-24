@@ -1,10 +1,10 @@
 import React from 'react';
 import {
     Map as LeafletMap,
-    TileLayer,
     LayersControl,
     ImageOverlay,
     LayerGroup,
+    ZoomControl,
 } from "react-leaflet";
 import {
     Paper
@@ -16,27 +16,13 @@ import Control from './lib/react-leaflet-control.jsx'
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import 'leaflet/dist/leaflet.css';
+import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
 
 const bounds2arr = (bounds) => {
     return [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
-}
-
-const RealMapLayer = () => {
-    const mapAttrib = process.env.REACT_APP_MAP_ATTRIBUTION || '&copy; <a href="https://carto.com">Carto</a> contributors';
-    const mapTileUrl = process.env.REACT_APP_MAP_URL || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png';
-    if (!process.env.REACT_APP_MAP_ATTRIBUTION || !process.env.REACT_APP_MAP_URL) {
-        console.log('Getting map tileserver url from hardcoded:', mapTileUrl);
-    }
-
-    return (
-        <TileLayer
-            attribution={mapAttrib}
-            url={mapTileUrl}
-        />
-    )
 }
 
 const EmbeddedImageLayer = ({ image }) => (
@@ -48,7 +34,7 @@ const EmbeddedImageLayer = ({ image }) => (
 
 const RealMapWithImagesLayer = ({ images }) => (
     <>
-        <RealMapLayer key={'real'} />
+        <MapTileLayer key={'real'} />
         {
             images.map((row, i) => (
                 <EmbeddedImageLayer image={row} key={'l' + i} />
@@ -155,6 +141,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             // crs={ CRS.Simple}
             minZoom={-10}
+            zoomControl={false}
         >
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
@@ -163,6 +150,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                 showGridMeters={showGridMeters}
                 layerChosen={layerChosen}
             />
+            <ZoomControl position='topright'/>
             {layerChosen === 'OSMMap' ? null :
                 <Control position="topright" >
                     <Paper>

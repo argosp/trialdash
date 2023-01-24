@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from 'react'
+import { FREEPOSITIONING_SHAPE, POINT_SHAPE } from './EditTable/utils/constants.js';
 import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 
 export const ShapeContext = createContext(null)
@@ -12,12 +13,12 @@ export const ShapeProvider = ({ children }) => {
 
     const shapeOptions = [
         {
-            name: 'Pop',
+            name: FREEPOSITIONING_SHAPE,
             toLine: points => [],
             toPositions: (points, amount) => amount && points.length ? [points[0]] : []
         },
         {
-            name: 'Point',
+            name: POINT_SHAPE,
             toLine: points => [],
             toPositions: (points, amount) => amount && points.length ? [points[0]] : []
         },
@@ -65,7 +66,8 @@ export const ShapeProvider = ({ children }) => {
         }
     ];
 
-    const shapeData = shapeOptions.find(s => s.name === shape);
+    // TODO: get default shapeData in a nicer way, maybe convert shapeOptions to struct
+    const shapeData = shapeOptions.find(s => s.name === shape) || shapeOptions.find(s => s.name === FREEPOSITIONING_SHAPE);
 
     const store = {
         shape, setShape,
