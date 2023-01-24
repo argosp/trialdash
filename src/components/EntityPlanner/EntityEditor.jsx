@@ -1,16 +1,15 @@
 import React from 'react';
-import { Button, Grid, Paper } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { MarkedShape } from './MarkedShape';
-import { ShapeChooser } from './ShapeChooser';
 import { useShape } from './ShapeContext.jsx';
 import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
-import Control from './lib/react-leaflet-control.jsx'
+import Control from './lib/react-leaflet-control.jsx';
 import { ShowWorking } from './ShowWorking';
 import { EditTable } from './EditTable/EditTable.jsx';
 import { FREEPOSITIONING_SHAPE, POINT_SHAPE } from './EditTable/utils/constants.js';
