@@ -40,11 +40,11 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
                 setWorking(newdevs.filter(x => x.items).length / newdevs.length * 100);
             }));
             setEntities(newdevs);
-            setTimeout(() => setWorking(false), 200);
+            setTimeout(() => setWorking(false), 100);
         })()
     }, [trialEntities]);
 
-    const handleChangeEntities = (newEntities) => {
+    const handleChangeEntities = async (newEntities) => {
         setWorking(true);
         const changedEntities = findEntitiesChanged(entities, newEntities);
         const changedDetails = changedEntities.map(changed => {
@@ -55,20 +55,15 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         });
 
         // Calling updateLocation one change at a time, otherwise it crushes.
-        const uploc = () => {
-            if (changedDetails.length) {
-                setWorking((1 - changedDetails.length / changedEntities.length) * 100);
-                const ch = changedDetails.pop();
-                console.log('change', ch);
-                updateLocation(ch)
-                    .then(uploc);
-            } else {
-                setWorking(100);
-                setTimeout(() => setWorking(false), 500);
-            }
+        let done = 0;
+        for await (const ch of changedDetails) {
+            setWorking((done++ / changedEntities.length) * 100);
+            console.log('change', ch);
+            await updateLocation(ch);
         }
-        uploc();
+        setWorking(100);
         setEntities(newEntities);
+        setTimeout(() => setWorking(false), 100);
     };
 
     const changeLocations = (entityItemKeys, layerChosen, newLocations = [undefined]) => {
