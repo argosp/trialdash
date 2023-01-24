@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import entitiesTrialQuery from './utils/entitiesTrialQuery';
 import { changeEntityLocation, getEntityLocation } from './EntityUtils';
@@ -8,8 +8,8 @@ export const EntitiesContext = createContext(null);
 export const useEntities = () => useContext(EntitiesContext);
 
 export const EntitiesProvider = ({ children, client, trialEntities, updateLocation, entitiesTypes, experimentId }) => {
-    const [entities, setEntities] = React.useState([]);
-    const [working, setWorking] = React.useState(false);
+    const [entities, setEntities] = useState([]);
+    const [working, setWorking] = useState(false);
 
     const entityWithTrialLocation = (devitem, locationPropOnDevType) => {
         const entityEntityOnTrial = trialEntities.find(ent => ent.key === devitem.key);
@@ -26,25 +26,21 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         return devitem;
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         (async () => {
             const entityTypesAsList = Object.values(entitiesTypes).filter(dtlst => dtlst.length).flat();
             const newdevs = entityTypesAsList.filter(dt => dt.name && dt.key && getTypeLocationProp(dt));
             newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
             setWorking(0);
-            let done = 0;
-            for await (const devtype of newdevs) {
+            await Promise.allSettled(newdevs.map(async devtype => {
                 const locationProp = getTypeLocationProp(devtype);
                 const dataDev = await client.query({ query: entitiesTrialQuery(experimentId, devtype.key, undefined) });
-                done += 1;
-                setWorking(done / newdevs.length * 100);
                 devtype.items = dataDev.data.entities.map(devitem => entityWithTrialLocation(devitem, locationProp));
                 devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-                if (done === newdevs.length) {
-                    setEntities(newdevs);
-                }
-                setTimeout(() => setWorking(false), 500);
-            }
+                setWorking(newdevs.filter(x => x.items).length / newdevs.length * 100);
+            }));
+            setEntities(newdevs);
+            setTimeout(() => setWorking(false), 200);
         })()
     }, [trialEntities]);
 
