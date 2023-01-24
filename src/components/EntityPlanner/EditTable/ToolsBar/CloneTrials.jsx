@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Typography, Box, Switch } from '@material-ui/core';
+import { Typography, Box, Switch } from '@material-ui/core';
 import { Button } from './Button';
 
 import { withStyles } from '@material-ui/styles';

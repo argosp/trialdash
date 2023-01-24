@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { IconButton, InputAdornment, TextField, Box } from '@material-ui/core';
+import { IconButton, InputAdornment, TextField } from '@material-ui/core';
 import { Button } from './Button';
 import { isObject, isArray } from 'lodash';
 
@@ -89,7 +89,7 @@ function EditEntity({ TBPEntities, removeEntityFromTBPTable }) {
   const classes = useStyles();
   let rows = [];
   for (const entityType of TBPEntities) {
-    entityType.items.map((entity) => {
+    entityType.items.forEach((entity) => {
       const lastIndex = entity.properties.length - 1;
       const locations = entity.properties[lastIndex].val;
       let locationX = null;

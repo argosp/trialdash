@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import Box from '@material-ui/core/Box';
-import { Divider, Grid, IconButton, Typography } from '@material-ui/core';
+import { Divider, IconButton, Typography } from '@material-ui/core';
 import { icons } from './utils';
 
 import classnames from 'classnames';
