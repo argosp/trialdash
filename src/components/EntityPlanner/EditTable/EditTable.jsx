@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Divider, Typography, Box
+    Divider,
+    Typography,
+    Box
 } from '@material-ui/core';
 
 import classnames from 'classnames';
@@ -48,7 +50,7 @@ export const EditTable = ({
         // rectRows,
         // setRectRows,
         // shapeOptions
-     } = useShape();
+    } = useShape();
 
     const onClickIcon = (id) => {
         if (id !== '') {
