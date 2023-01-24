@@ -12,6 +12,7 @@ import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
 import Control from './lib/react-leaflet-control.jsx'
 import { ShowWorking } from './ShowWorking';
+import { EditTable } from './EditTable/EditTable.jsx';
 
 export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
@@ -113,6 +114,14 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             />
                         </>
                     }
+                    <EditTable
+                    // TBPEntities={TBPEntities}
+                    // removeEntityFromTBPTable={removeEntityFromTBPTable}
+                    // onShapeChange={(v) => setShape(v)}
+                    // onSingleShapeSubmit={handleMapClick}
+                    // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
+                    // markedPoints={markedPoints}
+                    />
                 </>
             </Grid>
             {!showTable ? null :
