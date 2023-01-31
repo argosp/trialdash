@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid, Paper, Button } from '@material-ui/core';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
@@ -28,11 +28,12 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         toggleIsSelected
     } = useStaging();
 
-    const [shownEntityTypes, setShownEntityTypes] = React.useState([]);
-    const [markedPoints, setMarkedPoints] = React.useState([]);
-    const [showName, setShowName] = React.useState(false);
-    const [layerChosen, setLayerChosen] = React.useState('OSMMap');
-    const [showTableOfType, setShowTableOfType] = React.useState('');
+    const [shownEntityTypes, setShownEntityTypes] = useState([]);
+    const [markedPoints, setMarkedPoints] = useState([]);
+    const [showName, setShowName] = useState(false);
+    const [layerChosen, setLayerChosen] = useState('OSMMap');
+    const [showTableOfType, setShowTableOfType] = useState('');
+    const [showEditBox, setShowEditBox] = useState(false);
 
     console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
@@ -43,10 +44,12 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);
+            setShowEditBox(false);
         } else if (shape === FREEPOSITIONING_SHAPE) {
             if (selection.length > 0) {
                 setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
                 setSelection(selection.slice(1));
+                setShowEditBox(false);
             }
         } else {
             setMarkedPoints(markedPoints.concat([currPoint]));
@@ -58,6 +61,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setEntityLocations(selection, layerChosen, positions);
         setMarkedPoints([]);
         setSelection([]);
+        setShowEditBox(false);
     };
 
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
@@ -77,18 +81,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     <ShowWorking />
                     {!entities.length ? null :
                         <>
-                            {/* <ShapeChooser
-                                onChange={(val) => {
-                                    if (shape === POINT_SHAPE || shape === FREEPOSITIONING_SHAPE) setMarkedPoints([]);
-                                }}
-                            />
-                            <Button variant="contained" color="primary"
-                                disabled={shape === POINT_SHAPE || shape === FREEPOSITIONING_SHAPE}
-                                style={{ margin: 5 }}
-                                onClick={handlePutEntities}
-                            >
-                                Put entities
-                            </Button> */}
                             <TypeChooser
                                 shownEntityTypes={shownEntityTypes}
                                 setShownEntityTypes={newTypes => {
@@ -129,13 +121,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             }
             <Grid item>
                 <EditTable
-                    // TBPEntities={TBPEntities}
-                    // removeEntityFromTBPTable={removeEntityFromTBPTable}
-                    // onShapeChange={(v) => setShape(v)}
                     handleSetOne={handleMapClick}
                     handleSetMany={handlePutEntities}
-                    // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
                     markedPoints={markedPoints}
+                    showEditBox={showEditBox}
+                    setShowEditBox={setShowEditBox}
                 />
             </Grid>
             <Grid item xs={showTable ? 5 : 8}>

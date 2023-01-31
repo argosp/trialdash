@@ -40,8 +40,9 @@ export const EditTable = ({
     handleSetOne,
     handleSetMany,
     markedPoints,
+    showEditBox,
+    setShowEditBox,
 }) => {
-    const [showEditBox, setShowEditBox] = useState(false);
     const classes = useStyles();
     const {
         shape,
@@ -55,8 +56,6 @@ export const EditTable = ({
         setShowEditBox(id === shape ? !showEditBox : true);
         setShape(id);
     };
-
-    console.log('shape', shape, showEditBox);
 
     return (
         <Box className={classnames(classes.root, classes.editTable)}>
