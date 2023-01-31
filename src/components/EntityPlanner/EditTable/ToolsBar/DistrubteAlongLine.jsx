@@ -21,7 +21,7 @@ const DistributeAlongLine = ({ classes, onSubmit, markedPoints }) => {
 
   return (
     <Grid container className={classes.tool}>
-      {positions.slice(0, 2).map((point, index) => (
+      {positions.map((point, index) => (
         <Grid item className="toolItem" key={index}>
           <Grid item md={1}>
             <Typography component="span">{labels[index]}</Typography>

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Divider, Typography, Box
+    Divider,
+    Typography,
+    Box
 } from '@material-ui/core';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 import classnames from 'classnames';
 import { styles } from './styles';
@@ -23,7 +26,7 @@ import {
     CURVE_SHAPE,
     DISTRUBTE_ALONG_LINE_SHAPE,
     RECTANGLE_SHAPE
-} from './utils/constants';
+} from './utils/constants.js';
 
 import {
     FreePositioning,
@@ -87,6 +90,12 @@ export const EditTable = ({
                 icon={<DistrubteAlongLineIcon />}
                 component={<DistrubteAlongLine onSubmit={handleSetMany} />}
                 title={DISTRUBTE_ALONG_LINE_TITLE}
+            />
+            <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
+                id={'Arc'}
+                icon={<RotateLeftIcon fontSize="large" color='black' />}
+                component={<DistrubteAlongLine onSubmit={handleSetMany} />}
+                title={'Arc'}
             />
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={RECTANGLE_SHAPE}
