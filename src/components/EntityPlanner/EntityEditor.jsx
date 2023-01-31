@@ -1,12 +1,11 @@
-import React from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Grid, Paper, Button } from '@material-ui/core';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { MarkedShape } from './MarkedShape';
 import { useShape } from './ShapeContext.jsx';
-import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
 import Control from './lib/react-leaflet-control.jsx';
@@ -29,13 +28,14 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         toggleIsSelected
     } = useStaging();
 
-    const [shownEntityTypes, setShownEntityTypes] = React.useState([]);
-    const [markedPoints, setMarkedPoints] = React.useState([]);
-    const [showName, setShowName] = React.useState(false);
-    const [layerChosen, setLayerChosen] = React.useState('OSMMap');
-    const [showTableOfType, setShowTableOfType] = React.useState('');
+    const [shownEntityTypes, setShownEntityTypes] = useState([]);
+    const [markedPoints, setMarkedPoints] = useState([]);
+    const [showName, setShowName] = useState(false);
+    const [layerChosen, setLayerChosen] = useState('OSMMap');
+    const [showTableOfType, setShowTableOfType] = useState('');
+    const [showEditBox, setShowEditBox] = useState(false);
 
-    console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
+    // console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
@@ -44,10 +44,12 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);
+            setShowEditBox(false);
         } else if (shape === FREEPOSITIONING_SHAPE) {
             if (selection.length > 0) {
                 setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
                 setSelection(selection.slice(1));
+                setShowEditBox(false);
             }
         } else {
             setMarkedPoints(markedPoints.concat([currPoint]));
@@ -59,7 +61,16 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setEntityLocations(selection, layerChosen, positions);
         setMarkedPoints([]);
         setSelection([]);
+        setShowEditBox(false);
     };
+
+    const onAreaMarked = ({ bounds }) => {
+        console.log(bounds);
+        const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && bounds.contains(location));
+        const keysInside = itemsInside.map(({entityItem}) => entityItem.key);
+        const newKeysInside = keysInside.filter(k => !selection.includes(k));
+        setSelection([...selection, ...newKeysInside]);
+    }
 
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
@@ -78,18 +89,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     <ShowWorking />
                     {!entities.length ? null :
                         <>
-                            {/* <ShapeChooser
-                                onChange={(val) => {
-                                    if (shape === POINT_SHAPE || shape === FREEPOSITIONING_SHAPE) setMarkedPoints([]);
-                                }}
-                            />
-                            <Button variant="contained" color="primary"
-                                disabled={shape === POINT_SHAPE || shape === FREEPOSITIONING_SHAPE}
-                                style={{ margin: 5 }}
-                                onClick={handlePutEntities}
-                            >
-                                Put entities
-                            </Button> */}
                             <TypeChooser
                                 shownEntityTypes={shownEntityTypes}
                                 setShownEntityTypes={newTypes => {
@@ -130,13 +129,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             }
             <Grid item>
                 <EditTable
-                    // TBPEntities={TBPEntities}
-                    // removeEntityFromTBPTable={removeEntityFromTBPTable}
-                    // onShapeChange={(v) => setShape(v)}
                     handleSetOne={handleMapClick}
                     handleSetMany={handlePutEntities}
-                    // handlePutEntitiesOnPrev={handlePutEntitiesOnPrev}
                     markedPoints={markedPoints}
+                    showEditBox={showEditBox}
+                    setShowEditBox={setShowEditBox}
                 />
             </Grid>
             <Grid item xs={showTable ? 5 : 8}>
@@ -145,6 +142,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     experimentDataMaps={experimentDataMaps}
                     layerChosen={layerChosen}
                     setLayerChosen={setLayerChosen}
+                    onAreaMarked={onAreaMarked}
                 >
                     {
                         shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
@@ -161,11 +159,15 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     }
                     <Control position="bottomright" >
                         <Paper>
-                            <SimplifiedSwitch
-                                label='Show name'
-                                value={showName}
-                                setValue={v => setShowName(v)}
-                            />
+                            <Button
+                                variant={showName ? 'contained' : 'outlined'}
+                                color={'primary'}
+                                onClick={() => {
+                                    setShowName(!showName);
+                                }}
+                            >
+                                Names
+                            </Button>
                         </Paper>
                     </Control>
 

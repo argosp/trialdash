@@ -22,12 +22,13 @@ export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, e
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {entities.map(entity => {
+                    {entities.map((entity, i) => {
                         const items = entityItems.filter(({ entityType }) => entityType.name === entity.name);
                         const positioned = items.filter(({ location }) => location);
                         const notPositioned = items.filter(({ location }) => !location);
                         return (
                             <EntityTypeRow
+                                key={i}
                                 entity={entity}
                                 isVisible={shownEntityTypes.includes(entity.name)}
                                 setIsVisible={(toshow) => {
