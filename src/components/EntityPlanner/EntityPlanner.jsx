@@ -10,7 +10,7 @@ import { EntitiesProvider } from './EntitiesContext';
 import { StagingProvider } from './StagingContext.jsx';
 
 const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, entitiesTypes, experimentDataMaps }) => {
-    console.log('EntityPlanner', match.params.id, trial, trialEntities);
+    // console.log('EntityPlanner', match.params.id, trial, trialEntities);
 
     return (
         <EntitiesProvider

@@ -81,6 +81,8 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
             onBoxZoomEnd={onAreaMarked}
+            // oncontextmenu={console.log}
+            // whenReady
         >
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
