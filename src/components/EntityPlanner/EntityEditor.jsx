@@ -68,7 +68,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         console.log(bounds);
         const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && bounds.contains(location));
         const keysInside = itemsInside.map(({entityItem}) => entityItem.key);
-        setSelection([...selection, ...keysInside]);
+        const newKeysInside = keysInside.filter(k => !selection.includes(k));
+        setSelection([...selection, ...newKeysInside]);
     }
 
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
