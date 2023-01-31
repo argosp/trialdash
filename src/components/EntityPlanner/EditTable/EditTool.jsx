@@ -13,10 +13,9 @@ import {
 } from './utils/constants';
 
 
-export const EditTool = ({ icon, id, component, title, chosenId, classes, markedPoints, onClickIcon }) => {
-    const chosen = chosenId === id;
-    const iconStyle = chosen ? classes.activeButton : null;
-    const iconButtonStyle = chosen ? classes.notActiveButton : null;
+export const EditTool = ({ icon, id, component, title, shape, classes, markedPoints, onClickIcon, showEditBox }) => {
+    const iconStyle = shape === id ? classes.activeButton : null;
+    const iconButtonStyle = shape === id ? classes.notActiveButton : null;
     return (
         <div
             style={{ position: 'relative', textAlign: 'center' }}
@@ -25,7 +24,7 @@ export const EditTool = ({ icon, id, component, title, chosenId, classes, marked
             <IconButton key={id} onClick={() => onClickIcon(id)} className={iconButtonStyle}>
                 {icon}
             </IconButton>
-            {chosen && id !== POINT_SHAPE && (
+            {showEditBox && shape === id && (
                 <Box sx={{ position: 'absolute', top: 0, left: '100%', zIndex: 1000 }}>
                     <Grid container className={classes.toolBoxContainer}>
                         <Grid item className={classes.toolBoxItem}>
