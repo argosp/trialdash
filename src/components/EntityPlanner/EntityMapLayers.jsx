@@ -5,14 +5,12 @@ import {
     Grid
 } from '@material-ui/core';
 import {
-    Map as LeafletMap,
     LayersControl,
     ImageOverlay,
-    LayerGroup,
-    ZoomControl,
+    LayerGroup
 } from "react-leaflet";
 import { GridlinesLayer } from './GridlinesLayer.jsx';
-import Control from './lib/react-leaflet-control.jsx'
+import Control from './lib/react-leaflet-control.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 import config from '../../config';

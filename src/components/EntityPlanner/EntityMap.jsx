@@ -1,9 +1,6 @@
 import React from 'react';
 import {
     Map as LeafletMap,
-    LayersControl,
-    ImageOverlay,
-    LayerGroup,
     ZoomControl,
 } from "react-leaflet";
 import { CRS } from 'leaflet';
@@ -47,9 +44,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
     const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
 
     if (mapElement && mapElement.current && mapElement.current.leafletElement) {
-        // console.log('before invalidateSize');
         mapElement.current.leafletElement.invalidateSize();
-        // console.log('after invalidateSize');
     }
 
     // console.log(experimentDataMaps, showMap);
@@ -65,6 +60,9 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
+            // onMousedown={console.log}
+            // onmouseup={console.log}
+            // onmousemove={console.log}
         >
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
