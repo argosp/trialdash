@@ -1,12 +1,11 @@
 import React from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Button } from '@material-ui/core';
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { MarkedShape } from './MarkedShape';
 import { useShape } from './ShapeContext.jsx';
-import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
 import Control from './lib/react-leaflet-control.jsx';
@@ -161,11 +160,15 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     }
                     <Control position="bottomright" >
                         <Paper>
-                            <SimplifiedSwitch
-                                label='Show name'
-                                value={showName}
-                                setValue={v => setShowName(v)}
-                            />
+                            <Button
+                                variant={showName ? 'contained' : 'outlined'}
+                                color={'primary'}
+                                onClick={() => {
+                                    setShowName(!showName);
+                                }}
+                            >
+                                Names
+                            </Button>
                         </Paper>
                     </Control>
 

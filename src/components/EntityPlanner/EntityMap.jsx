@@ -7,13 +7,14 @@ import {
     ZoomControl,
 } from "react-leaflet";
 import {
-    Paper
+    Paper,
+    Button,
+    Grid
 } from '@material-ui/core';
 import config from '../../config';
 import { CRS } from 'leaflet';
 import { GridlinesLayer } from './GridlinesLayer.jsx';
 import Control from './lib/react-leaflet-control.jsx'
-import { SimplifiedSwitch } from './SimplifiedSwitch.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import 'leaflet/dist/leaflet.css';
 import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
@@ -43,35 +44,71 @@ const RealMapWithImagesLayer = ({ images }) => (
     </>
 )
 
-const EntityMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layerChosen }) => {
+const EntityMapLayers = ({ embedded, standalone, layerChosen }) => {
+    const [showGrid, setShowGrid] = React.useState(false);
+    const [showGridMeters, setShowGridMeters] = React.useState(1);
+
     if (!standalone.length) {
         return <RealMapWithImagesLayer images={embedded} />
     }
     return (
-        <LayersControl position="topright" collapsed={false}>
-            <LayersControl.BaseLayer name="OSMMap" checked={true}>
-                <LayerGroup>
-                    <RealMapWithImagesLayer images={embedded} />
-                </LayerGroup>
-            </LayersControl.BaseLayer>
-            {
-                standalone.map((row, i) => (
-                    <LayersControl.BaseLayer
-                        key={row.imageName}
-                        name={row.imageName}
-                    >
-                        <LayerGroup>
-                            <EmbeddedImageLayer image={row} />
-                            {(showGrid && layerChosen === row.imageName) ? <GridlinesLayer
-                                from={[row.lower, row.left]}
-                                to={[row.upper, row.right]}
-                                delta={showGridMeters}
-                            /> : null}
-                        </LayerGroup>
-                    </LayersControl.BaseLayer>
-                ))
+        <>
+            <LayersControl position="topright" collapsed={false}>
+                <LayersControl.BaseLayer name="OSMMap" checked={true}>
+                    <LayerGroup>
+                        <RealMapWithImagesLayer images={embedded} />
+                    </LayerGroup>
+                </LayersControl.BaseLayer>
+                {
+                    standalone.map((row, i) => (
+                        <LayersControl.BaseLayer
+                            key={row.imageName}
+                            name={row.imageName}
+                        >
+                            <LayerGroup>
+                                <EmbeddedImageLayer image={row} />
+                                {(showGrid && layerChosen === row.imageName)
+                                    ? <GridlinesLayer
+                                        from={[row.lower, row.left]}
+                                        to={[row.upper, row.right]}
+                                        delta={showGridMeters}
+                                    />
+                                    : null
+                                }
+                            </LayerGroup>
+                        </LayersControl.BaseLayer>
+                    ))
+                }
+            </LayersControl>
+            {layerChosen === 'OSMMap'
+                ? null
+                : <Control position="bottomleft" >
+                    <Paper style={{ padding: '5px' }}>
+                        <Grid container spacing='5px'>
+                            <Grid item>
+                                <Button
+                                    variant={showGrid ? 'contained' : 'outlined'}
+                                    color={'primary'}
+                                    onClick={() => {
+                                        setShowGrid(!showGrid);
+                                    }}
+                                >
+                                    Grid
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <NumberTextField
+                                    width={'70px'}
+                                    label='Meters'
+                                    value={showGridMeters}
+                                    onChange={v => setShowGridMeters(v)}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Control>
             }
-        </LayersControl>
+        </>
     )
 }
 
@@ -79,8 +116,6 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
-    const [showGrid, setShowGrid] = React.useState(false);
-    const [showGridMeters, setShowGridMeters] = React.useState(1);
 
     const layerRow = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
     let currLayerBounds = (layerPositions || {})[layerChosen];
@@ -129,28 +164,9 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
                 standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
-                showGrid={showGrid}
-                showGridMeters={showGridMeters}
                 layerChosen={layerChosen}
             />
             <ZoomControl position='topright' />
-            {layerChosen === 'OSMMap' ? null :
-                <Control position="topright" >
-                    <Paper>
-                        <SimplifiedSwitch
-                            label='Show grid'
-                            value={showGrid}
-                            setValue={v => setShowGrid(v)}
-                        />
-                        <br />
-                        <NumberTextField
-                            label='Grid Meters'
-                            value={showGridMeters}
-                            onChange={v => setShowGridMeters(v)}
-                        />
-                    </Paper>
-                </Control>
-            }
             {children}
         </LeafletMap>
     );
