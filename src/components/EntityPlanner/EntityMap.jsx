@@ -75,7 +75,7 @@ const EntityMapLayers = ({ embedded, standalone, showGrid, showGridMeters, layer
     )
 }
 
-export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
+export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
@@ -83,23 +83,27 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     const [showGridMeters, setShowGridMeters] = React.useState(1);
 
     const getLayerPosition = (layerName) => {
-        if (!layerName || layerName === '') return posbounds;
+        const ret = (() => {
+            if (!layerName || layerName === '') return posbounds;
 
-        const layerPos = (layerPositions || {})[layerName];
-        if (layerPos) {
-            return layerPos;
-        }
+            const layerPos = (layerPositions || {})[layerName];
+            if (layerPos) {
+                return layerPos;
+            }
 
-        if (layerName === 'OSMMap') {
+            if (layerName === 'OSMMap') {
+                return posbounds;
+            }
+
+            const row = (experimentDataMaps || []).find(r => r.imageName === layerName);
+            if (row) {
+                return [[row.upper, row.left], [row.lower, row.right]];
+            }
+
             return posbounds;
-        }
-
-        const row = (experimentDataMaps || []).find(r => r.imageName === layerName);
-        if (row) {
-            return [[row.upper, row.left], [row.lower, row.right]];
-        }
-
-        return posbounds;
+        })();
+        console.log(ret);
+        return ret;
     };
 
     const changeLayerPosition = () => {
@@ -120,9 +124,9 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
     }
 
     if (mapElement && mapElement.current && mapElement.current.leafletElement) {
-        // console.log('before invalidateSize');
+        console.log('before invalidateSize');
         mapElement.current.leafletElement.invalidateSize();
-        // console.log('after invalidateSize');
+        console.log('after invalidateSize');
     }
 
     // console.log(experimentDataMaps, showMap);
@@ -134,13 +138,11 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
             style={{ height: "100%" }}
             // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
             onClick={onClick}
-            onMouseMove={onMouseMove}
-            onMouseOut={onMouseOut}
             onBaseLayerChange={(e) => setLayerChosen(e.name)}
             onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             // crs={ CRS.Simple}
-            minZoom={-10}
+            // minZoom={-10}
             zoomControl={false}
         >
             <EntityMapLayers
@@ -150,7 +152,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                 showGridMeters={showGridMeters}
                 layerChosen={layerChosen}
             />
-            <ZoomControl position='topright'/>
+            <ZoomControl position='topright' />
             {layerChosen === 'OSMMap' ? null :
                 <Control position="topright" >
                     <Paper>
@@ -159,7 +161,7 @@ export const EntityMap = ({ onClick, onMouseMove, onMouseOut, experimentDataMaps
                             value={showGrid}
                             setValue={v => setShowGrid(v)}
                         />
-                        <br/>
+                        <br />
                         <NumberTextField
                             label='Grid Meters'
                             value={showGridMeters}
