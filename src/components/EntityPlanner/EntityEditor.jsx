@@ -35,7 +35,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [showTableOfType, setShowTableOfType] = useState('');
     const [showEditBox, setShowEditBox] = useState(false);
 
-    console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
+    // console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
     const handleMapClick = e => {
         // if (selection.length < 1) return;
@@ -63,6 +63,13 @@ export const EntityEditor = ({ experimentDataMaps }) => {
         setSelection([]);
         setShowEditBox(false);
     };
+
+    const onAreaMarked = ({ bounds }) => {
+        console.log(bounds);
+        const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && bounds.contains(location));
+        const keysInside = itemsInside.map(({entityItem}) => entityItem.key);
+        setSelection([...selection, ...keysInside]);
+    }
 
     const experimentMap = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
     const showDistanceInMeters = experimentMap ? !experimentMap.embedded : false;
@@ -134,6 +141,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     experimentDataMaps={experimentDataMaps}
                     layerChosen={layerChosen}
                     setLayerChosen={setLayerChosen}
+                    onAreaMarked={onAreaMarked}
                 >
                     {
                         shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (

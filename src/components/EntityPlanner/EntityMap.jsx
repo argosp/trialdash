@@ -15,7 +15,7 @@ const bounds2arr = (bounds) => {
     return [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
 }
 
-export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen }) => {
+export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
@@ -28,7 +28,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             currLayerBounds = [[layerRow.upper, layerRow.left], [layerRow.lower, layerRow.right]];
         }
     }
-    console.log(currLayerBounds instanceof Array ? JSON.stringify(currLayerBounds) : currLayerBounds);
+    // console.log(currLayerBounds instanceof Array ? JSON.stringify(currLayerBounds) : currLayerBounds);
 
     const changeLayerPosition = () => {
         const newPositions = Object.assign({}, layerPositions);
@@ -61,7 +61,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                             this._map.containerPointToLatLng(this._startPoint),
                             this._map.containerPointToLatLng(this._point)
                         );
-                        this._map.fire('boxzoomend', { boxZoomBounds: bounds })
+                        this._map.fire('boxzoomend', { bounds });
                     }
                 }
             };
@@ -80,9 +80,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
-            onBoxZoomEnd={function (e) {
-                console.log('hello', e, this);
-            }}
+            onBoxZoomEnd={onAreaMarked}
         >
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
