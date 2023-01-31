@@ -28,7 +28,7 @@
     "leaflet": "1.9.3",
     "lodash": "4.17.21",
     "material-table": "1.69.3",
-    "moment": "2.29.3",
+    "moment": "2.29.4",
     "nodemon": "1.18.10",
     "npm": "8.12.2",
     "react": "18.2.0",
