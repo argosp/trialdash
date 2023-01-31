@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Map as LeafletMap,
     ZoomControl,
 } from "react-leaflet";
 import { CRS } from 'leaflet';
+import * as L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
 
@@ -35,7 +36,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
         setLayerPositions(newPositions);
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!layerChosen) {
             setLayerChosen('OSMMap');
         }
@@ -43,11 +44,30 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
 
     const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
 
-    if (mapElement && mapElement.current && mapElement.current.leafletElement) {
-        mapElement.current.leafletElement.invalidateSize();
+    const leafletElement = mapElement && mapElement.current ? mapElement.current.leafletElement : undefined;
+    if (leafletElement) {
+        leafletElement.invalidateSize();
     }
 
-    // console.log(experimentDataMaps, showMap);
+    useEffect(() => {
+        if (leafletElement && leafletElement.boxZoom) {
+            leafletElement.boxZoom._onMouseUp = function (e) {
+                if (e.which === 1 || e.button === 1) {
+                    this._finish();
+                    if (this._moved) {
+                        this._clearDeferredResetState();
+                        this._resetStateTimeout = setTimeout(this._resetState.bind(this), 0);
+                        var bounds = new L.LatLngBounds(
+                            this._map.containerPointToLatLng(this._startPoint),
+                            this._map.containerPointToLatLng(this._point)
+                        );
+                        this._map.fire('boxzoomend', { boxZoomBounds: bounds })
+                    }
+                }
+            };
+        }
+    }, [leafletElement]);
+
     return (
         <LeafletMap
             bounds={currLayerBounds}
@@ -60,9 +80,9 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
-            // onMousedown={console.log}
-            // onmouseup={console.log}
-            // onmousemove={console.log}
+            onBoxZoomEnd={function (e) {
+                console.log('hello', e, this);
+            }}
         >
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
