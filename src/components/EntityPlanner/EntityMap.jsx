@@ -3,9 +3,8 @@ import {
     Map as LeafletMap,
     ZoomControl,
 } from "react-leaflet";
-import { CRS } from 'leaflet';
-import * as L from "leaflet";
 import 'leaflet/dist/leaflet.css';
+import { CRS, LatLngBounds } from 'leaflet';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
 
 const position = [32.081128, 34.779729];
@@ -57,7 +56,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                     if (this._moved) {
                         this._clearDeferredResetState();
                         this._resetStateTimeout = setTimeout(this._resetState.bind(this), 0);
-                        var bounds = new L.LatLngBounds(
+                        var bounds = new LatLngBounds(
                             this._map.containerPointToLatLng(this._startPoint),
                             this._map.containerPointToLatLng(this._point)
                         );
@@ -81,6 +80,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
             onBoxZoomEnd={onAreaMarked}
+            // oncontextmenu={console.log}
         >
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
