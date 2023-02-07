@@ -3,7 +3,7 @@ import {
     Grid,
     Paper,
     Button,
-    IconButton
+    IconButton,
 } from '@material-ui/core';
 import {
     LocationOff,
@@ -26,6 +26,7 @@ import {
 } from './EditTable/utils/constants.js';
 import { DomEvent } from 'leaflet';
 import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
+import { SingleEntityPropertiesView } from './SingleEntityPropertiesView.jsx';
 
 export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
@@ -181,6 +182,10 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 }}>
                                     {selection.includes(entityItem.key) ? <PlaylistRemove /> : <PlaylistAdd />}
                                 </IconButton>
+                                <SingleEntityPropertiesView
+                                    entityItem={entityItem}
+                                    entityType={entityType}
+                                ></SingleEntityPropertiesView>
                             </EntityMarker>
                         ))
                     }
