@@ -1,12 +1,20 @@
 import React from 'react';
 import {
     Grid,
-    Typography,
+    TextField,
+    IconButton,
 } from '@material-ui/core';
+import {
+    LocationOff,
+    PlaylistAdd
+} from "@material-ui/icons";
 
 export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
     return (
-        <Grid container direction='column'>
+        <Grid container
+            direction='column'
+            spacing={1}
+        >
             {
                 entityType.properties
                     .filter(({ type }) => type !== 'location')
@@ -15,7 +23,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
                         const val = valprop ? valprop.val : defaultValue;
                         return (
                             <Grid item>
-                                <Grid container direction='row' spacing={1} justifyContent="space-between" alignItems="stretch">
+                                {/* <Grid container direction='row' spacing={1} justifyContent="space-between" alignItems="stretch">
                                     <Grid item>
                                         <Typography key={key} variant='body2'>
                                             {label}
@@ -26,7 +34,19 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
                                             {val}
                                         </Typography>
                                     </Grid>
-                                </Grid>
+                                </Grid> */}
+                                <TextField
+                                    key={key}
+                                    variant='outlined'
+                                    label={label}
+                                    size='small'
+                                    InputLabelProps={{ shrink: true }}
+                                >
+                                    {val + ''}
+                                </TextField>
+                                {/* <IconButton>
+                                    <Check
+                                </IconButton> */}
                             </Grid>
                         )
                     })
