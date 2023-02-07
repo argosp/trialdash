@@ -13,7 +13,12 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
     const savedValues = entityType.properties.filter(({ type }) => type !== 'location')
         .map(({ key, label, defaultValue }) => {
             const valprop = entityItem.properties.find(({ k }) => k === key);
-            const val = valprop ? valprop.val : defaultValue;
+            let val = '';
+            if (valprop) {
+                val = valprop.val;
+            } else if (defaultValue !== null && defaultValue !== undefined) {
+                val = defaultValue;
+            }
             return { key, label, val };
         });
 
