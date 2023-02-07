@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { Marker, Popup, withLeaflet } from "react-leaflet";
+import React, { useRef } from 'react';
+import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 import '../../assets/fontawesome/css/all.css';
 import { Typography } from '@material-ui/core';
 
-export const EntityMarker = withLeaflet(({ entity, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, leaflet }) => {
+export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, children }) => {
     const ref = useRef(null);
     const leafletElement = ref && ref.current && ref.current.leafletElement ? ref.current.leafletElement : undefined;
     // useEffect(() => {
@@ -40,7 +40,8 @@ export const EntityMarker = withLeaflet(({ entity, devLocation, isSelected, isTy
             <Popup>
                 <Typography variant='h6'>{entity.name}</Typography>
                 <Typography variant='overline'>{'at (' + devLocation.map(x => Math.round(x * 1e7) / 1e7) + ')'}</Typography>
+                {children}
             </Popup>
         </Marker >
     )
-})
+}
