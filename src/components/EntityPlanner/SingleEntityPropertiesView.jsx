@@ -8,8 +8,11 @@ import {
     Check,
     Close,
 } from "@material-ui/icons";
+import { useEntities } from './EntitiesContext.jsx';
 
 export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
+    const { setEntityProperties } = useEntities();
+
     const savedValues = entityType.properties.filter(({ type }) => type !== 'location')
         .map(({ key, label, defaultValue }) => {
             const valprop = entityItem.properties.find(({ k }) => k === key);
@@ -24,7 +27,8 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
 
     const [shownValues, setShownValues] = useState(savedValues);
 
-    const allSame = shownValues.find(({ val }, i) => (savedValues[i].val + '').trim() !== (val + '').trim()) === undefined;
+    const changedValues = shownValues.filter(({ val }, i) => (savedValues[i].val + '').trim() !== (val + '').trim());
+    const allSame = changedValues.length === 0;
 
     return (
         <Grid container
@@ -32,10 +36,10 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
             spacing={1}
         >
             {
-                shownValues.map(({ key, label, val }, i) => (
+                shownValues.map(({ key: propertyKey, label, val }, i) => (
                     <Grid item>
                         <TextField
-                            key={key}
+                            key={propertyKey}
                             variant='outlined'
                             label={label}
                             size='small'
@@ -54,7 +58,12 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
                 ))
             }
             <Grid item>
-                <IconButton color='primary' size="small" disabled={allSame}>
+                <IconButton color='primary' size="small" disabled={allSame}
+                    onClick={() => {
+                        const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
+                        setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
+                    }}
+                >
                     <Check />
                 </IconButton>
                 <IconButton color='secondary' size="small" disabled={allSame}
