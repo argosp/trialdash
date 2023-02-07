@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Grid, Paper, Button } from '@material-ui/core';
+import {
+    Grid,
+    Paper,
+    Button,
+    IconButton
+} from '@material-ui/core';
+import {
+    LocationOff,
+    PlaylistAdd
+} from "@material-ui/icons";
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
@@ -11,7 +20,12 @@ import { TypeChooser } from './TypeChooser';
 import Control from './lib/react-leaflet-control.jsx';
 import { ShowWorking } from './ShowWorking';
 import { EditTable } from './EditTable/EditTable.jsx';
-import { FREEPOSITIONING_SHAPE, POINT_SHAPE } from './EditTable/utils/constants.js';
+import {
+    FREEPOSITIONING_SHAPE,
+    POINT_SHAPE
+} from './EditTable/utils/constants.js';
+import { DomEvent } from 'leaflet';
+import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 
 export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
@@ -67,7 +81,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const onAreaMarked = ({ bounds }) => {
         console.log(bounds);
         const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && bounds.contains(location));
-        const keysInside = itemsInside.map(({entityItem}) => entityItem.key);
+        const keysInside = itemsInside.map(({ entityItem }) => entityItem.key);
         const newKeysInside = keysInside.filter(k => !selection.includes(k));
         setSelection([...selection, ...newKeysInside]);
     }
@@ -154,7 +168,20 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 isTypeSelected={shownEntityTypes.includes(entityType.name)}
                                 shouldShowName={showName}
                                 onClick={() => toggleIsSelected(entityItem.key)}
-                            />
+                            >
+                                <IconButton onClick={(e) => {
+                                    DomEvent.stop(e);
+                                    setEntityLocations([entityItem.key], layerChosen)
+                                }}>
+                                    <LocationOff />
+                                </IconButton>
+                                <IconButton onClick={(e) => {
+                                    DomEvent.stop(e);
+                                    toggleIsSelected(entityItem.key)
+                                }}>
+                                    {selection.includes(entityItem.key) ? <PlaylistRemove /> : <PlaylistAdd />}
+                                </IconButton>
+                            </EntityMarker>
                         ))
                     }
                     <Control position="bottomright" >
