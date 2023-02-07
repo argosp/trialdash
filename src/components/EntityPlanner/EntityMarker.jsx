@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Marker, Popup, withLeaflet } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -6,7 +6,10 @@ import '../../assets/fontawesome/css/all.css';
 
 export const EntityMarker = withLeaflet(({ entity, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, leaflet }) => {
     const ref = useRef(null);
-    ref && ref.current && ref.current.leafletElement && ref.current.leafletElement.off('click');
+    const leafletElement = ref && ref.current && ref.current.leafletElement ? ref.current.leafletElement : undefined;
+    useEffect(() => {
+        leafletElement && leafletElement.off('click');
+    }, [leafletElement]);
 
     return (
         <Marker key={entity.name}
@@ -30,7 +33,7 @@ export const EntityMarker = withLeaflet(({ entity, devLocation, isSelected, isTy
                 )
             })}
             onclick={() => onClick()}
-            oncontextmenu={() => ref.current.leafletElement.openPopup()}
+            oncontextmenu={() => leafletElement.openPopup()}
             ref={ref}
         >
             <Popup>
