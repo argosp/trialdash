@@ -14,15 +14,15 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
     const { setEntityProperties } = useEntities();
 
     const savedValues = entityType.properties.filter(({ type }) => type !== 'location')
-        .map(({ key, label, defaultValue }) => {
-            const valprop = entityItem.properties.find(({ k }) => k === key);
+        .map(({ key: typePropertyKey, label, defaultValue }) => {
+            const valprop = entityItem.properties.find(({ key: itemPropertyKey }) => itemPropertyKey === typePropertyKey);
             let val = '';
             if (valprop) {
                 val = valprop.val;
             } else if (defaultValue !== null && defaultValue !== undefined) {
                 val = defaultValue;
             }
-            return { key, label, val };
+            return { key: typePropertyKey, label, val };
         });
 
     const [shownValues, setShownValues] = useState(savedValues);
