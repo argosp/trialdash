@@ -62,7 +62,7 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
                 }]
             };
         });
-        console.log('calling updateLocation', changes);
+        // console.log('calling updateLocation', changes);
         await updateLocation(...changes);
         console.log('update entities took ', Date.now() - start, 'ms');
 
@@ -93,6 +93,20 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         handleChangeEntities(changeLocations(entityItemKeys, layerChosen, newLocations));
     }
 
+    const setEntityProperties = async (entityItemKey, entityTypeKey, propertiesChanged) => {
+        setWorking(true);
+        const start = Date.now();
+        const change = {
+            entitiesTypeKey: entityTypeKey,
+            key: entityItemKey,
+            properties: propertiesChanged.map(({ key, val }) => { return { key, val: JSON.stringify(val) } }),
+            type: 'entity'
+        };
+        await updateLocation(change);
+        console.log('setEntityProperties took ', Date.now() - start, 'ms');
+        setWorking(false);
+    }
+
     const getEntityItems = (filterEntityType, layerChosen) => {
         const filteredByType = entities.filter(e => filterEntityType.includes(e.name));
         const items = filteredByType.flatMap(entityType => entityType.items.map(entityItem => {
@@ -109,7 +123,8 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
         working,
         entities,
         setEntityLocations,
-        getEntityItems
+        getEntityItems,
+        setEntityProperties,
     }
 
     return (
