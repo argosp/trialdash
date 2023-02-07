@@ -17,7 +17,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
         .map(({ key: typePropertyKey, label, defaultValue }) => {
             const valprop = entityItem.properties.find(({ key: itemPropertyKey }) => itemPropertyKey === typePropertyKey);
             let val = '';
-            if (valprop) {
+            if (valprop && valprop.val !== undefined && valprop.val !== null) {
                 val = valprop.val;
             } else if (defaultValue !== null && defaultValue !== undefined) {
                 val = defaultValue;
