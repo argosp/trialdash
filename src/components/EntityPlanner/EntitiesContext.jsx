@@ -27,6 +27,8 @@ export const EntitiesProvider = ({
         });
     }
 
+    const allProperties = JSON.stringify(trialEntities.flatMap(ent => (ent.properties || []).map(prop => prop.val)));
+
     useEffect(() => {
         const flattenEntityTypes = () => {
             const entitiesTypeList = [];
@@ -70,7 +72,7 @@ export const EntitiesProvider = ({
         }
 
         setEntities(flattenEntityTypes());
-    }, [entitiesTypes, trialEntities, allEntities]);
+    }, [entitiesTypes, trialEntities, allEntities, allProperties]);
 
     const handleChangeEntities = async (newEntities) => {
         setWorking(true);
