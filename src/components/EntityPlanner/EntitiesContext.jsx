@@ -15,43 +15,62 @@ export const EntitiesProvider = ({
     entitiesTypes,
     experimentId,
     submitTrial,
-    trial
+    trial,
+    allEntities
 }) => {
     const [entities, setEntities] = useState([]);
     const [working, setWorking] = useState(false);
 
-    const entityWithTrialLocation = (devitem, locationPropOnDevType) => {
-        const entityEntityOnTrial = trialEntities.find(ent => ent.key === devitem.key);
-        if (entityEntityOnTrial) {
-            const locationOnTrial = entityEntityOnTrial.properties.find(entprop => entprop.key === locationPropOnDevType);
-            if (locationOnTrial) {
-                try {
-                    const locparsed = JSON.parse(locationOnTrial.val);
-                    changeEntityLocationWithProp(devitem, locationPropOnDevType, locparsed.coordinates, locparsed.name);
-                } catch (e) {
-                }
-            }
-        }
-        return devitem;
-    };
+    const sortNameKeyInplace = (items) => {
+        return items.sort((a, b) => {
+            return (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key);
+        });
+    }
 
     useEffect(() => {
-        (async () => {
-            const entityTypesAsList = Object.values(entitiesTypes).filter(dtlst => dtlst.length).flat();
-            const newdevs = entityTypesAsList.filter(dt => dt.name && dt.key && getTypeLocationProp(dt));
-            newdevs.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-            setWorking(0);
-            await Promise.allSettled(newdevs.map(async devtype => {
-                const locationProp = getTypeLocationProp(devtype);
-                const dataDev = await client.query({ query: entitiesTrialQuery(experimentId, devtype.key, undefined) });
-                devtype.items = dataDev.data.entities.map(devitem => entityWithTrialLocation(devitem, locationProp));
-                devtype.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
-                setWorking(newdevs.filter(x => x.items).length / newdevs.length * 100);
-            }));
-            setEntities(newdevs);
-            setTimeout(() => setWorking(false), 100);
-        })()
-    }, [trialEntities]);
+        const flattenEntityTypes = () => {
+            const entitiesTypeList = [];
+            for (const typeList of Object.values(entitiesTypes)) {
+                if (typeList && typeList.length && typeList[0].name && typeList[0].key) {
+                    const oneType = { ...typeList[0] };
+                    const locationProp = getTypeLocationProp(oneType);
+                    if (locationProp) {
+                        oneType.items = [];
+                        for (const itemFromTrial of trialEntities) {
+                            if (itemFromTrial.entitiesTypeKey === oneType.key) {
+                                const item = { ...itemFromTrial };
+                                if (allEntities) {
+                                    const itemFromAll = allEntities[item.key];
+                                    if (itemFromAll && itemFromAll.length && itemFromAll[0].name) {
+                                        item.name = itemFromAll[0].name;
+                                    }
+                                }
+
+                                const location = item.properties.find(entprop => entprop.key === locationProp);
+                                if (location) {
+                                    try {
+                                        const locparsed = JSON.parse(location.val);
+                                        changeEntityLocationWithProp(item, locationProp, locparsed.coordinates, locparsed.name);
+                                    } catch (e) {
+                                    }
+                                }
+
+                                oneType.items.push(item);
+                            }
+                        }
+
+                        sortNameKeyInplace(oneType.items);
+
+                        entitiesTypeList.push(oneType);
+                    }
+                }
+            }
+            sortNameKeyInplace(entitiesTypeList);
+            return entitiesTypeList;
+        }
+
+        setEntities(flattenEntityTypes());
+    }, [entitiesTypes, trialEntities, allEntities]);
 
     const handleChangeEntities = async (newEntities) => {
         setWorking(true);
@@ -117,13 +136,13 @@ export const EntitiesProvider = ({
         }
         const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey);
         if (!entityOnTrial || !entityOnTrial.properties) {
-        // if (!entityOnTrial || entityOnTrial.entitiesTypeKey !== entityTypeKey || !entityOnTrial.properties) {
+            // if (!entityOnTrial || entityOnTrial.entitiesTypeKey !== entityTypeKey || !entityOnTrial.properties) {
             console.log('problem with entity', entityOnTrial);
         } else {
             entityOnTrial.properties = entityOnTrial.properties.map(prop => {
                 const foundProp = propertiesChanged.find(changedProp => changedProp.key === prop.key);
                 if (foundProp) {
-                    return {...prop, val: foundProp.val};
+                    return { ...prop, val: foundProp.val };
                 } else {
                     return prop;
                 }
