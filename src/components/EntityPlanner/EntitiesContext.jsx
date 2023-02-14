@@ -125,19 +125,11 @@ export const EntitiesProvider = ({
     const setEntityProperties = async (entityItemKey, entityTypeKey, propertiesChanged) => {
         setWorking(true);
         const start = Date.now();
-        // const change = {
-        //     entitiesTypeKey: entityTypeKey,
-        //     key: entityItemKey,
-        //     properties: propertiesChanged.map(({ key, val }) => { return { key, val: JSON.stringify(val) } }),
-        //     type: 'entity'
-        // };
-        // await updateLocation(change);
         const updatedTrial = {
             ...trial
         }
         const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey === key);
         if (!entityOnTrial) {
-            // if (!entityOnTrial || entityOnTrial.entitiesTypeKey !== entityTypeKey || !entityOnTrial.properties) {
             console.log('problem with entity', entityOnTrial);
         } else {
             entityOnTrial.properties = [...(entityOnTrial.properties || [])];
