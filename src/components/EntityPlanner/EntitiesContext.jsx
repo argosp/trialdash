@@ -38,7 +38,7 @@ export const EntitiesProvider = ({
                         oneType.items = [];
                         for (const itemFromTrial of trialEntities) {
                             if (itemFromTrial.entitiesTypeKey === oneType.key) {
-                                const item = { ...itemFromTrial };
+                                const item = { ...itemFromTrial, properties: [...(itemFromTrial.properties || [])] };
                                 if (allEntities) {
                                     const itemFromAll = allEntities[item.key];
                                     if (itemFromAll && itemFromAll.length && itemFromAll[0].name) {
@@ -134,7 +134,7 @@ export const EntitiesProvider = ({
         const updatedTrial = {
             ...trial
         }
-        const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey);
+        const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey === key);
         if (!entityOnTrial || !entityOnTrial.properties) {
             // if (!entityOnTrial || entityOnTrial.entitiesTypeKey !== entityTypeKey || !entityOnTrial.properties) {
             console.log('problem with entity', entityOnTrial);
@@ -147,6 +147,7 @@ export const EntitiesProvider = ({
                     return prop;
                 }
             });
+            console.log(updatedTrial);
             await submitTrial(updatedTrial);
             // await updateLocation(change);
             console.log('setEntityProperties took ', Date.now() - start, 'ms');
