@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
-import entitiesTrialQuery from './utils/entitiesTrialQuery';
 import { changeEntityLocation } from './EntityUtils';
 
 export const EntitiesContext = createContext(null);
@@ -137,21 +136,21 @@ export const EntitiesProvider = ({
             ...trial
         }
         const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey === key);
-        if (!entityOnTrial || !entityOnTrial.properties) {
+        if (!entityOnTrial) {
             // if (!entityOnTrial || entityOnTrial.entitiesTypeKey !== entityTypeKey || !entityOnTrial.properties) {
             console.log('problem with entity', entityOnTrial);
         } else {
-            entityOnTrial.properties = entityOnTrial.properties.map(prop => {
-                const foundProp = propertiesChanged.find(changedProp => changedProp.key === prop.key);
-                if (foundProp) {
-                    return { ...prop, val: foundProp.val };
+            entityOnTrial.properties = [...(entityOnTrial.properties || [])];
+            for (const changedProp of propertiesChanged) {
+                const newProp = { ...changedProp };
+                const foundProp = entityOnTrial.properties.findIndex(prop => prop.key === changedProp.key);
+                if (foundProp === -1) {
+                    entityOnTrial.properties.push(newProp);
                 } else {
-                    return prop;
+                    entityOnTrial.properties.splice(foundProp, 1, newProp);
                 }
-            });
-            console.log(updatedTrial);
+            }
             await submitTrial(updatedTrial);
-            // await updateLocation(change);
             console.log('setEntityProperties took ', Date.now() - start, 'ms');
         }
         setWorking(false);
