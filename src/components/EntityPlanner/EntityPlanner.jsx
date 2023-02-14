@@ -9,7 +9,7 @@ import { ShapeProvider } from './ShapeContext';
 import { EntitiesProvider } from './EntitiesContext';
 import { StagingProvider } from './StagingContext.jsx';
 
-const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, entitiesTypes, experimentDataMaps }) => {
+const EntityPlanner = ({ client, trial, trialEntities, allEntities, match, updateLocation, entitiesTypes, experimentDataMaps, submitTrial }) => {
     console.log('EntityPlanner', match.params.id, trial, trialEntities);
 
     return (
@@ -19,6 +19,9 @@ const EntityPlanner = ({ client, trial, trialEntities, match, updateLocation, en
             experimentId={match.params.id} // obtained from url by react-router
             trialEntities={trialEntities}
             updateLocation={updateLocation}
+            submitTrial={submitTrial}
+            trial={trial}
+            allEntities={allEntities}
         >
             <StagingProvider>
                 <ShapeProvider>
