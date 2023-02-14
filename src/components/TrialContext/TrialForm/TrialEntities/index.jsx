@@ -259,6 +259,7 @@ class TrialEntities extends React.Component {
                 trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
                 entitiesTypes={entitiesTypes}
                 experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
+                submitTrial = {(updateTrial) => submitTrial(updateTrial)}
               />
               : null
           }

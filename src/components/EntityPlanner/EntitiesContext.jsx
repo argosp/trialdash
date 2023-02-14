@@ -7,7 +7,16 @@ export const EntitiesContext = createContext(null);
 
 export const useEntities = () => useContext(EntitiesContext);
 
-export const EntitiesProvider = ({ children, client, trialEntities, updateLocation, entitiesTypes, experimentId }) => {
+export const EntitiesProvider = ({
+    children,
+    client,
+    trialEntities,
+    updateLocation,
+    entitiesTypes,
+    experimentId,
+    submitTrial,
+    trial
+}) => {
     const [entities, setEntities] = useState([]);
     const [working, setWorking] = useState(false);
 
@@ -96,14 +105,33 @@ export const EntitiesProvider = ({ children, client, trialEntities, updateLocati
     const setEntityProperties = async (entityItemKey, entityTypeKey, propertiesChanged) => {
         setWorking(true);
         const start = Date.now();
-        const change = {
-            entitiesTypeKey: entityTypeKey,
-            key: entityItemKey,
-            properties: propertiesChanged.map(({ key, val }) => { return { key, val: JSON.stringify(val) } }),
-            type: 'entity'
-        };
-        await updateLocation(change);
-        console.log('setEntityProperties took ', Date.now() - start, 'ms');
+        // const change = {
+        //     entitiesTypeKey: entityTypeKey,
+        //     key: entityItemKey,
+        //     properties: propertiesChanged.map(({ key, val }) => { return { key, val: JSON.stringify(val) } }),
+        //     type: 'entity'
+        // };
+        // await updateLocation(change);
+        const updatedTrial = {
+            ...trial
+        }
+        const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey);
+        if (!entityOnTrial || !entityOnTrial.properties) {
+        // if (!entityOnTrial || entityOnTrial.entitiesTypeKey !== entityTypeKey || !entityOnTrial.properties) {
+            console.log('problem with entity', entityOnTrial);
+        } else {
+            entityOnTrial.properties = entityOnTrial.properties.map(prop => {
+                const foundProp = propertiesChanged.find(changedProp => changedProp.key === prop.key);
+                if (foundProp) {
+                    return {...prop, val: foundProp.val};
+                } else {
+                    return prop;
+                }
+            });
+            await submitTrial(updatedTrial);
+            // await updateLocation(change);
+            console.log('setEntityProperties took ', Date.now() - start, 'ms');
+        }
         setWorking(false);
     }
 
