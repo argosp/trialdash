@@ -1,10 +1,18 @@
 import React from 'react';
-import { List } from '@material-ui/core';
+import {
+    Table,
+    TableContainer,
+    TableHead,
+    TableCell,
+    TableRow,
+    TableBody,
+    Paper,
+} from '@material-ui/core'
 import { EntityRow } from './EntityRow';
 import { useStaging } from './StagingContext.jsx';
 import { EntityLocationButton } from './EntityLocationButton.jsx';
 
-export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }) => {
+export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, showProperties }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
     const {
@@ -34,29 +42,82 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
         setLastIndex(index);
     }
 
-    return (
-        <List>
-            {
-                entityItems.map(({ entityItem, location, isOnLayer, layerName }, index) => {
-                    return <EntityRow
-                        key={entityItem.key}
-                        dev={entityItem}
-                        isSelected={selection.includes(entityItem.key)}
-                        onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
-                    >
-                        {!location ? null :
-                            <EntityLocationButton
-                                entityLocation={location}
-                                isEntityOnLayer={isOnLayer}
-                                entityLayerName={layerName}
-                                onDisableLocation={(doOnWholeList) => {
-                                    removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
-                                }}
-                            />
-                        }
-                    </EntityRow>
-                })
+    const groupItemsByType = (entityItems, allInOneGroup) => {
+        if (entityItems.length === 0) {
+            return [];
+        }
+        if (allInOneGroup || entityItems.length === 0) {
+            return [entityItems.map((x, index) => { return { ...x, index } })];
+        }
+        const itemsGrouped = [];
+        let lastTypeKey = undefined;
+        entityItems.forEach((t, index) => {
+            if (t.entityType.key === lastTypeKey) {
+                itemsGrouped.at(-1).push({ ...t, index });
+            } else {
+                itemsGrouped.push([{ ...t, index }]);
+                lastTypeKey = t.entityType.key;
             }
-        </List >
+        });
+        return itemsGrouped;
+    }
+
+    const itemsGrouped = groupItemsByType(entityItems, !showProperties);
+
+    return (
+        <>
+            {itemsGrouped.map(itemsOfType => {
+                const entityType = itemsOfType[0].entityType;
+                const shownPropertiesDetails = entityType.properties.filter(({ type }) => type !== 'location');
+
+                return (
+                    <TableContainer component={Paper}>
+                        <Table size="small">
+                            <TableHead>
+                                {!showProperties ? null :
+                                    <TableRow>
+                                        <TableCell style={{ fontWeight: 'bolder' }}>
+                                            {entityType.name}
+                                        </TableCell>
+                                        {shownPropertiesDetails.map(({ label }) => (
+                                            <TableCell padding='none' style={{ textAlign: 'center' }}>
+                                                {label}
+                                            </TableCell>
+                                        ))}
+                                        <TableCell align="right" padding='none'></TableCell>
+                                    </TableRow>
+                                }
+                            </TableHead>
+                            <TableBody>
+                                {
+                                    itemsOfType.map(({ entityItem, entityType, location, isOnLayer, layerName }, index) => {
+                                        return (
+                                            <EntityRow
+                                                key={entityItem.key}
+                                                entityItem={entityItem}
+                                                entityType={entityType}
+                                                showProperties={showProperties}
+                                                onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey)}
+                                            >
+                                                {!location ? null :
+                                                    <EntityLocationButton
+                                                        entityLocation={location}
+                                                        isEntityOnLayer={isOnLayer}
+                                                        entityLayerName={layerName}
+                                                        onDisableLocation={(doOnWholeList) => {
+                                                            removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                                                        }}
+                                                    />
+                                                }
+                                            </EntityRow>
+                                        )
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer >
+                )
+            })}
+        </>
     )
 }

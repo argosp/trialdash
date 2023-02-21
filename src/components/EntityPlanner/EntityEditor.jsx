@@ -49,6 +49,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [layerChosen, setLayerChosen] = useState('OSMMap');
     const [showTableOfType, setShowTableOfType] = useState('');
     const [showEditBox, setShowEditBox] = useState(false);
+    const [showEditTable, setShowEditTable] = useState(false);
 
     // console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
@@ -92,14 +93,20 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
     const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s)).filter(x => x);
-    const showTable = showTableOfType !== '';
+    const showTable = showTableOfType !== '' && !showEditTable;
+
+    const paneSizeTypesAndStack = showEditTable ? 6 : 3;
+    const paneSizeTable = showTable ? 3 : 0;
+    const paneSizeMap = 11 - paneSizeTable - paneSizeTypesAndStack; // leave 1 for toolbar pane
 
     return (
         <Grid
             container direction="row" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
         >
-            <Grid item xs={3} style={{ height: '550px', overflow: 'auto' }}>
+            <Grid item
+                xs={paneSizeTypesAndStack}
+                style={{ height: '550px', overflow: 'auto' }}>
                 <>
                     <ShowWorking />
                     {!entities.length ? null :
@@ -116,22 +123,30 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 setShowTableOfType={setShowTableOfType}
                                 onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
                             />
-                            <EntityList
+                            <div
                                 style={{
-                                    overflow: 'auto',
-                                    //  height: '250px',
-                                    display: 'block'
+                                    marginTop: '10px'
                                 }}
-                                entityItems={selectedEntityItems}
-                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                                layerChosen={layerChosen}
-                            />
+                            >
+                                <EntityList
+                                    style={{
+                                        overflow: 'auto',
+                                        //  height: '250px',
+                                        display: 'block',
+
+                                    }}
+                                    entityItems={selectedEntityItems}
+                                    removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                                    layerChosen={layerChosen}
+                                    showProperties={showEditTable}
+                                />
+                            </div>
                         </>
                     }
                 </>
             </Grid>
-            {!showTable ? null :
-                <Grid item xs={3}
+            {showTable // && !showEditTable
+                ? <Grid item xs={paneSizeTable}
                     style={{ height: '550px', overflow: 'auto' }}
                 >
                     <EntityList
@@ -139,8 +154,10 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
                         removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                         layerChosen={layerChosen}
+                        showProperties={false}
                     />
                 </Grid>
+                : null
             }
             <Grid item>
                 <EditTable
@@ -149,9 +166,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     markedPoints={markedPoints}
                     showEditBox={showEditBox}
                     setShowEditBox={setShowEditBox}
+                    showEditTable={showEditTable}
+                    setShowEditTable={setShowEditTable}
                 />
             </Grid>
-            <Grid item xs={showTable ? 5 : 8}>
+            <Grid item xs={paneSizeMap}>
                 <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}
