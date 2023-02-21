@@ -78,14 +78,11 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                                     <TableRow>
                                         <TableCell style={{ fontWeight: 'bolder' }}>Name</TableCell>
                                         {shownPropertiesDetails.map(({ label }) => (
-                                            <TableCell align="right" padding='none'>
+                                            <TableCell padding='none' style={{ textAlign: 'center' }}>
                                                 {label}
                                             </TableCell>
                                         ))}
-                                        {/* <TableCell align="right">Positioned</TableCell> */}
-                                        {/* {t.entityType} */}
                                         <TableCell align="right" padding='none'></TableCell>
-                                        {/* <TableCell align="right" padding='none'></TableCell> */}
                                     </TableRow>
                                 }
                             </TableHead>

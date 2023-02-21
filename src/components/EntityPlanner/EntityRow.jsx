@@ -37,7 +37,7 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
             {
                 !showProperties ? null :
                     shownValues.map(({ key: propertyKey, label, val }, i) => (
-                        <TableCell
+                        <TableCell style={{ textAlign: 'center' }}
                         >
                             {val}
                         </TableCell>
