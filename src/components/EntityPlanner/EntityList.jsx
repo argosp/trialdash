@@ -42,46 +42,83 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
         setLastIndex(index);
     }
 
+    const groupItemsByType = (entityItems, allInOneGroup) => {
+        if (entityItems.length === 0) {
+            return [];
+        }
+        if (allInOneGroup || entityItems.length === 0) {
+            return [entityItems.map((x, index) => { return { ...x, index } })];
+        }
+        const itemsGrouped = [];
+        let lastTypeKey = undefined;
+        entityItems.forEach((t, index) => {
+            if (t.entityType.key === lastTypeKey) {
+                itemsGrouped.at(-1).push({ ...t, index });
+            } else {
+                itemsGrouped.push([{ ...t, index }]);
+                lastTypeKey = t.entityType.key;
+            }
+        });
+        return itemsGrouped;
+    }
+
+    const itemsGrouped = groupItemsByType(entityItems, !showProperties);
+
     return (
-        <TableContainer component={Paper}>
-            <Table size="small">
-                <TableHead>
-                    {entityItems.length === 0 ? null :
-                        <TableRow>
-                            <TableCell style={{ fontWeight: 'bolder' }}>Name</TableCell>
-                            {/* <TableCell align="right">Positioned</TableCell> */}
-                            <TableCell align="right" padding='none'></TableCell>
-                            {/* <TableCell align="right" padding='none'></TableCell> */}
-                        </TableRow>
-                    }
-                </TableHead>
-                <TableBody>
-                    {
-                        entityItems.map(({ entityItem, entityType, location, isOnLayer, layerName }, index) => {
-                            return (
-                                <EntityRow
-                                    key={entityItem.key}
-                                    entityItem={entityItem}
-                                    entityType={entityType}
-                                    showProperties={showProperties}
-                                    onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey)}
-                                >
-                                    {!location ? null :
-                                        <EntityLocationButton
-                                            entityLocation={location}
-                                            isEntityOnLayer={isOnLayer}
-                                            entityLayerName={layerName}
-                                            onDisableLocation={(doOnWholeList) => {
-                                                removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
-                                            }}
-                                        />
-                                    }
-                                </EntityRow>
-                            )
-                        })
-                    }
-                </TableBody>
-            </Table>
-        </TableContainer >
+        <>
+            {itemsGrouped.map(itemsOfType => {
+                const entityType = itemsOfType[0].entityType;
+                const shownPropertiesDetails = entityType.properties.filter(({ type }) => type !== 'location');
+
+                return (
+                    <TableContainer component={Paper}>
+                        <Table size="small">
+                            <TableHead>
+                                {!showProperties ? null :
+                                    <TableRow>
+                                        <TableCell style={{ fontWeight: 'bolder' }}>Name</TableCell>
+                                        {shownPropertiesDetails.map(({ label }) => (
+                                            <TableCell align="right" padding='none'>
+                                                {label}
+                                            </TableCell>
+                                        ))}
+                                        {/* <TableCell align="right">Positioned</TableCell> */}
+                                        {/* {t.entityType} */}
+                                        <TableCell align="right" padding='none'></TableCell>
+                                        {/* <TableCell align="right" padding='none'></TableCell> */}
+                                    </TableRow>
+                                }
+                            </TableHead>
+                            <TableBody>
+                                {
+                                    itemsOfType.map(({ entityItem, entityType, location, isOnLayer, layerName }, index) => {
+                                        return (
+                                            <EntityRow
+                                                key={entityItem.key}
+                                                entityItem={entityItem}
+                                                entityType={entityType}
+                                                showProperties={showProperties}
+                                                onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey)}
+                                            >
+                                                {!location ? null :
+                                                    <EntityLocationButton
+                                                        entityLocation={location}
+                                                        isEntityOnLayer={isOnLayer}
+                                                        entityLayerName={layerName}
+                                                        onDisableLocation={(doOnWholeList) => {
+                                                            removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                                                        }}
+                                                    />
+                                                }
+                                            </EntityRow>
+                                        )
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer >
+                )
+            })}
+        </>
     )
 }
