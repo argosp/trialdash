@@ -130,6 +130,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                     entityItems={selectedEntityItems}
                                     removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                                     layerChosen={layerChosen}
+                                    showProperties={true}
                                 />
                             </div>
                         </>
@@ -145,6 +146,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
                         removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                         layerChosen={layerChosen}
+                        showProperties={false}
                     />
                 </Grid>
             }

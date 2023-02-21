@@ -12,7 +12,7 @@ import { EntityRow } from './EntityRow';
 import { useStaging } from './StagingContext.jsx';
 import { EntityLocationButton } from './EntityLocationButton.jsx';
 
-export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }) => {
+export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, showProperties }) => {
     const [lastIndex, setLastIndex] = React.useState();
 
     const {
@@ -57,11 +57,13 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
                 </TableHead>
                 <TableBody>
                     {
-                        entityItems.map(({ entityItem, location, isOnLayer, layerName }, index) => {
+                        entityItems.map(({ entityItem, entityType, location, isOnLayer, layerName }, index) => {
                             return (
                                 <EntityRow
                                     key={entityItem.key}
                                     entityItem={entityItem}
+                                    entityType={entityType}
+                                    showProperties={showProperties}
                                     onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey)}
                                 >
                                     {!location ? null :
