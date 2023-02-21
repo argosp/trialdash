@@ -49,6 +49,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [layerChosen, setLayerChosen] = useState('OSMMap');
     const [showTableOfType, setShowTableOfType] = useState('');
     const [showEditBox, setShowEditBox] = useState(false);
+    const [showEditTable, setShowEditTable] = useState(false);
 
     // console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
@@ -99,7 +100,9 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             container direction="row" justifyContent="flex-start" alignItems="stretch"
             style={{ height: '550px' }}
         >
-            <Grid item xs={3} style={{ height: '550px', overflow: 'auto' }}>
+            <Grid item
+                xs={3}
+                style={{ height: '550px', overflow: 'auto' }}>
                 <>
                     <ShowWorking />
                     {!entities.length ? null :
@@ -126,19 +129,20 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                         overflow: 'auto',
                                         //  height: '250px',
                                         display: 'block',
+
                                     }}
                                     entityItems={selectedEntityItems}
                                     removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                                     layerChosen={layerChosen}
-                                    showProperties={true}
+                                    showProperties={showEditTable}
                                 />
                             </div>
                         </>
                     }
                 </>
             </Grid>
-            {!showTable ? null :
-                <Grid item xs={3}
+            {showTable // && !showEditTable
+                ? <Grid item xs={3}
                     style={{ height: '550px', overflow: 'auto' }}
                 >
                     <EntityList
@@ -149,6 +153,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         showProperties={false}
                     />
                 </Grid>
+                : null
             }
             <Grid item>
                 <EditTable
@@ -157,6 +162,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     markedPoints={markedPoints}
                     showEditBox={showEditBox}
                     setShowEditBox={setShowEditBox}
+                    showEditTable={showEditTable}
+                    setShowEditTable={setShowEditTable}
                 />
             </Grid>
             <Grid item xs={showTable ? 5 : 8}>
