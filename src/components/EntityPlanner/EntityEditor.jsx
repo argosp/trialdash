@@ -93,7 +93,11 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
     const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s)).filter(x => x);
-    const showTable = showTableOfType !== '';
+    const showTable = showTableOfType !== '' && !showEditTable;
+
+    const paneSizeTypesAndStack = showEditTable ? 6 : 3;
+    const paneSizeTable = showTable ? 3 : 0;
+    const paneSizeMap = 11 - paneSizeTable - paneSizeTypesAndStack;
 
     return (
         <Grid
@@ -101,7 +105,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             style={{ height: '550px' }}
         >
             <Grid item
-                xs={3}
+                xs={paneSizeTypesAndStack}
                 style={{ height: '550px', overflow: 'auto' }}>
                 <>
                     <ShowWorking />
@@ -142,7 +146,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                 </>
             </Grid>
             {showTable // && !showEditTable
-                ? <Grid item xs={3}
+                ? <Grid item xs={paneSizeTable}
                     style={{ height: '550px', overflow: 'auto' }}
                 >
                     <EntityList
@@ -166,7 +170,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     setShowEditTable={setShowEditTable}
                 />
             </Grid>
-            <Grid item xs={showTable ? 5 : 8}>
+            <Grid item xs={paneSizeMap}>
                 <EntityMap
                     onClick={handleMapClick}
                     experimentDataMaps={experimentDataMaps}
