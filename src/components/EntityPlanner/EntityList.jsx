@@ -73,7 +73,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                 return (
                     <TableContainer component={Paper}>
                         <Table size="small">
-                            <TableHead>
+                            {/* <TableHead>
                                 {!showProperties ? null :
                                     <TableRow>
                                         <TableCell style={{ fontWeight: 'bolder' }}>
@@ -87,7 +87,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                                         <TableCell align="right" padding='none'></TableCell>
                                     </TableRow>
                                 }
-                            </TableHead>
+                            </TableHead> */}
                             <TableBody>
                                 {
                                     itemsOfType.map(({ entityItem, entityType, location, isOnLayer, layerName }, index) => {

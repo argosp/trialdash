@@ -51,8 +51,8 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
                         >
                             <TextField
                                 key={propertyKey}
-                                // variant='outlined'
-                                // label={label}
+                                variant='outlined'
+                                label={label}
                                 size='small'
                                 InputLabelProps={{ shrink: true }}
                                 onChange={(e) => {
