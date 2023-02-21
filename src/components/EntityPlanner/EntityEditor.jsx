@@ -97,7 +97,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const paneSizeTypesAndStack = showEditTable ? 6 : 3;
     const paneSizeTable = showTable ? 3 : 0;
-    const paneSizeMap = 11 - paneSizeTable - paneSizeTypesAndStack;
+    const paneSizeMap = 11 - paneSizeTable - paneSizeTypesAndStack; // leave 1 for toolbar pane
 
     return (
         <Grid

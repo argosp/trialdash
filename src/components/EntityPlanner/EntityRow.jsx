@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { TableRow, TableCell } from '@material-ui/core';
+import {
+    TableRow,
+    TableCell,
+    TextField,
+    IconButton,
+} from '@material-ui/core';
+import {
+    Check,
+    Close,
+} from "@material-ui/icons";
 import { useEntities } from './EntitiesContext';
 
 export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showProperties, children }) => {
@@ -37,13 +46,46 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
             {
                 !showProperties ? null :
                     shownValues.map(({ key: propertyKey, label, val }, i) => (
-                        <TableCell style={{ textAlign: 'center' }}
+                        <TableCell
+                            style={{ textAlign: 'center' }}
                         >
-                            {val}
+                            <TextField
+                                key={propertyKey}
+                                // variant='outlined'
+                                // label={label}
+                                size='small'
+                                InputLabelProps={{ shrink: true }}
+                                onChange={(e) => {
+                                    setShownValues(shownValues.map((t, j) => {
+                                        if (j === i) {
+                                            return { ...t, val: e.target.value };
+                                        }
+                                        return t;
+                                    }));
+                                }}
+                                value={val + ''}
+                            />
                         </TableCell>
                     ))
             }
             <TableCell align="right" padding='none'>
+                {!showProperties || allSame ? null :
+                    <>
+                        <IconButton color='primary' size="small"
+                            onClick={() => {
+                                const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
+                                setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
+                            }}
+                        >
+                            <Check />
+                        </IconButton>
+                        <IconButton color='secondary' size="small"
+                            onClick={() => setShownValues(savedValues)}
+                        >
+                            <Close />
+                        </IconButton>
+                    </>
+                }
                 {children}
             </TableCell>
         </TableRow>

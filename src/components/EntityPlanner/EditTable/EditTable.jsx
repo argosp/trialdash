@@ -4,8 +4,6 @@ import {
     Divider,
     Typography,
     Box,
-    Tooltip,
-    IconButton,
 } from '@material-ui/core';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import EditIcon from '@material-ui/icons/Edit';
