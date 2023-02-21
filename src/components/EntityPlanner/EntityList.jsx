@@ -1,5 +1,13 @@
 import React from 'react';
-import { List } from '@material-ui/core';
+import {
+    Table,
+    TableContainer,
+    TableHead,
+    TableCell,
+    TableRow,
+    TableBody,
+    Paper,
+} from '@material-ui/core'
 import { EntityRow } from './EntityRow';
 import { useStaging } from './StagingContext.jsx';
 import { EntityLocationButton } from './EntityLocationButton.jsx';
@@ -35,28 +43,74 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
     }
 
     return (
-        <List>
-            {
-                entityItems.map(({ entityItem, location, isOnLayer, layerName }, index) => {
-                    return <EntityRow
-                        key={entityItem.key}
-                        dev={entityItem}
-                        isSelected={selection.includes(entityItem.key)}
-                        onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
-                    >
-                        {!location ? null :
-                            <EntityLocationButton
-                                entityLocation={location}
-                                isEntityOnLayer={isOnLayer}
-                                entityLayerName={layerName}
-                                onDisableLocation={(doOnWholeList) => {
-                                    removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
-                                }}
-                            />
-                        }
-                    </EntityRow>
-                })
-            }
-        </List >
+        <TableContainer component={Paper}>
+            <Table size="small">
+                <TableHead>
+                    {entityItems.length === 0 ? null :
+                        <TableRow>
+                            <TableCell style={{ fontWeight: 'bolder' }}>Name</TableCell>
+                            {/* <TableCell align="right">Positioned</TableCell> */}
+                            <TableCell align="right" padding='none'></TableCell>
+                            {/* <TableCell align="right" padding='none'></TableCell> */}
+                        </TableRow>
+                    }
+                </TableHead>
+                <TableBody>
+                    {
+                        entityItems.map(({ entityItem, location, isOnLayer, layerName }, index) => {
+                            return (
+                                <TableRow>
+                                    <TableCell
+                                        // style={{ fontWeight: isOpenArrow ? 'bolder' : 'normal' }}
+                                        key={entityItem.key}
+                                        // button
+                                        // selected={isSelected}
+                                        onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
+                                    >
+                                        {entityItem.name}
+                                        {/* <ListItemText primary={dev.name} /> */}
+                                        {/* {children} */}
+                                    </TableCell>
+                                    <TableCell align="right" padding='none'>
+                                        {!location ? null :
+                                            <EntityLocationButton
+                                                entityLocation={location}
+                                                isEntityOnLayer={isOnLayer}
+                                                entityLayerName={layerName}
+                                                onDisableLocation={(doOnWholeList) => {
+                                                    removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                                                }}
+                                            />
+                                        }
+                                    </TableCell>
+                                </TableRow>
+                            )
+
+
+
+                            // return (
+                            //     <EntityRow
+                            //         key={entityItem.key}
+                            //         dev={entityItem}
+                            //         isSelected={selection.includes(entityItem.key)}
+                            //         onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
+                            //     >
+                            //         {!location ? null :
+                            //             <EntityLocationButton
+                            //                 entityLocation={location}
+                            //                 isEntityOnLayer={isOnLayer}
+                            //                 entityLayerName={layerName}
+                            //                 onDisableLocation={(doOnWholeList) => {
+                            //                     removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                            //                 }}
+                            //             />
+                            //         }
+                            //     </EntityRow>
+                            // )
+                        })
+                    }
+                </TableBody>
+            </Table>
+        </TableContainer >
     )
 }

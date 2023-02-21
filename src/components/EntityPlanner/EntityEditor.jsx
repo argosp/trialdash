@@ -116,16 +116,22 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 setShowTableOfType={setShowTableOfType}
                                 onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
                             />
-                            <EntityList
+                            <div
                                 style={{
-                                    overflow: 'auto',
-                                    //  height: '250px',
-                                    display: 'block'
+                                    marginTop: '10px'
                                 }}
-                                entityItems={selectedEntityItems}
-                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                                layerChosen={layerChosen}
-                            />
+                            >
+                                <EntityList
+                                    style={{
+                                        overflow: 'auto',
+                                        //  height: '250px',
+                                        display: 'block',
+                                    }}
+                                    entityItems={selectedEntityItems}
+                                    removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                                    layerChosen={layerChosen}
+                                />
+                            </div>
                         </>
                     }
                 </>
