@@ -59,54 +59,23 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen }
                     {
                         entityItems.map(({ entityItem, location, isOnLayer, layerName }, index) => {
                             return (
-                                <TableRow>
-                                    <TableCell
-                                        // style={{ fontWeight: isOpenArrow ? 'bolder' : 'normal' }}
-                                        key={entityItem.key}
-                                        // button
-                                        // selected={isSelected}
-                                        onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
-                                    >
-                                        {entityItem.name}
-                                        {/* <ListItemText primary={dev.name} /> */}
-                                        {/* {children} */}
-                                    </TableCell>
-                                    <TableCell align="right" padding='none'>
-                                        {!location ? null :
-                                            <EntityLocationButton
-                                                entityLocation={location}
-                                                isEntityOnLayer={isOnLayer}
-                                                entityLayerName={layerName}
-                                                onDisableLocation={(doOnWholeList) => {
-                                                    removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
-                                                }}
-                                            />
-                                        }
-                                    </TableCell>
-                                </TableRow>
+                                <EntityRow
+                                    key={entityItem.key}
+                                    entityItem={entityItem}
+                                    onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey)}
+                                >
+                                    {!location ? null :
+                                        <EntityLocationButton
+                                            entityLocation={location}
+                                            isEntityOnLayer={isOnLayer}
+                                            entityLayerName={layerName}
+                                            onDisableLocation={(doOnWholeList) => {
+                                                removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                                            }}
+                                        />
+                                    }
+                                </EntityRow>
                             )
-
-
-
-                            // return (
-                            //     <EntityRow
-                            //         key={entityItem.key}
-                            //         dev={entityItem}
-                            //         isSelected={selection.includes(entityItem.key)}
-                            //         onClick={e => { handleSelectionClick(entityItem.key, index, e.shiftKey) }}
-                            //     >
-                            //         {!location ? null :
-                            //             <EntityLocationButton
-                            //                 entityLocation={location}
-                            //                 isEntityOnLayer={isOnLayer}
-                            //                 entityLayerName={layerName}
-                            //                 onDisableLocation={(doOnWholeList) => {
-                            //                     removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
-                            //                 }}
-                            //             />
-                            //         }
-                            //     </EntityRow>
-                            // )
                         })
                     }
                 </TableBody>

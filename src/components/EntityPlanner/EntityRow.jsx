@@ -1,16 +1,22 @@
 import React from 'react';
-import { ListItem, ListItemText } from '@material-ui/core';
+import { TableRow, TableCell } from '@material-ui/core';
 
-export const EntityRow = ({ dev, isSelected, onClick, children }) => {
+export const EntityRow = ({ entityItem, isSelected, onClick, children }) => {
     return (
-        <ListItem
-            key={dev.name}
-            button
-            selected={isSelected}
-            onClick={onClick}
+        <TableRow
+            key={entityItem.key}
         >
-            <ListItemText primary={dev.name} />
-            {children}
-        </ListItem>
+            <TableCell
+                // style={{ fontWeight: isOpenArrow ? 'bolder' : 'normal' }}
+                button
+                // selected={isSelected}
+                onClick={onClick}
+            >
+                {entityItem.name}
+            </TableCell>
+            <TableCell align="right" padding='none'>
+                {children}
+            </TableCell>
+        </TableRow>
     )
 }
