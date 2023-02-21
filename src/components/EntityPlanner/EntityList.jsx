@@ -76,7 +76,9 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                             <TableHead>
                                 {!showProperties ? null :
                                     <TableRow>
-                                        <TableCell style={{ fontWeight: 'bolder' }}>Name</TableCell>
+                                        <TableCell style={{ fontWeight: 'bolder' }}>
+                                            {entityType.name}
+                                        </TableCell>
                                         {shownPropertiesDetails.map(({ label }) => (
                                             <TableCell padding='none' style={{ textAlign: 'center' }}>
                                                 {label}
