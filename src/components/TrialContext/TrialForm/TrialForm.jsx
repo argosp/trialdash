@@ -35,7 +35,7 @@ import StyledTabs from '../../StyledTabs';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
-import TrialEntities from './TrialEntities';
+import TrialEntities from './TrialEntities/TrialEntities';
 import trialMutationUpdate from './utils/trialMutationUpdate';
 import ConfirmDialog from '../../ConfirmDialog';
 

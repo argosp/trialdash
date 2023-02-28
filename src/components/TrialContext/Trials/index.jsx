@@ -21,7 +21,7 @@ import { AttachFile, UploadIcon, CloneIcon, GridIcon, PenIcon, BasketIcon, Downl
 import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
-import TrialForm from '../TrialForm';
+import TrialForm from '../TrialForm/TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
