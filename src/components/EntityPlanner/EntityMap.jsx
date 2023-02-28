@@ -87,7 +87,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                 standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
                 layerChosen={layerChosen}
             />
-            <ZoomControl position='bottomleft' />
+            <ZoomControl position='topright' />
             {children}
         </LeafletMap>
     );
