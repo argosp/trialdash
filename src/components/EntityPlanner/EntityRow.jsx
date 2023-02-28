@@ -14,7 +14,7 @@ import { useEntities } from './EntitiesContext';
 export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showProperties, children }) => {
     const { setEntityProperties } = useEntities();
 
-    const savedValues = entityType.properties.filter(({ type, trialField }) => !trialField && type !== 'location')
+    const savedValues = entityType.properties.filter(({ type, trialField }) => trialField && type !== 'location')
         .map(({ key: typePropertyKey, label, defaultValue }) => {
             const valprop = entityItem.properties.find(({ key: itemPropertyKey }) => itemPropertyKey === typePropertyKey);
             let val = '';
