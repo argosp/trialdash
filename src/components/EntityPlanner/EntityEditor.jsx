@@ -102,11 +102,18 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     return (
         <Grid
             container direction="row" justifyContent="flex-start" alignItems="stretch"
-            style={{ height: '550px' }}
+            style={{
+                height: 'calc(100vh - 320px)',
+                width: '100vw'
+            }}
         >
             <Grid item
                 xs={paneSizeTypesAndStack}
-                style={{ height: '550px', overflow: 'auto' }}>
+                style={{
+                    height: '100%',
+                    overflow: 'auto'
+                }}
+            >
                 <>
                     <ShowWorking />
                     {!entities.length ? null :
@@ -147,10 +154,17 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             </Grid>
             {showTable // && !showEditTable
                 ? <Grid item xs={paneSizeTable}
-                    style={{ height: '550px', overflow: 'auto' }}
+                    style={{
+                        height: '100%',
+                        overflow: 'auto'
+                    }}
                 >
                     <EntityList
-                        style={{ overflow: 'auto', height: '250px', display: 'block' }}
+                        style={{
+                            overflow: 'auto',
+                            // height: '250px',
+                            display: 'block'
+                        }}
                         entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
                         removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                         layerChosen={layerChosen}
