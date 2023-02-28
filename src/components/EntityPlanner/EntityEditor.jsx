@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import {
     Grid,
-    Paper,
-    Button,
     IconButton,
     Box,
 } from '@material-ui/core';
@@ -18,7 +16,7 @@ import { MarkedShape } from './MarkedShape';
 import { useShape } from './ShapeContext.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
-import Control from './lib/react-leaflet-control.jsx';
+import Control from '../Maps/lib/react-leaflet-control.jsx';
 import { ShowWorking } from './ShowWorking';
 import { EditTable } from './EditTable/EditTable.jsx';
 import {
@@ -28,6 +26,7 @@ import {
 import { DomEvent } from 'leaflet';
 import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { SingleEntityPropertiesView } from './SingleEntityPropertiesView.jsx';
+import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 
 export const EntityEditor = ({ experimentDataMaps }) => {
     const { shape, shapeData } = useShape();
@@ -137,33 +136,17 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     ))
                 }
 
-                <Control position="topright" >
-                    <Paper>
-                        <Button
-                            variant={showName ? 'contained' : 'outlined'}
-                            color={'primary'}
-                            onClick={() => {
-                                setShowName(!showName);
-                            }}
-                        >
-                            Names
-                        </Button>
-                    </Paper>
-                </Control>
+                <ToggleTextOnMap position="topright"
+                    name={'Names'}
+                    value={showName}
+                    setValue={setShowName}
+                />
 
-                <Control position="topright" >
-                    <Paper>
-                        <Button
-                            variant={showEditTable ? 'contained' : 'outlined'}
-                            color={'primary'}
-                            onClick={() => {
-                                setShowEditTable(!showEditTable);
-                            }}
-                        >
-                            Table
-                        </Button>
-                    </Paper>
-                </Control>
+                <ToggleTextOnMap position="topright"
+                    name={'Table'}
+                    value={showEditTable}
+                    setValue={setShowEditTable}
+                />
 
                 <MarkedShape
                     markedPoints={markedPoints}

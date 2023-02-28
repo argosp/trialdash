@@ -8,6 +8,7 @@ import {
 import { EntityRow } from './EntityRow';
 import { useStaging } from './StagingContext.jsx';
 import { EntityLocationButton } from './EntityLocationButton.jsx';
+import { DomEvent } from 'leaflet';
 
 export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, showProperties }) => {
     const [lastIndex, setLastIndex] = React.useState();
@@ -18,7 +19,8 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
         toggleIsSelected
     } = useStaging();
 
-    const handleSelectionClick = (devkey, index, doRange) => {
+    const handleSelectionClick = (devkey, index, doRange, e) => {
+        DomEvent.stop(e);
         if (!doRange) {
             toggleIsSelected(devkey);
         } else if (lastIndex !== undefined) {
@@ -91,7 +93,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                                                 entityItem={entityItem}
                                                 entityType={entityType}
                                                 showProperties={showProperties}
-                                                onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey)}
+                                                onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey, e)}
                                             >
                                                 {!location ? null :
                                                     <EntityLocationButton
