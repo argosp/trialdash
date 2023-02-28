@@ -52,10 +52,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [showEditBox, setShowEditBox] = useState(false);
     const [showEditTable, setShowEditTable] = useState(false);
 
-    // console.log('EntityEditor', layerChosen, entities, shownEntityTypes)
 
     const handleMapClick = e => {
-        // if (selection.length < 1) return;
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === POINT_SHAPE) {
             setEntityLocations(selection, layerChosen, [currPoint]);
@@ -94,16 +92,10 @@ export const EntityEditor = ({ experimentDataMaps }) => {
 
     const shownEntityItems = getEntityItems(shownEntityTypes, layerChosen);
     const selectedEntityItems = selection.map(s => shownEntityItems.find(({ entityItem }) => entityItem.key === s)).filter(x => x);
-    const showTable = showTableOfType !== '' && !showEditTable;
-
-    const paneSizeTypesAndStack = showEditTable ? 6 : 3;
-    const paneSizeTable = showTable ? 3 : 0;
-    const paneSizeMap = 11 - paneSizeTable - paneSizeTypesAndStack; // leave 1 for toolbar pane
 
     return (
         <Box
             style={{
-                // width: 500,
                 height: 'calc(100vh - 320px)',
             }}
         >
@@ -145,7 +137,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     ))
                 }
 
-<Control position="topright" >
+                <Control position="topright" >
                     <Paper>
                         <Button
                             variant={showName ? 'contained' : 'outlined'}
@@ -183,6 +175,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                 <Control position="topleft" >
                     <Grid container direction='row'>
                         <Grid item>
+                            <ShowWorking />
                             <TypeChooser
                                 shownEntityTypes={shownEntityTypes}
                                 setShownEntityTypes={newTypes => {
@@ -196,7 +189,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
                             />
                         </Grid>
-                        {/* {!showTable ? null : // && !showEditTable */}
                         <Grid item>
                             <EntityList
                                 style={{
@@ -209,7 +201,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 showProperties={false}
                             />
                         </Grid>
-                        {/* } */}
                     </Grid>
                 </Control>
 
@@ -217,9 +208,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     <EntityList
                         style={{
                             overflow: 'auto',
-                            //  height: '250px',
                             display: 'block',
-
                         }}
                         entityItems={selectedEntityItems}
                         removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
@@ -241,153 +230,4 @@ export const EntityEditor = ({ experimentDataMaps }) => {
             </EntityMap>
         </Box>
     )
-
-    // return (
-    //     <Grid
-    //         container direction="row" justifyContent="flex-start" alignItems="stretch"
-    //         style={{
-    //             height: 'calc(100vh - 320px)',
-    //             width: '100vw'
-    //         }}
-    //     >
-    //         <Grid item
-    //             xs={paneSizeTypesAndStack}
-    //             style={{
-    //                 height: '100%',
-    //                 overflow: 'auto'
-    //             }}
-    //         >
-    //             <>
-    //                 <ShowWorking />
-    //                 {!entities.length ? null :
-    //                     <>
-    //                         <TypeChooser
-    //                             shownEntityTypes={shownEntityTypes}
-    //                             setShownEntityTypes={newTypes => {
-    //                                 setSelection([]);
-    //                                 setShownEntityTypes(newTypes);
-    //                             }}
-    //                             entities={entities}
-    //                             entityItems={shownEntityItems}
-    //                             showTableOfType={showTableOfType}
-    //                             setShowTableOfType={setShowTableOfType}
-    //                             onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
-    //                         />
-    //                         <div
-    //                             style={{
-    //                                 marginTop: '10px'
-    //                             }}
-    //                         >
-    //                             <EntityList
-    //                                 style={{
-    //                                     overflow: 'auto',
-    //                                     //  height: '250px',
-    //                                     display: 'block',
-
-    //                                 }}
-    //                                 entityItems={selectedEntityItems}
-    //                                 removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-    //                                 layerChosen={layerChosen}
-    //                                 showProperties={showEditTable}
-    //                             />
-    //                         </div>
-    //                     </>
-    //                 }
-    //             </>
-    //         </Grid>
-    //         {showTable // && !showEditTable
-    //             ? <Grid item xs={paneSizeTable}
-    //                 style={{
-    //                     height: '100%',
-    //                     overflow: 'auto'
-    //                 }}
-    //             >
-    //                 <EntityList
-    //                     style={{
-    //                         overflow: 'auto',
-    //                         // height: '250px',
-    //                         display: 'block'
-    //                     }}
-    //                     entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
-    //                     removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-    //                     layerChosen={layerChosen}
-    //                     showProperties={false}
-    //                 />
-    //             </Grid>
-    //             : null
-    //         }
-    //         <Grid item>
-    //             <EditTable
-    //                 handleSetOne={handleMapClick}
-    //                 handleSetMany={handlePutEntities}
-    //                 markedPoints={markedPoints}
-    //                 showEditBox={showEditBox}
-    //                 setShowEditBox={setShowEditBox}
-    //                 showEditTable={showEditTable}
-    //                 setShowEditTable={setShowEditTable}
-    //             />
-    //         </Grid>
-    //         <Grid item xs={paneSizeMap}>
-    //             <EntityMap
-    //                 onClick={handleMapClick}
-    //                 experimentDataMaps={experimentDataMaps}
-    //                 layerChosen={layerChosen}
-    //                 setLayerChosen={setLayerChosen}
-    //                 onAreaMarked={onAreaMarked}
-    //             >
-    //                 {
-    //                     shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
-    //                         <EntityMarker
-    //                             key={entityItem.key}
-    //                             entity={entityItem}
-    //                             devLocation={location}
-    //                             isSelected={selection.includes(entityItem.key)}
-    //                             isTypeSelected={shownEntityTypes.includes(entityType.name)}
-    //                             shouldShowName={showName}
-    //                             onClick={() => toggleIsSelected(entityItem.key)}
-    //                         >
-    //                             <IconButton onClick={(e) => {
-    //                                 DomEvent.stop(e);
-    //                                 setEntityLocations([entityItem.key], layerChosen)
-    //                             }}>
-    //                                 <LocationOff />
-    //                             </IconButton>
-    //                             <IconButton onClick={(e) => {
-    //                                 DomEvent.stop(e);
-    //                                 toggleIsSelected(entityItem.key)
-    //                             }}>
-    //                                 {selection.includes(entityItem.key) ? <PlaylistRemove /> : <PlaylistAdd />}
-    //                             </IconButton>
-    //                             <SingleEntityPropertiesView
-    //                                 entityItem={entityItem}
-    //                                 entityType={entityType}
-    //                             ></SingleEntityPropertiesView>
-    //                         </EntityMarker>
-    //                     ))
-    //                 }
-    //                 <Control position="bottomright" >
-    //                     <Paper>
-    //                         <Button
-    //                             variant={showName ? 'contained' : 'outlined'}
-    //                             color={'primary'}
-    //                             onClick={() => {
-    //                                 setShowName(!showName);
-    //                             }}
-    //                         >
-    //                             Names
-    //                         </Button>
-    //                     </Paper>
-    //                 </Control>
-
-    //                 <MarkedShape
-    //                     markedPoints={markedPoints}
-    //                     setMarkedPoints={setMarkedPoints}
-    //                     entityNum={selection.length}
-    //                     distanceInMeters={showDistanceInMeters}
-    //                 />
-
-    //             </EntityMap>
-    //         </Grid>
-    //     </Grid>
-    // )
 }
