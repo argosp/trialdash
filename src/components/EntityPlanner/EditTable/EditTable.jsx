@@ -2,11 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Divider,
-    Typography,
     Box,
 } from '@material-ui/core';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import EditIcon from '@material-ui/icons/Edit';
 
 import classnames from 'classnames';
 import { styles } from './styles';
