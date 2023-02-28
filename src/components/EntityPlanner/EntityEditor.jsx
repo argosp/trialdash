@@ -144,7 +144,8 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         </EntityMarker>
                     ))
                 }
-                <Control position="topright" >
+
+<Control position="topright" >
                     <Paper>
                         <Button
                             variant={showName ? 'contained' : 'outlined'}
@@ -154,6 +155,20 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                             }}
                         >
                             Names
+                        </Button>
+                    </Paper>
+                </Control>
+
+                <Control position="topright" >
+                    <Paper>
+                        <Button
+                            variant={showEditTable ? 'contained' : 'outlined'}
+                            color={'primary'}
+                            onClick={() => {
+                                setShowEditTable(!showEditTable);
+                            }}
+                        >
+                            Table
                         </Button>
                     </Paper>
                 </Control>
@@ -198,7 +213,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     </Grid>
                 </Control>
 
-                <Control position="bottomleft" >
+                <Control position="bottomright" >
                     <EntityList
                         style={{
                             overflow: 'auto',
@@ -213,15 +228,13 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     />
                 </Control>
 
-                <Control position="bottomright" >
+                <Control position="bottomleft" >
                     <EditTable
                         handleSetOne={handleMapClick}
                         handleSetMany={handlePutEntities}
                         markedPoints={markedPoints}
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
-                        showEditTable={showEditTable}
-                        setShowEditTable={setShowEditTable}
                     />
                 </Control>
 
