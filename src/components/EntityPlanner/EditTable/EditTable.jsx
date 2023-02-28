@@ -2,11 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Divider,
-    Typography,
     Box,
 } from '@material-ui/core';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import EditIcon from '@material-ui/icons/Edit';
 
 import classnames from 'classnames';
 import { styles } from './styles';
@@ -46,8 +44,6 @@ export const EditTable = ({
     markedPoints,
     showEditBox,
     setShowEditBox,
-    showEditTable,
-    setShowEditTable,
 }) => {
     const classes = useStyles();
     const {
@@ -65,9 +61,9 @@ export const EditTable = ({
 
     return (
         <Box className={classnames(classes.root, classes.editTable)}>
-            <Typography variant="overline" align="center">
+            {/* <Typography variant="overline" align="center">
                 tools
-            </Typography>
+            </Typography> */}
 
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={FREEPOSITIONING_SHAPE}
@@ -105,13 +101,6 @@ export const EditTable = ({
                 icon={<RectangleIcon />}
                 component={<Rectangle onSubmit={handleSetMany} />}
                 title={RECTANGLE_TITLE}
-            />
-            <Divider variant="middle" light />
-            <EditTool classes={classes} shape={showEditTable ? 'Edit' : shape} onClickIcon={() => setShowEditTable(!showEditTable)}
-                id={'Edit'}
-                icon={<EditIcon />}
-                component={null}
-                title={'Edit'}
             />
         </Box>
     );
