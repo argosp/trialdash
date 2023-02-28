@@ -144,7 +144,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         </EntityMarker>
                     ))
                 }
-                <Control position="bottomright" >
+                <Control position="topright" >
                     <Paper>
                         <Button
                             variant={showName ? 'contained' : 'outlined'}
@@ -181,22 +181,50 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                                 onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
                             />
                         </Grid>
-                        {!showTable ? null : // && !showEditTable
-                            <Grid item>
-                                <EntityList
-                                    style={{
-                                        overflow: 'auto',
-                                        display: 'block'
-                                    }}
-                                    entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
-                                    removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                                    layerChosen={layerChosen}
-                                    showProperties={false}
-                                />
-                            </Grid>
-                        }
+                        {/* {!showTable ? null : // && !showEditTable */}
+                        <Grid item>
+                            <EntityList
+                                style={{
+                                    overflow: 'auto',
+                                    display: 'block'
+                                }}
+                                entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
+                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                                layerChosen={layerChosen}
+                                showProperties={false}
+                            />
+                        </Grid>
+                        {/* } */}
                     </Grid>
                 </Control>
+
+                <Control position="bottomleft" >
+                    <EntityList
+                        style={{
+                            overflow: 'auto',
+                            //  height: '250px',
+                            display: 'block',
+
+                        }}
+                        entityItems={selectedEntityItems}
+                        removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
+                        layerChosen={layerChosen}
+                        showProperties={showEditTable}
+                    />
+                </Control>
+
+                <Control position="bottomright" >
+                    <EditTable
+                        handleSetOne={handleMapClick}
+                        handleSetMany={handlePutEntities}
+                        markedPoints={markedPoints}
+                        showEditBox={showEditBox}
+                        setShowEditBox={setShowEditBox}
+                        showEditTable={showEditTable}
+                        setShowEditTable={setShowEditTable}
+                    />
+                </Control>
+
             </EntityMap>
         </Box>
     )
