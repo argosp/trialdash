@@ -2,9 +2,6 @@ import React from 'react';
 import {
     Table,
     TableContainer,
-    TableHead,
-    TableCell,
-    TableRow,
     TableBody,
     Paper,
 } from '@material-ui/core'
@@ -67,9 +64,6 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
     return (
         <>
             {itemsGrouped.map(itemsOfType => {
-                const entityType = itemsOfType[0].entityType;
-                const shownPropertiesDetails = entityType.properties.filter(({ type }) => type !== 'location');
-
                 return (
                     <TableContainer component={Paper}>
                         <Table size="small">
