@@ -200,7 +200,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     />
                 </Control>
 
-                <Control position="bottomleft" >
+                <Control position="topleft" >
                     <EditTable
                         handleSetOne={handleMapClick}
                         handleSetMany={handlePutEntities}
