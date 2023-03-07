@@ -142,147 +142,172 @@ class TrialEntities extends React.Component {
       : [];
     const currentExperiment = experiments ? experiments.find(experiment => experiment.project.id === trial.experimentId) : '';
     return (
-      <>
-        <Grid
-          container
-          justifyContent="space-between"
-          className={classes.entitiesPanelHeader}
-        >
-          <Grid item>
-            {/* <IconButton
-                disableRipple
-                className={
-                  selectedViewIndex === 0
-                    ? classnames(classes.viewButton, classes.viewButtonSelected)
-                    : classes.viewButton
-                }
-                onClick={() => this.changeView(0)}
-              >
-                <TreeIcon />
-              </IconButton> */}
-            {/* <IconButton
-                disableRipple
-                className={
-                  selectedViewIndex === 1
-                    ? classnames(classes.viewButton, classes.viewButtonSelected)
-                    : classes.viewButton
-                }
-                onClick={() => this.changeView(1)}
-              >
-                <ListIcon />
-              </IconButton> */}
-            <IconButton
-              disableRipple
-              className={
-                selectedViewIndex === 2
-                  ? classnames(classes.viewButton, classes.viewButtonSelected)
-                  : classes.viewButton
-              }
-              onClick={() => this.changeView(2)}
-            >
-              <GridIcon />
-            </IconButton>
-            <IconButton
-              disableRipple
-              className={
-                selectedViewIndex === 3
-                  ? classnames(classes.viewButton, classes.viewButtonSelected)
-                  : classes.viewButton
-              }
-              onClick={() => this.changeView(3)}
-            >
-              <EditLocationIcon className={classes.locationIcon} />
-            </IconButton>
-          </Grid>
-          {selectedViewIndex !== 3 && <Grid item>
-            <SimpleButton text={"Clone entities"}
-              onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
-            <CloneEntitiesDialog
-              title={"Clone trial"}
-              open={CloneEntitiesDialogOpen}
-              setOpen={this.SetCloneEntitiesDialogOpen}
-              ref={this.cloneEntitiesRef}
-              onConfirm={(updateTrial) => submitTrial(updateTrial)}
-              entitiesTypes={entitiesTypes}
-              trialEntities={trialEntities}
-              currentTrial={trial}
-              client={client}
-              match={match}
-            >
-            </CloneEntitiesDialog>
-            <SimpleButton
-              className={classes.trialActionBtn}
-              text="Add"
-              colorVariant="primary"
-              onClick={this.openAddEntitiesPanel}
-            />
-          </Grid>
+      <EntityPlanner
+        updateLocation={updateLocation}
+        trial={trial}
+        trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
+        allEntities={entities}
+        entitiesTypes={entitiesTypes}
+        experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
+        submitTrial={(updateTrial) => submitTrial(updateTrial)}
+        cloneEntitiesDialog={
+          <CloneEntitiesDialog
+            title={"Clone trial"}
+            // open={CloneEntitiesDialogOpen}
+            // setOpen={this.SetCloneEntitiesDialogOpen}
+            ref={this.cloneEntitiesRef2}
+            onConfirm={(updateTrial) => submitTrial(updateTrial)}
+            entitiesTypes={entitiesTypes}
+            trialEntities={trialEntities}
+            currentTrial={trial}
+            client={client}
+            match={match}
+          >
+          </CloneEntitiesDialog>
+        }
+        openCloneEntitiesDialog={() => this.cloneEntitiesRef2.current.openDialog()}
+      />
+      // <>
+      //   <Grid
+      //     container
+      //     justifyContent="space-between"
+      //     className={classes.entitiesPanelHeader}
+      //   >
+      //     <Grid item>
+      //       {/* <IconButton
+      //           disableRipple
+      //           className={
+      //             selectedViewIndex === 0
+      //               ? classnames(classes.viewButton, classes.viewButtonSelected)
+      //               : classes.viewButton
+      //           }
+      //           onClick={() => this.changeView(0)}
+      //         >
+      //           <TreeIcon />
+      //         </IconButton> */}
+      //       {/* <IconButton
+      //           disableRipple
+      //           className={
+      //             selectedViewIndex === 1
+      //               ? classnames(classes.viewButton, classes.viewButtonSelected)
+      //               : classes.viewButton
+      //           }
+      //           onClick={() => this.changeView(1)}
+      //         >
+      //           <ListIcon />
+      //         </IconButton> */}
+      //       <IconButton
+      //         disableRipple
+      //         className={
+      //           selectedViewIndex === 2
+      //             ? classnames(classes.viewButton, classes.viewButtonSelected)
+      //             : classes.viewButton
+      //         }
+      //         onClick={() => this.changeView(2)}
+      //       >
+      //         <GridIcon />
+      //       </IconButton>
+      //       <IconButton
+      //         disableRipple
+      //         className={
+      //           selectedViewIndex === 3
+      //             ? classnames(classes.viewButton, classes.viewButtonSelected)
+      //             : classes.viewButton
+      //         }
+      //         onClick={() => this.changeView(3)}
+      //       >
+      //         <EditLocationIcon className={classes.locationIcon} />
+      //       </IconButton>
+      //     </Grid>
+      //     {selectedViewIndex !== 3 && <Grid item>
+      //       <SimpleButton text={"Clone entities"}
+      //         onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
+      //       <CloneEntitiesDialog
+      //         title={"Clone trial"}
+      //         open={CloneEntitiesDialogOpen}
+      //         setOpen={this.SetCloneEntitiesDialogOpen}
+      //         ref={this.cloneEntitiesRef}
+      //         onConfirm={(updateTrial) => submitTrial(updateTrial)}
+      //         entitiesTypes={entitiesTypes}
+      //         trialEntities={trialEntities}
+      //         currentTrial={trial}
+      //         client={client}
+      //         match={match}
+      //       >
+      //       </CloneEntitiesDialog>
+      //       <SimpleButton
+      //         className={classes.trialActionBtn}
+      //         text="Add"
+      //         colorVariant="primary"
+      //         onClick={this.openAddEntitiesPanel}
+      //       />
+      //     </Grid>
 
-          }
+      //     }
 
-        </Grid>
-        {selectedViewIndex !== 3 && <AddEntityPanel
-          isPanelOpen={this.state.isEntitiesPanelOpen}
-          onClose={this.closeAddEntitiesPanel}
-          match={match}
-          theme={theme}
-          addEntityToTrial={addEntityToTrial}
-          parentEntity={parentEntity}
-          parentLocation={parentLocation}
-          entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
-        />}
-        <TabPanel value={selectedViewIndex} index={2}>
-          {selectedViewIndex === 2 &&
-            <EntitiesGrid
-              {...this.props}
-              trial={trial}
-              removeEntity={removeEntity}
-              updateEntityInParent={updateEntityInParent}
-              onEntityPropertyChange={onEntityPropertyChange}
-              trialEntities={trialEntities}
-              entities={entities}
-              entitiesTypes={entitiesTypes}
-              update={update}
-              setUpdated={this.setUpdated}
-              openAddEntitiesPanel={this.openAddEntitiesPanel}
-              submitTrial={(updateTrial) => submitTrial(updateTrial)}
-              client={client}
-              match={match}
-            />
-          }
-        </TabPanel>
-        <TabPanel value={selectedViewIndex} index={3}>
-          {
-            (selectedViewIndex === 3 && Object.keys(entitiesTypes).length) ?
-              <EntityPlanner
-                updateLocation={updateLocation}
-                trial={trial}
-                trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
-                allEntities={entities}
-                entitiesTypes={entitiesTypes}
-                experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
-                submitTrial={(updateTrial) => submitTrial(updateTrial)}
-                cloneEntitiesDialog={
-                  <CloneEntitiesDialog
-                    title={"Clone trial"}
-                    // open={CloneEntitiesDialogOpen}
-                    // setOpen={this.SetCloneEntitiesDialogOpen}
-                    ref={this.cloneEntitiesRef2}
-                    onConfirm={(updateTrial) => submitTrial(updateTrial)}
-                    entitiesTypes={entitiesTypes}
-                    trialEntities={trialEntities}
-                    currentTrial={trial}
-                    client={client}
-                    match={match}
-                  >
-                  </CloneEntitiesDialog>
-                }
-                openCloneEntitiesDialog={() => this.cloneEntitiesRef2.current.openDialog()}
-              />
-              : null
-          }
-        </TabPanel>
-      </>
+      //   </Grid>
+      //   {selectedViewIndex !== 3 && <AddEntityPanel
+      //     isPanelOpen={this.state.isEntitiesPanelOpen}
+      //     onClose={this.closeAddEntitiesPanel}
+      //     match={match}
+      //     theme={theme}
+      //     addEntityToTrial={addEntityToTrial}
+      //     parentEntity={parentEntity}
+      //     parentLocation={parentLocation}
+      //     entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
+      //   />}
+      //   <TabPanel value={selectedViewIndex} index={2}>
+      //     {selectedViewIndex === 2 &&
+      //       <EntitiesGrid
+      //         {...this.props}
+      //         trial={trial}
+      //         removeEntity={removeEntity}
+      //         updateEntityInParent={updateEntityInParent}
+      //         onEntityPropertyChange={onEntityPropertyChange}
+      //         trialEntities={trialEntities}
+      //         entities={entities}
+      //         entitiesTypes={entitiesTypes}
+      //         update={update}
+      //         setUpdated={this.setUpdated}
+      //         openAddEntitiesPanel={this.openAddEntitiesPanel}
+      //         submitTrial={(updateTrial) => submitTrial(updateTrial)}
+      //         client={client}
+      //         match={match}
+      //       />
+      //     }
+      //   </TabPanel>
+      //   <TabPanel value={selectedViewIndex} index={3}>
+      //     {
+      //       (selectedViewIndex === 3 && Object.keys(entitiesTypes).length) ?
+      //         <EntityPlanner
+      //           updateLocation={updateLocation}
+      //           trial={trial}
+      //           trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
+      //           allEntities={entities}
+      //           entitiesTypes={entitiesTypes}
+      //           experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
+      //           submitTrial={(updateTrial) => submitTrial(updateTrial)}
+      //           cloneEntitiesDialog={
+      //             <CloneEntitiesDialog
+      //               title={"Clone trial"}
+      //               // open={CloneEntitiesDialogOpen}
+      //               // setOpen={this.SetCloneEntitiesDialogOpen}
+      //               ref={this.cloneEntitiesRef2}
+      //               onConfirm={(updateTrial) => submitTrial(updateTrial)}
+      //               entitiesTypes={entitiesTypes}
+      //               trialEntities={trialEntities}
+      //               currentTrial={trial}
+      //               client={client}
+      //               match={match}
+      //             >
+      //             </CloneEntitiesDialog>
+      //           }
+      //           openCloneEntitiesDialog={() => this.cloneEntitiesRef2.current.openDialog()}
+      //         />
+      //         : null
+      //     }
+      //   </TabPanel>
+      // </>
     );
   }
 }
