@@ -16,7 +16,6 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import trialMutation from './utils/trialMutation';
-import updateContainsEntitiesMutation from './utils/trialMutationUpdateContainsEntities';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import CustomInput from '../../CustomInput';
@@ -27,7 +26,6 @@ import {
   TRIALS,
   TRIAL_MUTATION,
   TRIAL_SET_MUTATION,
-  UPDATE_CONTAINS_ENTITIES_MUTATION
 } from '../../../constants/base';
 import { PenIcon } from '../../../constants/icons';
 import StatusBadge from '../../StatusBadge';
@@ -138,30 +136,6 @@ class TrialForm extends React.Component {
     }));
   };
 
-  onEntityPropertyChange = (entityObj, e, propertyKey) => {
-    const { trial, changedEntities } = this.state;
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    if (!e.target) return;
-    let { value } = e.target;
-    if (e.target.type === 'checkbox') value = e.target.checked.toString();
-    const indexOfEntity = trial[entitiesField].findIndex(
-      entity => entity.key === entityObj.key,
-    );
-    let indexOfProperty = trial[entitiesField][indexOfEntity].properties.findIndex(
-      property => property.key === propertyKey,
-    );
-
-    if (indexOfProperty === -1) {
-      trial[entitiesField][indexOfEntity].properties.push({ val: value, key: propertyKey });
-      indexOfProperty = trial[entitiesField][indexOfEntity].properties.length - 1;
-    } else {
-      const property = { ...trial[entitiesField][indexOfEntity].properties[indexOfProperty] };
-      property.val = value;
-      trial[entitiesField][indexOfEntity].properties[indexOfProperty] = { ...property };
-    }
-    this.updateChangedEntities(changedEntities, entityObj);
-    this.setState({ trial, changed: true });
-  };
   updateChangedEntities = (changedEntities, entityObj) => {
     if (changedEntities.findIndex(e => e.key === entityObj.key) === -1)
       this.setState({ changedEntities: [...this.state.changedEntities, entityObj] })
@@ -285,63 +259,6 @@ class TrialForm extends React.Component {
     const properties = this.state.trial.properties;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].invalid : false);
-  }
-
-  addEntityToTrial = (entity, selectedEntitiesType, properties, parentEntity, action) => {
-    const { trial } = this.state;
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.setState({})
-    const tmp = this.state.trial;
-    tmp[entitiesField] = this.state.trial[entitiesField] || [];
-    this.setState({ trial: tmp })
-    const newEntity = {
-      key: entity.key,
-      entitiesTypeKey: selectedEntitiesType,
-      properties
-    };
-    this.state.trial[entitiesField].push(newEntity);
-    if (parentEntity) {
-      //TODO: when open AddEntityPanel by plus icon of entity -> display all entites that can add to entity(filter by not exist key in containsArray)
-      this.updateEntityInParent(parentEntity, newEntity, action);
-    }
-    else
-      this.setState({ changed: true });
-  }
-
-  updateEntityInParent = async (parentEntity, newEntity, action) => {
-    const { match, client, returnFunc } = this.props;
-    const { trial } = this.state;
-    const containsEntitiesObj = {
-      parentEntityKey: parentEntity.key || parentEntity,
-      newEntity: newEntity,
-      action: action
-    }
-    await client.mutate({
-      mutation: updateContainsEntitiesMutation(
-        trial,
-        containsEntitiesObj.parentEntityKey,
-        containsEntitiesObj.newEntity,
-        containsEntitiesObj.action),
-      update: (cache, mutationResult) => {
-        updateCache(
-          cache,
-          mutationResult,
-          trialsQuery(match.params.id, match.params.trialSetKey),
-          TRIALS,
-          UPDATE_CONTAINS_ENTITIES_MUTATION,
-          returnFunc,
-          'trialSetKey',
-          this.updateAfterSubmit
-        );
-      },
-    });
-  }
-
-  removeEntity = (key) => {
-    const { trial } = this.state;
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-    this.state.trial[entitiesField].splice(this.state.trial[entitiesField].findIndex(e => e.key === key), 1);
-    this.setState({ changed: true });
   }
 
   updateLocation = async (...entities) => {
@@ -547,13 +464,8 @@ class TrialForm extends React.Component {
           {tabValue === 1 &&
             <TrialEntities
               trial={trial}
-              triggerUpdate={this.state.triggerUpdate}
-              addEntityToTrial={this.addEntityToTrial}
-              removeEntity={this.removeEntity}
-              updateEntityInParent={this.updateEntityInParent}
               updateLocation={this.updateLocation}
               submitTrial={this.submitTrial}
-              onEntityPropertyChange={this.onEntityPropertyChange}
               showFooter={this.showFooter}
             />
           }
