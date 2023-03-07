@@ -97,7 +97,15 @@ export const EntityEditor = ({ experimentDataMaps, cloneEntitiesDialog, openClon
     return (
         <Box
             style={{
-                height: 'calc(100vh - 320px)',
+                height: 'calc(100vh - 180px)',
+                // height: '100vh',
+                margin: 0,
+                left: 0,
+                position: 'relative',
+                right: 0,
+                bottom: 0,
+                top: 0
+                // top: '150px',
             }}
         >
             <EntityMap
@@ -138,13 +146,13 @@ export const EntityEditor = ({ experimentDataMaps, cloneEntitiesDialog, openClon
                     ))
                 }
 
-                <ToggleTextOnMap position="topright"
+                <ToggleTextOnMap position="bottomleft"
                     name={'Names'}
                     value={showName}
                     setValue={setShowName}
                 />
 
-                <ToggleTextOnMap position="topright"
+                <ToggleTextOnMap position="bottomleft"
                     name={'Table'}
                     value={showEditTable}
                     setValue={setShowEditTable}
