@@ -296,11 +296,18 @@ class Trials extends React.Component {
                           <TextField
                             label={label}
                             InputLabelProps={{ shrink: true }}
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                              readOnly: true,
+                              style: {
+                                width: Math.max(100, 12 * (val + '').length) + 'px'
+                              }
+                            }}
                             variant={'outlined'}
                             value={val}
                             size={'small'}
-                            style={{ margin: '10px' }}
+                            style={{
+                              margin: '10px',
+                            }}
                           >
                           </TextField>
                         )
@@ -312,7 +319,10 @@ class Trials extends React.Component {
                     <StyledTableCell align="left">
                       <StatusBadge color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main} title={trial.status} />
                     </StyledTableCell>
-                    <StyledTableCell align="right" className={classes.actionsCell}>
+                    <StyledTableCell align="right"
+                      className={classes.actionsCell}
+                      style={{ display: 'table-cell' }}
+                    >
                       <CustomTooltip
                         title="Download"
                         ariaLabel="download"
