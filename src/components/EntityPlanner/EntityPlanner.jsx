@@ -9,7 +9,19 @@ import { ShapeProvider } from './ShapeContext';
 import { EntitiesProvider } from './EntitiesContext';
 import { StagingProvider } from './StagingContext.jsx';
 
-const EntityPlanner = ({ client, trial, trialEntities, allEntities, match, updateLocation, entitiesTypes, experimentDataMaps, submitTrial }) => {
+const EntityPlanner = ({
+    client,
+    trial,
+    trialEntities,
+    allEntities,
+    match,
+    updateLocation,
+    entitiesTypes,
+    experimentDataMaps,
+    submitTrial,
+    cloneEntitiesDialog,
+    openCloneEntitiesDialog
+}) => {
     console.log('EntityPlanner', match.params.id, trial, trialEntities);
 
     return (
@@ -27,6 +39,8 @@ const EntityPlanner = ({ client, trial, trialEntities, allEntities, match, updat
                 <ShapeProvider>
                     <EntityEditor
                         experimentDataMaps={experimentDataMaps}
+                        cloneEntitiesDialog={cloneEntitiesDialog}
+                        openCloneEntitiesDialog={openCloneEntitiesDialog}
                     />
                 </ShapeProvider>
             </StagingProvider>

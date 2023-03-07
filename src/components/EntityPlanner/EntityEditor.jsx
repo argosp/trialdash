@@ -3,6 +3,8 @@ import {
     Grid,
     IconButton,
     Box,
+    Paper,
+    Button,
 } from '@material-ui/core';
 import {
     LocationOff,
@@ -28,7 +30,7 @@ import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { SingleEntityPropertiesView } from './SingleEntityPropertiesView.jsx';
 import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 
-export const EntityEditor = ({ experimentDataMaps }) => {
+export const EntityEditor = ({ experimentDataMaps, cloneEntitiesDialog, openCloneEntitiesDialog }) => {
     const { shape, shapeData } = useShape();
 
     const {
@@ -208,6 +210,17 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
                     />
+                </Control>
+
+                <Control position="bottomleft">
+                    <Paper>
+                        <Button variant={'contained'} color={'primary'}
+                            onClick={() => openCloneEntitiesDialog()}
+                        >
+                            Clone Entities
+                        </Button>
+                        {cloneEntitiesDialog}
+                    </Paper>
                 </Control>
 
             </EntityMap>

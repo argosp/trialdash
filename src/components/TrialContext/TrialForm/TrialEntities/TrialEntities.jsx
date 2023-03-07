@@ -54,7 +54,7 @@ class TrialEntities extends React.Component {
       const entitiesTypes = groupBy(data.data.entitiesTypes, 'key');
       let entities = [];
       client.query({ query: entitiesQuery(match.params.id) }).then((entitiesData) => {
-        entities =  entitiesData.data.entities;
+        entities = entitiesData.data.entities;
         this.setState({
           entities: groupBy(entities, 'key'),
         });
@@ -73,6 +73,7 @@ class TrialEntities extends React.Component {
       .then(() => this.setState({ isLoading: false }));
     showFooter(false);
     this.cloneEntitiesRef = React.createRef();
+    this.cloneEntitiesRef2 = React.createRef();
   }
 
   componentDidUpdate(prevProps) {
@@ -95,7 +96,7 @@ class TrialEntities extends React.Component {
     this.props.showFooter(selectedViewIndex !== 3);
   };
 
-  openAddEntitiesPanel = (e,parentEntity, parentLocation) => {
+  openAddEntitiesPanel = (e, parentEntity, parentLocation) => {
     this.setState({ isEntitiesPanelOpen: true, parentEntity, parentLocation });
   }
 
@@ -139,7 +140,7 @@ class TrialEntities extends React.Component {
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-    const currentExperiment = experiments? experiments.find(experiment => experiment.project.id === trial.experimentId): '';
+    const currentExperiment = experiments ? experiments.find(experiment => experiment.project.id === trial.experimentId) : '';
     return (
       <>
         <Grid
@@ -195,20 +196,20 @@ class TrialEntities extends React.Component {
           </Grid>
           {selectedViewIndex !== 3 && <Grid item>
             <SimpleButton text={"Clone entities"}
-             onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
-              <CloneEntitiesDialog
-                  title={"Clone trial"}
-                  open={CloneEntitiesDialogOpen}
-                  setOpen={this.SetCloneEntitiesDialogOpen}
-                  ref={this.cloneEntitiesRef}
-                  onConfirm={(updateTrial) => submitTrial(updateTrial)}
-                  entitiesTypes={entitiesTypes}
-                  trialEntities={trialEntities}
-                  currentTrial = {trial}
-                  client ={client}
-                  match ={match}
-                >
-               </CloneEntitiesDialog>
+              onClick={() => this.SetCloneEntitiesDialogOpen(!CloneEntitiesDialogOpen)}></SimpleButton>
+            <CloneEntitiesDialog
+              title={"Clone trial"}
+              open={CloneEntitiesDialogOpen}
+              setOpen={this.SetCloneEntitiesDialogOpen}
+              ref={this.cloneEntitiesRef}
+              onConfirm={(updateTrial) => submitTrial(updateTrial)}
+              entitiesTypes={entitiesTypes}
+              trialEntities={trialEntities}
+              currentTrial={trial}
+              client={client}
+              match={match}
+            >
+            </CloneEntitiesDialog>
             <SimpleButton
               className={classes.trialActionBtn}
               text="Add"
@@ -226,7 +227,7 @@ class TrialEntities extends React.Component {
           match={match}
           theme={theme}
           addEntityToTrial={addEntityToTrial}
-          parentEntity ={parentEntity}
+          parentEntity={parentEntity}
           parentLocation={parentLocation}
           entities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'].map(e => e.key)}
         />}
@@ -236,17 +237,17 @@ class TrialEntities extends React.Component {
               {...this.props}
               trial={trial}
               removeEntity={removeEntity}
-              updateEntityInParent ={updateEntityInParent}
+              updateEntityInParent={updateEntityInParent}
               onEntityPropertyChange={onEntityPropertyChange}
               trialEntities={trialEntities}
               entities={entities}
               entitiesTypes={entitiesTypes}
               update={update}
               setUpdated={this.setUpdated}
-              openAddEntitiesPanel ={this.openAddEntitiesPanel}
-              submitTrial = {(updateTrial) => submitTrial(updateTrial)}
-              client ={client}
-              match ={match}
+              openAddEntitiesPanel={this.openAddEntitiesPanel}
+              submitTrial={(updateTrial) => submitTrial(updateTrial)}
+              client={client}
+              match={match}
             />
           }
         </TabPanel>
@@ -260,7 +261,23 @@ class TrialEntities extends React.Component {
                 allEntities={entities}
                 entitiesTypes={entitiesTypes}
                 experimentDataMaps={currentExperiment ? currentExperiment.maps : []}
-                submitTrial = {(updateTrial) => submitTrial(updateTrial)}
+                submitTrial={(updateTrial) => submitTrial(updateTrial)}
+                cloneEntitiesDialog={
+                  <CloneEntitiesDialog
+                    title={"Clone trial"}
+                    // open={CloneEntitiesDialogOpen}
+                    // setOpen={this.SetCloneEntitiesDialogOpen}
+                    ref={this.cloneEntitiesRef2}
+                    onConfirm={(updateTrial) => submitTrial(updateTrial)}
+                    entitiesTypes={entitiesTypes}
+                    trialEntities={trialEntities}
+                    currentTrial={trial}
+                    client={client}
+                    match={match}
+                  >
+                  </CloneEntitiesDialog>
+                }
+                openCloneEntitiesDialog={() => this.cloneEntitiesRef2.current.openDialog()}
               />
               : null
           }
