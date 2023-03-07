@@ -8,7 +8,7 @@ import AuthPage from '../components/AuthPage';
 import AddSetForm from '../components/AddSetForm';
 import EntitiesTypes from '../components/EntityContext/EntitiesTypes';
 import entitiesTypesQuery from '../components/EntityContext/utils/entityTypeQuery';
-import Trials from '../components/TrialContext/Trials';
+import Trials from '../components/TrialContext/Trials/Trials.jsx';
 import TrialForm from '../components/TrialContext/TrialForm/TrialForm';
 import trialSetsQuery from '../components/TrialContext/utils/trialSetQuery';
 import Entities from '../components/EntityContext/Entities';

@@ -3,6 +3,8 @@ import {
     Grid,
     IconButton,
     Box,
+    Paper,
+    Button,
 } from '@material-ui/core';
 import {
     LocationOff,
@@ -28,7 +30,10 @@ import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { SingleEntityPropertiesView } from './SingleEntityPropertiesView.jsx';
 import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 
-export const EntityEditor = ({ experimentDataMaps }) => {
+export const EntityEditor = ({
+    experimentDataMaps,
+    cloneEntitiesDialog,
+}) => {
     const { shape, shapeData } = useShape();
 
     const {
@@ -50,7 +55,6 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     const [showTableOfType, setShowTableOfType] = useState('');
     const [showEditBox, setShowEditBox] = useState(false);
     const [showEditTable, setShowEditTable] = useState(false);
-
 
     const handleMapClick = e => {
         const currPoint = [e.latlng.lat, e.latlng.lng];
@@ -95,7 +99,15 @@ export const EntityEditor = ({ experimentDataMaps }) => {
     return (
         <Box
             style={{
-                height: 'calc(100vh - 320px)',
+                height: 'calc(100vh - 180px)',
+                // height: '100vh',
+                margin: 0,
+                left: 0,
+                position: 'relative',
+                right: 0,
+                bottom: 0,
+                top: 0
+                // top: '150px',
             }}
         >
             <EntityMap
@@ -136,13 +148,13 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     ))
                 }
 
-                <ToggleTextOnMap position="topright"
+                <ToggleTextOnMap position="bottomleft"
                     name={'Names'}
                     value={showName}
                     setValue={setShowName}
                 />
 
-                <ToggleTextOnMap position="topright"
+                <ToggleTextOnMap position="bottomleft"
                     name={'Table'}
                     value={showEditTable}
                     setValue={setShowEditTable}
@@ -200,7 +212,7 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                     />
                 </Control>
 
-                <Control position="bottomleft" >
+                <Control position="topleft" >
                     <EditTable
                         handleSetOne={handleMapClick}
                         handleSetMany={handlePutEntities}
@@ -208,6 +220,17 @@ export const EntityEditor = ({ experimentDataMaps }) => {
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
                     />
+                </Control>
+
+                <Control position="bottomleft">
+                    <Paper>
+                        <Button variant={'contained'} color={'primary'}
+                            onClick={() => cloneEntitiesDialog.ref.current.openDialog()}
+                        >
+                            Clone Entities
+                        </Button>
+                        {cloneEntitiesDialog}
+                    </Paper>
                 </Control>
 
             </EntityMap>
