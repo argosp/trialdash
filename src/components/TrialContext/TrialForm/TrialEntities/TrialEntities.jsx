@@ -77,7 +77,6 @@ const TrialEntities = ({
                 >
                 </CloneEntitiesDialog>
             }
-            openCloneEntitiesDialog={() => cloneEntitiesRef.current.openDialog()}
         />
     );
 }

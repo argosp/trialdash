@@ -30,7 +30,10 @@ import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { SingleEntityPropertiesView } from './SingleEntityPropertiesView.jsx';
 import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 
-export const EntityEditor = ({ experimentDataMaps, cloneEntitiesDialog, openCloneEntitiesDialog }) => {
+export const EntityEditor = ({
+    experimentDataMaps,
+    cloneEntitiesDialog,
+}) => {
     const { shape, shapeData } = useShape();
 
     const {
@@ -52,7 +55,6 @@ export const EntityEditor = ({ experimentDataMaps, cloneEntitiesDialog, openClon
     const [showTableOfType, setShowTableOfType] = useState('');
     const [showEditBox, setShowEditBox] = useState(false);
     const [showEditTable, setShowEditTable] = useState(false);
-
 
     const handleMapClick = e => {
         const currPoint = [e.latlng.lat, e.latlng.lng];
@@ -223,7 +225,7 @@ export const EntityEditor = ({ experimentDataMaps, cloneEntitiesDialog, openClon
                 <Control position="bottomleft">
                     <Paper>
                         <Button variant={'contained'} color={'primary'}
-                            onClick={() => openCloneEntitiesDialog()}
+                            onClick={() => cloneEntitiesDialog.ref.current.openDialog()}
                         >
                             Clone Entities
                         </Button>

@@ -20,7 +20,6 @@ const EntityPlanner = ({
     experimentDataMaps,
     submitTrial,
     cloneEntitiesDialog,
-    openCloneEntitiesDialog
 }) => {
     console.log('EntityPlanner', match.params.id, trial, trialEntities);
 
@@ -40,7 +39,6 @@ const EntityPlanner = ({
                     <EntityEditor
                         experimentDataMaps={experimentDataMaps}
                         cloneEntitiesDialog={cloneEntitiesDialog}
-                        openCloneEntitiesDialog={openCloneEntitiesDialog}
                     />
                 </ShapeProvider>
             </StagingProvider>
