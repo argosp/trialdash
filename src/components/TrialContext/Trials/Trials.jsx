@@ -109,6 +109,7 @@ class Trials extends React.Component {
       { key: uuid(), title: 'trial name' },
       { key: uuid(), title: 'clone' },
       { key: uuid(), title: 'entities' },
+      { key: uuid(), title: '' },
     ];
 
     if (!isEmpty(trialSet) && !isEmpty(trialSet.properties)) {
@@ -116,7 +117,7 @@ class Trials extends React.Component {
         // the three last columns are static (created, state and buttons)
         if (index === trialSet.properties.length - 1) {
           columns.push(
-            { key: uuid(), title: '' }, //property.label },
+            // { key: uuid(), title: '' }, //property.label },
             { key: uuid(), title: 'created' },
             { key: uuid(), title: 'state' },
             { key: uuid(), title: '' },
@@ -125,7 +126,7 @@ class Trials extends React.Component {
           return;
         }
 
-        columns.push({ key: uuid(), title: '' });//property.label });
+        // columns.push({ key: uuid(), title: '' });//property.label });
       });
     }
 
@@ -286,23 +287,25 @@ class Trials extends React.Component {
                     <StyledTableCell align="left">
                       {trial.numberOfEntities}
                     </StyledTableCell>
-                    {trialSet && trialSet.properties && trialSet.properties.map(property => {
-                      const trialProp = trial.properties.find(p => p.key === property.key);
-                      const val = trialProp ? trialProp.val : '';
-                      const label = property.label;
-                      return (
-                        <StyledTableCell key={property.key} align="left">
+                    <StyledTableCell align="left">
+                      {trialSet && trialSet.properties && trialSet.properties.map(property => {
+                        const trialProp = trial.properties.find(p => p.key === property.key);
+                        const val = trialProp ? trialProp.val : '';
+                        const label = property.label;
+                        return (
                           <TextField
                             label={label}
                             InputLabelProps={{ shrink: true }}
                             InputProps={{ readOnly: true }}
                             variant={'outlined'}
                             value={val}
+                            size={'small'}
+                            style={{ margin: '10px' }}
                           >
                           </TextField>
-                        </StyledTableCell>
-                      )
-                    })}
+                        )
+                      })}
+                    </StyledTableCell>
                     <StyledTableCell align="left">
                       {moment(trial.created).format('D/M/YYYY')}
                     </StyledTableCell>
