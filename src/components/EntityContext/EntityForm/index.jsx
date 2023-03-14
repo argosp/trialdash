@@ -11,7 +11,6 @@ import Grid from '@material-ui/core/Grid';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import LoadingOverlay from 'react-loading-overlay';
 import entityMutation from './utils/entityMutation';
 import { updateCache } from '../../../apolloGraphql';
 import {
@@ -25,6 +24,7 @@ import { styles } from './styles';
 import Footer from '../../Footer';
 import entitiesTypesQuery from '../utils/entityTypeQuery';
 import entitiesQuery from '../Entities/utils/entityQuery';
+import { WorkingContext } from '../../AppLayout';
 
 class EntityForm extends React.Component {
   state = {
@@ -41,6 +41,8 @@ class EntityForm extends React.Component {
     numberFormat: '',
     suffix: '',
   };
+
+  static contextType = WorkingContext;
 
   componentDidMount() {
     const { client, match, entity } = this.props;
@@ -142,10 +144,10 @@ class EntityForm extends React.Component {
 
   submitEntity = async (newEntity, deleted) => {
     const { match, client, returnFunc } = this.props;
-    const { entitiesType, loading } = this.state;
+    const { entitiesType } = this.state;
     const { number, prefix, numberFormat, suffix } = this.state;
-    if (loading) return;
-    this.setState({ loading: true });
+    if (this.context.working) return;
+    this.context.setWorking(true);
     if (deleted) newEntity.state = 'Deleted';
     let property;
     let invalid;
@@ -167,7 +169,8 @@ class EntityForm extends React.Component {
         }
       });
       if (invalid) {
-        this.setState({ tabValue: 0, loading: false });
+        this.setState({ tabValue: 0 });
+        this.context.setWorking(false);
         return;
       }
     }
@@ -193,7 +196,8 @@ class EntityForm extends React.Component {
         invalidNumberFormat = false;
       }
       if (invalid) {
-        this.setState({ invalidNumber, invalidNumberFormat, numberFormatError, loading: false });
+        this.setState({ invalidNumber, invalidNumberFormat, numberFormatError });
+        this.context.setWorking(false);
         return;
       }
     }
@@ -252,14 +256,10 @@ class EntityForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { entitiesType, entity, loading } = this.state;
+    const { entitiesType, entity } = this.state;
     const { number, prefix, numberFormat, suffix } = this.state;
     return (
-      <LoadingOverlay
-        active={loading}
-        spinner
-        text='Saving, please wait...'
-      >
+      <>
         <ContentHeader
           title={`Add ${entitiesType.name}`}
           className={classes.header}
@@ -347,9 +347,8 @@ class EntityForm extends React.Component {
           saveButtonHandler={() => this.submitEntity(this.state.entity)}
           withDeleteButton={this.props.entity}
           deleteButtonHandler={() => this.submitEntity(entity, true)}
-          loading={loading}
         />
-      </LoadingOverlay>
+      </>
     );
   }
 }

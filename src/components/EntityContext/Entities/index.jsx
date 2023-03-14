@@ -9,7 +9,6 @@ import { withApollo } from 'react-apollo';
 import Checkbox from '@material-ui/core/Checkbox';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import LoadingOverlay from 'react-loading-overlay';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import {
@@ -31,6 +30,7 @@ import entityMutationUpdate from '../EntityForm/utils/entityMutationUpdate';
 import CloneMultiplePanel from '../../CloneMultiplePanel';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
+import { WorkingContext } from '../../AppLayout';
 
 class Entities extends React.Component {
   state = {
@@ -38,6 +38,8 @@ class Entities extends React.Component {
     selected: [],
     data: [],
   };
+
+  static contextType = WorkingContext;
 
   componentDidMount() {
     const { match, client } = this.props;
@@ -268,9 +270,9 @@ class Entities extends React.Component {
   deleteMultiple = async () => {
     const { match, client } = this.props;
     const mutation = entityMutationUpdate;
-    const { selected, loading } = this.state;
-    if (loading) return;
-    this.setState({ loading: true });
+    const { selected } = this.state;
+    if (this.context.working) return;
+    this.context.setWorking(true);
     for (let i = 0; i < selected.length; i += 1) {
       const newEntity = { key: selected[i] };
       newEntity.action = 'update';
@@ -295,7 +297,8 @@ class Entities extends React.Component {
           },
         });
     }
-    this.setState({ update: true, selected: [], loading: false });
+    this.setState({ update: true, selected: [] });
+    this.context.setWorking(true);
   }
 
   updateEntitiesTypeNumberOfEntities = (n, cache) => {
@@ -363,15 +366,11 @@ class Entities extends React.Component {
 
   render() {
     const { history, match } = this.props;
-    const { entitiesType, isCloneMultiplePanelOpen, entity, selected, confirmMultipleOpen, loading } = this.state;
+    const { entitiesType, isCloneMultiplePanelOpen, entity, selected, confirmMultipleOpen } = this.state;
     const tableHeadColumns = this.generateTableColumns(entitiesType);
 
     return (
-      <LoadingOverlay
-        active={loading}
-        spinner
-        text='Please wait...'
-      >
+      <>
         {this.state.isEditModeEnabled
           // eslint-disable-next-line react/jsx-wrap-multilines
           ? <EntityForm
@@ -424,7 +423,7 @@ class Entities extends React.Component {
             />
           </>
         }
-      </LoadingOverlay>
+      </>
     );
   }
 }

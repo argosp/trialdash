@@ -19,7 +19,6 @@ import { useShape } from './ShapeContext.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
 import Control from '../Maps/lib/react-leaflet-control.jsx';
-import { ShowWorking } from './ShowWorking';
 import { EditTable } from './EditTable/EditTable.jsx';
 import {
     FREEPOSITIONING_SHAPE,
@@ -170,7 +169,6 @@ export const EntityEditor = ({
                 <Control position="topleft" >
                     <Grid container direction='row'>
                         <Grid item>
-                            <ShowWorking />
                             <TypeChooser
                                 shownEntityTypes={shownEntityTypes}
                                 setShownEntityTypes={newTypes => {

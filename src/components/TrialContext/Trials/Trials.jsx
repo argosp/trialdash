@@ -1,136 +1,72 @@
 import React from 'react';
-import { withStyles, TextField } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
-import LoadingOverlay from 'react-loading-overlay';
 import { withApollo } from 'react-apollo';
-import Grid from '@material-ui/core/Grid';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import classnames from 'classnames';
 import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
-import StyledTableCell from '../../StyledTableCell';
-import StatusBadge from '../../StatusBadge';
 import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { AttachFile, UploadIcon, CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
-import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
 import TrialForm from '../TrialForm/TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
-import ConfirmDialog from '../../ConfirmDialog';
-import { getTrialNameByKey } from '../../../assets/Utils';
-import { downloadTrial, downloadTrials } from './downloadCsv';
+import { downloadTrials } from './downloadCsv';
 import { uploadEntities, uploadTrial } from './uploadCsv';
+import { TrialRow } from './TrialRow';
+import { displayCloneData } from './trialUtils';
+import { WorkingContext } from '../../AppLayout';
 
 class Trials extends React.Component {
   state = {
     trialSet: {},
-    open: false,
-    confirmOpen: false,
-    loading: false
   };
 
-  setConfirmOpen = (open, trialToDelete) => {
-    if (trialToDelete || open) {
-      this.setState({ trialToDelete })
-    }
-    this.setState({ confirmOpen: open });
-  }
+  static contextType = WorkingContext;
 
   componentDidMount() {
-    const { match, client } = this.props;
-
-    client
-      .query({ query: trialSetsQuery(match.params.id) })
-      .then((data) => {
-        this.setState({
-          trialSet: data.data.trialSets.find(
-            trialSet => trialSet.key === match.params.trialSetKey,
-          ),
-        });
+    this.context.setWorking(true);
+    (async () => {
+      const { match, client } = this.props;
+      const data = await client.query({ query: trialSetsQuery(match.params.id) });
+      const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
+      this.setState({
+        trialSet,
       });
-  }
-  onInputChange = (e) => {
-    const { value } = e.target;
-    this.setState({ anchorMenu: null });
-    this.clone(value, this.state.currentTrial);
-  };
-
-  handleMenuClick = (event, trial) => {
-    this.setState({
-      anchorMenu: event.currentTarget,
-      currentTrial: trial
-    });
-  };
-  //TODO handleMenuChange !state
-  handleMenuClose = (anchor) => {
-    this.setState({ [anchor]: null });
-  };
-  displayCloneData = (trial, trialsArray) => {
-    return trial.cloneFromTrailKey ?
-      `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}` :
-      `cloned from ${trial.cloneFrom}`;//state will display
+      this.context.setWorking(false);
+    })()
   }
 
   updateTrialFromCsv = async (e) => {
     try {
-      this.setState({ loading: true })
+      this.context.setWorking(true);
       await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
       this.setState({ update: true })
-      this.setState({ loading: false })
     } catch (err) {
       alert('uploading fail, please check the file')
-      this.setState({ loading: false })
     }
+    this.context.setWorking(false);
   }
   updateEntitiesTrialFromCsv = async (e, trial) => {
     try {
-      this.setState({ loading: true })
+      this.context.setWorking(true);
       await uploadEntities(e, trial, this.props.client, this.props.match)
       this.setState({ update: true })
-      this.setState({ loading: false })
     } catch (err) {
       alert('uploading fail, please check the file')
-      this.setState({ loading: false })
     }
-
-
+    this.context.setWorking(false);
   }
 
   generateTableColumns = (trialSet) => {
-    const columns = [
-      { key: uuid(), title: 'trial name' },
-      { key: uuid(), title: 'clone' },
-      { key: uuid(), title: 'entities' },
-      { key: uuid(), title: '' },
-    ];
-
+    const columns = ['trial name', 'clone', 'entities', ''];
     if (!isEmpty(trialSet) && !isEmpty(trialSet.properties)) {
-      trialSet.properties.forEach((property, index) => {
-        // the three last columns are static (created, state and buttons)
-        if (index === trialSet.properties.length - 1) {
-          columns.push(
-            // { key: uuid(), title: '' }, //property.label },
-            { key: uuid(), title: 'created' },
-            { key: uuid(), title: 'state' },
-            { key: uuid(), title: '' },
-          );
-
-          return;
-        }
-
-        // columns.push({ key: uuid(), title: '' });//property.label });
-      });
+      columns.push('created', 'state', '');
     }
-
-    return columns;
+    return columns.map(title => { return { key: uuid(), title } });
   };
 
   updateTrialSetNumberOfTrials = (n, cache) => {
@@ -147,7 +83,8 @@ class Trials extends React.Component {
     );
   };
 
-  clone = async (state, trial) => {
+  cloneTrial = async (state, trial) => {
+    this.context.setWorking(true);
     const { match, client } = this.props;
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
@@ -176,15 +113,17 @@ class Trials extends React.Component {
     });
 
     this.setState({ update: true });
+    this.context.setWorking(false);
   };
 
   setUpdated = () => {
     this.setState({ update: false });
   }
 
-  deleteTrial = async () => {
+  deleteTrial = async (trialToDelete) => {
+    this.context.setWorking(true);
     // const newEntity = this.state.trial;
-    const newEntity = { ...this.state.trialToDelete };
+    const newEntity = { ...trialToDelete };
     newEntity.state = 'Deleted';
     const { match, client } = this.props;
     newEntity.experimentId = match.params.id;
@@ -210,6 +149,7 @@ class Trials extends React.Component {
       });
 
     this.setState({ update: true });
+    this.context.setWorking(false);
   };
 
   activateEditMode = (trial, devices) => {
@@ -232,16 +172,12 @@ class Trials extends React.Component {
   }
 
   render() {
-    const { history, match, client } = this.props;
-    const { trialSet, tabValue, loading } = this.state;
+    const { history, match, client, classes, theme } = this.props;
+    const { trialSet, tabValue } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
     return (
-      <LoadingOverlay
-        active={loading}
-        spinner
-        text='Updating, please wait...'>
-
+      <>
         {this.state.isEditModeEnabled
           // eslint-disable-next-line react/jsx-wrap-multilines
           ? <TrialForm
@@ -265,176 +201,28 @@ class Trials extends React.Component {
               addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
               withDownloadButton
               downloadButtonText="Download trials"
-              downloadButtonHandler={() => downloadTrials(client, match, trialSet, this.displayCloneData)}
+              downloadButtonHandler={() => downloadTrials(client, match, trialSet, displayCloneData)}
             />
             <ContentTable
               contentType={TRIALS}
               query={trialsQuery(match.params.id, match.params.trialSetKey)}
               tableHeadColumns={tableHeadColumns}
               renderRow={(trial, index, trialsArray) => {
-                const { trialSet, confirmOpen, anchorMenu } = this.state;
-                const { classes, theme } = this.props;
                 return (
-                  <>
-                    <StyledTableCell align="left" className={classes.tableCell}
-                      onClick={() => this.activateEditMode(trial)}
-                    >
-                      {trial.name}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {trial.cloneFrom ? this.displayCloneData(trial, trialsArray) : ''}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {trial.numberOfEntities}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {trialSet && trialSet.properties && trialSet.properties.map(property => {
-                        const trialProp = trial.properties.find(p => p.key === property.key);
-                        const val = trialProp ? trialProp.val : '';
-                        const label = property.label;
-                        return (
-                          <TextField
-                            label={label}
-                            InputLabelProps={{ shrink: true }}
-                            InputProps={{
-                              readOnly: true,
-                              style: {
-                                width: Math.max(100, 12 * (val + '').length) + 'px'
-                              }
-                            }}
-                            variant={'outlined'}
-                            value={val}
-                            size={'small'}
-                            style={{
-                              margin: '10px',
-                            }}
-                          >
-                          </TextField>
-                        )
-                      })}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {moment(trial.created).format('D/M/YYYY')}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      <StatusBadge color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main} title={trial.status} />
-                    </StyledTableCell>
-                    <StyledTableCell align="right"
-                      className={classes.actionsCell}
-                      style={{ display: 'table-cell' }}
-                    >
-                      <CustomTooltip
-                        title="Download"
-                        ariaLabel="download"
-                        onClick={() => downloadTrial({
-                          ...this.props,
-                          trial,
-                          trials: trialsArray,
-                          trialSet,
-                          displayCloneData: this.displayCloneData
-                        })}
-                      >
-                        <DownloadIcon />
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Upload csv props update"
-                        ariaLabel="Upload csv update"
-                        component="label"
-                      >
-                        <>
-                          <UploadIcon />
-                          <input
-                            type="file"
-                            onChange={this.updateTrialFromCsv}
-                            hidden
-                          /></>
-
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Upload csv entities update"
-                        ariaLabel="Upload csv update"
-                        component="label"
-                      >
-                        <>
-                          <AttachFile />
-                          <input
-                            type="file"
-                            onChange={(e) => this.updateEntitiesTrialFromCsv(e, trial)}
-                            hidden
-                          /></>
-
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Entities"
-                        ariaLabel="entities"
-                        onClick={() => this.activateEditMode(trial, true)}
-                      >
-                        <GridIcon />
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Clone from"
-                        ariaLabel="clone"
-                        onClick={(e) => this.handleMenuClick(e, trial)}
-                      >
-                        <CloneIcon />
-                      </CustomTooltip>
-                      {this.state.currentTrial && <Menu
-                        id="clone-menu"
-                        classes={{ paper: classes.menu }}
-                        open={Boolean(anchorMenu)}
-                        onClose={() => this.handleMenuClose('anchorMenu')}
-                        anchorEl={anchorMenu}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'left',
-                        }}
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'left',
-                        }}
-                      >
-                        {['design', 'deploy'].map((i) => <MenuItem
-                          color={theme.palette[this.state.currentTrial.status === 'deploy' ? 'orange' : 'violet'].main}
-                          key={uuid()}
-                          classes={{ root: classes.menuItem }}
-                          onClick={e => this.onInputChange({ target: { value: i } })}
-                        >
-                          <Grid
-                            container
-                            wrap="nowrap"
-                            alignItems="center"
-                          >
-                            <div className={(classnames(classes.rect, classes[i]))}></div>
-                            {i}
-                          </Grid>
-                        </MenuItem>)}
-                      </Menu>}
-                      <CustomTooltip
-                        title="Edit"
-                        ariaLabel="edit"
-                        onClick={() => this.activateEditMode(trial)}
-                      >
-                        <PenIcon />
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Delete"
-                        ariaLabel="delete"
-                        onClick={() => this.setConfirmOpen(true, trial)}
-                      >
-                        <BasketIcon />
-                      </CustomTooltip>
-                      <ConfirmDialog
-                        title={'Delete Trial'}
-                        open={confirmOpen}
-                        setOpen={this.setConfirmOpen}
-                        onConfirm={() => this.deleteTrial()}
-                      // inputValidation
-                      >
-                        Are you sure you want to delete this trial?
-                      </ConfirmDialog>
-                    </StyledTableCell>
-                  </>
+                  <TrialRow
+                    trial={trial}
+                    trialsArray={trialsArray}
+                    trialSet={trialSet}
+                    classes={classes}
+                    theme={theme}
+                    client={client}
+                    match={match}
+                    activateEditMode={this.activateEditMode}
+                    updateTrialFromCsv={this.updateTrialFromCsv}
+                    updateEntitiesTrialFromCsv={this.updateEntitiesTrialFromCsv}
+                    deleteTrial={this.deleteTrial}
+                    cloneTrial={this.cloneTrial}
+                  />
                 )
               }}
               update={this.state.update}
@@ -442,7 +230,7 @@ class Trials extends React.Component {
             />
           </>
         }
-      </LoadingOverlay>
+      </>
     );
   }
 }

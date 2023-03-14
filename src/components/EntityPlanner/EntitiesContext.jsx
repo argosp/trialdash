@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { WorkingContext } from '../AppLayout';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import { changeEntityLocation } from './EntityUtils';
 
@@ -18,7 +19,7 @@ export const EntitiesProvider = ({
     allEntities
 }) => {
     const [entities, setEntities] = useState([]);
-    const [working, setWorking] = useState(false);
+    const { setWorking } = useContext(WorkingContext);
 
     const sortNameKeyInplace = (items) => {
         return items.sort((a, b) => {
@@ -161,7 +162,6 @@ export const EntitiesProvider = ({
     }
 
     const store = {
-        working,
         entities,
         setEntityLocations,
         getEntityItems,
