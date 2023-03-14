@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import uuid from 'uuid/v4';
 import moment from 'moment';
 import { Grid, Menu, MenuItem } from '@material-ui/core';
@@ -16,7 +16,6 @@ export const TrialRow = ({
     trial,
     trialsArray,
     trialSet,
-    confirmOpen,
     anchorMenu,
     classes,
     theme,
@@ -30,8 +29,9 @@ export const TrialRow = ({
     handleMenuClick,
     handleMenuClose,
     onInputChange,
-    setConfirmOpen
 }) => {
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
     return (
         <>
             <StyledTableCell align="left" className={classes.tableCell}
@@ -159,16 +159,15 @@ export const TrialRow = ({
                 <CustomTooltip
                     title="Delete"
                     ariaLabel="delete"
-                    onClick={() => setConfirmOpen(true, trial)}
+                    onClick={() => setConfirmDeleteOpen(true)}
                 >
                     <BasketIcon />
                 </CustomTooltip>
                 <ConfirmDialog
-                    title={'Delete Trial'}
-                    open={confirmOpen}
-                    setOpen={setConfirmOpen}
-                    onConfirm={() => deleteTrial()}
-                // inputValidation
+                    title={'Delete Trial ' + trial.name}
+                    open={confirmDeleteOpen}
+                    setOpen={setConfirmDeleteOpen}
+                    onConfirm={() => deleteTrial(trial)}
                 >
                     Are you sure you want to delete this trial?
                 </ConfirmDialog>

@@ -23,17 +23,8 @@ import { displayCloneData } from './trialUtils';
 class Trials extends React.Component {
   state = {
     trialSet: {},
-    open: false,
-    confirmOpen: false,
     loading: false
   };
-
-  setConfirmOpen = (open, trialToDelete) => {
-    if (trialToDelete || open) {
-      this.setState({ trialToDelete })
-    }
-    this.setState({ confirmOpen: open });
-  }
 
   componentDidMount() {
     const { match, client } = this.props;
@@ -168,9 +159,9 @@ class Trials extends React.Component {
     this.setState({ update: false });
   }
 
-  deleteTrial = async () => {
+  deleteTrial = async (trialToDelete) => {
     // const newEntity = this.state.trial;
-    const newEntity = { ...this.state.trialToDelete };
+    const newEntity = { ...trialToDelete };
     newEntity.state = 'Deleted';
     const { match, client } = this.props;
     newEntity.experimentId = match.params.id;
@@ -258,14 +249,13 @@ class Trials extends React.Component {
               query={trialsQuery(match.params.id, match.params.trialSetKey)}
               tableHeadColumns={tableHeadColumns}
               renderRow={(trial, index, trialsArray) => {
-                const { trialSet, confirmOpen, anchorMenu } = this.state;
+                const { trialSet, anchorMenu } = this.state;
                 const { classes, theme } = this.props;
                 return (
                   <TrialRow
                     trial={trial}
                     trialsArray={trialsArray}
                     trialSet={trialSet}
-                    confirmOpen={confirmOpen}
                     anchorMenu={anchorMenu}
                     classes={classes}
                     theme={theme}
@@ -279,7 +269,6 @@ class Trials extends React.Component {
                     handleMenuClick={this.handleMenuClick}
                     handleMenuClose={this.handleMenuClose}
                     onInputChange={this.onInputChange}
-                    setConfirmOpen={this.setConfirmOpen}
                   />
                 )
               }}
