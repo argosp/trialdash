@@ -1,7 +1,12 @@
 import { getTrialNameByKey } from "../../../assets/Utils";
 
 export const displayCloneData = (trial, trialsArray) => {
-    return trial.cloneFromTrailKey ?
-        `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}` :
-        `cloned from ${trial.cloneFrom}`;//state will display
+    let clonedFrom = trial.cloneFrom;
+    if (trial.cloneFromTrailKey) {
+        const clonedFromTrial = trialsArray.find(e=>e.key === trial.cloneFromTrailKey);
+        if (clonedFromTrial) {
+            clonedFrom = `${clonedFromTrial.name}/${trial.cloneFrom}`;
+        }
+    }
+    return `cloned from ${clonedFrom}`;//state will display
 }

@@ -39,22 +39,6 @@ class Trials extends React.Component {
         });
       });
   }
-  onInputChange = (e) => {
-    const { value } = e.target;
-    this.setState({ anchorMenu: null });
-    this.clone(value, this.state.currentTrial);
-  };
-
-  handleMenuClick = (event, trial) => {
-    this.setState({
-      anchorMenu: event.currentTarget,
-      currentTrial: trial
-    });
-  };
-  //TODO handleMenuChange !state
-  handleMenuClose = (anchor) => {
-    this.setState({ [anchor]: null });
-  };
 
   updateTrialFromCsv = async (e) => {
     try {
@@ -124,7 +108,7 @@ class Trials extends React.Component {
     );
   };
 
-  clone = async (state, trial) => {
+  cloneTrial = async (state, trial) => {
     const { match, client } = this.props;
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
@@ -209,7 +193,7 @@ class Trials extends React.Component {
   }
 
   render() {
-    const { history, match, client } = this.props;
+    const { history, match, client, classes, theme } = this.props;
     const { trialSet, tabValue, loading } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
@@ -249,14 +233,11 @@ class Trials extends React.Component {
               query={trialsQuery(match.params.id, match.params.trialSetKey)}
               tableHeadColumns={tableHeadColumns}
               renderRow={(trial, index, trialsArray) => {
-                const { trialSet, anchorMenu } = this.state;
-                const { classes, theme } = this.props;
                 return (
                   <TrialRow
                     trial={trial}
                     trialsArray={trialsArray}
                     trialSet={trialSet}
-                    // anchorMenu={anchorMenu}
                     classes={classes}
                     theme={theme}
                     client={client}
@@ -264,12 +245,8 @@ class Trials extends React.Component {
                     activateEditMode={this.activateEditMode}
                     updateTrialFromCsv={this.updateTrialFromCsv}
                     updateEntitiesTrialFromCsv={this.updateEntitiesTrialFromCsv}
-                    currentTrial={this.state.currentTrial}
                     deleteTrial={this.deleteTrial}
-                    // handleMenuClick={this.handleMenuClick}
-                    // handleMenuClose={this.handleMenuClose}
-                    // onInputChange={this.onInputChange}
-                    clone={this.clone}
+                    cloneTrial={this.cloneTrial}
                   />
                 )
               }}

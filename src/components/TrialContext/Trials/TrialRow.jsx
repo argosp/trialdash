@@ -16,7 +16,6 @@ export const TrialRow = ({
     trial,
     trialsArray,
     trialSet,
-    // anchorMenu,
     classes,
     theme,
     client,
@@ -24,12 +23,8 @@ export const TrialRow = ({
     activateEditMode,
     updateTrialFromCsv,
     updateEntitiesTrialFromCsv,
-    currentTrial,
     deleteTrial,
-    // handleMenuClick,
-    // handleMenuClose,
-    // onInputChange,
-    clone,
+    cloneTrial,
 }) => {
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -124,9 +119,7 @@ export const TrialRow = ({
                     classes={{ paper: classes.menu }}
                     open={Boolean(anchorEl)}
                     onClose={() => setAnchorEl(null)}
-                    // anchorEl={anchorRef.current}
                     anchorEl={anchorEl}
-                    // getContentAnchorEl={null}
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',
@@ -136,23 +129,20 @@ export const TrialRow = ({
                         horizontal: 'left',
                     }}
                 >
-                    {['design', 'deploy'].map((i) => (
+                    {['design', 'deploy'].map((destType) => (
                         <MenuItem
                             color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
                             key={uuid()}
                             classes={{ root: classes.menuItem }}
-                            onClick={e =>
-                                clone(i, trial)
-                                // onInputChange({ target: { value: i } })
-                            }
+                            onClick={() => cloneTrial(destType, trial)}
                         >
                             <Grid
                                 container
                                 wrap="nowrap"
                                 alignItems="center"
                             >
-                                <div className={(classnames(classes.rect, classes[i]))}></div>
-                                {i}
+                                <div className={(classnames(classes.rect, classes[destType]))}></div>
+                                {destType}
                             </Grid>
                         </MenuItem>
                     ))}
