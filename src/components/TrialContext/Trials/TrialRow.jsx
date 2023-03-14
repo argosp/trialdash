@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
-import uuid from 'uuid/v4';
+import React from 'react';
 import moment from 'moment';
-import { Grid, Menu, MenuItem } from '@material-ui/core';
-import { AttachFile, UploadIcon, CloneIcon, GridIcon, PenIcon, DownloadIcon } from '../../../constants/icons';
-import classnames from 'classnames';
+import { AttachFile, UploadIcon, GridIcon, PenIcon, DownloadIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import StatusBadge from '../../StatusBadge';
 import StyledTableCell from '../../StyledTableCell';
@@ -11,6 +8,7 @@ import { InlineProperties } from './InlineProperties';
 import { downloadTrial } from './downloadCsv';
 import { displayCloneData } from './trialUtils';
 import { DeleteTrialIconButton } from './DeleteTrialIconButton';
+import { CloneTrialIconButton } from './CloneTrialIconButton';
 
 export const TrialRow = ({
     trial,
@@ -26,8 +24,6 @@ export const TrialRow = ({
     deleteTrial,
     cloneTrial,
 }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-
     return (
         <>
             <StyledTableCell align="left" className={classes.tableCell}
@@ -106,47 +102,12 @@ export const TrialRow = ({
                 >
                     <GridIcon />
                 </CustomTooltip>
-                <CustomTooltip
-                    title="Clone from"
-                    ariaLabel="clone"
-                    onClick={e => setAnchorEl(e.currentTarget)}
-                >
-                    <CloneIcon />
-                </CustomTooltip>
-                <Menu
-                    id="clone-menu"
-                    classes={{ paper: classes.menu }}
-                    open={Boolean(anchorEl)}
-                    onClose={() => setAnchorEl(null)}
-                    anchorEl={anchorEl}
-                    getContentAnchorEl={null}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                >
-                    {['design', 'deploy'].map((destType) => (
-                        <MenuItem
-                            color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
-                            key={uuid()}
-                            classes={{ root: classes.menuItem }}
-                            onClick={() => cloneTrial(destType, trial)}
-                        >
-                            <Grid
-                                container
-                                wrap="nowrap"
-                                alignItems="center"
-                            >
-                                <div className={(classnames(classes.rect, classes[destType]))}></div>
-                                {destType}
-                            </Grid>
-                        </MenuItem>
-                    ))}
-                </Menu>
+                <CloneTrialIconButton
+                    classes={classes}
+                    cloneTrial={cloneTrial}
+                    theme={theme}
+                    trial={trial}
+                />
                 <CustomTooltip
                     title="Edit"
                     ariaLabel="edit"
