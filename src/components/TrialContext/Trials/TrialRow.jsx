@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import uuid from 'uuid/v4';
 import moment from 'moment';
 import { Grid, Menu, MenuItem } from '@material-ui/core';
-import { AttachFile, UploadIcon, CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
+import { AttachFile, UploadIcon, CloneIcon, GridIcon, PenIcon, DownloadIcon } from '../../../constants/icons';
 import classnames from 'classnames';
 import CustomTooltip from '../../CustomTooltip';
 import StatusBadge from '../../StatusBadge';
 import StyledTableCell from '../../StyledTableCell';
 import { InlineProperties } from './InlineProperties';
-import ConfirmDialog from '../../ConfirmDialog';
 import { downloadTrial } from './downloadCsv';
 import { displayCloneData } from './trialUtils';
+import { DeleteTrialIconButton } from './DeleteTrialIconButton';
 
 export const TrialRow = ({
     trial,
@@ -26,7 +26,6 @@ export const TrialRow = ({
     deleteTrial,
     cloneTrial,
 }) => {
-    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
     return (
@@ -114,7 +113,7 @@ export const TrialRow = ({
                 >
                     <CloneIcon />
                 </CustomTooltip>
-                {<Menu
+                <Menu
                     id="clone-menu"
                     classes={{ paper: classes.menu }}
                     open={Boolean(anchorEl)}
@@ -147,7 +146,7 @@ export const TrialRow = ({
                             </Grid>
                         </MenuItem>
                     ))}
-                </Menu>}
+                </Menu>
                 <CustomTooltip
                     title="Edit"
                     ariaLabel="edit"
@@ -155,21 +154,10 @@ export const TrialRow = ({
                 >
                     <PenIcon />
                 </CustomTooltip>
-                <CustomTooltip
-                    title="Delete"
-                    ariaLabel="delete"
-                    onClick={() => setConfirmDeleteOpen(true)}
-                >
-                    <BasketIcon />
-                </CustomTooltip>
-                <ConfirmDialog
-                    title={'Delete Trial ' + trial.name}
-                    open={confirmDeleteOpen}
-                    setOpen={setConfirmDeleteOpen}
-                    onConfirm={() => deleteTrial(trial)}
-                >
-                    Are you sure you want to delete this trial?
-                </ConfirmDialog>
+                <DeleteTrialIconButton
+                    trial={trial}
+                    deleteTrial={deleteTrial}
+                />
             </StyledTableCell>
         </>
     )
