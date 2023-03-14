@@ -256,7 +256,7 @@ class Trials extends React.Component {
                     trial={trial}
                     trialsArray={trialsArray}
                     trialSet={trialSet}
-                    anchorMenu={anchorMenu}
+                    // anchorMenu={anchorMenu}
                     classes={classes}
                     theme={theme}
                     client={client}
@@ -266,9 +266,10 @@ class Trials extends React.Component {
                     updateEntitiesTrialFromCsv={this.updateEntitiesTrialFromCsv}
                     currentTrial={this.state.currentTrial}
                     deleteTrial={this.deleteTrial}
-                    handleMenuClick={this.handleMenuClick}
-                    handleMenuClose={this.handleMenuClose}
-                    onInputChange={this.onInputChange}
+                    // handleMenuClick={this.handleMenuClick}
+                    // handleMenuClose={this.handleMenuClose}
+                    // onInputChange={this.onInputChange}
+                    clone={this.clone}
                   />
                 )
               }}

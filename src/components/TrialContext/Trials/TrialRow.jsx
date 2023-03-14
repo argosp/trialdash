@@ -16,7 +16,7 @@ export const TrialRow = ({
     trial,
     trialsArray,
     trialSet,
-    anchorMenu,
+    // anchorMenu,
     classes,
     theme,
     client,
@@ -26,11 +26,13 @@ export const TrialRow = ({
     updateEntitiesTrialFromCsv,
     currentTrial,
     deleteTrial,
-    handleMenuClick,
-    handleMenuClose,
-    onInputChange,
+    // handleMenuClick,
+    // handleMenuClose,
+    // onInputChange,
+    clone,
 }) => {
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
     return (
         <>
@@ -70,7 +72,7 @@ export const TrialRow = ({
                         trial,
                         trials: trialsArray,
                         trialSet,
-                        displayCloneData: displayCloneData
+                        displayCloneData
                     })}
                 >
                     <DownloadIcon />
@@ -113,17 +115,18 @@ export const TrialRow = ({
                 <CustomTooltip
                     title="Clone from"
                     ariaLabel="clone"
-                    onClick={(e) => handleMenuClick(e, trial)}
+                    onClick={e => setAnchorEl(e.currentTarget)}
                 >
                     <CloneIcon />
                 </CustomTooltip>
-                {currentTrial && <Menu
+                {<Menu
                     id="clone-menu"
                     classes={{ paper: classes.menu }}
-                    open={Boolean(anchorMenu)}
-                    onClose={() => handleMenuClose('anchorMenu')}
-                    anchorEl={anchorMenu}
-                    getContentAnchorEl={null}
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}
+                    // anchorEl={anchorRef.current}
+                    anchorEl={anchorEl}
+                    // getContentAnchorEl={null}
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',
@@ -133,21 +136,26 @@ export const TrialRow = ({
                         horizontal: 'left',
                     }}
                 >
-                    {['design', 'deploy'].map((i) => <MenuItem
-                        color={theme.palette[currentTrial.status === 'deploy' ? 'orange' : 'violet'].main}
-                        key={uuid()}
-                        classes={{ root: classes.menuItem }}
-                        onClick={e => onInputChange({ target: { value: i } })}
-                    >
-                        <Grid
-                            container
-                            wrap="nowrap"
-                            alignItems="center"
+                    {['design', 'deploy'].map((i) => (
+                        <MenuItem
+                            color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
+                            key={uuid()}
+                            classes={{ root: classes.menuItem }}
+                            onClick={e =>
+                                clone(i, trial)
+                                // onInputChange({ target: { value: i } })
+                            }
                         >
-                            <div className={(classnames(classes.rect, classes[i]))}></div>
-                            {i}
-                        </Grid>
-                    </MenuItem>)}
+                            <Grid
+                                container
+                                wrap="nowrap"
+                                alignItems="center"
+                            >
+                                <div className={(classnames(classes.rect, classes[i]))}></div>
+                                {i}
+                            </Grid>
+                        </MenuItem>
+                    ))}
                 </Menu>}
                 <CustomTooltip
                     title="Edit"
