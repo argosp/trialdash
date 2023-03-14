@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, TextField } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
@@ -28,6 +28,7 @@ import ConfirmDialog from '../../ConfirmDialog';
 import { getTrialNameByKey } from '../../../assets/Utils';
 import { downloadTrial, downloadTrials } from './downloadCsv';
 import { uploadEntities, uploadTrial } from './uploadCsv';
+import { InlineProperties } from './InlineProperties';
 
 class Trials extends React.Component {
   state = {
@@ -288,30 +289,10 @@ class Trials extends React.Component {
                       {trial.numberOfEntities}
                     </StyledTableCell>
                     <StyledTableCell align="left">
-                      {trialSet && trialSet.properties && trialSet.properties.map(property => {
-                        const trialProp = trial.properties.find(p => p.key === property.key);
-                        const val = trialProp ? trialProp.val : '';
-                        const label = property.label;
-                        return (
-                          <TextField
-                            label={label}
-                            InputLabelProps={{ shrink: true }}
-                            InputProps={{
-                              readOnly: true,
-                              style: {
-                                width: Math.max(100, 12 * (val + '').length) + 'px'
-                              }
-                            }}
-                            variant={'outlined'}
-                            value={val}
-                            size={'small'}
-                            style={{
-                              margin: '10px',
-                            }}
-                          >
-                          </TextField>
-                        )
-                      })}
+                      <InlineProperties
+                        trialSet={trialSet}
+                        trial={trial}
+                      />
                     </StyledTableCell>
                     <StyledTableCell align="left">
                       {moment(trial.created).format('D/M/YYYY')}
