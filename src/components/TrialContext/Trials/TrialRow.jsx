@@ -120,6 +120,7 @@ export const TrialRow = ({
                     open={Boolean(anchorEl)}
                     onClose={() => setAnchorEl(null)}
                     anchorEl={anchorEl}
+                    getContentAnchorEl={null}
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',

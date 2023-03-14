@@ -61,8 +61,6 @@ class Trials extends React.Component {
       alert('uploading fail, please check the file')
       this.setState({ loading: false })
     }
-
-
   }
 
   generateTableColumns = (trialSet) => {
