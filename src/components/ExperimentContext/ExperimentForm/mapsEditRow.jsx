@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import gql from 'graphql-tag';
 import { BasketIcon, PenIcon } from "../../../constants/icons";
 import {
@@ -10,10 +10,10 @@ import {
   Checkbox,
   TextField,
   Grid,
-  CircularProgress
 } from "@material-ui/core";
 import { MapsEditDetails } from "./mapsEditDetails";
 import config from '../../../config';
+import { WorkingContext } from "../../AppLayout";
 
 const UPLOAD_FILE = gql`
   mutation($file: Upload!) {
@@ -25,7 +25,7 @@ const UPLOAD_FILE = gql`
 
 const InputImageIcon = ({ onChangeFile, client }) => {
   const inputFile = useRef(null);
-  const [working, setWorking] = useState(false);
+  const { working, setWorking } = useContext(WorkingContext);
 
   const onButtonClick = () => {
     // `current` points to the mounted file input element
@@ -45,9 +45,14 @@ const InputImageIcon = ({ onChangeFile, client }) => {
   const handleChangeFile = async (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setWorking(true);
 
     const file = event.target.files[0];
+    if (!file) {
+      return;
+    }
+
+    setWorking(true);
+
     const [height, width] = await getImageSize(file);
     if (height && width) {
       const imageServerfFilename = await uploadFileToServer(file);
@@ -77,10 +82,7 @@ const InputImageIcon = ({ onChangeFile, client }) => {
         accept="image/*"
       />
       <IconButton aria-label="expand row" onClick={onButtonClick} disabled={working}>
-        {working ?
-          <CircularProgress size={20} /> :
-          <Icon>folder_open</Icon>
-        }
+        <Icon>folder_open</Icon>
       </IconButton>
     </>
   );
