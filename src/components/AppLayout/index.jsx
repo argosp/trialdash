@@ -15,13 +15,28 @@ const AppLayout = ({ classes, children }) => {
       active={working}
       spinner
       text='Please wait...'
+      styles={{
+        overlay: (base) => ({
+          ...base,
+          top: '35vh',
+          height: '30vh',
+          left: '35vw',
+          width: '30vw',
+          position: 'absolute',
+          borderRadius: 20
+        })
+      }}
     >
-      <WorkingContext.Provider value={{setWorking}}>
+      {/* <div
+        style={{ bottom: 0, top: 0, height: '100vh' }}
+      > */}
+      <WorkingContext.Provider value={{ working, setWorking }}>
         <Header />
         <div className={classes.contentWrapper}>
           {children}
         </div>
       </WorkingContext.Provider>
+      {/* </div> */}
     </LoadingOverlay>
   );
 }
