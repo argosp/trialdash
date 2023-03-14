@@ -4,7 +4,6 @@ import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
-import LoadingOverlay from 'react-loading-overlay';
 import { withApollo } from 'react-apollo';
 import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
@@ -19,47 +18,47 @@ import { downloadTrials } from './downloadCsv';
 import { uploadEntities, uploadTrial } from './uploadCsv';
 import { TrialRow } from './TrialRow';
 import { displayCloneData } from './trialUtils';
+import { WorkingContext } from '../../AppLayout';
 
 class Trials extends React.Component {
   state = {
     trialSet: {},
-    loading: false
   };
 
+  static contextType = WorkingContext;
+
   componentDidMount() {
+    this.context.setWorking(true);
     (async () => {
-      // this.setState({ loading: true })
       const { match, client } = this.props;
       const data = await client.query({ query: trialSetsQuery(match.params.id) });
       const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
       this.setState({
         trialSet,
-        // loading: false
       });
+      this.context.setWorking(false);
     })()
   }
 
   updateTrialFromCsv = async (e) => {
     try {
-      this.setState({ loading: true })
+      this.context.setWorking(true);
       await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
       this.setState({ update: true })
-      this.setState({ loading: false })
     } catch (err) {
       alert('uploading fail, please check the file')
-      this.setState({ loading: false })
     }
+    this.context.setWorking(false);
   }
   updateEntitiesTrialFromCsv = async (e, trial) => {
     try {
-      this.setState({ loading: true })
+      this.context.setWorking(true);
       await uploadEntities(e, trial, this.props.client, this.props.match)
       this.setState({ update: true })
-      this.setState({ loading: false })
     } catch (err) {
       alert('uploading fail, please check the file')
-      this.setState({ loading: false })
     }
+    this.context.setWorking(false);
   }
 
   generateTableColumns = (trialSet) => {
@@ -85,6 +84,7 @@ class Trials extends React.Component {
   };
 
   cloneTrial = async (state, trial) => {
+    this.context.setWorking(true);
     const { match, client } = this.props;
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
@@ -113,6 +113,7 @@ class Trials extends React.Component {
     });
 
     this.setState({ update: true });
+    this.context.setWorking(false);
   };
 
   setUpdated = () => {
@@ -120,6 +121,7 @@ class Trials extends React.Component {
   }
 
   deleteTrial = async (trialToDelete) => {
+    this.context.setWorking(true);
     // const newEntity = this.state.trial;
     const newEntity = { ...trialToDelete };
     newEntity.state = 'Deleted';
@@ -147,6 +149,7 @@ class Trials extends React.Component {
       });
 
     this.setState({ update: true });
+    this.context.setWorking(false);
   };
 
   activateEditMode = (trial, devices) => {
@@ -170,15 +173,11 @@ class Trials extends React.Component {
 
   render() {
     const { history, match, client, classes, theme } = this.props;
-    const { trialSet, tabValue, loading } = this.state;
+    const { trialSet, tabValue } = this.state;
     const tableHeadColumns = this.generateTableColumns(trialSet);
 
     return (
-      <LoadingOverlay
-        active={loading}
-        spinner
-        text='Please wait...'
-      >
+      <>
         {this.state.isEditModeEnabled
           // eslint-disable-next-line react/jsx-wrap-multilines
           ? <TrialForm
@@ -231,7 +230,7 @@ class Trials extends React.Component {
             />
           </>
         }
-      </LoadingOverlay>
+      </>
     );
   }
 }
