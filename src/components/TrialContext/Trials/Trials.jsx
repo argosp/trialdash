@@ -63,32 +63,11 @@ class Trials extends React.Component {
   }
 
   generateTableColumns = (trialSet) => {
-    const columns = [
-      { key: uuid(), title: 'trial name' },
-      { key: uuid(), title: 'clone' },
-      { key: uuid(), title: 'entities' },
-      { key: uuid(), title: '' },
-    ];
-
+    const columns = ['trial name', 'clone', 'entities', ''];
     if (!isEmpty(trialSet) && !isEmpty(trialSet.properties)) {
-      trialSet.properties.forEach((property, index) => {
-        // the three last columns are static (created, state and buttons)
-        if (index === trialSet.properties.length - 1) {
-          columns.push(
-            // { key: uuid(), title: '' }, //property.label },
-            { key: uuid(), title: 'created' },
-            { key: uuid(), title: 'state' },
-            { key: uuid(), title: '' },
-          );
-
-          return;
-        }
-
-        // columns.push({ key: uuid(), title: '' });//property.label });
-      });
+      columns.push('created', 'state', '');
     }
-
-    return columns;
+    return columns.map(title => { return { key: uuid(), title } });
   };
 
   updateTrialSetNumberOfTrials = (n, cache) => {
