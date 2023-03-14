@@ -27,17 +27,16 @@ class Trials extends React.Component {
   };
 
   componentDidMount() {
-    const { match, client } = this.props;
-
-    client
-      .query({ query: trialSetsQuery(match.params.id) })
-      .then((data) => {
-        this.setState({
-          trialSet: data.data.trialSets.find(
-            trialSet => trialSet.key === match.params.trialSetKey,
-          ),
-        });
+    (async () => {
+      // this.setState({ loading: true })
+      const { match, client } = this.props;
+      const data = await client.query({ query: trialSetsQuery(match.params.id) });
+      const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
+      this.setState({
+        trialSet,
+        // loading: false
       });
+    })()
   }
 
   updateTrialFromCsv = async (e) => {
@@ -199,8 +198,8 @@ class Trials extends React.Component {
       <LoadingOverlay
         active={loading}
         spinner
-        text='Updating, please wait...'>
-
+        text='Please wait...'
+      >
         {this.state.isEditModeEnabled
           // eslint-disable-next-line react/jsx-wrap-multilines
           ? <TrialForm
