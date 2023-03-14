@@ -2,33 +2,23 @@ import React from 'react';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
 import { withApollo } from 'react-apollo';
-import Grid from '@material-ui/core/Grid';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import classnames from 'classnames';
 import trialsQuery from '../utils/trialQuery';
 import { styles } from './styles';
-import StyledTableCell from '../../StyledTableCell';
-import StatusBadge from '../../StatusBadge';
 import { TRIAL_SETS_DASH, TRIALS, TRIAL_MUTATION, TRIAL_SETS, TRIAL_SET_MUTATION } from '../../../constants/base';
 import ContentHeader from '../../ContentHeader';
-import { AttachFile, UploadIcon, CloneIcon, GridIcon, PenIcon, BasketIcon, DownloadIcon } from '../../../constants/icons';
-import CustomTooltip from '../../CustomTooltip';
 import trialSetsQuery from '../utils/trialSetQuery';
 import ContentTable from '../../ContentTable';
 import TrialForm from '../TrialForm/TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
-import ConfirmDialog from '../../ConfirmDialog';
-import { getTrialNameByKey } from '../../../assets/Utils';
-import { downloadTrial, downloadTrials } from './downloadCsv';
+import { downloadTrials } from './downloadCsv';
 import { uploadEntities, uploadTrial } from './uploadCsv';
-import { InlineProperties } from './InlineProperties';
+import { TrialRow } from './TrialRow';
+import { displayCloneData } from './trialUtils';
 
 class Trials extends React.Component {
   state = {
@@ -74,11 +64,6 @@ class Trials extends React.Component {
   handleMenuClose = (anchor) => {
     this.setState({ [anchor]: null });
   };
-  displayCloneData = (trial, trialsArray) => {
-    return trial.cloneFromTrailKey ?
-      `cloned from ${getTrialNameByKey(trial.cloneFromTrailKey, trialsArray)}/${trial.cloneFrom}` :
-      `cloned from ${trial.cloneFrom}`;//state will display
-  }
 
   updateTrialFromCsv = async (e) => {
     try {
@@ -266,7 +251,7 @@ class Trials extends React.Component {
               addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
               withDownloadButton
               downloadButtonText="Download trials"
-              downloadButtonHandler={() => downloadTrials(client, match, trialSet, this.displayCloneData)}
+              downloadButtonHandler={() => downloadTrials(client, match, trialSet, displayCloneData)}
             />
             <ContentTable
               contentType={TRIALS}
@@ -276,146 +261,26 @@ class Trials extends React.Component {
                 const { trialSet, confirmOpen, anchorMenu } = this.state;
                 const { classes, theme } = this.props;
                 return (
-                  <>
-                    <StyledTableCell align="left" className={classes.tableCell}
-                      onClick={() => this.activateEditMode(trial)}
-                    >
-                      {trial.name}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {trial.cloneFrom ? this.displayCloneData(trial, trialsArray) : ''}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {trial.numberOfEntities}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      <InlineProperties
-                        trialSet={trialSet}
-                        trial={trial}
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {moment(trial.created).format('D/M/YYYY')}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      <StatusBadge color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main} title={trial.status} />
-                    </StyledTableCell>
-                    <StyledTableCell align="right"
-                      className={classes.actionsCell}
-                      style={{ display: 'table-cell' }}
-                    >
-                      <CustomTooltip
-                        title="Download"
-                        ariaLabel="download"
-                        onClick={() => downloadTrial({
-                          ...this.props,
-                          trial,
-                          trials: trialsArray,
-                          trialSet,
-                          displayCloneData: this.displayCloneData
-                        })}
-                      >
-                        <DownloadIcon />
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Upload csv props update"
-                        ariaLabel="Upload csv update"
-                        component="label"
-                      >
-                        <>
-                          <UploadIcon />
-                          <input
-                            type="file"
-                            onChange={this.updateTrialFromCsv}
-                            hidden
-                          /></>
-
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Upload csv entities update"
-                        ariaLabel="Upload csv update"
-                        component="label"
-                      >
-                        <>
-                          <AttachFile />
-                          <input
-                            type="file"
-                            onChange={(e) => this.updateEntitiesTrialFromCsv(e, trial)}
-                            hidden
-                          /></>
-
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Entities"
-                        ariaLabel="entities"
-                        onClick={() => this.activateEditMode(trial, true)}
-                      >
-                        <GridIcon />
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Clone from"
-                        ariaLabel="clone"
-                        onClick={(e) => this.handleMenuClick(e, trial)}
-                      >
-                        <CloneIcon />
-                      </CustomTooltip>
-                      {this.state.currentTrial && <Menu
-                        id="clone-menu"
-                        classes={{ paper: classes.menu }}
-                        open={Boolean(anchorMenu)}
-                        onClose={() => this.handleMenuClose('anchorMenu')}
-                        anchorEl={anchorMenu}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'left',
-                        }}
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'left',
-                        }}
-                      >
-                        {['design', 'deploy'].map((i) => <MenuItem
-                          color={theme.palette[this.state.currentTrial.status === 'deploy' ? 'orange' : 'violet'].main}
-                          key={uuid()}
-                          classes={{ root: classes.menuItem }}
-                          onClick={e => this.onInputChange({ target: { value: i } })}
-                        >
-                          <Grid
-                            container
-                            wrap="nowrap"
-                            alignItems="center"
-                          >
-                            <div className={(classnames(classes.rect, classes[i]))}></div>
-                            {i}
-                          </Grid>
-                        </MenuItem>)}
-                      </Menu>}
-                      <CustomTooltip
-                        title="Edit"
-                        ariaLabel="edit"
-                        onClick={() => this.activateEditMode(trial)}
-                      >
-                        <PenIcon />
-                      </CustomTooltip>
-                      <CustomTooltip
-                        title="Delete"
-                        ariaLabel="delete"
-                        onClick={() => this.setConfirmOpen(true, trial)}
-                      >
-                        <BasketIcon />
-                      </CustomTooltip>
-                      <ConfirmDialog
-                        title={'Delete Trial'}
-                        open={confirmOpen}
-                        setOpen={this.setConfirmOpen}
-                        onConfirm={() => this.deleteTrial()}
-                      // inputValidation
-                      >
-                        Are you sure you want to delete this trial?
-                      </ConfirmDialog>
-                    </StyledTableCell>
-                  </>
+                  <TrialRow
+                    trial={trial}
+                    trialsArray={trialsArray}
+                    trialSet={trialSet}
+                    confirmOpen={confirmOpen}
+                    anchorMenu={anchorMenu}
+                    classes={classes}
+                    theme={theme}
+                    client={client}
+                    match={match}
+                    activateEditMode={this.activateEditMode}
+                    updateTrialFromCsv={this.updateTrialFromCsv}
+                    updateEntitiesTrialFromCsv={this.updateEntitiesTrialFromCsv}
+                    currentTrial={this.state.currentTrial}
+                    deleteTrial={this.deleteTrial}
+                    handleMenuClick={this.handleMenuClick}
+                    handleMenuClose={this.handleMenuClose}
+                    onInputChange={this.onInputChange}
+                    setConfirmOpen={this.setConfirmOpen}
+                  />
                 )
               }}
               update={this.state.update}
