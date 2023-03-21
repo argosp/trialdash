@@ -31,10 +31,10 @@ import StyledTabs from '../../StyledTabs';
 import trialSetsQuery from '../utils/trialSetQuery';
 import trialsQuery from '../utils/trialQuery';
 import { updateCache } from '../../../apolloGraphql';
-import TrialEntities from './TrialEntities/TrialEntities';
 import trialMutationUpdate from './utils/trialMutationUpdate';
 import ConfirmDialog from '../../ConfirmDialog';
 import { TabPanel } from '../TabPanel';
+import EntityPlanner from '../../EntityPlanner/EntityPlanner';
 
 const COLORS_STATUSES = {
   design: { color: 'violet', level: 'main' },
@@ -447,7 +447,7 @@ class TrialForm extends React.Component {
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           {tabValue === 1 &&
-            <TrialEntities
+            <EntityPlanner
               trial={trial}
               updateLocation={this.updateLocation}
               submitTrial={this.submitTrial}
