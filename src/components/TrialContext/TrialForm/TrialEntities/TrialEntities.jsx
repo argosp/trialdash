@@ -6,7 +6,6 @@ import { groupBy } from 'lodash';
 import entitiesTypesQuery from '../../../EntityContext/utils/entityTypeQuery';
 import entitiesQuery from '../../../EntityContext/Entities/utils/entityQuery';
 import EntityPlanner from '../../../EntityPlanner/EntityPlanner';
-import CloneEntitiesDialog from '../../../CloneEntitiesDialog';
 import experimentsQuery from '../../../ExperimentContext/utils/experimentsQuery';
 
 const TrialEntities = ({
@@ -22,10 +21,6 @@ const TrialEntities = ({
         entitiesTypes: {},
         experimentDataMaps: []
     });
-
-    const entitiesField = trial.status === 'deploy' ? 'deployedEntities' : 'entities';
-
-    const cloneEntitiesRef = React.createRef();
 
     useEffect(() => {
         (async () => {
@@ -53,30 +48,14 @@ const TrialEntities = ({
         experimentDataMaps,
     } = state;
 
-    const trialEntities = groupBy(trial[entitiesField], 'entitiesTypeKey');
-
     return (
         <EntityPlanner
             updateLocation={updateLocation}
             trial={trial}
-            trialEntities={trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities']}
             allEntities={entities}
             entitiesTypes={entitiesTypes}
             experimentDataMaps={experimentDataMaps}
             submitTrial={(updateTrial) => submitTrial(updateTrial)}
-            cloneEntitiesDialog={
-                <CloneEntitiesDialog
-                    title={"Clone trial"}
-                    ref={cloneEntitiesRef}
-                    onConfirm={(updateTrial) => submitTrial(updateTrial)}
-                    entitiesTypes={entitiesTypes}
-                    trialEntities={trialEntities}
-                    currentTrial={trial}
-                    client={client}
-                    match={match}
-                >
-                </CloneEntitiesDialog>
-            }
         />
     );
 }

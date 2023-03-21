@@ -8,20 +8,23 @@ import { styles } from './styles';
 import { ShapeProvider } from './ShapeContext';
 import { EntitiesProvider } from './EntitiesContext';
 import { StagingProvider } from './StagingContext.jsx';
+import CloneEntitiesDialog from '../CloneEntitiesDialog';
+import { groupBy } from 'lodash';
 
 const EntityPlanner = ({
     client,
-    trial,
-    trialEntities,
-    allEntities,
     match,
+    trial,
+    allEntities,
     updateLocation,
     entitiesTypes,
     experimentDataMaps,
     submitTrial,
-    cloneEntitiesDialog,
 }) => {
-    console.log('EntityPlanner', match.params.id, trial, trialEntities);
+    console.log('EntityPlanner', match.params.id, trial);
+    const cloneEntitiesRef = React.createRef();
+    const trialEntities = trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'];
+    const trialEntitiesGrouped = groupBy(trialEntities, 'entitiesTypeKey');
 
     return (
         <EntitiesProvider
@@ -38,7 +41,18 @@ const EntityPlanner = ({
                 <ShapeProvider>
                     <EntityEditor
                         experimentDataMaps={experimentDataMaps}
-                        cloneEntitiesDialog={cloneEntitiesDialog}
+                        cloneEntitiesDialog={
+                            <CloneEntitiesDialog
+                                title={"Clone trial"}
+                                ref={cloneEntitiesRef}
+                                onConfirm={submitTrial}
+                                entitiesTypes={entitiesTypes}
+                                trialEntities={trialEntitiesGrouped}
+                                currentTrial={trial}
+                                client={client}
+                                match={match}
+                            />
+                        }
                     />
                 </ShapeProvider>
             </StagingProvider>
