@@ -98,7 +98,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
           </Typography>
           <TextareaAutosize
             aria-label="minimum height"
-            rowsMin={3}
+            minRows={3}
             onChange={onChange}
             value={value}
             className={classes.textArea}

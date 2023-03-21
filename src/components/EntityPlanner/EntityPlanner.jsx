@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { withStyles } from '@material-ui/core';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -8,37 +8,79 @@ import { styles } from './styles';
 import { ShapeProvider } from './ShapeContext';
 import { EntitiesProvider } from './EntitiesContext';
 import { StagingProvider } from './StagingContext.jsx';
+import CloneEntitiesDialog from '../CloneEntitiesDialog';
+import { groupBy } from 'lodash';
+import entitiesTypesQuery from '../EntityContext/utils/entityTypeQuery';
+import entitiesQuery from '../EntityContext/Entities/utils/entityQuery';
+import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 
 const EntityPlanner = ({
     client,
-    trial,
-    trialEntities,
-    allEntities,
     match,
+    trial,
     updateLocation,
-    entitiesTypes,
-    experimentDataMaps,
     submitTrial,
-    cloneEntitiesDialog,
+    showFooter,
 }) => {
-    console.log('EntityPlanner', match.params.id, trial, trialEntities);
+    console.log('EntityPlanner', match.params.id, trial);
+    const cloneEntitiesRef = React.createRef();
+
+    const [state, setState] = useState({
+        allEntities: {},
+        entitiesTypes: {},
+        experimentDataMaps: []
+    });
+
+    useEffect(() => {
+        (async () => {
+            const data = await client.query({ query: entitiesTypesQuery(match.params.id) });
+            const entitiesTypes = groupBy(data.data.entitiesTypes, 'key');
+            const entitiesData = await client.query({ query: entitiesQuery(match.params.id) });
+            const allEntities = groupBy(entitiesData.data.entities, 'key');
+            const experiments = await client.query({ query: experimentsQuery });
+            const experimentsWithData = (experiments.data.experimentsWithData || []);
+            const currentExperiment = experimentsWithData.find(experiment => experiment.project.id === trial.experimentId);
+            const experimentDataMaps = currentExperiment ? currentExperiment.maps : [];
+            setState({
+                ...state,
+                entitiesTypes,
+                allEntities,
+                experimentDataMaps,
+            });
+            showFooter(false);
+        })()
+    }, []);
+
+    const trialEntities = trial[trial.status === 'deploy' ? 'deployedEntities' : 'entities'];
+    const trialEntitiesGrouped = groupBy(trialEntities, 'entitiesTypeKey');
 
     return (
         <EntitiesProvider
             client={client}
-            entitiesTypes={entitiesTypes}
+            entitiesTypes={state.entitiesTypes}
             experimentId={match.params.id} // obtained from url by react-router
             trialEntities={trialEntities}
             updateLocation={updateLocation}
-            submitTrial={submitTrial}
+            submitTrial={(updateTrial) => submitTrial(updateTrial)}
             trial={trial}
-            allEntities={allEntities}
+            allEntities={state.allEntities}
         >
             <StagingProvider>
                 <ShapeProvider>
                     <EntityEditor
-                        experimentDataMaps={experimentDataMaps}
-                        cloneEntitiesDialog={cloneEntitiesDialog}
+                        experimentDataMaps={state.experimentDataMaps}
+                        cloneEntitiesDialog={
+                            <CloneEntitiesDialog
+                                title={"Clone trial"}
+                                ref={cloneEntitiesRef}
+                                onConfirm={submitTrial}
+                                entitiesTypes={state.entitiesTypes}
+                                trialEntities={trialEntitiesGrouped}
+                                currentTrial={trial}
+                                client={client}
+                                match={match}
+                            />
+                        }
                     />
                 </ShapeProvider>
             </StagingProvider>

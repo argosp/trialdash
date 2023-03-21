@@ -9,6 +9,7 @@ import { downloadTrial } from './downloadCsv';
 import { displayCloneData } from './trialUtils';
 import { DeleteTrialIconButton } from './DeleteTrialIconButton';
 import { CloneTrialIconButton } from './CloneTrialIconButton';
+import { COLORS_STATUSES } from '../../../constants/base';
 
 export const TrialRow = ({
     trial,
@@ -47,7 +48,7 @@ export const TrialRow = ({
                 {moment(trial.created).format('D/M/YYYY')}
             </StyledTableCell>
             <StyledTableCell align="left">
-                <StatusBadge color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main} title={trial.status} />
+                <StatusBadge color={theme.palette[COLORS_STATUSES[trial.status].color].main} title={trial.status} />
             </StyledTableCell>
             <StyledTableCell align="right"
                 className={classes.actionsCell}

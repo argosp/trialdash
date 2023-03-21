@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import CustomTooltip from '../../CustomTooltip';
-import classnames from 'classnames';
 import uuid from 'uuid/v4';
 import { CloneIcon } from '../../../constants/icons';
-import { Grid, Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem } from '@material-ui/core';
+import { COLORS_STATUSES } from '../../../constants/base';
 
 export const CloneTrialIconButton = ({
     classes,
@@ -37,26 +37,23 @@ export const CloneTrialIconButton = ({
                     horizontal: 'left',
                 }}
             >
-                {['design', 'deploy'].map((destType) => (
-                    <MenuItem
-                        color={theme.palette[trial.status === 'deploy' ? 'orange' : 'violet'].main}
-                        key={uuid()}
-                        classes={{ root: classes.menuItem }}
-                        onClick={async () => {
-                            await cloneTrial(destType, trial);
-                            setAnchorEl(null)
-                        }}
-                    >
-                        <Grid
-                            container
-                            wrap="nowrap"
-                            alignItems="center"
+                {Object.keys(COLORS_STATUSES).map((destType) => {
+                    return (
+                        <MenuItem
+                            key={uuid()}
+                            classes={{ root: classes.menuItem }}
+                            onClick={async () => {
+                                await cloneTrial(destType, trial);
+                                setAnchorEl(null);
+                            }}
+                            style={{
+                                color: theme.palette[COLORS_STATUSES[destType].color].main
+                            }}
                         >
-                            <div className={(classnames(classes.rect, classes[destType]))}></div>
                             {destType}
-                        </Grid>
-                    </MenuItem>
-                ))}
+                        </MenuItem>
+                    )
+                })}
             </Menu>
         </>
     )
