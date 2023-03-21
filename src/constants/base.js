@@ -20,3 +20,10 @@ export const UPLOAD_FILE = 'uploadFile';
 export const ASSETS = 'assets';
 
 export const LOGS_DASH = 'logs';
+
+export const COLORS_STATUSES = {
+    design: { color: 'violet', level: 'main' },
+    deploy: { color: 'orange', level: 'main' },
+    execution: { color: 'red', level: 'main' },
+    complete: { color: 'gray', level: 'light' },
+};

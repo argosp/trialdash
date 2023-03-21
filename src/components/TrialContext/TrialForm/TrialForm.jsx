@@ -24,6 +24,7 @@ import {
   TRIALS,
   TRIAL_MUTATION,
   TRIAL_SET_MUTATION,
+  COLORS_STATUSES,
 } from '../../../constants/base';
 import { PenIcon } from '../../../constants/icons';
 import StatusBadge from '../../StatusBadge';
@@ -36,13 +37,6 @@ import ConfirmDialog from '../../ConfirmDialog';
 import { TabPanel } from '../TabPanel';
 import EntityPlanner from '../../EntityPlanner/EntityPlanner';
 
-const COLORS_STATUSES = {
-  design: { color: 'violet', level: 'main' },
-  deploy: { color: 'orange', level: 'main' },
-  execution: { color: 'orange', level: 'main' },
-  complete: { color: 'gray', level: 'light' },
-};
-
 class TrialForm extends React.Component {
   state = {
     trial: this.initTrial(),
@@ -53,7 +47,6 @@ class TrialForm extends React.Component {
     triggerUpdate: 0,
     confirmOpen: false
   };
-
 
   initTrial() {
     return {
