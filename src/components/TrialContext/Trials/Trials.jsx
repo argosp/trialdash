@@ -23,23 +23,25 @@ import { WorkingContext } from '../../AppLayout';
 const Trials = (props) => {
   const { history, match, client, classes, theme } = props;
   const [state, setState] = useState({
-    trialSet: {}
+    trialSet: {},
+    trial: undefined,
+    tabValue: undefined,
+    isEditModeEnabled: false,
+    update: false,
   });
   const { trialSet, tabValue } = state;
 
   const { setWorking } = useContext(WorkingContext);
 
-  useEffect(() => {
+  useEffect(() => (async () => {
     setWorking(true);
-    (async () => {
-      const data = await client.query({ query: trialSetsQuery(match.params.id) });
-      const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
-      setState({
-        trialSet,
-      });
-      setWorking(false);
-    })()
-  }, [match.params.id]);
+    const data = await client.query({ query: trialSetsQuery(match.params.id) });
+    const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
+    setState({
+      trialSet,
+    });
+    setWorking(false);
+  })(), [match.params.id]);
 
   const updateTrialFromCsv = async (e) => {
     try {
@@ -83,13 +85,13 @@ const Trials = (props) => {
     );
   };
 
-  const cloneTrial = async (state, trial) => {
+  const cloneTrial = async (trialStatus, trial) => {
     setWorking(true);
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
     clonedTrial.experimentId = match.params.id;
     clonedTrial.trialSetKey = match.params.trialSetKey;
-    clonedTrial.cloneFrom = state;
+    clonedTrial.cloneFrom = trialStatus;
     clonedTrial.cloneFromTrailKey = trial.key;
     clonedTrial.name = `${trial.name} clone`;
     await client.mutate({
@@ -121,7 +123,6 @@ const Trials = (props) => {
 
   const deleteTrial = async (trialToDelete) => {
     setWorking(true);
-    // const newEntity = this.state.trial;
     const newEntity = { ...trialToDelete };
     newEntity.state = 'Deleted';
     newEntity.experimentId = match.params.id;
