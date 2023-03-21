@@ -33,15 +33,17 @@ const Trials = (props) => {
 
   const { setWorking } = useContext(WorkingContext);
 
-  useEffect(() => (async () => {
-    setWorking(true);
-    const data = await client.query({ query: trialSetsQuery(match.params.id) });
-    const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
-    setState({
-      trialSet,
-    });
-    setWorking(false);
-  })(), [match.params.id]);
+  useEffect(() => {
+    (async () => {
+      setWorking(true);
+      const data = await client.query({ query: trialSetsQuery(match.params.id) });
+      const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
+      setState({
+        trialSet,
+      });
+      setWorking(false);
+    })()
+  }, [match.params.id]);
 
   const updateTrialFromCsv = async (e) => {
     try {
