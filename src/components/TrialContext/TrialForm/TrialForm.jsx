@@ -39,7 +39,7 @@ import EntityPlanner from '../../EntityPlanner/EntityPlanner';
 
 class TrialForm extends React.Component {
   state = {
-    trial: this.initTrial(),
+    trial: {},
     trialSet: {},
     tabValue: this.props.tabValue || 0,
     showFooter: true,
@@ -49,16 +49,17 @@ class TrialForm extends React.Component {
   };
 
   initTrial() {
+    const propsTrial = this.props.trial;
     return {
-      key: this.props.trial ? this.props.trial.key : uuid(),
+      key: propsTrial ? propsTrial.key : uuid(),
       trialSetKey: this.props.match.params.trialSetKey,
       experimentId: this.props.match.params.id,
-      name: this.props.trial ? this.props.trial.name : '',
-      status: this.props.trial && this.props.trial.status ? this.props.trial.status : 'design',
-      numberOfEntities: this.props.trial ? this.props.trial.numberOfEntities : 0,
-      properties: this.props.trial && this.props.trial.properties ? [...this.props.trial.properties] : [],
-      entities: this.props.trial && this.props.trial.entities ? [...this.props.trial.entities.map(e => { return ({ ...e, properties: [...e.properties] }) })] : [],
-      deployedEntities: this.props.trial && this.props.trial.deployedEntities ? [...this.props.trial.deployedEntities] : [],
+      name: propsTrial ? propsTrial.name : '',
+      status: propsTrial && propsTrial.status ? propsTrial.status : 'design',
+      numberOfEntities: propsTrial ? propsTrial.numberOfEntities : 0,
+      properties: propsTrial && propsTrial.properties ? [...propsTrial.properties] : [],
+      entities: propsTrial && propsTrial.entities ? [...propsTrial.entities.map(e => { return ({ ...e, properties: [...e.properties] }) })] : [],
+      deployedEntities: propsTrial && propsTrial.deployedEntities ? [...propsTrial.deployedEntities] : [],
     }
   }
 
@@ -68,6 +69,7 @@ class TrialForm extends React.Component {
       const trialSet = data.data.trialSets.find(
         item => item.key === match.params.trialSetKey,
       );
+      console.log(trialSet)
 
       let properties;
       if (!trial) {
@@ -79,7 +81,7 @@ class TrialForm extends React.Component {
 
       this.setState(state => ({
         trial: {
-          ...state.trial,
+          ...this.initTrial(),
           properties,
         },
         trialSet,

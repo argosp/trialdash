@@ -25,8 +25,11 @@ import {
   TRIALS,
   TRIAL_SET_MUTATION,
   ENTITIES_TYPE_MUTATION,
-  LOGS_DASH
+  LOGS_DASH,
+  TRIAL_EDIT_DASH,
+  TRIAL_MAP_DASH
 } from '../constants/base';
+import EntityPlanner from '../components/EntityPlanner/EntityPlanner';
 
 const AppRoutes = () => (
   <BrowserRouter>
@@ -109,6 +112,16 @@ const AppRoutes = () => (
         <Route
           path={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey/${TRIALS}`}
           component={Trials}
+          exact
+        />
+        <Route
+          path={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey/${TRIALS}/:trialKey/${TRIAL_EDIT_DASH}`}
+          component={TrialForm}
+          exact
+        />
+        <Route
+          path={`/experiments/:id/${TRIAL_SETS_DASH}/:trialSetKey/${TRIALS}/:trialKey/${TRIAL_MAP_DASH}`}
+          component={EntityPlanner}
           exact
         />
         <Route

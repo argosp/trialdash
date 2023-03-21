@@ -1,4 +1,6 @@
 export const TRIAL_SETS_DASH = 'trial-sets';
+export const TRIAL_EDIT_DASH = 'trial-edit';
+export const TRIAL_MAP_DASH = 'trial-map';
 export const TRIAL_SETS = 'trialSets';
 export const TRIALS = 'trials';
 export const TRIAL_MUTATION = 'addUpdateTrial';

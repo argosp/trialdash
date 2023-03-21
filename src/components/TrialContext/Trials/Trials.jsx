@@ -219,6 +219,7 @@ const Trials = (props) => {
                   theme={theme}
                   client={client}
                   match={match}
+                  history={history}
                   activateEditMode={activateEditMode}
                   updateTrialFromCsv={updateTrialFromCsv}
                   updateEntitiesTrialFromCsv={updateEntitiesTrialFromCsv}

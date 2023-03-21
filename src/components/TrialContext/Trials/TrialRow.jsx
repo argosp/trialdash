@@ -9,7 +9,7 @@ import { downloadTrial } from './downloadCsv';
 import { displayCloneData } from './trialUtils';
 import { DeleteTrialIconButton } from './DeleteTrialIconButton';
 import { CloneTrialIconButton } from './CloneTrialIconButton';
-import { COLORS_STATUSES } from '../../../constants/base';
+import { COLORS_STATUSES, TRIALS, TRIAL_EDIT_DASH, TRIAL_SETS_DASH } from '../../../constants/base';
 
 export const TrialRow = ({
     trial,
@@ -19,6 +19,7 @@ export const TrialRow = ({
     theme,
     client,
     match,
+    history,
     activateEditMode,
     updateTrialFromCsv,
     updateEntitiesTrialFromCsv,
@@ -112,7 +113,9 @@ export const TrialRow = ({
                 <CustomTooltip
                     title="Edit"
                     ariaLabel="edit"
-                    onClick={() => activateEditMode(trial)}
+                    onClick={
+                        // () => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${trialSet.key}/${TRIALS}/${trial.key}/${TRIAL_EDIT_DASH}`)}
+                        () => activateEditMode(trial)}
                 >
                     <PenIcon />
                 </CustomTooltip>
