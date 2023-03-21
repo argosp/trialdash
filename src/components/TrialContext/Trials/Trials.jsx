@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { withStyles } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
@@ -20,48 +20,50 @@ import { TrialRow } from './TrialRow';
 import { displayCloneData } from './trialUtils';
 import { WorkingContext } from '../../AppLayout';
 
-class Trials extends React.Component {
-  state = {
-    trialSet: {},
-  };
+const Trials = (props) => {
+  const { history, match, client, classes, theme } = props;
+  const [state, setState] = useState({
+    trialSet: {}
+  });
+  const { trialSet, tabValue } = state;
 
-  static contextType = WorkingContext;
+  const { setWorking } = useContext(WorkingContext);
 
-  componentDidMount() {
-    this.context.setWorking(true);
+  useEffect(() => {
+    setWorking(true);
     (async () => {
-      const { match, client } = this.props;
       const data = await client.query({ query: trialSetsQuery(match.params.id) });
       const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
-      this.setState({
+      setState({
         trialSet,
       });
-      this.context.setWorking(false);
+      setWorking(false);
     })()
-  }
+  }, [match.params.id]);
 
-  updateTrialFromCsv = async (e) => {
+  const updateTrialFromCsv = async (e) => {
     try {
-      this.context.setWorking(true);
-      await uploadTrial(e, this.state.trialSet, this.props.client, this.props.match)
-      this.setState({ update: true })
+      setWorking(true);
+      await uploadTrial(e, state.trialSet, props.client, props.match)
+      setState({ update: true })
     } catch (err) {
       alert('uploading fail, please check the file')
     }
-    this.context.setWorking(false);
+    setWorking(false);
   }
-  updateEntitiesTrialFromCsv = async (e, trial) => {
+
+  const updateEntitiesTrialFromCsv = async (e, trial) => {
     try {
-      this.context.setWorking(true);
-      await uploadEntities(e, trial, this.props.client, this.props.match)
-      this.setState({ update: true })
+      setWorking(true);
+      await uploadEntities(e, trial, props.client, props.match)
+      setState({ update: true })
     } catch (err) {
       alert('uploading fail, please check the file')
     }
-    this.context.setWorking(false);
+    setWorking(false);
   }
 
-  generateTableColumns = (trialSet) => {
+  const generateTableColumns = (trialSet) => {
     const columns = ['trial name', 'clone', 'entities', ''];
     if (!isEmpty(trialSet) && !isEmpty(trialSet.properties)) {
       columns.push('created', 'state', '');
@@ -69,9 +71,7 @@ class Trials extends React.Component {
     return columns.map(title => { return { key: uuid(), title } });
   };
 
-  updateTrialSetNumberOfTrials = (n, cache) => {
-    const { match } = this.props;
-    const { trialSet } = this.state;
+  const updateTrialSetNumberOfTrials = (n, cache) => {
     trialSet.numberOfTrials = n[trialSet.key];
     updateCache(
       cache,
@@ -83,9 +83,8 @@ class Trials extends React.Component {
     );
   };
 
-  cloneTrial = async (state, trial) => {
-    this.context.setWorking(true);
-    const { match, client } = this.props;
+  const cloneTrial = async (state, trial) => {
+    setWorking(true);
     const clonedTrial = { ...trial };
     clonedTrial.key = uuid();
     clonedTrial.experimentId = match.params.id;
@@ -107,25 +106,24 @@ class Trials extends React.Component {
           TRIAL_MUTATION,
           false,
           'trialSetKey',
-          this.updateTrialSetNumberOfTrials
+          updateTrialSetNumberOfTrials
         );
       },
     });
 
-    this.setState({ update: true });
-    this.context.setWorking(false);
+    setState({ update: true });
+    setWorking(false);
   };
 
-  setUpdated = () => {
-    this.setState({ update: false });
+  const setUpdated = () => {
+    setState({ update: false });
   }
 
-  deleteTrial = async (trialToDelete) => {
-    this.context.setWorking(true);
+  const deleteTrial = async (trialToDelete) => {
+    setWorking(true);
     // const newEntity = this.state.trial;
     const newEntity = { ...trialToDelete };
     newEntity.state = 'Deleted';
-    const { match, client } = this.props;
     newEntity.experimentId = match.params.id;
     newEntity.numberOfEntities = newEntity.numberOfEntities || 0;
     newEntity.trialSetKey = match.params.trialSetKey;
@@ -143,96 +141,94 @@ class Trials extends React.Component {
             TRIAL_MUTATION,
             true,
             'trialSetKey',
-            this.updateTrialSetNumberOfTrials
+            updateTrialSetNumberOfTrials
           );
         },
       });
 
-    this.setState({ update: true });
-    this.context.setWorking(false);
+    setState({ update: true });
+    setWorking(false);
   };
 
-  activateEditMode = (trial, devices) => {
-    this.setState({
+  const activateEditMode = (trial, devices) => {
+    setState({
       isEditModeEnabled: true,
       trial,
       tabValue: devices ? 1 : 0,
     });
   };
 
-  returnFunc = (deleted) => {
-    this.setState({
+  const returnFunc = (deleted) => {
+    setState({
       isEditModeEnabled: false,
       tabValue: 0,
       update: deleted,
     });
   }
-  updateTrial = (trial) => {
-    this.setState({ trial })
+
+  const updateTrial = (trial) => {
+    setState({ trial })
   }
 
-  render() {
-    const { history, match, client, classes, theme } = this.props;
-    const { trialSet, tabValue } = this.state;
-    const tableHeadColumns = this.generateTableColumns(trialSet);
+  const tableHeadColumns = generateTableColumns(trialSet);
 
-    return (
-      <>
-        {this.state.isEditModeEnabled
-          // eslint-disable-next-line react/jsx-wrap-multilines
-          ? <TrialForm
-            {...this.props}
-            trial={this.state.trial}
-            returnFunc={this.returnFunc}
-            tabValue={tabValue}
-            updateTrial={this.updateTrial}
+  return (
+    <>
+      {state.isEditModeEnabled
+        // eslint-disable-next-line react/jsx-wrap-multilines
+        ? <TrialForm
+          {...props}
+          trial={state.trial}
+          returnFunc={returnFunc}
+          tabValue={tabValue}
+          updateTrial={updateTrial}
+        />
+        // eslint-disable-next-line react/jsx-wrap-multilines
+        : <>
+          <ContentHeader
+            withSearchInput
+            title="Trials set"
+            searchPlaceholder="Search Trials"
+            withAddButton
+            addButtonText="Add trial"
+            withBackButton
+            backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
+            rightDescription={trialSet ? trialSet.name : ''}
+            addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
+            withDownloadButton
+            downloadButtonText="Download trials"
+            downloadButtonHandler={() => downloadTrials(client, match, trialSet, displayCloneData)}
           />
-          // eslint-disable-next-line react/jsx-wrap-multilines
-          : <>
-            <ContentHeader
-              withSearchInput
-              title="Trials set"
-              searchPlaceholder="Search Trials"
-              withAddButton
-              addButtonText="Add trial"
-              withBackButton
-              backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
-              rightDescription={trialSet ? trialSet.name : ''}
-              addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
-              withDownloadButton
-              downloadButtonText="Download trials"
-              downloadButtonHandler={() => downloadTrials(client, match, trialSet, displayCloneData)}
-            />
-            <ContentTable
-              contentType={TRIALS}
-              query={trialsQuery(match.params.id, match.params.trialSetKey)}
-              tableHeadColumns={tableHeadColumns}
-              renderRow={(trial, index, trialsArray) => {
-                return (
-                  <TrialRow
-                    trial={trial}
-                    trialsArray={trialsArray}
-                    trialSet={trialSet}
-                    classes={classes}
-                    theme={theme}
-                    client={client}
-                    match={match}
-                    activateEditMode={this.activateEditMode}
-                    updateTrialFromCsv={this.updateTrialFromCsv}
-                    updateEntitiesTrialFromCsv={this.updateEntitiesTrialFromCsv}
-                    deleteTrial={this.deleteTrial}
-                    cloneTrial={this.cloneTrial}
-                  />
-                )
-              }}
-              update={this.state.update}
-              setUpdated={this.setUpdated}
-            />
-          </>
-        }
-      </>
-    );
-  }
+          <ContentTable
+            contentType={TRIALS}
+            query={trialsQuery(match.params.id, match.params.trialSetKey)}
+            tableHeadColumns={tableHeadColumns}
+            renderRow={(trial, index, trialsArray) => {
+              return (
+                <TrialRow
+                  trial={trial}
+                  trialsArray={trialsArray}
+                  trialSet={trialSet}
+                  classes={classes}
+                  theme={theme}
+                  client={client}
+                  match={match}
+                  activateEditMode={activateEditMode}
+                  updateTrialFromCsv={updateTrialFromCsv}
+                  updateEntitiesTrialFromCsv={updateEntitiesTrialFromCsv}
+                  deleteTrial={deleteTrial}
+                  cloneTrial={cloneTrial}
+                />
+              )
+            }}
+            update={state.update}
+            setUpdated={setUpdated}
+          />
+        </>
+      }
+    </>
+  );
+
 }
 
 export default compose(
