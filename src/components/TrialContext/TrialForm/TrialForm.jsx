@@ -4,9 +4,7 @@ import { withStyles } from '@material-ui/core';
 import update from 'immutability-helper';
 import uuid from 'uuid/v4';
 import moment from 'moment';
-import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -36,6 +34,7 @@ import { updateCache } from '../../../apolloGraphql';
 import TrialEntities from './TrialEntities/TrialEntities';
 import trialMutationUpdate from './utils/trialMutationUpdate';
 import ConfirmDialog from '../../ConfirmDialog';
+import { TabPanel } from '../TabPanel';
 
 const COLORS_STATUSES = {
   design: { color: 'violet', level: 'main' },
@@ -43,20 +42,6 @@ const COLORS_STATUSES = {
   execution: { color: 'orange', level: 'main' },
   complete: { color: 'gray', level: 'light' },
 };
-
-const TabPanel = ({ children, value, index, ...other }) => (
-  <Typography
-    component="div"
-    role="tabpanel"
-    hidden={value !== index}
-    id={`trial-tabpanel-${index}`}
-    aria-labelledby={`trial-tab-${index}`}
-    style={{ marginBottom: '100px' }}
-    {...other}
-  >
-    <Box>{children}</Box>
-  </Typography>
-);
 
 class TrialForm extends React.Component {
   state = {
