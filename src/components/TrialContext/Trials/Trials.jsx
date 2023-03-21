@@ -39,6 +39,7 @@ const Trials = (props) => {
       const data = await client.query({ query: trialSetsQuery(match.params.id) });
       const trialSet = data.data.trialSets.find(trialSet => trialSet.key === match.params.trialSetKey);
       setState({
+        ...state,
         trialSet,
       });
       setWorking(false);
@@ -49,7 +50,7 @@ const Trials = (props) => {
     try {
       setWorking(true);
       await uploadTrial(e, state.trialSet, props.client, props.match)
-      setState({ update: true })
+      setState({ ...state, update: true })
     } catch (err) {
       alert('uploading fail, please check the file')
     }
@@ -60,7 +61,7 @@ const Trials = (props) => {
     try {
       setWorking(true);
       await uploadEntities(e, trial, props.client, props.match)
-      setState({ update: true })
+      setState({ ...state, update: true })
     } catch (err) {
       alert('uploading fail, please check the file')
     }
@@ -115,12 +116,12 @@ const Trials = (props) => {
       },
     });
 
-    setState({ update: true });
+    setState({ ...state, update: true });
     setWorking(false);
   };
 
   const setUpdated = () => {
-    setState({ update: false });
+    setState({ ...state, update: false });
   }
 
   const deleteTrial = async (trialToDelete) => {
@@ -149,12 +150,13 @@ const Trials = (props) => {
         },
       });
 
-    setState({ update: true });
+    setState({ ...state, update: true });
     setWorking(false);
   };
 
   const activateEditMode = (trial, devices) => {
     setState({
+      ...state,
       isEditModeEnabled: true,
       trial,
       tabValue: devices ? 1 : 0,
@@ -163,6 +165,7 @@ const Trials = (props) => {
 
   const returnFunc = (deleted) => {
     setState({
+      ...state,
       isEditModeEnabled: false,
       tabValue: 0,
       update: deleted,
@@ -170,7 +173,7 @@ const Trials = (props) => {
   }
 
   const updateTrial = (trial) => {
-    setState({ trial })
+    setState({ ...state, trial })
   }
 
   const tableHeadColumns = generateTableColumns(trialSet);
