@@ -1,5 +1,5 @@
 import React from "react";
-import { Map as LeafletMap } from "react-leaflet";
+import { MapContainer } from "react-leaflet";
 import {
   ImageOverlay,
 } from "react-leaflet";
@@ -20,7 +20,7 @@ export const MapWithImage = React.forwardRef(({ showMap, imageUrl, imageBounds, 
   const position = boundsToMiddle(imageBounds);
 
   return (
-    <LeafletMap
+    <MapContainer
       center={position}
       zoom={15}
       style={{ height: "400px", width: '100%' }}
@@ -41,6 +41,6 @@ export const MapWithImage = React.forwardRef(({ showMap, imageUrl, imageBounds, 
           />
       }
       {children}
-    </LeafletMap>
+    </MapContainer>
   )
 })

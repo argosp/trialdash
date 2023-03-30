@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-    Map as LeafletMap,
+    MapContainer,
     ZoomControl,
 } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
@@ -68,7 +68,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
     }, [leafletElement]);
 
     return (
-        <LeafletMap
+        <MapContainer
             bounds={currLayerBounds}
             zoom={15}
             ref={mapElement}
@@ -89,6 +89,6 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             />
             <ZoomControl position='topright' />
             {children}
-        </LeafletMap>
+        </MapContainer>
     );
 }
