@@ -42,4 +42,4 @@ workflows:
           filters:
             branches:
               only:
-                - vite-to-prod
+                - master
