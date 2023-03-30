@@ -180,7 +180,6 @@ const Trials = (props) => {
 
   return (
     <>
-      <h1>vite try</h1>
       {state.isEditModeEnabled
         // eslint-disable-next-line react/jsx-wrap-multilines
         ? <TrialForm
