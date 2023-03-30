@@ -18,7 +18,7 @@ import { MarkedShape } from './MarkedShape';
 import { useShape } from './ShapeContext.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
-import Control from '../Maps/lib/react-leaflet-control.jsx';
+import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 import { EditTable } from './EditTable/EditTable.jsx';
 import {
     FREEPOSITIONING_SHAPE,

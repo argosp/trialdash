@@ -10,7 +10,7 @@ import {
     LayerGroup
 } from "react-leaflet";
 import { GridlinesLayer } from '../Maps/GridlinesLayer.jsx';
-import Control from '../Maps/lib/react-leaflet-control.jsx';
+import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 import config from '../../config';
