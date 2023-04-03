@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import {
     MapContainer,
     ZoomControl,
+    useMapEvents,
 } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 import { CRS, LatLngBounds } from 'leaflet';
@@ -13,6 +14,15 @@ const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02
 const bounds2arr = (bounds) => {
     return [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
 }
+
+const MapEventer = ({ onClick }) => {
+    const map = useMapEvents({
+        click(e) {
+            onClick(e);
+        },
+    });
+    return null;
+};
 
 export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked }) => {
     const mapElement = React.useRef(null);
@@ -74,14 +84,14 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             ref={mapElement}
             style={{ height: "100%" }}
             // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
-            onClick={onClick}
             onBaseLayerChange={(e) => setLayerChosen(e.name)}
             onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
             onBoxZoomEnd={onAreaMarked}
-            // oncontextmenu={console.log}
+        // oncontextmenu={console.log}
         >
+            <MapEventer onClick={onClick} />
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
                 standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
