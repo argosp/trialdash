@@ -37,7 +37,7 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
         >
             <TableCell
                 // style={{ fontWeight: isOpenArrow ? 'bolder' : 'normal' }}
-                button
+                button={true}
                 // selected={isSelected}
                 onClick={onClick}
             >
