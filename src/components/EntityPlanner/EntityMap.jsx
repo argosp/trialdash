@@ -16,9 +16,11 @@ const bounds2arr = (bounds) => {
 }
 
 const MapEventer = ({ onClick }) => {
-    const map = useMapEvents({
-        click(e) {
-            onClick(e);
+    const mapObj = useMapEvents({
+        click: (e) => {
+            if (e.originalEvent.srcElement === mapObj._container) {
+                onClick(e);
+            }
         },
     });
     return null;
