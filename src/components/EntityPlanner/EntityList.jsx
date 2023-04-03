@@ -65,9 +65,9 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
 
     return (
         <>
-            {itemsGrouped.map(itemsOfType => {
+            {itemsGrouped.map((itemsOfType, i) => {
                 return (
-                    <TableContainer component={Paper}>
+                    <TableContainer component={Paper} key={i}>
                         <Table size="small">
                             {/* <TableHead>
                                 {!showProperties ? null :
