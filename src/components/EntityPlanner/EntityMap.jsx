@@ -54,9 +54,6 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
     const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
 
     const leafletElement = mapElement && mapElement.current ? mapElement.current.leafletElement : undefined;
-    if (leafletElement) {
-        leafletElement.invalidateSize();
-    }
 
     useEffect(() => {
         if (leafletElement && leafletElement.boxZoom) {
