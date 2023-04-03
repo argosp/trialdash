@@ -30,8 +30,8 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distance
     };
 
     const unbindTooltip = (element) => {
-        if (element && element.current && element.current.leafletElement && element.current.leafletElement.unbindTooltip) {
-            element.current.leafletElement.unbindTooltip();
+        if (element && element.current && element.current && element.current.unbindTooltip) {
+            element.current.unbindTooltip();
         }
     };
 
@@ -46,9 +46,9 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distance
             unbindTooltip(auxPolyline);
             return;
         }
-        setLatLngsWithDist(currPolyline.current.leafletElement, shownPolylines[0]);
+        setLatLngsWithDist(currPolyline.current, shownPolylines[0]);
         if (shape === 'Arc') {
-            setLatLngsWithDist(auxPolyline.current.leafletElement, shownPolylines.length > 1 ? shownPolylines[1] : []);
+            setLatLngsWithDist(auxPolyline.current, shownPolylines.length > 1 ? shownPolylines[1] : []);
         }
     };
 
@@ -80,10 +80,10 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distance
                         ></MarkedPoint>
                     ))
             }
-            <Polyline positions={[]} ref={currPolyline} />
+            <Polyline positions={[]} ref={currPolyline} key='poly' />
             {
                 shape !== 'Arc' ? null :
-                    <Polyline positions={[]} ref={auxPolyline} />
+                    <Polyline positions={[]} ref={auxPolyline} key='poly2' />
             }
             {
                 candLocs.map((loc, index) => {
