@@ -210,7 +210,7 @@ export const EntityEditor = ({
                     />
                 </Control>
 
-                <Control position="topleft" >
+                <Control prepend={true} position="bottomleft" >
                     <EditTable
                         handleSetOne={handleMapClick}
                         handleSetMany={handlePutEntities}
