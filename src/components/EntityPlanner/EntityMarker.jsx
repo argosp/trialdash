@@ -7,10 +7,6 @@ import { Typography } from '@material-ui/core';
 
 export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, children }) => {
     const ref = useRef(null);
-    const leafletElement = ref && ref.current && ref.current.leafletElement ? ref.current.leafletElement : undefined;
-    // useEffect(() => {
-    leafletElement && leafletElement.off('click');
-    // }, [leafletElement]);
 
     return (
         <Marker key={entity.name}
@@ -33,11 +29,18 @@ export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, 
                     </div>
                 )
             })}
-            onclick={() => onClick()}
-            oncontextmenu={() => leafletElement.openPopup()}
             ref={ref}
+            eventHandlers={{
+                click: () => {
+                    ref.current.closePopup();
+                    onClick();
+                },
+                contextmenu: () => {
+                    ref.current.openPopup();
+                }
+            }}
         >
-            <Popup>
+            <Popup >
                 <Typography variant='h6'>{entity.name}</Typography>
                 <Typography variant='overline'>{'at (' + devLocation.map(x => Math.round(x * 1e7) / 1e7) + ')'}</Typography>
                 {children}

@@ -61,6 +61,7 @@ export const GridlinesLayer = ({ from, to, delta = 1 }) => {
         {lats.map(({ pos: lat, thick, show }) => {
             return (
                 <Polyline
+                    key={'lat' + lat}
                     weight={thick}
                     positions={[
                         [lat, lng0],
@@ -83,6 +84,7 @@ export const GridlinesLayer = ({ from, to, delta = 1 }) => {
         {lngs.map(({ pos: lng, thick, show }) => {
             return (
                 <Polyline
+                    key={'lng' + lng}
                     weight={thick}
                     positions={[
                         [lat0, lng],

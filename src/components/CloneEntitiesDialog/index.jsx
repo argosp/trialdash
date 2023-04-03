@@ -39,7 +39,7 @@ function CloneEntitiesDialog({
   match,
 }, ref) {
   const [updateTrial, setUpdateTrial] = React.useState(currentTrial);
-  const [open, setOpen] = useState()
+  const [open, setOpen] = useState(false)
   const [trialSets, setTrialSets] = React.useState();
   const [trials, setTrials] = React.useState();
   const [selectedTrialSet, setSelectedTrialSet] = React.useState();

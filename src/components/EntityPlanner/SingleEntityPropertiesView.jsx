@@ -37,7 +37,9 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
         >
             {
                 shownValues.map(({ key: propertyKey, label, val }, i) => (
-                    <Grid item>
+                    <Grid item
+                        key={i}
+                    >
                         <TextField
                             key={propertyKey}
                             variant='outlined'
@@ -57,8 +59,12 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
                     </Grid>
                 ))
             }
-            <Grid item>
-                <IconButton color='primary' size="small" disabled={allSame}
+            <Grid item key='buttons'>
+                <IconButton
+                    key='check'
+                    color='primary'
+                    size="small"
+                    disabled={allSame}
                     onClick={() => {
                         const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
                         setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
@@ -66,7 +72,11 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
                 >
                     <Check />
                 </IconButton>
-                <IconButton color='secondary' size="small" disabled={allSame}
+                <IconButton
+                    key='close'
+                    color='secondary'
+                    size="small"
+                    disabled={allSame}
                     onClick={() => setShownValues(savedValues)}
                 >
                     <Close />

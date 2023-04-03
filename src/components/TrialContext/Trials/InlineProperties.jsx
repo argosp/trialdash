@@ -4,10 +4,11 @@ import { TextField } from '@material-ui/core';
 export const InlineProperties = ({ trialSet, trial }) => {
     return trialSet && trialSet.properties && trialSet.properties.map(property => {
         const trialProp = trial.properties.find(p => p.key === property.key);
-        const val = trialProp ? trialProp.val : '';
+        const val = trialProp && trialProp.val !== null && trialProp.val !== undefined ? trialProp.val : '';
         const label = property.label;
         return (
             <TextField
+                key={property.key}
                 label={label}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{

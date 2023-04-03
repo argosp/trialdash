@@ -3,7 +3,7 @@ import {
     Paper,
     Button,
 } from '@material-ui/core';
-import Control from './lib/react-leaflet-control.jsx';
+import Control from './lib/react-leaflet-custom-control.jsx';
 
 export const ToggleTextOnMap = ({ position, value, setValue, name }) => {
     return (

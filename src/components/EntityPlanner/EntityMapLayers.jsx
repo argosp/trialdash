@@ -10,7 +10,7 @@ import {
     LayerGroup
 } from "react-leaflet";
 import { GridlinesLayer } from '../Maps/GridlinesLayer.jsx';
-import Control from '../Maps/lib/react-leaflet-control.jsx';
+import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 import config from '../../config';
@@ -33,9 +33,22 @@ const RealMapWithImagesLayer = ({ images }) => (
     </>
 )
 
-export const EntityMapLayers = ({ embedded, standalone, layerChosen }) => {
-    const [showGrid, setShowGrid] = React.useState(false);
-    const [showGridMeters, setShowGridMeters] = React.useState(1);
+const StandaloneImageLayer = ({ row, showGrid }) => {
+    return (
+        <>
+            <EmbeddedImageLayer image={row} />
+            {!showGrid.show ? null :
+                <GridlinesLayer
+                    from={[row.lower, row.left]}
+                    to={[row.upper, row.right]}
+                    delta={showGrid.meters}
+                />
+            }
+        </>
+    )
+}
+
+export const EntityMapLayers = ({ embedded, standalone, layerChosen, showGrid }) => {
 
     if (!standalone.length) {
         return <RealMapWithImagesLayer images={embedded} />
@@ -55,48 +68,15 @@ export const EntityMapLayers = ({ embedded, standalone, layerChosen }) => {
                             name={row.imageName}
                         >
                             <LayerGroup>
-                                <EmbeddedImageLayer image={row} />
-                                {(showGrid && layerChosen === row.imageName)
-                                    ? <GridlinesLayer
-                                        from={[row.lower, row.left]}
-                                        to={[row.upper, row.right]}
-                                        delta={showGridMeters}
-                                    />
-                                    : null
-                                }
+                                <StandaloneImageLayer
+                                    row={row}
+                                    showGrid={showGrid}
+                                />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                     ))
                 }
             </LayersControl>
-            {layerChosen === 'OSMMap'
-                ? null
-                : <Control position="bottomleft" >
-                    <Paper style={{ padding: '5px' }}>
-                        <Grid container spacing='5px'>
-                            <Grid item>
-                                <Button
-                                    variant={showGrid ? 'contained' : 'outlined'}
-                                    color={'primary'}
-                                    onClick={() => {
-                                        setShowGrid(!showGrid);
-                                    }}
-                                >
-                                    Grid
-                                </Button>
-                            </Grid>
-                            <Grid item>
-                                <NumberTextField
-                                    width={'70px'}
-                                    label='Meters'
-                                    value={showGridMeters}
-                                    onChange={v => setShowGridMeters(v)}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Control>
-            }
         </>
     )
 }

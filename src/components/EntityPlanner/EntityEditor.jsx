@@ -18,7 +18,7 @@ import { MarkedShape } from './MarkedShape';
 import { useShape } from './ShapeContext.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
-import Control from '../Maps/lib/react-leaflet-control.jsx';
+import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 import { EditTable } from './EditTable/EditTable.jsx';
 import {
     FREEPOSITIONING_SHAPE,
@@ -28,6 +28,7 @@ import { DomEvent } from 'leaflet';
 import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { SingleEntityPropertiesView } from './SingleEntityPropertiesView.jsx';
 import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
+import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -54,6 +55,7 @@ export const EntityEditor = ({
     const [showTableOfType, setShowTableOfType] = useState('');
     const [showEditBox, setShowEditBox] = useState(false);
     const [showEditTable, setShowEditTable] = useState(false);
+    const [showGrid, setShowGrid] = React.useState({ show: false, meters: 1 });
 
     const handleMapClick = e => {
         const currPoint = [e.latlng.lat, e.latlng.lng];
@@ -81,9 +83,9 @@ export const EntityEditor = ({
         setShowEditBox(false);
     };
 
-    const onAreaMarked = ({ bounds }) => {
-        console.log(bounds);
-        const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && bounds.contains(location));
+    const onAreaMarked = ({ boxZoomBounds }) => {
+        // console.log(boxZoomBounds);  
+        const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && boxZoomBounds.contains(location));
         const keysInside = itemsInside.map(({ entityItem }) => entityItem.key);
         const newKeysInside = keysInside.filter(k => !selection.includes(k));
         setSelection([...selection, ...newKeysInside]);
@@ -115,6 +117,7 @@ export const EntityEditor = ({
                 layerChosen={layerChosen}
                 setLayerChosen={setLayerChosen}
                 onAreaMarked={onAreaMarked}
+                showGrid={showGrid}
             >
                 {
                     shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
@@ -210,7 +213,7 @@ export const EntityEditor = ({
                     />
                 </Control>
 
-                <Control position="topleft" >
+                <Control prepend={true} position="bottomleft" >
                     <EditTable
                         handleSetOne={handleMapClick}
                         handleSetMany={handlePutEntities}
@@ -218,6 +221,30 @@ export const EntityEditor = ({
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
                     />
+                </Control>
+
+                <Control position="bottomleft">
+                    <Paper style={{ padding: '5px' }}>
+                        <Grid container spacing={0}>
+                            <Grid item>
+                                <Button
+                                    variant={showGrid.show ? 'contained' : 'outlined'}
+                                    color={'primary'}
+                                    onClick={() => setShowGrid({ ...showGrid, show: !showGrid.show })}
+                                >
+                                    Grid
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <NumberTextField
+                                    width={'70px'}
+                                    label='Meters'
+                                    value={showGrid.meters}
+                                    onChange={(v) => setShowGrid({ ...showGrid, meters: v })}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Paper>
                 </Control>
 
                 <Control position="bottomleft">

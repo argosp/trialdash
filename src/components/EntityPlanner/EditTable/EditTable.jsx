@@ -92,7 +92,7 @@ export const EditTable = ({
             />
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={'Arc'}
-                icon={<RotateLeftIcon fontSize="large" color='black' />}
+                icon={<RotateLeftIcon fontSize="large" />}
                 component={<DistrubteAlongLine onSubmit={handleSetMany} />}
                 title={'Arc'}
             />

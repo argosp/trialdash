@@ -91,8 +91,8 @@ class ContentTable extends React.Component {
           )
         }
         <TableBody>
-          {this.state[contentType] && this.state[contentType].map(renderRow).map(child => (
-            <TableRow key={child.key} className={classes.tableBodyRow}>
+          {this.state[contentType] && this.state[contentType].map(renderRow).map((child, i) => (
+            <TableRow key={i} className={classes.tableBodyRow}>
               {child}
             </TableRow>
           ))}
