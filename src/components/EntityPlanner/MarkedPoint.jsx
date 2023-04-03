@@ -8,13 +8,13 @@ let dragStartLoc;
 
 export const MarkedPoint = (props) => {
     const { location, dragLocation, setLocation, locationToShow } = props;
-
     let locationToShowStr;
     if (!locationToShow) {
         locationToShowStr = JSON.stringify(location.map(l => Math.round(l * 1e9) / 1e9)).replace(/,/g, ', ');
     } else {
         locationToShowStr = locationToShow;
     }
+
     return (
         <Marker
             position={location}
@@ -50,8 +50,8 @@ export const MarkedPoint = (props) => {
             {...props}
         >
             <Popup permanent>
-                {locationToShowStr.split('<br/>').map(l => (
-                    <>{l}<br /></>
+                {locationToShowStr.split('<br/>').map((l, i) => (
+                    <span key={i}>{l}<br /></span>
                 ))}
             </Popup>
         </Marker >
