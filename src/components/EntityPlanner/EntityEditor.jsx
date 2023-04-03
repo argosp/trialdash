@@ -81,9 +81,9 @@ export const EntityEditor = ({
         setShowEditBox(false);
     };
 
-    const onAreaMarked = ({ bounds }) => {
-        console.log(bounds);
-        const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && bounds.contains(location));
+    const onAreaMarked = ({ boxZoomBounds }) => {
+        // console.log(boxZoomBounds);  
+        const itemsInside = shownEntityItems.filter(({ location, isOnLayer }) => isOnLayer && boxZoomBounds.contains(location));
         const keysInside = itemsInside.map(({ entityItem }) => entityItem.key);
         const newKeysInside = keysInside.filter(k => !selection.includes(k));
         setSelection([...selection, ...newKeysInside]);

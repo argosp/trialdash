@@ -5,7 +5,7 @@ import {
     useMapEvents,
 } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
-import { CRS, LatLngBounds } from 'leaflet';
+import { CRS, DomEvent, LatLngBounds } from 'leaflet';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
 
 const position = [32.081128, 34.779729];
@@ -15,13 +15,17 @@ const bounds2arr = (bounds) => {
     return [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
 }
 
-const MapEventer = ({ onClick }) => {
+const MapEventer = ({ onClick, onBoxZoomEnd }) => {
     const mapObj = useMapEvents({
         click: (e) => {
             if (e.originalEvent.srcElement === mapObj._container) {
                 onClick(e);
             }
         },
+        boxzoomend: (e) => {
+            DomEvent.stop(e);
+            onBoxZoomEnd(e);
+        }
     });
     return null;
 };
@@ -65,11 +69,11 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                     if (this._moved) {
                         this._clearDeferredResetState();
                         this._resetStateTimeout = setTimeout(this._resetState.bind(this), 0);
-                        var bounds = new LatLngBounds(
-                            this._map.containerPointToLatLng(this._startPoint),
-                            this._map.containerPointToLatLng(this._point)
-                        );
-                        this._map.fire('boxzoomend', { bounds });
+                        // var bounds = new LatLngBounds(
+                        //     this._map.containerPointToLatLng(this._startPoint),
+                        //     this._map.containerPointToLatLng(this._point)
+                        // );
+                        this._map.fire('boxzoomend');//, { bounds });
                     }
                 }
             };
@@ -87,10 +91,12 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
-            onBoxZoomEnd={onAreaMarked}
         // oncontextmenu={console.log}
         >
-            <MapEventer onClick={onClick} />
+            <MapEventer
+                onClick={onClick}
+                onBoxZoomEnd={onAreaMarked}
+            />
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
                 standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
