@@ -7,6 +7,7 @@ import {
 import 'leaflet/dist/leaflet.css';
 import { CRS, DomEvent, LatLngBounds } from 'leaflet';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
+import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -27,7 +28,7 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
             DomEvent.stop(e);
             onBoxZoomEnd(e);
         },
-        baseLayerChange: onBaseLayerChange,
+        baselayerchange: onBaseLayerChange,
         moveend: onMoveEnd
     });
 
@@ -51,7 +52,7 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
     return null;
 };
 
-export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked }) => {
+export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked, showGrid }) => {
     const mapElement = React.useRef(null);
 
     const [layerPositions, setLayerPositions] = React.useState({});
@@ -99,6 +100,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
                 standalone={(experimentDataMaps || []).filter(row => !row.embedded)}
                 layerChosen={layerChosen}
+                showGrid={showGrid}
             />
             <ZoomControl position='topright' />
             {children}
