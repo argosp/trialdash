@@ -7,10 +7,19 @@ import {
 import { MapWithImage } from "./MapWithImage";
 import { AnchorPointsDiagonal } from "./AnchorPointsDiagonal.jsx";
 import { NumberTextField } from "./NumberTextField.jsx";
+import { useMap } from 'react-leaflet/hooks'
+
+export const MapResizeByBox = ({ box }) => {
+  const mapObj = useMap();
+
+  React.useEffect(() => {
+    mapObj.fitBounds([[box.lower, box.left], [box.upper, box.right]]);
+  }, [box]);
+
+  return null;
+}
 
 export const MapStandalone = ({ row, setRow }) => {
-  const mapRef = React.useRef(null);
-
   const imageSize = { x: row.width || 400, y: row.height || 300 };
 
   const [anchor, setAnchor] = useState({ lat: row.lower, lng: row.left, x: 0, y: 0 });
@@ -23,10 +32,6 @@ export const MapStandalone = ({ row, setRow }) => {
   const roundDec = (num) => {
     return Math.round(num * 1000) / 1000;
   }
-
-  React.useEffect(() => {
-    mapRef.current.leafletElement.fitBounds([[row.lower, row.left], [row.upper, row.right]]);
-  }, [row]);
 
   const setPointWithoutChange = (setter, lat, lng) => {
     const x = (lng - row.left) / (row.right - row.left) * imageSize.x;
@@ -115,11 +120,11 @@ export const MapStandalone = ({ row, setRow }) => {
       </Grid>
       <Grid item xs={9}>
         <MapWithImage
-          ref={mapRef}
           showMap={false}
           imageUrl={row.imageUrl}
           imageBounds={[[row.upper, row.left], [row.lower, row.right]]}
         >
+          <MapResizeByBox box={row} />
           <AnchorPointsDiagonal
             anchorLatLng={{ lat: anchor.lat, lng: anchor.lng }}
             anotherLatLng={{ lat: anotherPoint.lat, lng: anotherPoint.lng }}

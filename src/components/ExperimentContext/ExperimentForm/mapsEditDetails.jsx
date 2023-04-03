@@ -15,7 +15,7 @@ import { MapWithImage } from "./MapWithImage";
 import { NumberTextField } from "./NumberTextField";
 import { DashedPolyline } from "./DashedPolyline";
 import { ChosenMarker } from "./ChosenMarker";
-import { MapStandalone } from "./MapStandalone";
+import { MapResizeByBox, MapStandalone } from "./MapStandalone";
 
 const ControlPointText = ({ point, setPoint }) => (
   <Grid container direction="column" justifyContent="space-evenly" alignItems="center" spacing={1}>
@@ -120,8 +120,6 @@ const PointsWithLine = ({ controlPoints, onPointMove, selectedControlPoint, setS
 );
 
 const MapsEmbedded = ({ row, setRow }) => {
-  const mapRef = React.useRef(null);
-
   const imageSize = { x: row.width || 300, y: row.height || 400 };
   const hasNans = [row.lower, row.upper, row.left, row.right].findIndex(x => !Number.isFinite(x)) !== -1;
 
@@ -170,10 +168,6 @@ const MapsEmbedded = ({ row, setRow }) => {
     changeControlPoint({ ...q, lat: qlat, lng: qlng, x: qx, y: qy }, pointIndexToChange);
   }
 
-  const fitBounds = ((box) => {
-    mapRef.current.leafletElement.fitBounds([[box.lower, box.left], [box.upper, box.right]]);
-  });
-
   return (
     <Grid container>
       <Grid item xs={2}>
@@ -214,11 +208,11 @@ const MapsEmbedded = ({ row, setRow }) => {
       </Grid>
       <Grid item xs={10}>
         <MapWithImage
-          ref={mapRef}
           showMap={true}
           imageUrl={row.imageUrl}
           imageBounds={hasNans ? null : [[row.upper, row.left], [row.lower, row.right]]}
         >
+          <MapResizeByBox box={row} />
           <PointsWithLine
             controlPoints={controlPoints}
             selectedControlPoint={selectedControlPoint}
