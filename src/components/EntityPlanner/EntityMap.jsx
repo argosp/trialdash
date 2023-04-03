@@ -15,7 +15,8 @@ const bounds2arr = (bounds) => {
     return [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
 }
 
-const MapEventer = ({ onClick, onBoxZoomEnd }) => {
+const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
+}) => {
     const mapObj = useMapEvents({
         click: (e) => {
             if (e.originalEvent.srcElement === mapObj._container) {
@@ -25,7 +26,9 @@ const MapEventer = ({ onClick, onBoxZoomEnd }) => {
         boxzoomend: (e) => {
             DomEvent.stop(e);
             onBoxZoomEnd(e);
-        }
+        },
+        baseLayerChange: onBaseLayerChange,
+        moveend: onMoveEnd
     });
     return null;
 };
@@ -47,7 +50,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
 
     const changeLayerPosition = () => {
         const newPositions = Object.assign({}, layerPositions);
-        newPositions[layerChosen] = bounds2arr(mapElement.current.leafletElement.getBounds());
+        newPositions[layerChosen] = bounds2arr(mapElement.current.getBounds());
         setLayerPositions(newPositions);
     }
 
@@ -87,8 +90,6 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             ref={mapElement}
             style={{ height: "100%" }}
             // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
-            onBaseLayerChange={(e) => setLayerChosen(e.name)}
-            onMoveEnd={changeLayerPosition}
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
         // oncontextmenu={console.log}
@@ -96,6 +97,8 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             <MapEventer
                 onClick={onClick}
                 onBoxZoomEnd={onAreaMarked}
+                onBaseLayerChange={(e) => setLayerChosen(e.name)}
+                onMoveEnd={changeLayerPosition}
             />
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}
