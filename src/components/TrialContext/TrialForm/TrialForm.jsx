@@ -472,7 +472,7 @@ class TrialForm extends React.Component {
         </ConfirmDialog>
         <ConfirmDialog
           title={'You are going to change trial status'}
-          open={confirmStatusOpen}
+          open={confirmStatusOpen || false}
           confirmText="Save changes and change status"
           onConfirm={() => {
             this.setState({ changed: false }, () => {

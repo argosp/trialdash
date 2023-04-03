@@ -100,7 +100,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             aria-label="minimum height"
             minRows={3}
             onChange={onChange}
-            value={value}
+            value={(value !== null && value !== undefined) ? value : ''}
             className={classes.textArea}
           />
           {bottomDescription && <FormHelperText>{bottomDescription}</FormHelperText>}
@@ -114,7 +114,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             className={className}
             type={type}
             disabled={disabled}
-            value={value}
+            value={(value !== null && value !== undefined) ? value : ''}
             onChange={onChange}
             label={label}
             helperText={bottomDescription}
