@@ -15,7 +15,8 @@ import { MapWithImage } from "./MapWithImage";
 import { NumberTextField } from "./NumberTextField";
 import { DashedPolyline } from "./DashedPolyline";
 import { ChosenMarker } from "./ChosenMarker";
-import { MapResizeByBox, MapStandalone } from "./MapStandalone";
+import { MapStandalone } from "./MapStandalone";
+import { MapResizeByBox } from "../../Maps/MapResizeByBox";
 
 const ControlPointText = ({ point, setPoint }) => (
   <Grid container direction="column" justifyContent="space-evenly" alignItems="center" spacing={1}>

@@ -7,17 +7,7 @@ import {
 import { MapWithImage } from "./MapWithImage";
 import { AnchorPointsDiagonal } from "./AnchorPointsDiagonal.jsx";
 import { NumberTextField } from "./NumberTextField.jsx";
-import { useMap } from 'react-leaflet/hooks'
-
-export const MapResizeByBox = ({ box }) => {
-  const mapObj = useMap();
-
-  React.useEffect(() => {
-    mapObj.fitBounds([[box.lower, box.left], [box.upper, box.right]]);
-  }, [box]);
-
-  return null;
-}
+import { MapResizeByBox } from "../../Maps/MapResizeByBox";
 
 export const MapStandalone = ({ row, setRow }) => {
   const imageSize = { x: row.width || 400, y: row.height || 300 };
