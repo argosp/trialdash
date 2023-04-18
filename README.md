@@ -72,4 +72,3 @@ This a section has moved here: https://facebook.github.io/create-react-app/docs/
 [Circle CI](https://circleci.com/dashboard)
 
 [Leaflet trial](https://argos.new-aks-stage.linnovate.net/experiments/5dc17752abba6cf7e4b698cd/trial-sets/4d6e0c4c-8f2c-4b23-867e-2be7c483ddcd/trials)
-
