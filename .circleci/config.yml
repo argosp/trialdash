@@ -23,7 +23,7 @@ jobs:
       - kubernetes/install-kubectl
 
       - kubernetes/install-kubeconfig:
-          kubeconfig: NEW_KUBE_CONF
+          kubeconfig: PROD_KUBE_CONF
 
       - run: |
           sudo mv ./bin/templater /usr/local/bin
