@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trialdash-configmap
+  namespace: argos-prod
+data:
+  PORT: '3131'
+  REACT_APP_FCC_URL: https://argos.new-aks-stage.linnovate.net
+  REACT_APP_FCC_WS: wss://argos.new-aks-stage.linnovate.net
+  REACT_APP_MAP_ATTRIBUTION: '&copy; <a href="https://carto.com">Carto</a> contributors'
+  REACT_APP_MAP_URL: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png'
+  ROOT_URI: https://root.new-aks-stage.linnovate.net
+  SKIP_PREFLIGHT_CHECK: 'true'
+  FAST_REFRESH: 'false'
+binaryData: {}
