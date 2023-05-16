@@ -41,6 +41,15 @@ const UserData = ({ classes, handleProfileMenuClick }) => {
     count: 0
   });
 
+  const setTabIcon = (normal) => {
+    const link = document.querySelector("link[rel~='icon']");
+    if (normal) {
+      link.href = '/favicon.ico';
+    } else {
+      link.href = '/react_icon_198016.ico';
+    }
+  }
+
   return (
     <Query
       query={queryOut.q}
@@ -50,10 +59,11 @@ const UserData = ({ classes, handleProfileMenuClick }) => {
 
         if (loading) {
           username = 'Loading...';
-        }
-        else if (!error && (!data || !data.user)) {
+          setTabIcon(false);
+        } else if (!error && (!data || !data.user)) {
           username = 'Invalid user';
           console.error('data:', data);
+          setTabIcon(false);
         } else if (error) {
           username = 'Error: ' + error + ' (try: ' + queryOut.count + ')';
           console.error('error:', error);
@@ -63,8 +73,10 @@ const UserData = ({ classes, handleProfileMenuClick }) => {
               count: queryOut.count + 1
             });
           }, 1000);
+          setTabIcon(false);
         } else {
           username = data.user.name;
+          setTabIcon(true);
         }
 
         return (
