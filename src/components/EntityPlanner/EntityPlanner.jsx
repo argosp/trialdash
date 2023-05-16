@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { withStyles } from '@material-ui/core';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { groupBy } from 'lodash';
 import entitiesTypesQuery from '../EntityContext/utils/entityTypeQuery';
 import entitiesQuery from '../EntityContext/Entities/utils/entityQuery';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
+import { WorkingContext } from '../AppLayout';
 
 const EntityPlanner = ({
     client,
@@ -24,6 +25,7 @@ const EntityPlanner = ({
 }) => {
     console.log('EntityPlanner', match.params.id, trial);
     const cloneEntitiesRef = React.createRef();
+    const { setWorking } = useContext(WorkingContext);
 
     const [state, setState] = useState({
         allEntities: {},
@@ -33,6 +35,7 @@ const EntityPlanner = ({
 
     useEffect(() => {
         (async () => {
+            setWorking(true);
             const data = await client.query({ query: entitiesTypesQuery(match.params.id) });
             const entitiesTypes = groupBy(data.data.entitiesTypes, 'key');
             const entitiesData = await client.query({ query: entitiesQuery(match.params.id) });
@@ -48,6 +51,7 @@ const EntityPlanner = ({
                 experimentDataMaps,
             });
             showFooter(false);
+            setWorking(false);
         })()
     }, []);
 
