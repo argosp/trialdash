@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, withRouter, matchPath } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core';
+import { Grid, withStyles } from '@material-ui/core';
 import classnames from 'classnames';
 import Divider from '@material-ui/core/Divider';
 import Menu from '@material-ui/core/Menu';
@@ -23,48 +22,79 @@ import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
 import defaultProfile from '../../assets/images/defaultProfile.png';
 
-const UserData = ({ classes, handleProfileMenuClick }) => (
-  <Query
-    query={gql` {
-          user(uid:"${localStorage.getItem('uid')}") {
-              email
-              name
-              username
-              avatar
-          }
+const UserData = ({ classes, handleProfileMenuClick }) => {
+
+  const doQuery = () => {
+    return gql` {
+      user(uid:"${localStorage.getItem('uid')}") {
+        email
+        name
+        username
+        avatar
+      }
+    }
+    `
+  }
+
+  const [queryOut, setQueryOut] = useState({
+    q: doQuery(),
+    count: 0
+  });
+
+  return (
+    <Query
+      query={queryOut.q}
+    >
+      {({ loading, error, data }) => {
+        let username;
+
+        if (loading) {
+          username = 'Loading...';
         }
-        `}
-  >
-    {({ loading, error, data }) => {
-      if (loading) return <p>Loading...</p>;
-      else
-      if (error) return <p> {error}</p>;//TODO check how to set data
-      // else if(Object.entries(data).length != 0)
-      return (
-        <>
-          <Avatar
-            src={data.user.avatar!=null?data.user.avatar:defaultProfile}
-            alt="user avatar"
-            className={classes.avatar}
-          />
-          <Button
-            aria-controls="user-menu"
-            aria-haspopup="true"
-            onClick={handleProfileMenuClick}
-            disableRipple
-            className={classnames(
-              classes.expandButton,
-              classes.expandProfileButton,
-            )}
-          >
-            {data.user.name}
-            <ExpandMoreIcon />
-          </Button>
-        </>
-      );
-    }}
-  </Query>
-);
+        else if (!error && (!data || !data.user)) {
+          username = 'Invalid user';
+          console.error('data:', data);
+        } else if (error) {
+          username = 'Error: ' + error + ' (try: ' + queryOut.count + ')';
+          console.error('error:', error);
+          setTimeout(() => {
+            setQueryOut({
+              q: doQuery(),
+              count: queryOut.count + 1
+            });
+          }, 1000);
+        } else {
+          username = data.user.name;
+        }
+
+        return (
+          <>
+            {(!data || !data.user) ? null :
+              <Avatar
+                src={data.user.avatar != null ? data.user.avatar : defaultProfile}
+                alt="user avatar"
+                className={classes.avatar}
+              />
+            }
+            <Button
+              aria-controls="user-menu"
+              aria-haspopup="true"
+              onClick={handleProfileMenuClick}
+              disableRipple
+              className={classnames(
+                classes.expandButton,
+                classes.expandProfileButton,
+              )}
+            >
+              {username}
+              <ExpandMoreIcon />
+            </Button>
+          </>
+        );
+      }}
+    </Query>
+  );
+}
 
 class Header extends React.Component {
   state = {
@@ -162,9 +192,9 @@ class Header extends React.Component {
     const experiments = !isLoading
       ? client.readQuery({ query: experimentsQuery }).experimentsWithData
       : [];
-    const currentExperiment = withExperiments&&experiments ? experiments.find(
-        experiment => experiment.project.id === pathObj.params.id,
-      )
+    const currentExperiment = withExperiments && experiments ? experiments.find(
+      experiment => experiment.project.id === pathObj.params.id,
+    )
       : {};
 
     return (
@@ -211,32 +241,32 @@ class Header extends React.Component {
               </Button>
               {!isEmpty(experiments)
                 && (
-                <Menu
-                  id="experiments-menu"
-                  open={Boolean(anchorExperimentsMenu)}
-                  onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
-                  anchorEl={anchorExperimentsMenu}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                >
-                  {!isEmpty(experiments)
-                    && experiments.map(experiment => (
-                      <MenuItem
-                        key={experiment.project.id}
-                        onClick={() => this.selectExperiment(experiment.project.id)
-                        }
-                      >
-                        {experiment.name}
-                      </MenuItem>
-                    ))}
-                </Menu>
+                  <Menu
+                    id="experiments-menu"
+                    open={Boolean(anchorExperimentsMenu)}
+                    onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
+                    anchorEl={anchorExperimentsMenu}
+                    getContentAnchorEl={null}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                  >
+                    {!isEmpty(experiments)
+                      && experiments.map(experiment => (
+                        <MenuItem
+                          key={experiment.project.id}
+                          onClick={() => this.selectExperiment(experiment.project.id)
+                          }
+                        >
+                          {experiment.name}
+                        </MenuItem>
+                      ))}
+                  </Menu>
                 )}
             </>
           ) : null}
