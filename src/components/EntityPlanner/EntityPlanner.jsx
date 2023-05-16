@@ -21,7 +21,6 @@ const EntityPlanner = ({
     trial,
     updateLocation,
     submitTrial,
-    showFooter,
 }) => {
     console.log('EntityPlanner', match.params.id, trial);
     const cloneEntitiesRef = React.createRef();
@@ -50,7 +49,6 @@ const EntityPlanner = ({
                 allEntities,
                 experimentDataMaps,
             });
-            showFooter(false);
             setWorking(false);
         })()
     }, []);
