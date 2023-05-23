@@ -38,27 +38,34 @@ export const EntitiesProvider = ({
                     const locationProp = getTypeLocationProp(oneType);
                     if (locationProp) {
                         oneType.items = [];
-                        for (const itemFromTrial of trialEntities) {
-                            if (itemFromTrial.entitiesTypeKey === oneType.key) {
-                                const item = { ...itemFromTrial, properties: [...(itemFromTrial.properties || [])] };
-                                if (allEntities) {
-                                    const itemFromAll = allEntities[item.key];
-                                    if (itemFromAll && itemFromAll.length && itemFromAll[0].name) {
-                                        item.name = itemFromAll[0].name;
-                                    }
-                                }
-
-                                const location = item.properties.find(entprop => entprop.key === locationProp);
-                                if (location) {
-                                    try {
-                                        const locparsed = JSON.parse(location.val);
-                                        changeEntityLocationWithProp(item, locationProp, locparsed.coordinates, locparsed.name);
-                                    } catch (e) {
-                                    }
-                                }
-
-                                oneType.items.push(item);
+                        for (let itemFromAll of Object.values(allEntities || {}).flat()) {
+                            if (!itemFromAll.key || !itemFromAll.name || !itemFromAll.entitiesTypeKey) {
+                                continue;
                             }
+
+                            if (typeList[0].key !== itemFromAll.entitiesTypeKey) {
+                                continue;
+                            }
+
+                            const itemFromTrial = trial.entities.find(e => e.key === itemFromAll.key) || {};
+                            const { properties: _, ...nonPropsFromTrial } = itemFromTrial;
+
+                            const propsFromAll = Object.fromEntries((itemFromAll.properties || []).map(x => [x.key, x]));
+                            const propsFromTrial = Object.fromEntries((itemFromTrial.properties || []).map(x => [x.key, x]));
+                            const properties = Object.values({ ...propsFromAll, ...propsFromTrial });
+
+                            const item = { ...itemFromAll, ...nonPropsFromTrial, properties };
+
+                            const location = item.properties.find(entprop => entprop.key === locationProp);
+                            if (location) {
+                                try {
+                                    const locparsed = JSON.parse(location.val);
+                                    changeEntityLocationWithProp(item, locationProp, locparsed.coordinates, locparsed.name);
+                                } catch (e) {
+                                }
+                            }
+
+                            oneType.items.push(item);
                         }
 
                         sortNameKeyInplace(oneType.items);
