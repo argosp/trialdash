@@ -129,6 +129,7 @@ const MapsEmbedded = ({ row, setRow }) => {
     { lat: row.lower, lng: row.right, x: imageSize.x, y: imageSize.y },
   ]);
 
+  const [needResize, setNeedResize] = useState(false);
   const [dragOnMap, setDragOnMap] = useState(true);
   const [selectedControlPoint, setSelectedControlPoint] = useState(0);
 
@@ -139,9 +140,9 @@ const MapsEmbedded = ({ row, setRow }) => {
     if (!box) return box;
     setControlPoints(newpoints);
     setRow(Object.assign({}, row, box));
-    setTimeout(() => {
-      fitBounds(box);
-    }, 200);
+    // setTimeout(() => {
+    //   fitBounds(box);
+    // }, 200);
     return true;
   }
 
@@ -198,7 +199,7 @@ const MapsEmbedded = ({ row, setRow }) => {
           </Grid>
           <Grid item>
             <Button
-              onClick={() => fitBounds(row)}
+              onClick={() => setNeedResize(true)}
               variant='contained'
               color='primary'
             >
@@ -213,7 +214,7 @@ const MapsEmbedded = ({ row, setRow }) => {
           imageUrl={row.imageUrl}
           imageBounds={hasNans ? null : [[row.upper, row.left], [row.lower, row.right]]}
         >
-          <MapResizeByBox box={row} />
+          <MapResizeByBox box={row} needResize={needResize} setNeedResize={setNeedResize} />
           <PointsWithLine
             controlPoints={controlPoints}
             selectedControlPoint={selectedControlPoint}
