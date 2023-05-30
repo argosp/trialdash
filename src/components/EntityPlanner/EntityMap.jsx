@@ -8,6 +8,7 @@ import 'leaflet/dist/leaflet.css';
 import { CRS, DomEvent, LatLngBounds } from 'leaflet';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
 import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
+import { MapResizeByBox } from '../Maps/MapResizeByBox.jsx';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -82,7 +83,6 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
 
     return (
         <MapContainer
-            bounds={currLayerBounds}
             zoom={15}
             ref={mapElement}
             style={{ height: "100%" }}
@@ -90,6 +90,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             crs={showMap ? CRS.EPSG3857 : CRS.Simple}
             zoomControl={false}
         >
+            <MapResizeByBox box={currLayerBounds} />
             <MapEventer
                 onClick={onClick}
                 onBoxZoomEnd={onAreaMarked}
