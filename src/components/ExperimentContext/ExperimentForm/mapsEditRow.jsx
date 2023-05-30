@@ -49,6 +49,14 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
   const [open, setOpen] = useState(false);
   const [lastEmbeddedBounds, setLastEmbeddedBounds] = useState(mapDefaultBounds);
 
+  const handleImageUpload = (imageUrl, height, width) => {
+    const lngWidth = row.right - row.left;
+    const latHeight = lngWidth * height / width;
+    const lower = row.upper - latHeight;
+    setRow({ ...row, lower, imageUrl, width, height });
+    setOpen(true);
+  }
+
   return (
     <>
       <TableRow>
@@ -61,9 +69,7 @@ export const MapsEditRow = ({ row, setRow, deleteRow, client }) => {
           </IconButton>
           <UploadImageIcon
             aria-label="expand row"
-            onChangeFile={(imageUrl, height, width) => {
-              setRow({ ...row, imageUrl, width, height });
-            }}
+            onChangeFile={handleImageUpload}
             client={client}
           ></UploadImageIcon>
         </TableCell>

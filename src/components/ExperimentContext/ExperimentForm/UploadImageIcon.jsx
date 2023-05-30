@@ -46,11 +46,12 @@ export const UploadImageIcon = ({ onChangeFile, client }) => {
 
         const [height, width] = await getImageSize(file);
         if (height && width) {
-            const imageServerfFilename = await uploadFileToServer(file);
-            if (imageServerfFilename) {
-                onChangeFile(imageServerfFilename.path, height, width)
+            const imageServerFilename = await uploadFileToServer(file);
+            if (imageServerFilename) {
+                onChangeFile(imageServerFilename.path, height, width)
             }
         }
+        
         setWorking(false);
     };
 
