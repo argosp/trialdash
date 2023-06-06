@@ -39,14 +39,14 @@ const EntityLayer = ({ isEmbedded, embedded, showGrid }) => {
                             image={row}
                             key={'layer' + i}
                         />
-                        {!showGrid.show
-                            ? null
-                            : <GridlinesLayer
+                        {showGrid && showGrid.show
+                            ? <GridlinesLayer
                                 from={[row.lower, row.left]}
                                 to={[row.upper, row.right]}
                                 delta={showGrid.meters}
                                 key={'grid' + i}
                             />
+                            : null
                         }
                     </>
                 ))
@@ -73,7 +73,7 @@ export const EntityMapLayers = ({ embedded, standalone, layerChosen, showGrid })
                     standalone.map(row => (
                         <LayersControl.BaseLayer key={row.imageName} name={row.imageName} checked={false}>
                             <LayerGroup>
-                                <EntityLayer isEmbedded={false} showGrid={false} embedded={[row]} />
+                                <EntityLayer isEmbedded={false} showGrid={showGrid} embedded={[row]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                     ))
