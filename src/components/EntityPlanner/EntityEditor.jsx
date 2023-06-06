@@ -224,27 +224,30 @@ export const EntityEditor = ({
                 </Control>
 
                 <Control position="bottomleft">
-                    <Paper style={{ padding: '5px' }}>
-                        <Grid container spacing={0}>
-                            <Grid item>
-                                <Button
-                                    variant={showGrid.show ? 'contained' : 'outlined'}
-                                    color={'primary'}
-                                    onClick={() => setShowGrid({ ...showGrid, show: !showGrid.show })}
-                                >
-                                    Grid
-                                </Button>
+                    {layerChosen === 'OSMMap'
+                        ? null
+                        : <Paper style={{ padding: '5px' }}>
+                            <Grid container spacing={0}>
+                                <Grid item>
+                                    <Button
+                                        variant={showGrid.show ? 'contained' : 'outlined'}
+                                        color={'primary'}
+                                        onClick={() => setShowGrid({ ...showGrid, show: !showGrid.show })}
+                                    >
+                                        Grid
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <NumberTextField
+                                        width={'70px'}
+                                        label='Meters'
+                                        value={showGrid.meters}
+                                        onChange={(v) => setShowGrid({ ...showGrid, meters: v })}
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item>
-                                <NumberTextField
-                                    width={'70px'}
-                                    label='Meters'
-                                    value={showGrid.meters}
-                                    onChange={(v) => setShowGrid({ ...showGrid, meters: v })}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                        </Paper>
+                    }
                 </Control>
 
                 <Control position="bottomleft">
