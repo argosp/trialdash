@@ -36,13 +36,17 @@ const EntityLayer = ({ isEmbedded, embedded, showGrid }) => {
             {
                 embedded.map((row, i) => (
                     <>
-                        <EmbeddedImageLayer image={row} key={'l' + i} />
+                        <EmbeddedImageLayer
+                            image={row}
+                            key={'layer' + i}
+                        />
                         {!showGrid.show
                             ? null
                             : <GridlinesLayer
                                 from={[row.lower, row.left]}
                                 to={[row.upper, row.right]}
                                 delta={showGrid.meters}
+                                key={'grid' + i}
                             />
                         }
                     </>
