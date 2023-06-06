@@ -15,68 +15,67 @@ import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextF
 import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 import config from '../../config';
 
-const EmbeddedImageLayer = ({ image }) => (
-    <ImageOverlay
-        url={config.url + '/' + image.imageUrl}
-        bounds={[[image.upper, image.left], [image.lower, image.right]]}
-    />
-)
+const EmbeddedImageLayer = ({ image }) => {
+    // console.log(image)
+    return (
+        <ImageOverlay
+            url={config.url + '/' + image.imageUrl}
+            bounds={[[image.upper, image.left], [image.lower, image.right]]}
+        />
+    )
+}
 
-const RealMapWithImagesLayer = ({ images }) => (
-    <>
-        <MapTileLayer key={'real'} />
-        {
-            images.map((row, i) => (
-                <EmbeddedImageLayer image={row} key={'l' + i} />
-            ))
-        }
-    </>
-)
-
-const StandaloneImageLayer = ({ row, showGrid }) => {
+const EntityLayer = ({ isEmbedded, embedded, showGrid }) => {
     return (
         <>
-            <EmbeddedImageLayer image={row} />
-            {!showGrid.show ? null :
-                <GridlinesLayer
-                    from={[row.lower, row.left]}
-                    to={[row.upper, row.right]}
-                    delta={showGrid.meters}
-                />
+            {
+                isEmbedded
+                    ? <MapTileLayer key={'real'} />
+                    : null
+            }
+            {
+                embedded.map((row, i) => (
+                    <>
+                        <EmbeddedImageLayer image={row} key={'l' + i} />
+                        {!showGrid.show
+                            ? null
+                            : <GridlinesLayer
+                                from={[row.lower, row.left]}
+                                to={[row.upper, row.right]}
+                                delta={showGrid.meters}
+                            />
+                        }
+                    </>
+                ))
             }
         </>
     )
 }
 
 export const EntityMapLayers = ({ embedded, standalone, layerChosen, showGrid }) => {
-
-    if (!standalone.length) {
-        return <RealMapWithImagesLayer images={embedded} />
-    }
-    return (
-        <>
+    const hasMultiple = standalone.length > 0; // || embedded.length > 0;
+    if (!hasMultiple) {
+        return (
+            <EntityLayer isEmbedded={true} showGrid={false} embedded={embedded} />
+        )
+    } else {
+        return (
             <LayersControl position="topright" collapsed={false}>
-                <LayersControl.BaseLayer name="OSMMap" checked={true}>
+                <LayersControl.BaseLayer key="OSMMap" name="OSMMap" checked={true}>
                     <LayerGroup>
-                        <RealMapWithImagesLayer images={embedded} />
+                        <EntityLayer isEmbedded={true} showGrid={false} embedded={embedded} />
                     </LayerGroup>
                 </LayersControl.BaseLayer>
                 {
-                    standalone.map((row, i) => (
-                        <LayersControl.BaseLayer
-                            key={row.imageName}
-                            name={row.imageName}
-                        >
+                    standalone.map(row => (
+                        <LayersControl.BaseLayer key={row.imageName} name={row.imageName} checked={false}>
                             <LayerGroup>
-                                <StandaloneImageLayer
-                                    row={row}
-                                    showGrid={showGrid}
-                                />
+                                <EntityLayer isEmbedded={false} showGrid={false} embedded={[row]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                     ))
                 }
             </LayersControl>
-        </>
-    )
+        )
+    }
 }

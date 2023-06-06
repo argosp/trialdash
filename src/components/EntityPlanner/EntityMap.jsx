@@ -21,10 +21,14 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
 }) => {
     const leafletElement = useMapEvents({
         click: (e) => {
+            // console.log(e.latlng)
             if (e.originalEvent.srcElement === leafletElement._container) {
                 onClick(e);
             }
         },
+        // mousemove: (e) => {
+        //     console.log(e.latlng)
+        // },
         boxzoomend: (e) => {
             DomEvent.stop(e);
             onBoxZoomEnd(e);
@@ -59,6 +63,9 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
     const [layerPositions, setLayerPositions] = React.useState({});
 
     const layerRow = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
+    const showMap = layerChosen === 'OSMMap' ? true : layerRow.embedded;
+    const crs = showMap ? CRS.EPSG3857 : CRS.Simple;
+
     let currLayerBounds = (layerPositions || {})[layerChosen];
     if (!currLayerBounds) {
         currLayerBounds = posbounds;
@@ -66,6 +73,9 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             currLayerBounds = [[layerRow.upper, layerRow.left], [layerRow.lower, layerRow.right]];
         }
     }
+    // if (!showMap) {
+    //     currLayerBounds = [[0,0],[1000,1000]]
+    // }
 
     const changeLayerPosition = () => {
         const newPositions = Object.assign({}, layerPositions);
@@ -79,7 +89,6 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
         }
     }, []);
 
-    const showMap = layerChosen === 'OSMMap' ? true : (experimentDataMaps || []).find(r => r.imageName === layerChosen).embedded;
 
     return (
         <MapContainer
@@ -87,7 +96,8 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             ref={mapElement}
             style={{ height: "100%" }}
             // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
-            crs={showMap ? CRS.EPSG3857 : CRS.Simple}
+            crs={crs}
+            bounds={currLayerBounds}
             zoomControl={false}
         >
             <MapResizeByBox box={currLayerBounds} />
