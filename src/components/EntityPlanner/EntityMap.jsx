@@ -7,8 +7,6 @@ import {
 import 'leaflet/dist/leaflet.css';
 import { CRS, DomEvent, LatLngBounds } from 'leaflet';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
-import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
-import { MapResizeByBox } from '../Maps/MapResizeByBox.jsx';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -19,10 +17,10 @@ const bounds2arr = (bounds) => {
 
 const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
 }) => {
-    const leafletElement = useMapEvents({
+    const mapObj = useMapEvents({
         click: (e) => {
             // console.log(e.latlng)
-            if (e.originalEvent.srcElement === leafletElement._container) {
+            if (e.originalEvent.srcElement === mapObj._container) {
                 onClick(e);
             }
         },
@@ -33,12 +31,12 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
             DomEvent.stop(e);
             onBoxZoomEnd(e);
         },
-        baselayerchange: onBaseLayerChange,
-        moveend: onMoveEnd
+        baselayerchange: (e) => onBaseLayerChange(e, mapObj),
+        moveend: (e) => onMoveEnd(e, mapObj)
     });
 
-    if (leafletElement.boxZoom) {
-        leafletElement.boxZoom._onMouseUp = function (e) {
+    if (mapObj.boxZoom) {
+        mapObj.boxZoom._onMouseUp = function (e) {
             if (e.which === 1 || e.button === 1) {
                 this._finish();
                 if (this._moved) {
@@ -58,29 +56,35 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
 };
 
 export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked, showGrid }) => {
-    const mapElement = React.useRef(null);
-
     const [layerPositions, setLayerPositions] = React.useState({});
 
-    const layerRow = (experimentDataMaps || []).find(r => r.imageName === layerChosen);
-    const showMap = layerChosen === 'OSMMap' ? true : layerRow.embedded;
-    const crs = showMap ? CRS.EPSG3857 : CRS.Simple;
+    // this to signify to moveEnd event that the map moved because layer has changed, not that the user moved the map manually
+    let moveFromLayerChange = false;
 
-    let currLayerBounds = (layerPositions || {})[layerChosen];
-    if (!currLayerBounds) {
-        currLayerBounds = posbounds;
-        if (layerRow && layerChosen !== 'OSMMap') {
-            currLayerBounds = [[layerRow.upper, layerRow.left], [layerRow.lower, layerRow.right]];
+    const handleBaseLayerChange = (e, mapObj) => {
+        const newLayerName = e.name;
+        setLayerChosen(newLayerName);
+        const layerRow = (experimentDataMaps || []).find(r => r.imageName === newLayerName);
+        const showMap = newLayerName === 'OSMMap' ? true : layerRow.embedded;
+        const crs = showMap ? CRS.EPSG3857 : CRS.Simple;
+        mapObj.options.crs = crs;
+        let currLayerBounds = (layerPositions || {})[newLayerName];
+        if (!currLayerBounds) {
+            currLayerBounds = posbounds;
+            if (layerRow && newLayerName !== 'OSMMap') {
+                currLayerBounds = [[layerRow.upper, layerRow.left], [layerRow.lower, layerRow.right]];
+            }
         }
+        moveFromLayerChange = true;
+        mapObj.fitBounds(currLayerBounds);
+        moveFromLayerChange = false;
     }
-    // if (!showMap) {
-    //     currLayerBounds = [[0,0],[1000,1000]]
-    // }
 
-    const changeLayerPosition = () => {
-        const newPositions = Object.assign({}, layerPositions);
-        newPositions[layerChosen] = bounds2arr(mapElement.current.getBounds());
-        setLayerPositions(newPositions);
+    const handleMoveEnd = (e, mapObj) => {
+        if (!moveFromLayerChange) {
+            const bounds = bounds2arr(mapObj.getBounds());
+            setLayerPositions({ ...layerPositions, [layerChosen]: bounds });
+        }
     }
 
     useEffect(() => {
@@ -89,23 +93,21 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
         }
     }, []);
 
-
     return (
         <MapContainer
             zoom={15}
-            ref={mapElement}
             style={{ height: "100%" }}
             // style={{ height: "100%", width: '100%', position: 'absolute', top: 0, bottom: 0, right: 0 }}
-            crs={crs}
-            bounds={currLayerBounds}
+            crs={CRS.EPSG3857}
+            bounds={posbounds}
             zoomControl={false}
+            minZoom={-6}
         >
-            <MapResizeByBox box={currLayerBounds} />
             <MapEventer
                 onClick={onClick}
                 onBoxZoomEnd={onAreaMarked}
-                onBaseLayerChange={(e) => setLayerChosen(e.name)}
-                onMoveEnd={changeLayerPosition}
+                onBaseLayerChange={handleBaseLayerChange}
+                onMoveEnd={handleMoveEnd}
             />
             <EntityMapLayers
                 embedded={(experimentDataMaps || []).filter(row => row.embedded)}

@@ -16,7 +16,6 @@ import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 import config from '../../config';
 
 const EmbeddedImageLayer = ({ image }) => {
-    // console.log(image)
     return (
         <ImageOverlay
             url={config.url + '/' + image.imageUrl}
