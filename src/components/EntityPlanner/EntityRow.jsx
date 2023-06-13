@@ -10,26 +10,20 @@ import {
     Close,
 } from "@material-ui/icons";
 import { useEntities } from './EntitiesContext';
+import { entitySaveProperties, entityShowSavedProperties } from './EntityTextShowUtils';
 
 export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showProperties, children }) => {
-    const { setEntityProperties } = useEntities();
+    const { setEntityProperties, setEntityLocations } = useEntities();
 
-    const savedValues = entityType.properties.filter(({ type, trialField }) => trialField && type !== 'location')
-        .map(({ key: typePropertyKey, label, defaultValue }) => {
-            const valprop = entityItem.properties.find(({ key: itemPropertyKey }) => itemPropertyKey === typePropertyKey);
-            let val = '';
-            if (valprop && valprop.val !== undefined && valprop.val !== null) {
-                val = valprop.val;
-            } else if (defaultValue !== null && defaultValue !== undefined) {
-                val = defaultValue;
-            }
-            return { key: typePropertyKey, label, val };
-        });
-
+    const savedValues = entityShowSavedProperties({ entityType, entityItem });
     const [shownValues, setShownValues] = useState(savedValues);
 
     const changedValues = shownValues.filter(({ val }, i) => (savedValues[i].val + '').trim() !== (val + '').trim());
     const allSame = changedValues.length === 0;
+
+    const handleSaveEntityProperties = () => {
+        entitySaveProperties({ entityType, entityItem, shownValues, savedValues, setEntityProperties, setEntityLocations });
+    }
 
     return (
         <TableRow
@@ -72,10 +66,7 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
                 {!showProperties || allSame ? null :
                     <>
                         <IconButton color='primary' size="small"
-                            onClick={() => {
-                                const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
-                                setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
-                            }}
+                            onClick={() => handleSaveEntityProperties()}
                         >
                             <Check />
                         </IconButton>
