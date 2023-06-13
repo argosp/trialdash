@@ -3,7 +3,6 @@ import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 import '../../assets/fontawesome/css/all.css';
-import { Typography } from '@material-ui/core';
 import { SingleEntityPropertiesView } from './SingleEntityPropertiesView';
 
 export const EntityMarker = ({ entityItem, entityType, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, children }) => {

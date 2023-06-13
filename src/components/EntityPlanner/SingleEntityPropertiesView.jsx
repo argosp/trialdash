@@ -13,7 +13,7 @@ import { useEntities } from './EntitiesContext.jsx';
 import { ButtonTooltip } from './ButtonTooltip.jsx';
 
 export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation }) => {
-    const { setEntityProperties } = useEntities();
+    const { setEntityProperties, setEntityLocations } = useEntities();
     const [isEditLocation, setIsEditLocation] = useState(false);
 
     const savedValues = entityType.properties //.filter(({ type }) => type !== 'location')
@@ -41,30 +41,56 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
     const allSame = changedValues.length === 0;
 
     const handleSaveEntityProperties = () => {
-        const propertiesChanged = [];
-        const locationChanged = [];
-        for (let { key, val, type } of changedValues) {
-            if (type !== 'location') {
-                propertiesChanged.push({ key, val });
-            } else {
-                if (locationChanged.length === 0) {
 
-                    // find the location property, we assume it exists because it is on the map
-                    const locationPropType = entityType.properties.find(({ type }) => type === 'location');
-                    const locationProp = entityItem.properties.find(({ key }) => key === locationPropType.key);
-                    
-                    // copy the coordinates because we don't want to change the original property
-                    const newVal = { ...locationProp.val, coordinates: [...locationProp.val.coordinates] };
-                    locationChanged.push({ key: locationPropType.key, val: newVal });
-                }
-
-                // there can only be one locationChanged item
-                // change either the lat or the long
-                const index = key.endsWith('_lat') ? 0 : 1;
-                locationChanged[0].val.coordinates[index] = parseFloat(val);
-            }
+        // Saving values except for location
+        const changedValuesNonLoc = changedValues.filter(({ type }) => type !== 'location');
+        if (changedValuesNonLoc.length > 0) {
+            const propertiesChanged = changedValuesNonLoc.map(({ key, val }) => { return { key, val } });
+            setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
         }
-        setEntityProperties(entityItem.key, entityType.key, propertiesChanged.concat(locationChanged));
+
+        // Saving just the location
+        const changedValuesLoc = changedValues.filter(({ type }) => type === 'location');
+        if (changedValuesLoc.length > 0) {
+            // find the location property, we assume it exists because it is on the map
+            const locationPropType = entityType.properties.find(({ type }) => type === 'location');
+            const locationProp = entityItem.properties.find(({ key }) => key === locationPropType.key);
+
+            // create new coordinates
+            const coordinates = [...locationProp.val.coordinates];
+            for (const { key, val } of changedValuesLoc) {
+                const index = key.endsWith('_lat') ? 0 : 1;
+                coordinates[index] = parseFloat(val);
+            }
+
+            debugger
+            // changing the location
+            const locationChanged = [{ coordinates, ...locationProp.val }];
+            console.log(locationChanged)
+            setEntityLocations([entityItem.key], 'OSMMap', [coordinates]); // TODO get layerChosen
+        }
+
+        // const locationChanged = [];
+        // for (let { key, val, type } of changedValues) {
+        //     if (type !== 'location') {
+        //         propertiesChanged.push({ key, val });
+        //     } else {
+        //         if (locationChanged.length === 0) {
+
+
+        //             // copy the coordinates because we don't want to change the original property
+        //             const newVal = { ...locationProp.val, coordinates: [...locationProp.val.coordinates] };
+        //             locationChanged.push({ key: locationPropType.key, val: newVal });
+        //         }
+
+        //         // there can only be one locationChanged item
+        //         // change either the lat or the long
+        //         const index = key.endsWith('_lat') ? 0 : 1;
+        //         locationChanged[0].val.coordinates[index] = parseFloat(val);
+        //     }
+        // }
+        // setEntityProperties(entityItem.key, entityType.key, propertiesChanged.concat(locationChanged));
+
         setIsEditLocation(false);
     }
 

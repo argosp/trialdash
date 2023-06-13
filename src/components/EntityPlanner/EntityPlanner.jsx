@@ -14,6 +14,7 @@ import entitiesTypesQuery from '../EntityContext/utils/entityTypeQuery';
 import entitiesQuery from '../EntityContext/Entities/utils/entityQuery';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { WorkingContext } from '../AppLayout';
+import { ErrorBoundary } from "react-error-boundary";
 
 const EntityPlanner = ({
     client,
@@ -59,6 +60,7 @@ const EntityPlanner = ({
     const trialEntitiesGrouped = groupBy(trialEntities, 'entitiesTypeKey');
 
     return (
+        <ErrorBoundary fallback={<div>Something went wrong<pre>{JSON.stringify(trialEntities, null, 2)}</pre></div>}>
         <EntitiesProvider
             client={client}
             entitiesTypes={state.entitiesTypes}
@@ -89,6 +91,7 @@ const EntityPlanner = ({
                 </ShapeProvider>
             </StagingProvider>
         </EntitiesProvider>
+        </ErrorBoundary>
     );
 }
 
