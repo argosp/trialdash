@@ -29,8 +29,8 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 return { key: typePropertyKey, label, val, type };
             } else {
                 return [
-                    { key: typePropertyKey + 'lat', label: 'Latitude', val: val.coordinates[0], type },
-                    { key: typePropertyKey + 'lng', label: 'Longitude', val: val.coordinates[1], type }
+                    { key: typePropertyKey + '_lat', label: 'Latitude', val: val.coordinates[0], type },
+                    { key: typePropertyKey + '_lng', label: 'Longitude', val: val.coordinates[1], type }
                 ]
             }
         });
@@ -39,6 +39,14 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
 
     const changedValues = shownValues.filter(({ val }, i) => (savedValues[i].val + '').trim() !== (val + '').trim());
     const allSame = changedValues.length === 0;
+
+    const handleSaveEntityProperties = () => {
+        const propertiesChanged = [];
+        for (let {key, val, type} of changedValues) {
+            propertiesChanged.push({ key, val });
+        }
+        setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
+    }
 
     return (
         <>
@@ -64,9 +72,9 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 {
                     shownValues
                         .filter(({ type }) => isEditLocation ? true : type !== 'location')
-                        .map(({ key: propertyKey, label, val }, i) => (
+                        .map(({ key: propertyKey, label, val }) => (
                             <Grid item
-                                key={i}
+                                key={propertyKey}
                             >
                                 <TextField
                                     key={propertyKey}
@@ -75,8 +83,8 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                                     size='small'
                                     InputLabelProps={{ shrink: true }}
                                     onChange={(e) => {
-                                        setShownValues(shownValues.map((t, j) => {
-                                            if (j === i) {
+                                        setShownValues(shownValues.map((t) => {
+                                            if (t.key === propertyKey) {
                                                 return { ...t, val: e.target.value };
                                             }
                                             return t;
@@ -93,10 +101,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 color='primary'
                 disabled={allSame}
                 tooltip={'Save entity properties'}
-                onClick={() => {
-                    const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
-                    setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
-                }}
+                onClick={() => handleSaveEntityProperties()}
             >
                 <Check />
             </ButtonTooltip>
