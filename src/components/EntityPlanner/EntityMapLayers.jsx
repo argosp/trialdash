@@ -15,12 +15,24 @@ import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextF
 import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 import config from '../../config';
 
-const EmbeddedImageLayer = ({ image }) => {
+const EmbeddedImageLayer = ({ image, showGrid }) => {
     return (
-        <ImageOverlay
-            url={config.url + '/' + image.imageUrl}
-            bounds={[[image.upper, image.left], [image.lower, image.right]]}
-        />
+        <>
+            <ImageOverlay
+                url={config.url + '/' + image.imageUrl}
+                bounds={[[image.upper, image.left], [image.lower, image.right]]}
+                key={'imageoverlay'}
+            />
+            {(showGrid && showGrid.show)
+                ? <GridlinesLayer
+                    from={[image.lower, image.left]}
+                    to={[image.upper, image.right]}
+                    delta={showGrid.meters}
+                    key={'grid'}
+                />
+                : null
+            }
+        </>
     )
 }
 
@@ -29,26 +41,16 @@ const EntityLayer = ({ isEmbedded, embedded, showGrid }) => {
         <>
             {
                 isEmbedded
-                    ? <MapTileLayer key={'real'} />
+                    ? <MapTileLayer key={'tilelayer'} />
                     : null
             }
             {
                 embedded.map((row, i) => (
-                    <>
-                        <EmbeddedImageLayer
-                            image={row}
-                            key={'layer' + i}
-                        />
-                        {showGrid && showGrid.show
-                            ? <GridlinesLayer
-                                from={[row.lower, row.left]}
-                                to={[row.upper, row.right]}
-                                delta={showGrid.meters}
-                                key={'grid' + i}
-                            />
-                            : null
-                        }
-                    </>
+                    <EmbeddedImageLayer
+                        image={row}
+                        key={i}
+                        showGrid={showGrid}
+                    />
                 ))
             }
         </>
@@ -70,7 +72,7 @@ export const EntityMapLayers = ({ embedded, standalone, layerChosen, showGrid })
                     </LayerGroup>
                 </LayersControl.BaseLayer>
                 {
-                    standalone.map(row => (
+                    standalone.map((row, i) => (
                         <LayersControl.BaseLayer key={row.imageName} name={row.imageName} checked={false}>
                             <LayerGroup>
                                 <EntityLayer isEmbedded={false} showGrid={showGrid} embedded={[row]} />
