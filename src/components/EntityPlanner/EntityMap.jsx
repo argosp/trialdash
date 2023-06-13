@@ -7,6 +7,7 @@ import {
 import 'leaflet/dist/leaflet.css';
 import { CRS, DomEvent, LatLngBounds } from 'leaflet';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
+import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 
 const position = [32.081128, 34.779729];
 const posbounds = [[position[0] + 0.02, position[1] - 0.02], [position[0] - 0.02, position[1] + 0.02]];
@@ -116,6 +117,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                 showGrid={showGrid}
             />
             <ZoomControl position='topright' />
+            <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
             {children}
         </MapContainer>
     );
