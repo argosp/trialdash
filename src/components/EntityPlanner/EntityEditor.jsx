@@ -5,6 +5,7 @@ import {
     Box,
     Paper,
     Button,
+    Tooltip,
 } from '@material-ui/core';
 import {
     LocationOff,
@@ -24,11 +25,10 @@ import {
     FREEPOSITIONING_SHAPE,
     POINT_SHAPE
 } from './EditTable/utils/constants.js';
-import { DomEvent } from 'leaflet';
 import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
-import { SingleEntityPropertiesView } from './SingleEntityPropertiesView.jsx';
 import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
+import { ButtonTooltip } from './ButtonTooltip.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -123,29 +123,22 @@ export const EntityEditor = ({
                     shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
                         <EntityMarker
                             key={entityItem.key}
-                            entity={entityItem}
+                            entityItem={entityItem}
+                            entityType={entityType}
                             devLocation={location}
                             isSelected={selection.includes(entityItem.key)}
                             isTypeSelected={shownEntityTypes.includes(entityType.name)}
                             shouldShowName={showName}
                             onClick={() => toggleIsSelected(entityItem.key)}
                         >
-                            <IconButton onClick={(e) => {
-                                DomEvent.stop(e);
-                                setEntityLocations([entityItem.key], layerChosen)
-                            }}>
+                            <ButtonTooltip tooltip="Remove location" onClick={e => setEntityLocations([entityItem.key], layerChosen)}>
                                 <LocationOff />
-                            </IconButton>
-                            <IconButton onClick={(e) => {
-                                DomEvent.stop(e);
-                                toggleIsSelected(entityItem.key)
-                            }}>
+                            </ButtonTooltip>
+                            <ButtonTooltip tooltip={selection.includes(entityItem.key) ? "Remove from list" : "Add to list"}
+                                onClick={e => toggleIsSelected(entityItem.key)}
+                            >
                                 {selection.includes(entityItem.key) ? <PlaylistRemove /> : <PlaylistAdd />}
-                            </IconButton>
-                            <SingleEntityPropertiesView
-                                entityItem={entityItem}
-                                entityType={entityType}
-                            ></SingleEntityPropertiesView>
+                            </ButtonTooltip>
                         </EntityMarker>
                     ))
                 }

@@ -31,57 +31,57 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
     const allSame = changedValues.length === 0;
 
     return (
-        <Grid container
-            direction='column'
-            spacing={1}
-        >
-            {
-                shownValues.map(({ key: propertyKey, label, val }, i) => (
-                    <Grid item
-                        key={i}
-                    >
-                        <TextField
-                            key={propertyKey}
-                            variant='outlined'
-                            label={label}
-                            size='small'
-                            InputLabelProps={{ shrink: true }}
-                            onChange={(e) => {
-                                setShownValues(shownValues.map((t, j) => {
-                                    if (j === i) {
-                                        return { ...t, val: e.target.value };
-                                    }
-                                    return t;
-                                }));
-                            }}
-                            value={val + ''}
-                        />
-                    </Grid>
-                ))
-            }
-            <Grid item key='buttons'>
-                <IconButton
-                    key='check'
-                    color='primary'
-                    size="small"
-                    disabled={allSame}
-                    onClick={() => {
-                        const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
-                        setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
-                    }}
-                >
-                    <Check />
-                </IconButton>
-                <IconButton
-                    key='close'
-                    color='secondary'
-                    size="small"
-                    disabled={allSame}
-                    onClick={() => setShownValues(savedValues)}
-                >
-                    <Close />
-                </IconButton>
+        <>
+            <Grid container
+                direction='column'
+                spacing={1}
+            >
+                {
+                    shownValues.map(({ key: propertyKey, label, val }, i) => (
+                        <Grid item
+                            key={i}
+                        >
+                            <TextField
+                                key={propertyKey}
+                                variant='outlined'
+                                label={label}
+                                size='small'
+                                InputLabelProps={{ shrink: true }}
+                                onChange={(e) => {
+                                    setShownValues(shownValues.map((t, j) => {
+                                        if (j === i) {
+                                            return { ...t, val: e.target.value };
+                                        }
+                                        return t;
+                                    }));
+                                }}
+                                value={val + ''}
+                            />
+                        </Grid>
+                    ))
+                }
             </Grid>
-        </Grid>
+            <IconButton
+                key='check'
+                color='primary'
+                size="small"
+                disabled={allSame}
+                onClick={() => {
+                    const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
+                    setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
+                }}
+            >
+                <Check />
+            </IconButton>
+            <IconButton
+                key='close'
+                color='secondary'
+                size="small"
+                disabled={allSame}
+                onClick={() => setShownValues(savedValues)}
+            >
+                <Close />
+            </IconButton>
+        </>
     )
 }

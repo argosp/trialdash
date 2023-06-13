@@ -4,14 +4,16 @@ import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 import '../../assets/fontawesome/css/all.css';
 import { Typography } from '@material-ui/core';
+import { SingleEntityPropertiesView } from './SingleEntityPropertiesView';
 
-export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, children }) => {
+export const EntityMarker = ({ entityItem, entityType, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, children }) => {
     const ref = useRef(null);
 
     return (
-        <Marker key={entity.name}
+        <Marker
+            key={entityItem.name}
             position={devLocation}
-            title={entity.name}
+            title={entityItem.name}
             icon={divIcon({
                 className: 'argos-leaflet-div-icon',
                 iconSize: [20, 20],
@@ -23,7 +25,7 @@ export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, 
                         />
                         {!shouldShowName ? null :
                             <span style={{ backgroundColor: "yellow", padding: 3, borderColor: "black" }}>
-                                {entity.name.replace(/ /g, '\u00a0')}
+                                {entityItem.name.replace(/ /g, '\u00a0')}
                             </span>
                         }
                     </div>
@@ -41,8 +43,12 @@ export const EntityMarker = ({ entity, devLocation, isSelected, isTypeSelected, 
             }}
         >
             <Popup >
-                <Typography variant='h6'>{entity.name}</Typography>
+                <Typography variant='h6'>{entityItem.name}</Typography>
                 <Typography variant='overline'>{'at (' + devLocation.map(x => Math.round(x * 1e7) / 1e7) + ')'}</Typography>
+                <SingleEntityPropertiesView
+                    entityItem={entityItem}
+                    entityType={entityType}
+                ></SingleEntityPropertiesView>
                 {children}
             </Popup>
         </Marker >
