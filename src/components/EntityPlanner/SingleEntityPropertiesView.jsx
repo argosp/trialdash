@@ -42,10 +42,30 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
 
     const handleSaveEntityProperties = () => {
         const propertiesChanged = [];
-        for (let {key, val, type} of changedValues) {
-            propertiesChanged.push({ key, val });
+        const locationChanged = [];
+        for (let { key, val, type } of changedValues) {
+            if (type !== 'location') {
+                propertiesChanged.push({ key, val });
+            } else {
+                if (locationChanged.length === 0) {
+
+                    // find the location property, we assume it exists because it is on the map
+                    const locationPropType = entityType.properties.find(({ type }) => type === 'location');
+                    const locationProp = entityItem.properties.find(({ key }) => key === locationPropType.key);
+                    
+                    // copy the coordinates because we don't want to change the original property
+                    const newVal = { ...locationProp.val, coordinates: [...locationProp.val.coordinates] };
+                    locationChanged.push({ key: locationPropType.key, val: newVal });
+                }
+
+                // there can only be one locationChanged item
+                // change either the lat or the long
+                const index = key.endsWith('_lat') ? 0 : 1;
+                locationChanged[0].val.coordinates[index] = parseFloat(val);
+            }
         }
-        setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
+        setEntityProperties(entityItem.key, entityType.key, propertiesChanged.concat(locationChanged));
+        setIsEditLocation(false);
     }
 
     return (
@@ -60,9 +80,9 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                         <Typography variant='overline'>
                             {'at (' + devLocation.map(x => Math.round(x * 1e7) / 1e7) + ')'}
                         </Typography>
-                        {/* <ButtonTooltip tooltip={'Edit location'} onClick={() => setIsEditLocation(true)}>
+                        <ButtonTooltip tooltip={'Edit location'} onClick={() => setIsEditLocation(true)}>
                             <PenIcon />
-                        </ButtonTooltip> */}
+                        </ButtonTooltip>
                     </>
             }
             <Grid container
@@ -110,7 +130,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 color='secondary'
                 disabled={allSame}
                 tooltip={'Revert entity properties'}
-                onClick={() => setShownValues(savedValues)}
+                onClick={() => { setShownValues(savedValues); setIsEditLocation(false); }}
             >
                 <Close />
             </ButtonTooltip>
