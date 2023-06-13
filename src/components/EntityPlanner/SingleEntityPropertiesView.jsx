@@ -8,6 +8,7 @@ import {
     Check,
     Close,
 } from "@material-ui/icons";
+import { PenIcon } from '../../constants/icons';
 import { useEntities } from './EntitiesContext.jsx';
 import { ButtonTooltip } from './ButtonTooltip.jsx';
 
@@ -15,8 +16,8 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
     const { setEntityProperties } = useEntities();
     const [isEditLocation, setIsEditLocation] = useState(false);
 
-    const savedValues = entityType.properties.filter(({ type }) => type !== 'location')
-        .map(({ key: typePropertyKey, label, defaultValue }) => {
+    const savedValues = entityType.properties //.filter(({ type }) => type !== 'location')
+        .flatMap(({ key: typePropertyKey, label, defaultValue, type }) => {
             const valprop = entityItem.properties.find(({ key: itemPropertyKey }) => itemPropertyKey === typePropertyKey);
             let val = '';
             if (valprop && valprop.val !== undefined && valprop.val !== null) {
@@ -24,7 +25,14 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
             } else if (defaultValue !== null && defaultValue !== undefined) {
                 val = defaultValue;
             }
-            return { key: typePropertyKey, label, val };
+            if (type !== 'location') {
+                return { key: typePropertyKey, label, val, type };
+            } else {
+                return [
+                    { key: typePropertyKey + 'lat', label: 'Latitude', val: val.coordinates[0], type },
+                    { key: typePropertyKey + 'lng', label: 'Longitude', val: val.coordinates[1], type }
+                ]
+            }
         });
 
     const [shownValues, setShownValues] = useState(savedValues);
@@ -37,36 +45,47 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
             <Typography variant='h6'>
                 {entityItem.name}
             </Typography>
-            <Typography variant='overline'>
-                {'at (' + devLocation.map(x => Math.round(x * 1e7) / 1e7) + ')'}
-            </Typography>
+            {
+                isEditLocation
+                    ? null
+                    : <>
+                        <Typography variant='overline'>
+                            {'at (' + devLocation.map(x => Math.round(x * 1e7) / 1e7) + ')'}
+                        </Typography>
+                        {/* <ButtonTooltip tooltip={'Edit location'} onClick={() => setIsEditLocation(true)}>
+                            <PenIcon />
+                        </ButtonTooltip> */}
+                    </>
+            }
             <Grid container
                 direction='column'
                 spacing={1}
             >
                 {
-                    shownValues.map(({ key: propertyKey, label, val }, i) => (
-                        <Grid item
-                            key={i}
-                        >
-                            <TextField
-                                key={propertyKey}
-                                variant='outlined'
-                                label={label}
-                                size='small'
-                                InputLabelProps={{ shrink: true }}
-                                onChange={(e) => {
-                                    setShownValues(shownValues.map((t, j) => {
-                                        if (j === i) {
-                                            return { ...t, val: e.target.value };
-                                        }
-                                        return t;
-                                    }));
-                                }}
-                                value={val + ''}
-                            />
-                        </Grid>
-                    ))
+                    shownValues
+                        .filter(({ type }) => isEditLocation ? true : type !== 'location')
+                        .map(({ key: propertyKey, label, val }, i) => (
+                            <Grid item
+                                key={i}
+                            >
+                                <TextField
+                                    key={propertyKey}
+                                    variant='outlined'
+                                    label={label}
+                                    size='small'
+                                    InputLabelProps={{ shrink: true }}
+                                    onChange={(e) => {
+                                        setShownValues(shownValues.map((t, j) => {
+                                            if (j === i) {
+                                                return { ...t, val: e.target.value };
+                                            }
+                                            return t;
+                                        }));
+                                    }}
+                                    value={val + ''}
+                                />
+                            </Grid>
+                        ))
                 }
             </Grid>
             <ButtonTooltip
