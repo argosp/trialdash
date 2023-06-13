@@ -43,11 +43,10 @@ export const EntityMarker = ({ entityItem, entityType, devLocation, isSelected, 
             }}
         >
             <Popup >
-                <Typography variant='h6'>{entityItem.name}</Typography>
-                <Typography variant='overline'>{'at (' + devLocation.map(x => Math.round(x * 1e7) / 1e7) + ')'}</Typography>
                 <SingleEntityPropertiesView
                     entityItem={entityItem}
                     entityType={entityType}
+                    devLocation={devLocation}
                 ></SingleEntityPropertiesView>
                 {children}
             </Popup>

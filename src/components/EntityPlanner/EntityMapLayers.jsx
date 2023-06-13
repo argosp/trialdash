@@ -1,17 +1,10 @@
 import React from 'react';
 import {
-    Paper,
-    Button,
-    Grid
-} from '@material-ui/core';
-import {
     LayersControl,
     ImageOverlay,
     LayerGroup
 } from "react-leaflet";
 import { GridlinesLayer } from '../Maps/GridlinesLayer.jsx';
-import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
-import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import { MapTileLayer } from '../Maps/MapTileLayer.jsx';
 import config from '../../config';
 
