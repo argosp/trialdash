@@ -9,6 +9,7 @@ import {
     Close,
 } from "@material-ui/icons";
 import { useEntities } from './EntitiesContext.jsx';
+import { ButtonTooltip } from './ButtonTooltip.jsx';
 
 export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
     const { setEntityProperties } = useEntities();
@@ -61,27 +62,27 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem }) => {
                     ))
                 }
             </Grid>
-            <IconButton
+            <ButtonTooltip
                 key='check'
                 color='primary'
-                size="small"
                 disabled={allSame}
+                tooltip={'Save entity properties'}
                 onClick={() => {
                     const propertiesChanged = changedValues.map(({ key, val }) => { return { key, val } });
                     setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
                 }}
             >
                 <Check />
-            </IconButton>
-            <IconButton
+            </ButtonTooltip>
+            <ButtonTooltip
                 key='close'
                 color='secondary'
-                size="small"
                 disabled={allSame}
+                tooltip={'Revert entity properties'}
                 onClick={() => setShownValues(savedValues)}
             >
                 <Close />
-            </IconButton>
+            </ButtonTooltip>
         </>
     )
 }

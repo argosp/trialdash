@@ -5,16 +5,28 @@ import {
 } from '@material-ui/core';
 import { DomEvent } from 'leaflet';
 
-export const ButtonTooltip = ({ onClick, tooltip, children }) => {
-    return (
-        <Tooltip title={tooltip}>
-            <IconButton size="small" onClick={(e) => {
+export const ButtonTooltip = ({ onClick, tooltip, disabled, children, ...restProps }) => {
+    const button = (
+        <IconButton
+            size="small"
+            onClick={(e) => {
                 DomEvent.stop(e);
                 onClick(e)
-            }}>
-                {children}
-            </IconButton>
-        </Tooltip>
-    )
+            }}
+            disabled={disabled}
+            {...restProps}
+        >
+            {children}
+        </IconButton>
+    );
+    if (disabled) {
+        return button;
+    } else {
+        return (
+            <Tooltip title={tooltip}>
+                {button}
+            </Tooltip>
+        )
+    }
 }
 
