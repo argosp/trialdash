@@ -42,6 +42,7 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
                     shownValues.map(({ key: propertyKey, label, val }, i) => (
                         <TableCell
                             style={{ textAlign: 'center' }}
+                            key={propertyKey}
                         >
                             <TextField
                                 key={propertyKey}
@@ -65,12 +66,12 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
             <TableCell align="right" padding='none'>
                 {!showProperties || allSame ? null :
                     <>
-                        <IconButton color='primary' size="small"
+                        <IconButton color='primary' size="small" key='save'
                             onClick={() => handleSaveEntityProperties()}
                         >
                             <Check />
                         </IconButton>
-                        <IconButton color='secondary' size="small"
+                        <IconButton color='secondary' size="small" key='revert'
                             onClick={() => setShownValues(savedValues)}
                         >
                             <Close />
