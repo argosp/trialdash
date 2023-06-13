@@ -70,27 +70,6 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
             setEntityLocations([entityItem.key], 'OSMMap', [coordinates]); // TODO get layerChosen
         }
 
-        // const locationChanged = [];
-        // for (let { key, val, type } of changedValues) {
-        //     if (type !== 'location') {
-        //         propertiesChanged.push({ key, val });
-        //     } else {
-        //         if (locationChanged.length === 0) {
-
-
-        //             // copy the coordinates because we don't want to change the original property
-        //             const newVal = { ...locationProp.val, coordinates: [...locationProp.val.coordinates] };
-        //             locationChanged.push({ key: locationPropType.key, val: newVal });
-        //         }
-
-        //         // there can only be one locationChanged item
-        //         // change either the lat or the long
-        //         const index = key.endsWith('_lat') ? 0 : 1;
-        //         locationChanged[0].val.coordinates[index] = parseFloat(val);
-        //     }
-        // }
-        // setEntityProperties(entityItem.key, entityType.key, propertiesChanged.concat(locationChanged));
-
         setIsEditLocation(false);
     }
 
