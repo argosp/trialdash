@@ -58,7 +58,7 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
     return null;
 };
 
-export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked, showGrid, contextmenuItems }) => {
+export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked, showGrid }) => {
     const [layerPositions, setLayerPositions] = React.useState({});
 
     // this to signify to moveEnd event that the map moved because layer has changed, not that the user moved the map manually
