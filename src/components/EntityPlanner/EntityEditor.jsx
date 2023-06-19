@@ -76,7 +76,7 @@ export const EntityEditor = ({
             setSelection([]);
             setShowEditBox(false);
         } else if (shape === FREEPOSITIONING_SHAPE) {
-            positionTopOfStack(currPoint)
+            positionTopOfStack(currPoint, selection)
         } else {
             setMarkedPoints(markedPoints.concat([currPoint]));
         }

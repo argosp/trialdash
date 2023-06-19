@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, TextField } from '@material-ui/core';
 import { Button } from './Button';
 
-const FreePositioning = ({ classes, onSubmit }) => {
+const FreePositioning = ({ classes, onSubmit, buttonText }) => {
   const [pos, setPos] = React.useState({ x: 0, y: 0 });
   const onChange = (e) => {
     const name = e.target.name;
@@ -29,7 +29,7 @@ const FreePositioning = ({ classes, onSubmit }) => {
           InputLabelProps={{ shrink: true }}
         />
       </Grid>
-      <Button text="free position" onClick={() => onSubmit(pos)} />
+      <Button text={buttonText} onClick={() => onSubmit(pos)} />
     </Grid>
   );
 };

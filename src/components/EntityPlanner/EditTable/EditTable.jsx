@@ -77,13 +77,23 @@ export const EditTable = ({
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={FREEPOSITIONING_SHAPE}
                 icon={<FreePositioningIcon />}
-                component={<FreePositioning onSubmit={pos => handleSetOne({ latlng: { lat: pos.x, lng: pos.y } })} />}
+                component={
+                    <FreePositioning
+                        onSubmit={pos => handleSetOne({ latlng: { lat: pos.x, lng: pos.y } })}
+                        buttonText={"free position"}
+                    />
+                }
                 title={FREEPOSITIONING_TITLE}
             />
-            <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={false}
+            <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={true}
                 id={POINT_SHAPE}
                 icon={<DotIcon />}
-                component={() => <div></div>}
+                component={
+                    <FreePositioning
+                        onSubmit={pos => handleSetOne({ latlng: { lat: pos.x, lng: pos.y } })}
+                        buttonText={"position all"}
+                    />
+                }
                 title={POINT_TITLE}
             />
             <Divider variant="middle" light />
