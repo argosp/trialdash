@@ -15,7 +15,7 @@ export const MapCoordinates = ({ showAsLatLong = true }) => {
 
     const round = (num, digits) => {
         const c = 10 ** digits;
-        return Math.round(latlng.lat * c) / c;
+        return Math.round(num * c) / c;
     }
 
     let str = '';
