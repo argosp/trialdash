@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import {
-    Grid,
-    TextField,
-    Typography,
+    Grid, Typography
 } from '@material-ui/core';
 import {
     Check,
@@ -11,20 +9,22 @@ import {
 import { PenIcon } from '../../constants/icons';
 import { useEntities } from './EntitiesContext.jsx';
 import { ButtonTooltip } from './ButtonTooltip.jsx';
-import { entitySaveProperties, entityShowSavedProperties } from './EntityTextShowUtils';
+import { TextFieldEntityProperty, entitySaveForTextFields } from './TextFieldEntityProperty';
 
 export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation }) => {
     const { setEntityProperties, setEntityLocations } = useEntities();
     const [isEditLocation, setIsEditLocation] = useState(false);
+    const [changedValues, setChangedValues] = useState({});
 
-    const savedValues = entityShowSavedProperties({ entityType, entityItem });
-    const [shownValues, setShownValues] = useState(savedValues);
+    const propertyKeys = entityType.properties
+        .filter(({ type }) => isEditLocation ? true : type !== 'location')
+        .flatMap(({ key, type }) => type === 'location' ? [key + '_lat', key + '_lng'] : [key]);
 
-    const changedValues = shownValues.filter(({ val }, i) => (savedValues[i].val + '').trim() !== (val + '').trim());
-    const allSame = changedValues.length === 0;
+    const allSame = !Object.values(changedValues).some(v => v !== undefined);
 
     const handleSaveEntityProperties = () => {
-        entitySaveProperties({ entityType, entityItem, shownValues, savedValues, setEntityProperties, setEntityLocations });
+        entitySaveForTextFields({ entityType, entityItem, changedValues, setEntityProperties, setEntityLocations });
+        setChangedValues({});
         setIsEditLocation(false);
     }
 
@@ -50,30 +50,19 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 spacing={1}
             >
                 {
-                    shownValues
-                        .filter(({ type }) => isEditLocation ? true : type !== 'location')
-                        .map(({ key: propertyKey, label, val }) => (
-                            <Grid item
-                                key={propertyKey}
-                            >
-                                <TextField
-                                    key={propertyKey}
-                                    variant='outlined'
-                                    label={label}
-                                    size='small'
-                                    InputLabelProps={{ shrink: true }}
-                                    onChange={(e) => {
-                                        setShownValues(shownValues.map((t) => {
-                                            if (t.key === propertyKey) {
-                                                return { ...t, val: e.target.value };
-                                            }
-                                            return t;
-                                        }));
-                                    }}
-                                    value={val + ''}
-                                />
-                            </Grid>
-                        ))
+                    propertyKeys.map(key => (
+                        <Grid item
+                            key={key}
+                        >
+                            <TextFieldEntityProperty
+                                entityItem={entityItem}
+                                entityType={entityType}
+                                propertyKey={key}
+                                changedValue={changedValues[key]}
+                                setChangedValue={newVal => setChangedValues({ ...changedValues, [key]: newVal })}
+                            />
+                        </Grid>
+                    ))
                 }
             </Grid>
             <ButtonTooltip
@@ -90,7 +79,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 color='secondary'
                 disabled={allSame}
                 tooltip={'Revert entity properties'}
-                onClick={() => { setShownValues(savedValues); setIsEditLocation(false); }}
+                onClick={() => { setChangedValues({}); setIsEditLocation(false); }}
             >
                 <Close />
             </ButtonTooltip>

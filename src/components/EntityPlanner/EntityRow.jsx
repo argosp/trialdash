@@ -1,28 +1,24 @@
 import React, { useState } from 'react';
 import {
     TableRow,
-    TableCell,
-    TextField,
-    IconButton,
+    TableCell, IconButton
 } from '@material-ui/core';
 import {
     Check,
     Close,
 } from "@material-ui/icons";
 import { useEntities } from './EntitiesContext';
-import { entitySaveProperties, entityShowSavedProperties } from './EntityTextShowUtils';
+import { TextFieldEntityProperty, entitySaveForTextFields } from './TextFieldEntityProperty';
 
-export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showProperties, children }) => {
+export const EntityRow = ({ entityItem, entityType, onClick, showProperties, children }) => {
     const { setEntityProperties, setEntityLocations } = useEntities();
 
-    const savedValues = entityShowSavedProperties({ entityType, entityItem });
-    const [shownValues, setShownValues] = useState(savedValues);
-
-    const changedValues = shownValues.filter(({ val }, i) => (savedValues[i].val + '').trim() !== (val + '').trim());
-    const allSame = changedValues.length === 0;
+    const [changedValues, setChangedValues] = useState({});
+    const propertyKeys = entityType.properties.flatMap(({ key, type }) => type === 'location' ? [key + '_lat', key + '_lng'] : [key]);
 
     const handleSaveEntityProperties = () => {
-        entitySaveProperties({ entityType, entityItem, shownValues, savedValues, setEntityProperties, setEntityLocations });
+        entitySaveForTextFields({ entityType, entityItem, changedValues, setEntityProperties, setEntityLocations });
+        setChangedValues({});
     }
 
     return (
@@ -30,49 +26,38 @@ export const EntityRow = ({ entityItem, entityType, isSelected, onClick, showPro
             key={entityItem.key}
         >
             <TableCell
-                // style={{ fontWeight: isOpenArrow ? 'bolder' : 'normal' }}
-                // button={true}
-                // selected={isSelected}
                 onClick={onClick}
             >
                 {entityItem.name}
             </TableCell>
             {
                 !showProperties ? null :
-                    shownValues.map(({ key: propertyKey, label, val }, i) => (
+                    propertyKeys.map(key => (
                         <TableCell
                             style={{ textAlign: 'center' }}
-                            key={propertyKey}
+                            key={key}
                         >
-                            <TextField
-                                key={propertyKey}
-                                variant='outlined'
-                                label={label}
-                                size='small'
-                                InputLabelProps={{ shrink: true }}
-                                onChange={(e) => {
-                                    setShownValues(shownValues.map((t, j) => {
-                                        if (j === i) {
-                                            return { ...t, val: e.target.value };
-                                        }
-                                        return t;
-                                    }));
-                                }}
-                                value={val + ''}
+                            <TextFieldEntityProperty
+                                entityItem={entityItem}
+                                entityType={entityType}
+                                propertyKey={key}
+                                changedValue={changedValues[key]}
+                                setChangedValue={newVal => setChangedValues({ ...changedValues, [key]: newVal })}
                             />
                         </TableCell>
                     ))
             }
             <TableCell align="right" padding='none'>
-                {!showProperties || allSame ? null :
-                    <>
+                {!showProperties || !Object.values(changedValues).some(v => v !== undefined)
+                    ? null
+                    : <>
                         <IconButton color='primary' size="small" key='save'
                             onClick={() => handleSaveEntityProperties()}
                         >
                             <Check />
                         </IconButton>
                         <IconButton color='secondary' size="small" key='revert'
-                            onClick={() => setShownValues(savedValues)}
+                            onClick={() => setChangedValues({})}
                         >
                             <Close />
                         </IconButton>

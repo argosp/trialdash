@@ -60,37 +60,44 @@ const EntityPlanner = ({
     const trialEntitiesGrouped = groupBy(trialEntities, 'entitiesTypeKey');
 
     return (
-        <ErrorBoundary fallback={<div>Something went wrong<pre>{JSON.stringify(trialEntities, null, 2)}</pre></div>}>
-        <EntitiesProvider
-            client={client}
-            entitiesTypes={state.entitiesTypes}
-            experimentId={match.params.id} // obtained from url by react-router
-            trialEntities={trialEntities}
-            updateLocation={updateLocation}
-            submitTrial={(updateTrial) => submitTrial(updateTrial)}
-            trial={trial}
-            allEntities={state.allEntities}
-        >
-            <StagingProvider>
-                <ShapeProvider>
-                    <EntityEditor
-                        experimentDataMaps={state.experimentDataMaps}
-                        cloneEntitiesDialog={
-                            <CloneEntitiesDialog
-                                title={"Clone trial"}
-                                ref={cloneEntitiesRef}
-                                onConfirm={submitTrial}
-                                entitiesTypes={state.entitiesTypes}
-                                trialEntities={trialEntitiesGrouped}
-                                currentTrial={trial}
-                                client={client}
-                                match={match}
-                            />
-                        }
-                    />
-                </ShapeProvider>
-            </StagingProvider>
-        </EntitiesProvider>
+        <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
+            <div role="alert">
+                {/* <p>Something went wrong:</p> */}
+                <pre style={{ color: "red" }}>{error.message}<br />{error.componentStack}</pre>
+                <button onClick={resetErrorBoundary} >Retry</button>
+                <pre>{JSON.stringify(trialEntities, null, 2)}</pre>
+            </div>
+        )}>
+            <EntitiesProvider
+                client={client}
+                entitiesTypes={state.entitiesTypes}
+                experimentId={match.params.id} // obtained from url by react-router
+                trialEntities={trialEntities}
+                updateLocation={updateLocation}
+                submitTrial={(updateTrial) => submitTrial(updateTrial)}
+                trial={trial}
+                allEntities={state.allEntities}
+            >
+                <StagingProvider>
+                    <ShapeProvider>
+                        <EntityEditor
+                            experimentDataMaps={state.experimentDataMaps}
+                            cloneEntitiesDialog={
+                                <CloneEntitiesDialog
+                                    title={"Clone trial"}
+                                    ref={cloneEntitiesRef}
+                                    onConfirm={submitTrial}
+                                    entitiesTypes={state.entitiesTypes}
+                                    trialEntities={trialEntitiesGrouped}
+                                    currentTrial={trial}
+                                    client={client}
+                                    match={match}
+                                />
+                            }
+                        />
+                    </ShapeProvider>
+                </StagingProvider>
+            </EntitiesProvider>
         </ErrorBoundary>
     );
 }
