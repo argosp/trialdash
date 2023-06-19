@@ -2,7 +2,7 @@ import React from 'react';
 import { IconButton, Tooltip, Menu, MenuItem } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
-export const EntityLocationButton = ({ entityLocation, isEntityOnLayer, entityLayerName, onDisableLocation }) => {
+export const EntityLocationButton = ({ entityLocation, isEntityOnLayer, entityLayerName, onDisableLocation, menuItems }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     let tip = entityLocation.map(x => Math.round(x * 1e5) / 1e5).join(', ');
     if (!isEntityOnLayer) {
@@ -20,18 +20,16 @@ export const EntityLocationButton = ({ entityLocation, isEntityOnLayer, entityLa
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={() => {
-                    onDisableLocation(true);
-                    handleClose();
-                }}>
-                    Remove all (shift+click)
-                </MenuItem>
-                <MenuItem onClick={() => {
-                    onDisableLocation(false);
-                    handleClose();
-                }}>
-                    Remove this one (click)
-                </MenuItem>
+                {
+                    menuItems.map(({ label, callback }) => (
+                        <MenuItem onClick={() => {
+                            callback();
+                            handleClose();
+                        }}>
+                            {label}
+                        </MenuItem>
+                    ))
+                }
                 <MenuItem onClick={handleClose}>Cancel</MenuItem>
             </Menu>
             <Tooltip title={tip}>

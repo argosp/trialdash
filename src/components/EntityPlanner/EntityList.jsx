@@ -62,6 +62,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
     }
 
     const itemsGrouped = groupItemsByType(entityItems, !showProperties);
+    const shownKeysWithPos = entityItems.filter(x => x.location).map(x => x.entityItem.key);
 
     return (
         <>
@@ -101,8 +102,22 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                                                         isEntityOnLayer={isOnLayer}
                                                         entityLayerName={layerName}
                                                         onDisableLocation={(doOnWholeList) => {
-                                                            removeEntitiesLocations(doOnWholeList ? selection : [entityItem.key]);
+                                                            removeEntitiesLocations(doOnWholeList ? shownKeysWithPos : [entityItem.key]);
                                                         }}
+                                                        menuItems={[
+                                                            {
+                                                                label: 'Remove locations of this list (shift+click)',
+                                                                callback: () => removeEntitiesLocations(shownKeysWithPos)
+                                                            },
+                                                            {
+                                                                label: 'Remove locations of selected',
+                                                                callback: () => removeEntitiesLocations(selection)
+                                                            },
+                                                            {
+                                                                label: 'Remove location of this one (click)',
+                                                                callback: () => removeEntitiesLocations([entityItem.key])
+                                                            },
+                                                        ]}
                                                     />
                                                 }
                                             </EntityRow>
