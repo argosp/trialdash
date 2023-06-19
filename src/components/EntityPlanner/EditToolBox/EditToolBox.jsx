@@ -41,7 +41,7 @@ import { EditTool } from './EditTool.jsx';
 
 const useStyles = makeStyles(styles);
 
-export const EditTable = ({
+export const EditToolBox = ({
     handleSetOne,
     handleSetMany,
     markedPoints,
@@ -63,7 +63,7 @@ export const EditTable = ({
     };
 
     return (
-        <Box className={classnames(classes.root, classes.editTable)}>
+        <Box className={classnames(classes.root, classes.editToolBox)}>
             {/* <Typography variant="overline" align="center">
                 tools
             </Typography> */}

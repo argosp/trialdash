@@ -8,7 +8,7 @@ export const styles = (theme) => ({
     left: '100%',
     zIndex: 1000,
   },
-  editTable: {
+  editToolBox: {
     display: 'flex',
     flexDirection: 'column',
     outline: '1px solid #E0E0E0',

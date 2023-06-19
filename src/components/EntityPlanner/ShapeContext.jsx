@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react'
-import { FREEPOSITIONING_SHAPE, CHOOSE_SHAPE, POINT_SHAPE } from './EditTable/utils/constants.js';
+import { FREEPOSITIONING_SHAPE, CHOOSE_SHAPE, POINT_SHAPE } from './EditToolBox/utils/constants.js';
 import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 
 export const ShapeContext = createContext(null)

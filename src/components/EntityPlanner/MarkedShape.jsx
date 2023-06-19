@@ -3,7 +3,7 @@ import { Polyline, CircleMarker } from "react-leaflet";
 import { MarkedPoint } from './MarkedPoint';
 import { polylineDistance, distToText, polylineLength } from './GeometryUtils';
 import { useShape } from './ShapeContext.jsx';
-import { POINT_SHAPE } from './EditTable/utils/constants.js';
+import { POINT_SHAPE } from './EditToolBox/utils/constants.js';
 
 export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distanceInMeters }) => {
     const currPolyline = React.useRef(null);

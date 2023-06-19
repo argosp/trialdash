@@ -20,12 +20,12 @@ import { useShape } from './ShapeContext.jsx';
 import { useStaging } from './StagingContext.jsx';
 import { TypeChooser } from './TypeChooser';
 import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
-import { EditTable } from './EditTable/EditTable.jsx';
+import { EditToolBox } from './EditToolBox/EditToolBox.jsx';
 import {
     FREEPOSITIONING_SHAPE,
     CHOOSE_SHAPE,
     POINT_SHAPE
-} from './EditTable/utils/constants.js';
+} from './EditToolBox/utils/constants.js';
 import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
@@ -203,7 +203,7 @@ export const EntityEditor = ({
                 </Control>
 
                 <Control prepend={true} position="bottomleft" >
-                    <EditTable
+                    <EditToolBox
                         handleSetOne={handleMapClick}
                         handleSetMany={handlePutEntities}
                         markedPoints={markedPoints}
