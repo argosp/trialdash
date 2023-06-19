@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react'
-import { FREEPOSITIONING_SHAPE, POINT_SHAPE } from './EditTable/utils/constants.js';
+import { FREEPOSITIONING_SHAPE, CHOOSE_SHAPE, POINT_SHAPE } from './EditTable/utils/constants.js';
 import { arcCurveFromPoints, lerpPoint, rectByAngle, resamplePolyline, splineCurve } from './GeometryUtils';
 
 export const ShapeContext = createContext(null)
@@ -7,11 +7,16 @@ export const ShapeContext = createContext(null)
 export const useShape = () => useContext(ShapeContext);
 
 export const ShapeProvider = ({ children }) => {
-    const [shape, setShape] = React.useState("Pop");
+    const [shape, setShape] = React.useState(CHOOSE_SHAPE);
     const [rectAngle, setRectAngle] = React.useState(0);
     const [rectRows, setRectRows] = React.useState(3);
 
     const shapeOptions = [
+        {
+            name: CHOOSE_SHAPE,
+            toLine: points => [],
+            toPositions: (points, amount) => []
+        },
         {
             name: FREEPOSITIONING_SHAPE,
             toLine: points => [],
@@ -67,7 +72,7 @@ export const ShapeProvider = ({ children }) => {
     ];
 
     // TODO: get default shapeData in a nicer way, maybe convert shapeOptions to struct
-    const shapeData = shapeOptions.find(s => s.name === shape) || shapeOptions.find(s => s.name === FREEPOSITIONING_SHAPE);
+    const shapeData = shapeOptions.find(s => s.name === shape) || shapeOptions.find(s => s.name === CHOOSE_SHAPE);
 
     const store = {
         shape, setShape,

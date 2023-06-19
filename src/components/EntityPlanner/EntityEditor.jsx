@@ -23,6 +23,7 @@ import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 import { EditTable } from './EditTable/EditTable.jsx';
 import {
     FREEPOSITIONING_SHAPE,
+    CHOOSE_SHAPE,
     POINT_SHAPE
 } from './EditTable/utils/constants.js';
 import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
@@ -60,7 +61,8 @@ export const EntityEditor = ({
 
     const handleMapClick = e => {
         const currPoint = [e.latlng.lat, e.latlng.lng];
-        if (shape === POINT_SHAPE) {
+        if (shape === CHOOSE_SHAPE) {
+        } else if (shape === POINT_SHAPE) {
             setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
             setSelection([]);

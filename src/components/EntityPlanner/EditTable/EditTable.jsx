@@ -5,6 +5,7 @@ import {
     Box,
 } from '@material-ui/core';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import PlaceIcon from '@material-ui/icons/Place';
 
 import classnames from 'classnames';
 import { styles } from './styles';
@@ -24,7 +25,9 @@ import {
     POINT_SHAPE,
     CURVE_SHAPE,
     DISTRUBTE_ALONG_LINE_SHAPE,
-    RECTANGLE_SHAPE
+    RECTANGLE_SHAPE,
+    CHOOSE_SHAPE,
+    CHOOSE_TITLE
 } from './utils/constants.js';
 
 import {
@@ -65,6 +68,12 @@ export const EditTable = ({
                 tools
             </Typography> */}
 
+            <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={false}
+                id={CHOOSE_SHAPE}
+                icon={<PlaceIcon />}
+                component={<PlaceIcon />}
+                title={CHOOSE_TITLE}
+            />
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={FREEPOSITIONING_SHAPE}
                 icon={<FreePositioningIcon />}
@@ -74,7 +83,7 @@ export const EditTable = ({
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={false}
                 id={POINT_SHAPE}
                 icon={<DotIcon />}
-                component={<Dot />}
+                component={() => <div></div>}
                 title={POINT_TITLE}
             />
             <Divider variant="middle" light />
