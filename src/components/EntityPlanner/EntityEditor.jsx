@@ -31,6 +31,7 @@ import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import { ButtonTooltip } from './ButtonTooltip.jsx';
 import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
+import { MapRightClicker } from './MapRightClicker.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -59,6 +60,13 @@ export const EntityEditor = ({
     const [showEditTable, setShowEditTable] = useState(false);
     const [showGrid, setShowGrid] = React.useState({ show: false, meters: 1 });
 
+    const positionTopOfStack = (currPoint, selection) => {
+        if (selection.length > 0) {
+            setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
+            setSelection(selection.slice(1));
+            setShowEditBox(false);
+        }
+    }
     const handleMapClick = e => {
         const currPoint = [e.latlng.lat, e.latlng.lng];
         if (shape === CHOOSE_SHAPE) {
@@ -68,11 +76,7 @@ export const EntityEditor = ({
             setSelection([]);
             setShowEditBox(false);
         } else if (shape === FREEPOSITIONING_SHAPE) {
-            if (selection.length > 0) {
-                setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
-                setSelection(selection.slice(1));
-                setShowEditBox(false);
-            }
+            positionTopOfStack(currPoint)
         } else {
             setMarkedPoints(markedPoints.concat([currPoint]));
         }
@@ -122,6 +126,7 @@ export const EntityEditor = ({
                 onAreaMarked={onAreaMarked}
                 showGrid={showGrid}
             >
+                <MapRightClicker selection={selection} positionTopOfStack={positionTopOfStack} />
                 {
                     shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
                         <EntityMarker

@@ -6,6 +6,8 @@ import {
 } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 import { CRS, DomEvent, LatLngBounds } from 'leaflet';
+import 'leaflet-contextmenu';
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import { EntityMapLayers } from './EntityMapLayers.jsx';
 import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 
@@ -56,7 +58,7 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
     return null;
 };
 
-export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked, showGrid }) => {
+export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, setLayerChosen, onAreaMarked, showGrid, contextmenuItems }) => {
     const [layerPositions, setLayerPositions] = React.useState({});
 
     // this to signify to moveEnd event that the map moved because layer has changed, not that the user moved the map manually
@@ -103,6 +105,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             bounds={posbounds}
             zoomControl={false}
             minZoom={-6}
+            contextmenu={true}
         >
             <MapEventer
                 onClick={onClick}
