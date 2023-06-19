@@ -229,6 +229,7 @@ class EntityForm extends React.Component {
       });
     }
 
+    this.context.setWorking(false);;
     this.closeForm(deleted);
   };
 
