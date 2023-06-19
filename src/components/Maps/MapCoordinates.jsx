@@ -5,7 +5,6 @@ import {
 import {
     Paper
 } from "@material-ui/core";
-import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 
 export const MapCoordinates = ({ showAsLatLong = true }) => {
     const [latlng, setLatlng] = useState({ lat: 0, lng: 0 });
@@ -27,11 +26,9 @@ export const MapCoordinates = ({ showAsLatLong = true }) => {
     }
 
     return (
-        <Control position={'bottomleft'}>
-            <Paper style={{ padding: '0.5em' }}>
-                {str}
-            </Paper>
-        </Control>
+        <Paper style={{ padding: '0.5em' }}>
+            {str}
+        </Paper>
     )
 }
 

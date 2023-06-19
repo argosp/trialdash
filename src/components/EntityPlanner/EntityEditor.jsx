@@ -29,6 +29,7 @@ import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
 import { ButtonTooltip } from './ButtonTooltip.jsx';
+import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -143,18 +144,6 @@ export const EntityEditor = ({
                     ))
                 }
 
-                <ToggleTextOnMap position="bottomleft"
-                    name={'Names'}
-                    value={showName}
-                    setValue={setShowName}
-                />
-
-                <ToggleTextOnMap position="bottomleft"
-                    name={'Table'}
-                    value={showEditTable}
-                    setValue={setShowEditTable}
-                />
-
                 <MarkedShape
                     markedPoints={markedPoints}
                     setMarkedPoints={setMarkedPoints}
@@ -217,41 +206,70 @@ export const EntityEditor = ({
                 </Control>
 
                 <Control position="bottomleft">
-                    {layerChosen === 'OSMMap'
-                        ? null
-                        : <Paper style={{ padding: '5px' }}>
-                            <Grid container spacing={0}>
-                                <Grid item>
-                                    <Button
-                                        variant={showGrid.show ? 'contained' : 'outlined'}
-                                        color={'primary'}
-                                        onClick={() => setShowGrid({ ...showGrid, show: !showGrid.show })}
-                                    >
-                                        Grid
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <NumberTextField
-                                        width={'70px'}
-                                        label='Meters'
-                                        value={showGrid.meters}
-                                        onChange={(v) => setShowGrid({ ...showGrid, meters: v })}
-                                    />
+                    <Grid container spacing={1} direction="column" justifyContent="flex-start" alignItems="flex-start">
+                        <Grid item>
+                            <Paper>
+                                <Button
+                                    variant={showName ? 'contained' : 'outlined'}
+                                    color={'primary'}
+                                    onClick={() => setShowName(!showName)}
+                                >
+                                    Names
+                                </Button>
+                            </Paper>
+                        </Grid>
+                        <Grid item>
+                            <Paper>
+                                <Button
+                                    variant={showEditTable ? 'contained' : 'outlined'}
+                                    color={'primary'}
+                                    onClick={() => setShowEditTable(!showEditTable)}
+                                >Table</Button>
+                            </Paper>
+                        </Grid>
+                        {layerChosen === 'OSMMap'
+                            ? null
+                            :
+                            <Grid item>
+                                <Grid container spacing={0}>
+                                    <Grid item>
+                                        <Paper>
+                                            <Button
+                                                variant={showGrid.show ? 'contained' : 'outlined'}
+                                                color={'primary'}
+                                                onClick={() => setShowGrid({ ...showGrid, show: !showGrid.show })}
+                                            >
+                                                Grid
+                                            </Button>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item>
+                                        <Paper>
+                                            <NumberTextField
+                                                width={'70px'}
+                                                label='Meters'
+                                                value={showGrid.meters}
+                                                onChange={(v) => setShowGrid({ ...showGrid, meters: v })}
+                                            />
+                                        </Paper>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Paper>
-                    }
-                </Control>
-
-                <Control position="bottomleft">
-                    <Paper>
-                        <Button variant={'contained'} color={'primary'}
-                            onClick={() => cloneEntitiesDialog.ref.current.openDialog()}
-                        >
-                            Clone Entities
-                        </Button>
-                        {cloneEntitiesDialog}
-                    </Paper>
+                        }
+                        <Grid item>
+                            <Paper>
+                                <Button variant={'contained'} color={'primary'}
+                                    onClick={() => cloneEntitiesDialog.ref.current.openDialog()}
+                                >
+                                    Clone Entities
+                                </Button>
+                            </Paper>
+                            {cloneEntitiesDialog}
+                        </Grid>
+                        <Grid item>
+                            <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
+                        </Grid>
+                    </Grid>
                 </Control>
 
             </EntityMap>

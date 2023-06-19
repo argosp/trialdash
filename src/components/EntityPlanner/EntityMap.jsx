@@ -117,7 +117,6 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                 showGrid={showGrid}
             />
             <ZoomControl position='topright' />
-            <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
             {children}
         </MapContainer>
     );
