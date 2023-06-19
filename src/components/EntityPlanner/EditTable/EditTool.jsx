@@ -30,14 +30,32 @@ export const EditTool = ({ icon, id, component, title, shape, classes, markedPoi
                 </IconButton>
             </Tooltip>
             {showEditBox && shape === id && (
-                <Box sx={{ position: 'absolute', top: 0, left: '100%', zIndex: 1000 }}>
-                    <Grid container className={classes.toolBoxContainer}>
-                        <Grid item className={classes.toolBoxItem}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '100%',
+                        zIndex: 1000
+                    }}
+                >
+                    <Grid container className={classes.toolBoxContainer}
+                        style={{
+                            minWidth: 300,
+                            minHeight: `calc(100% + 20px)`
+                        }}
+                    >
+                        <Grid item style={{
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                        }}>
                             <IconButton onClick={() => onClickIcon(id)}>
                                 <ChevronLeftIcon />
                             </IconButton>
                             <Typography component="span">
-                                <Box sx={{ fontWeight: '700' }}>{title}</Box>
+                                <Box sx={{ fontWeight: '700' }}>
+                                    {title}
+                                </Box>
                             </Typography>
                         </Grid>
                         <Grid item>

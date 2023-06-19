@@ -37,13 +37,6 @@ export const styles = (theme) => ({
   },
   toolBoxContainer: {
     backgroundColor: theme.palette.white.main,
-    minWidth: 250,
-    minHeight: `calc(100% + 20px)`,
-  },
-  toolBoxItem: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
   },
   cloneTrialsContainer: {
     padding: '6px 8px',

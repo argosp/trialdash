@@ -85,7 +85,7 @@ export const EditTable = ({
                 }
                 title={FREEPOSITIONING_TITLE}
             />
-            <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={true}
+            <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={POINT_SHAPE}
                 icon={<DotIcon />}
                 component={
