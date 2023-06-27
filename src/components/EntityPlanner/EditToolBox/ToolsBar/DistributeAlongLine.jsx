@@ -1,10 +1,13 @@
-import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
+import { Grid, TextField, Typography } from '@material-ui/core';
 import { Button } from './Button';
+import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
 
-const Curve = ({ classes, onSubmit, markedPoints }) => {
-  const positions = [{ x: '', y: '' }];
+const DistributeAlongLine = ({ classes, onSubmit, markedPoints }) => {
+  const positions = [
+    { x: '', y: '' },
+    { x: '', y: '' },
+  ];
   if (markedPoints.length > 0) {
     markedPoints.forEach((markedPoint, index) => {
       const point = { x: markedPoint[0], y: markedPoint[1] };
@@ -14,12 +17,13 @@ const Curve = ({ classes, onSubmit, markedPoints }) => {
       };
     });
   }
+
   return (
     <Grid container className={classes.tool}>
       {positions.map((point, index) => (
         <Grid item className="toolItem" key={index}>
           <Grid item md={1}>
-            <Typography component="span">{index + 1}</Typography>
+          <Typography component="span">{index + 1}</Typography>
           </Grid>
           <Grid item md={4}>
             <TextField
@@ -46,4 +50,4 @@ const Curve = ({ classes, onSubmit, markedPoints }) => {
   );
 };
 
-export default Curve;
+export default DistributeAlongLine;

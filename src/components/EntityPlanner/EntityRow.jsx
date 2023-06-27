@@ -9,8 +9,9 @@ import {
 } from "@material-ui/icons";
 import { useEntities } from './EntitiesContext';
 import { TextFieldEntityProperty, entitySaveForTextFields } from './TextFieldEntityProperty';
+import { ContextMenu } from './ContextMenu';
 
-export const EntityRow = ({ entityItem, entityType, onClick, showProperties, children }) => {
+export const EntityRow = ({ entityItem, entityType, onClick, showProperties, nameMenuItems, children }) => {
     const { setEntityProperties, setEntityLocations } = useEntities();
 
     const [changedValues, setChangedValues] = useState({});
@@ -28,7 +29,10 @@ export const EntityRow = ({ entityItem, entityType, onClick, showProperties, chi
             <TableCell
                 onClick={onClick}
             >
-                {entityItem.name}
+                <ContextMenu
+                    menuItems={nameMenuItems}
+                    child={entityItem.name}
+                />
             </TableCell>
             {
                 !showProperties ? null :

@@ -69,7 +69,12 @@ export const EntityEditor = ({
     }
     const handleMapClick = e => {
         const currPoint = [e.latlng.lat, e.latlng.lng];
-        if (shape === CHOOSE_SHAPE) {
+        if (!shapeData.noControlPoints) {
+            if (!shapeData.maxPoints) {
+                setMarkedPoints(markedPoints.concat([currPoint]));
+            } else {
+                setMarkedPoints(markedPoints.slice(0, shapeData.maxPoints - 1).concat([currPoint]));
+            }
         } else if (shape === POINT_SHAPE) {
             setEntityLocations(selection, layerChosen, [currPoint]);
             setMarkedPoints([]);
@@ -77,8 +82,6 @@ export const EntityEditor = ({
             setShowEditBox(false);
         } else if (shape === FREEPOSITIONING_SHAPE) {
             positionTopOfStack(currPoint, selection)
-        } else {
-            setMarkedPoints(markedPoints.concat([currPoint]));
         }
     };
 

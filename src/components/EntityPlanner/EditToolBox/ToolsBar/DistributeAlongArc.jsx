@@ -3,28 +3,26 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import { Button } from './Button';
 import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
 
-const DistributeAlongLine = ({ classes, onSubmit, markedPoints }) => {
-  const labels = ['Start', 'End'];
-  const positions = [
-    { x: '', y: '' },
-    { x: '', y: '' },
+const DistributeAlongArc = ({ classes, onSubmit, markedPoints }) => {
+  const labels = [
+    'center',
+    'radius',
+    'arc',
   ];
-  if (markedPoints.length > 0) {
-    markedPoints.forEach((markedPoint, index) => {
-      const point = { x: markedPoint[0], y: markedPoint[1] };
-      positions[index] = {
-        x: processingDecimalDigits(point.x),
-        y: processingDecimalDigits(point.y),
-      };
-    });
-  }
+  const subset = markedPoints.filter((p, i) => i < 2 || i == markedPoints.length - 1);
+  const positions = labels.map((label, i) => {
+    const p = subset[i];
+    const x = p ? processingDecimalDigits(p[0]) : '';
+    const y = p ? processingDecimalDigits(p[1]) : '';
+    return { label, x, y };
+  })
 
   return (
     <Grid container className={classes.tool}>
       {positions.map((point, index) => (
         <Grid item className="toolItem" key={index}>
           <Grid item md={1}>
-            <Typography component="span">{labels[index]}</Typography>
+            <Typography component="span">{positions[index].label}</Typography>
           </Grid>
           <Grid item md={4}>
             <TextField
@@ -51,4 +49,4 @@ const DistributeAlongLine = ({ classes, onSubmit, markedPoints }) => {
   );
 };
 
-export default DistributeAlongLine;
+export default DistributeAlongArc;

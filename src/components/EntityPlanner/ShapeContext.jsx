@@ -14,16 +14,19 @@ export const ShapeProvider = ({ children }) => {
     const shapeOptions = [
         {
             name: CHOOSE_SHAPE,
+            noControlPoints: true,
             toLine: points => [],
             toPositions: (points, amount) => []
         },
         {
             name: FREEPOSITIONING_SHAPE,
+            noControlPoints: true,
             toLine: points => [],
             toPositions: (points, amount) => amount && points.length ? [points[0]] : []
         },
         {
             name: POINT_SHAPE,
+            noControlPoints: true,
             toLine: points => [],
             toPositions: (points, amount) => amount && points.length ? [points[0]] : []
         },
@@ -39,6 +42,7 @@ export const ShapeProvider = ({ children }) => {
         },
         {
             name: 'Arc',
+            maxPoints: 3,
             toLine: points => {
                 if (points.length <= 2) return [points];
                 const arc = arcCurveFromPoints(points, 400);

@@ -1,6 +1,6 @@
-export { default as Curve } from './Curve';
 export { default as Dot } from './Dot';
-export { default as DistrubteAlongLine } from './DistrubteAlongLine';
+export { default as DistributeAlongLine } from './DistributeAlongLine';
+export { default as DistributeAlongArc } from './DistributeAlongArc';
 export { default as Square } from './Square';
 export { default as FreePositioning } from './FreePositioning';
 export { default as Rectangle } from './Rectangle';

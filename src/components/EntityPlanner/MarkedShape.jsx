@@ -10,9 +10,8 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distance
     const auxPolyline = React.useRef(null);
 
     const { shape, shapeData } = useShape();
-    const shapeCreator = shapeData;
 
-    let candLocs = shapeCreator.toPositions(markedPoints, deviceNum).filter(x => x);
+    let candLocs = shapeData.toPositions(markedPoints, deviceNum).filter(x => x);
 
     const setLatLngsWithDist = (leafletElement, points) => {
         leafletElement.setLatLngs(points);
@@ -39,7 +38,7 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distance
         points = points || markedPoints;
         let shownPolylines = undefined;
         if (points.length) {
-            shownPolylines = shapeCreator.toLine(points);
+            shownPolylines = shapeData.toLine(points);
         }
         if (!shownPolylines || !shownPolylines.length) {
             unbindTooltip(currPolyline);
@@ -66,7 +65,7 @@ export const MarkedShape = ({ markedPoints, setMarkedPoints, deviceNum, distance
     return (
         <>
             {
-                shape === POINT_SHAPE ? null :
+                shapeData.noControlPoints ? null :
                     markedPoints.map((p, i) => (
                         <MarkedPoint
                             key={i}

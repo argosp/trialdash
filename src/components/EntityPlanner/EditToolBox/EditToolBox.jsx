@@ -19,23 +19,25 @@ import {
     FREEPOSITIONING_TITLE,
     POINT_TITLE,
     CURVE_TITLE,
-    DISTRUBTE_ALONG_LINE_TITLE,
+    DISTRIBUTE_ALONG_LINE_TITLE,
     RECTANGLE_TITLE,
     FREEPOSITIONING_SHAPE,
     POINT_SHAPE,
     CURVE_SHAPE,
-    DISTRUBTE_ALONG_LINE_SHAPE,
+    DISTRIBUTE_ALONG_LINE_SHAPE,
     RECTANGLE_SHAPE,
     CHOOSE_SHAPE,
-    CHOOSE_TITLE
+    CHOOSE_TITLE,
+    ARC_TITLE,
+    ARC_SHAPE
 } from './utils/constants.js';
 
 import {
     FreePositioning,
     Dot,
-    Curve,
-    DistrubteAlongLine,
-    Rectangle
+    DistributeAlongLine,
+    Rectangle,
+    DistributeAlongArc
 } from './ToolsBar';
 import { EditTool } from './EditTool.jsx';
 
@@ -100,20 +102,20 @@ export const EditToolBox = ({
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={CURVE_SHAPE}
                 icon={<CurveIcon />}
-                component={<Curve onSubmit={handleSetMany} />}
+                component={<DistributeAlongLine onSubmit={handleSetMany} />}
                 title={CURVE_TITLE}
             />
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
-                id={DISTRUBTE_ALONG_LINE_SHAPE}
+                id={DISTRIBUTE_ALONG_LINE_SHAPE}
                 icon={<DistrubteAlongLineIcon />}
-                component={<DistrubteAlongLine onSubmit={handleSetMany} />}
-                title={DISTRUBTE_ALONG_LINE_TITLE}
+                component={<DistributeAlongLine onSubmit={handleSetMany} />}
+                title={DISTRIBUTE_ALONG_LINE_TITLE}
             />
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
-                id={'Arc'}
+                id={ARC_SHAPE}
                 icon={<RotateLeftIcon fontSize="large" />}
-                component={<DistrubteAlongLine onSubmit={handleSetMany} />}
-                title={'Arc'}
+                component={<DistributeAlongArc onSubmit={handleSetMany} />}
+                title={ARC_TITLE}
             />
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={RECTANGLE_SHAPE}

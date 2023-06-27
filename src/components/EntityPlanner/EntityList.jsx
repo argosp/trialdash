@@ -19,25 +19,33 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
         toggleIsSelected
     } = useStaging();
 
+    const setRangeSelected = (lowInclusive, highInclusive, makeSelected) => {
+        const sel = [];
+        for (const [index, { entityItem }] of entityItems.entries()) {
+            if ((index < lowInclusive || index > highInclusive) && selection.includes(entityItem.key)) {
+                sel.push(entityItem.key);
+            }
+        }
+        if (makeSelected) {
+            for (let i = lowInclusive; i <= highInclusive; ++i) {
+                sel.push(entityItems[i].entityItem.key);
+            }
+        }
+        setSelection(sel);
+    }
+
     const handleSelectionClick = (devkey, index, doRange, e) => {
         DomEvent.stop(e);
         if (!doRange) {
             toggleIsSelected(devkey);
         } else if (lastIndex !== undefined) {
-            const low = Math.min(index, lastIndex);
-            const high = Math.max(index, lastIndex);
-
-            const sel = [];
-            for (const [index, { entityItem }] of entityItems.entries()) {
-                if ((index < low || index > high) && selection.includes(entityItem.key)) {
-                    sel.push(entityItem.key);
-                }
-            }
-            for (let i = low; i <= high; ++i) {
-                sel.push(entityItems[i].entityItem.key);
-            }
-            setSelection(sel);
+            setRangeSelected(Math.min(index, lastIndex), Math.max(index, lastIndex), true);
         }
+        setLastIndex(index);
+    }
+
+    const handleSetSelectedAllList = (makeSelected, index) => {
+        setRangeSelected(0, entityItems.length - 1, makeSelected);
         setLastIndex(index);
     }
 
@@ -95,6 +103,16 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                                                 entityType={entityType}
                                                 showProperties={showProperties}
                                                 onClick={e => handleSelectionClick(entityItem.key, index, e.shiftKey, e)}
+                                                nameMenuItems={[
+                                                    {
+                                                        label: 'Select all',
+                                                        callback: () => handleSetSelectedAllList(true, index)
+                                                    },
+                                                    {
+                                                        label: 'Deselect all',
+                                                        callback: () => handleSetSelectedAllList(false, index)
+                                                    },
+                                                ]}
                                             >
                                                 {!location ? null :
                                                     <EntityLocationButton
