@@ -4,26 +4,20 @@ import { Button } from './Button';
 import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
 
 const DistributeAlongLine = ({ classes, onSubmit, markedPoints }) => {
-  const positions = [
-    { x: '', y: '' },
-    { x: '', y: '' },
-  ];
-  if (markedPoints.length > 0) {
-    markedPoints.forEach((markedPoint, index) => {
-      const point = { x: markedPoint[0], y: markedPoint[1] };
-      positions[index] = {
-        x: processingDecimalDigits(point.x),
-        y: processingDecimalDigits(point.y),
-      };
-    });
-  }
+  const points = Array.from({ ...markedPoints, length: Math.max(2, markedPoints.length) });
+  const positions = points.map((p, i) => {
+    const x = p ? processingDecimalDigits(p[0]) : '';
+    const y = p ? processingDecimalDigits(p[1]) : '';
+    const label = (i === 0) ? "start" : ((i === points.length - 1) ? "end" : (i + 1));
+    return { label, x, y };
+  })
 
   return (
     <Grid container className={classes.tool}>
       {positions.map((point, index) => (
         <Grid item className="toolItem" key={index}>
           <Grid item md={1}>
-          <Typography component="span">{index + 1}</Typography>
+            <Typography component="span">{point.label}</Typography>
           </Grid>
           <Grid item md={4}>
             <TextField
