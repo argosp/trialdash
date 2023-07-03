@@ -28,7 +28,9 @@ export const EntitiesProvider = ({
         });
     }
 
-    const allProperties = JSON.stringify(trialEntities.flatMap(ent => (ent.properties || []).map(prop => prop.val)));
+    const allProperties = JSON.stringify(trialEntities.flatMap(ent => {
+        return (ent.properties || []).map(prop => prop.val).concat(ent.containsEntities || []);
+    }));
 
     useEffect(() => {
         const flattenEntityTypes = () => {
@@ -131,7 +133,7 @@ export const EntitiesProvider = ({
         handleChangeEntities(changeLocations(entityItemKeys, layerChosen, newLocations));
     }
 
-    const setEntityProperties = async (entityItemKey, propertiesChanged, containsEntitiesKeys=undefined) => {
+    const setEntityProperties = async (entityItemKey, propertiesChanged, containsEntitiesKeys = undefined) => {
         setWorking(true);
         const start = Date.now();
         const updatedTrial = {
