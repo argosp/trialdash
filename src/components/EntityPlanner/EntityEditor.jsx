@@ -17,7 +17,7 @@ import { EntityMap } from './EntityMap';
 import { EntityMarker } from './EntityMarker';
 import { MarkedShape } from './MarkedShape';
 import { useShape } from './ShapeContext.jsx';
-import { useStaging } from './StagingContext.jsx';
+import { useSelection } from './SelectionContext.jsx';
 import { TypeChooser } from './TypeChooser';
 import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 import { EditToolBox } from './EditToolBox/EditToolBox.jsx';
@@ -48,8 +48,9 @@ export const EntityEditor = ({
     const {
         selection,
         setSelection,
-        toggleIsSelected
-    } = useStaging();
+        toggleIsSelected,
+        popTopSelection
+    } = useSelection();
 
     const [shownEntityTypes, setShownEntityTypes] = useState([]);
     const [markedPoints, setMarkedPoints] = useState([]);
@@ -62,8 +63,7 @@ export const EntityEditor = ({
 
     const positionTopOfStack = (currPoint, selection) => {
         if (selection.length > 0) {
-            setEntityLocations(selection.slice(0, 1), layerChosen, [currPoint]);
-            setSelection(selection.slice(1));
+            setEntityLocations([popTopSelection()], layerChosen, [currPoint]);
             setShowEditBox(false);
         }
     }

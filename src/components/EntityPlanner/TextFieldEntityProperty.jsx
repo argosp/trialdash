@@ -49,7 +49,7 @@ export const entitySaveForTextFields = ({ entityType, entityItem, changedValues,
     }
 
     if (propertiesChanged.length > 0) {
-        setEntityProperties(entityItem.key, entityType.key, propertiesChanged);
+        setEntityProperties(entityItem.key, propertiesChanged);
     }
 
     // Saving just location

@@ -5,14 +5,18 @@ import {
 import {
     Check,
     Close,
+    MergeType,
 } from "@material-ui/icons";
 import { PenIcon } from '../../constants/icons';
 import { useEntities } from './EntitiesContext.jsx';
 import { ButtonTooltip } from './ButtonTooltip.jsx';
 import { TextFieldEntityProperty, entitySaveForTextFields } from './TextFieldEntityProperty';
+import { useSelection } from './SelectionContext';
+import { ContainedEntity } from './ContainedEntity';
 
-export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation }) => {
+export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation, children }) => {
     const { setEntityProperties, setEntityLocations } = useEntities();
+    const { selection, popTopSelection } = useSelection();
     const [isEditLocation, setIsEditLocation] = useState(false);
     const [changedValues, setChangedValues] = useState({});
 
@@ -27,6 +31,8 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
         setChangedValues({});
         setIsEditLocation(false);
     }
+
+    const containsEntities = [entityItem.containsEntities || []].flatMap(x => x);
 
     return (
         <>
@@ -83,6 +89,23 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
             >
                 <Close />
             </ButtonTooltip>
+            <ButtonTooltip
+                key='merge'
+                color='primary'
+                disabled={false}
+                tooltip={'Add contained entity'}
+                onClick={() => {
+                    if (selection.length) {
+                        setEntityProperties(entityItem.key, [], [...containsEntities, popTopSelection()]);
+                    }
+                }}
+            >
+                <MergeType />
+            </ButtonTooltip>
+            {children}
+            {containsEntities.map(e => (
+                <ContainedEntity childEntityItemKey={e} parentEntityItem={entityItem} />
+            ))}
         </>
     )
 }

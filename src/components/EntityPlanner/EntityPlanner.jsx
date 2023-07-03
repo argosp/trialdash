@@ -7,7 +7,7 @@ import { EntityEditor } from './EntityEditor';
 import { styles } from './styles';
 import { ShapeProvider } from './ShapeContext';
 import { EntitiesProvider } from './EntitiesContext';
-import { StagingProvider } from './StagingContext.jsx';
+import { SelectionProvider } from './SelectionContext.jsx';
 import CloneEntitiesDialog from '../CloneEntitiesDialog';
 import { groupBy } from 'lodash';
 import entitiesTypesQuery from '../EntityContext/utils/entityTypeQuery';
@@ -78,7 +78,7 @@ const EntityPlanner = ({
                 trial={trial}
                 allEntities={state.allEntities}
             >
-                <StagingProvider>
+                <SelectionProvider>
                     <ShapeProvider>
                         <EntityEditor
                             experimentDataMaps={state.experimentDataMaps}
@@ -96,7 +96,7 @@ const EntityPlanner = ({
                             }
                         />
                     </ShapeProvider>
-                </StagingProvider>
+                </SelectionProvider>
             </EntitiesProvider>
         </ErrorBoundary>
     );

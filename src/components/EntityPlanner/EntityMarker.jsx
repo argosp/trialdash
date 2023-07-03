@@ -46,8 +46,9 @@ export const EntityMarker = ({ entityItem, entityType, devLocation, isSelected, 
                     entityItem={entityItem}
                     entityType={entityType}
                     devLocation={devLocation}
-                ></SingleEntityPropertiesView>
-                {children}
+                >
+                    {children}
+                </SingleEntityPropertiesView>
             </Popup>
         </Marker >
     )

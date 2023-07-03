@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { WorkingContext } from '../AppLayout';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import { changeEntityLocation } from './EntityUtils';
+import updateTrialContainsEntities from '../TrialContext/TrialForm/utils/trialMutationUpdateContainsEntities.js';
 
 export const EntitiesContext = createContext(null);
 
@@ -130,7 +131,7 @@ export const EntitiesProvider = ({
         handleChangeEntities(changeLocations(entityItemKeys, layerChosen, newLocations));
     }
 
-    const setEntityProperties = async (entityItemKey, entityTypeKey, propertiesChanged) => {
+    const setEntityProperties = async (entityItemKey, propertiesChanged, containsEntitiesKeys=undefined) => {
         setWorking(true);
         const start = Date.now();
         const updatedTrial = {
@@ -149,6 +150,9 @@ export const EntitiesProvider = ({
                 } else {
                     entityOnTrial.properties.splice(foundProp, 1, newProp);
                 }
+            }
+            if (containsEntitiesKeys) {
+                entityOnTrial.containsEntities = containsEntitiesKeys;
             }
             await submitTrial(updatedTrial);
             console.log('setEntityProperties took ', Date.now() - start, 'ms');

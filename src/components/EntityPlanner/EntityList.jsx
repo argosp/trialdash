@@ -6,7 +6,7 @@ import {
     Paper,
 } from '@material-ui/core'
 import { EntityRow } from './EntityRow';
-import { useStaging } from './StagingContext.jsx';
+import { useSelection } from './SelectionContext.jsx';
 import { EntityLocationButton } from './EntityLocationButton.jsx';
 import { DomEvent } from 'leaflet';
 
@@ -16,22 +16,16 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
     const {
         selection,
         setSelection,
-        toggleIsSelected
-    } = useStaging();
+        toggleIsSelected,
+        setAsSelected
+    } = useSelection();
+
+    const getRangeKeys = (lowInclusive, highInclusive) => {
+        return entityItems.slice(lowInclusive, highInclusive + 1).map(e => e.entityItem.key);
+    }
 
     const setRangeSelected = (lowInclusive, highInclusive, makeSelected) => {
-        const sel = [];
-        for (const [index, { entityItem }] of entityItems.entries()) {
-            if ((index < lowInclusive || index > highInclusive) && selection.includes(entityItem.key)) {
-                sel.push(entityItem.key);
-            }
-        }
-        if (makeSelected) {
-            for (let i = lowInclusive; i <= highInclusive; ++i) {
-                sel.push(entityItems[i].entityItem.key);
-            }
-        }
-        setSelection(sel);
+        setAsSelected(makeSelected, ...getRangeKeys(lowInclusive, highInclusive));
     }
 
     const handleSelectionClick = (devkey, index, doRange, e) => {
