@@ -5,7 +5,13 @@ import { VisibilityOffOutlined, VisibilityOutlined, ArrowForwardIos, Clear } fro
 
 export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
     const { setEntityProperties, setEntityLocations } = useEntities();
-    const containsEntities = [parentEntityItem.containsEntities || []].flatMap(x => x);
+    
+    const disconnectEntity = () => {
+        const containsEntities = [parentEntityItem.containsEntities || []].flatMap(x => x);
+        const newContainsEntities = containsEntities.filter(e => e !== childEntityItemKey);
+        setEntityProperties(parentEntityItem.key, [], newContainsEntities);
+    }
+
     return (
         <div key={childEntityItemKey}>
             {childEntityItemKey}
@@ -14,9 +20,7 @@ export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
                 color='default'
                 disabled={false}
                 tooltip={'Disconnect contained entity from parent'}
-                onClick={() => {
-                    setEntityProperties(parentEntityItem.key, [], containsEntities.filter(e => e !== childEntityItemKey));
-                }}
+                onClick={disconnectEntity}
             >
                 <Clear />
             </ButtonTooltip>
