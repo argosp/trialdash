@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
     Grid, Typography
 } from '@material-ui/core';
@@ -46,13 +46,27 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
         return undefined;
     }
 
+    const findEntityParentHierarchy = (containedKey) => {
+        console.log('findEntityParentHierarchy:', containedKey);
+        const parents = [];
+        let curr = findEntityParent(containedKey);
+        while (curr) {
+            parents.push(curr);
+            curr = findEntityParent(curr.key);
+        }
+        console.log('findEntityParentHierarchy:', containedKey, '->', parents);
+        return parents;
+    }
+
     const disconnectEntityParent = (parentEntityObj, newContainedEntityKey) => {
         const containsEntities = [parentEntityObj.containsEntities || []].flatMap(x => x);
         const newContainsEntities = containsEntities.filter(ce => ce !== newContainedEntityKey);
         setEntityProperties(parentEntityObj.key, [], newContainsEntities);
     }
 
-    const parentEntity = findEntityParent(entityItem.key);
+    console.log(entityItem.name);
+    const parentHierarchy = findEntityParentHierarchy(entityItem.key);
+    const parentEntity = parentHierarchy[0];
 
     return (
         <>
@@ -85,8 +99,10 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                                 entityType={entityType}
                                 propertyKey={key}
                                 changedValue={changedValues[key]}
-                                setChangedValue={newVal => setChangedValues({ ...changedValues, [key]: newVal })}
-                                parentEntities={parentEntity ? [parentEntity] : []} // TODO: recurse into parents
+                                setChangedValue={newVal => {
+                                    setChangedValues({ ...changedValues, [key]: newVal });
+                                }}
+                                parentHierarchy={parentHierarchy}
                             />
                         </Grid>
                     ))
@@ -130,7 +146,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
             </ButtonTooltip>
             {children}
             {parentEntity === undefined ? null :
-                <>
+                <Fragment key={'p'}>
                     <br />
                     parent:
                     <br />
@@ -138,10 +154,10 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                         childEntityItemKey={parentEntity.key}
                         disconnectEntity={() => disconnectEntityParent(parentEntity, entityItem.key)}
                     />
-                </>
+                </Fragment>
             }
             {containsEntities.length === 0 ? null :
-                <>
+                <Fragment key={'e'}>
                     <br />
                     contained:
                     {containsEntities.map(e => (
@@ -150,7 +166,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                             disconnectEntity={() => disconnectEntityParent(entityItem, e)}
                         />
                     ))}
-                </>
+                </Fragment>
             }
         </>
     )

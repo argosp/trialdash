@@ -3,7 +3,7 @@ import {
     TextField
 } from '@material-ui/core';
 
-export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, changedValue, setChangedValue, parentEntities }) => {
+export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, changedValue, setChangedValue, parentHierarchy }) => {
     const isLat = propertyKey.endsWith('_lat');
     const isLng = propertyKey.endsWith('_lng');
     const key = (isLat || isLng) ? propertyKey.substring(0, propertyKey.length - 4) : propertyKey;
@@ -22,17 +22,23 @@ export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, c
             return '';
         }
 
-        for (const e of [entityItem, ...parentEntities]) {
+        for (const e of [entityItem, ...parentHierarchy]) {
             const entityItemProp = (e.properties || []).find(p => p.key === key);
-            if (entityItemProp && entityItemProp.val !== undefined && entityItemProp.val !== null) {
-                return entityItemProp.val + '';
+            if (entityItemProp) {
+                const val = entityItemProp.val;
+                if (val !== undefined && val !== null && val.trim() !== '') {
+                    return val + '';
+                }
             }
         }
-        
-        for (const e of [entityItem, ...parentEntities]) {
+
+        for (const e of [entityItem, ...parentHierarchy]) {
             const entityTypeProp = entityType.properties.find(p => p.key === key);
-            if (entityTypeProp.defaultValue !== null && entityTypeProp.defaultValue !== undefined) {
-                return entityTypeProp.defaultValue + '';
+            if (entityTypeProp) {
+                const val = entityTypeProp.defaultValue;
+                if (val !== undefined && val !== null && val.trim() !== '') {
+                    return val + '';
+                }
             }
         }
 
@@ -40,7 +46,7 @@ export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, c
     }
 
     const savedValue = obtainSavedValue();
-    
+
     return (
         <TextField
             key={key}
