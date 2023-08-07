@@ -5,7 +5,7 @@ import { Clear, VisibilityOutlined } from '@material-ui/icons';
 import { Paper, Box, Typography } from '@material-ui/core';
 import { usePopupSwitch } from './PopupSwitchContext';
 
-export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
+export const ContainedEntity = ({ childEntityItemKey, disconnectEntity }) => {
     const { setEntityProperties, entities } = useEntities();
     const { switchToPopup } = usePopupSwitch();
 
@@ -18,12 +18,6 @@ export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
             }
         }
     })();
-
-    const disconnectEntity = () => {
-        const containsEntities = [parentEntityItem.containsEntities || []].flatMap(x => x);
-        const newContainsEntities = containsEntities.filter(e => e !== childEntityItemKey);
-        setEntityProperties(parentEntityItem.key, [], newContainsEntities);
-    }
 
     const showEntity = () => {
         switchToPopup(childEntityItemKey);
@@ -57,7 +51,7 @@ export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
                 key='show'
                 color='default'
                 disabled={false}
-                tooltip={'Show this contained entity'}
+                tooltip={'Show this entity'}
                 onClick={showEntity}
                 style={{ marginLeft: "auto" }}
             >
@@ -67,7 +61,7 @@ export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
                 key='remove'
                 color='default'
                 disabled={false}
-                tooltip={'Disconnect this contained entity from parent'}
+                tooltip={'Disconnect this entity'}
                 onClick={disconnectEntity}
                 style={{ marginLeft: "auto" }}
             >

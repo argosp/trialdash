@@ -15,7 +15,7 @@ import { useSelection } from './SelectionContext';
 import { ContainedEntity } from './ContainedEntity';
 
 export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation, children }) => {
-    const { setEntityProperties, setEntityLocations } = useEntities();
+    const { setEntityProperties, setEntityLocations, entities } = useEntities();
     const { selection, popTopSelection } = useSelection();
     const [isEditLocation, setIsEditLocation] = useState(false);
     const [changedValues, setChangedValues] = useState({});
@@ -33,6 +33,19 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
     }
 
     const containsEntities = [entityItem.containsEntities || []].flatMap(x => x);
+
+    // TODO: move to useEntities and maybe optimize by precalc
+    const findEntityParent = (containedKey) => {
+        for (const et of entities) {
+            for (const ei of et.items) {
+                if (ei.containsEntities && ei.containsEntities.includes(containedKey)) {
+                    return ei;
+                }
+            }
+        }
+        return undefined;
+    }
+    const parentEntity = findEntityParent(entityItem.key);
 
     return (
         <>
@@ -103,9 +116,38 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 <MergeType />
             </ButtonTooltip>
             {children}
-            {containsEntities.map(e => (
-                <ContainedEntity childEntityItemKey={e} parentEntityItem={entityItem} />
-            ))}
+            {parentEntity === undefined ? null :
+                <>
+                    <br />
+                    parent:
+                    <br />
+                    <ContainedEntity
+                        childEntityItemKey={parentEntity.key}
+                        // parentEntityItem={entityItem}
+                        disconnectEntity={() => {
+                            const containsEntities = [parentEntity.containsEntities || []].flatMap(x => x);
+                            const newContainsEntities = containsEntities.filter(ce => ce !== entityItem.key);
+                            setEntityProperties(parentEntity.key, [], newContainsEntities);
+                        }}
+                    />
+                </>
+            }
+            {containsEntities.length === 0 ? null :
+                <>
+                    <br />
+                    contained:
+                    {containsEntities.map(e => (
+                        <ContainedEntity
+                            childEntityItemKey={e}
+                            disconnectEntity={() => {
+                                const containsEntities = [entityItem.containsEntities || []].flatMap(x => x);
+                                const newContainsEntities = containsEntities.filter(ce => ce !== e);
+                                setEntityProperties(entityItem.key, [], newContainsEntities);
+                            }}
+                        />
+                    ))}
+                </>
+            }
         </>
     )
 }
