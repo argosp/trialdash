@@ -66,26 +66,32 @@ const findEntityParentHierarchy = (containedKey, entities) => {
     return parents;
 }
 
-const inheritProperty = (propKey, entityHierarchy) => {
-    for (const e of entityHierarchy) {
-        const entityItemProp = (e.properties || []).find(p => p.key === propKey);
+const inheritProperty = (propKey, entityHierarchy, entitiesTypes) => {
+    const entityTypeHierarchy = []
+    for (const entityItem of entityHierarchy) {
+        const entityItemProp = (entityItem.properties || []).find(p => p.key === propKey);
         if (entityItemProp) {
             const val = entityItemProp.val;
             if (val !== undefined && val !== null && val.trim() !== '') {
                 return val + '';
             }
         }
+        const entityType = entitiesTypes.find(({ key }) => key === entityItem.entitiesTypeKey);
+        const entityTypeProp = entityType.properties.find(p => p.key === propKey);
+        entityTypeHierarchy.push({ entityItem, entityItemProp, entityType, entityTypeProp });
+        // if (!entityTypeProp.inheritable) {
+        //     break;
+        // }        
     }
 
-    // for (const e of [entityItem, ...parentHierarchy]) {
-    //     const entityTypeProp = entityType.properties.find(p => p.key === propKey);
-    //     if (entityTypeProp) {
-    //         const val = entityTypeProp.defaultValue;
-    //         if (val !== undefined && val !== null && val.trim() !== '') {
-    //             return val + '';
-    //         }
-    //     }
-    // }
+    for (const { entityItem, entityItemProp, entityType, entityTypeProp } of entityTypeHierarchy) {
+        if (entityTypeProp) {
+            const val = entityTypeProp.defaultValue;
+            if (val !== undefined && val !== null && val.trim() !== '') {
+                return val + '';
+            }
+        }
+    }
 
     return undefined;
 }
@@ -95,10 +101,10 @@ const inheritPropsTrial = (trial, entitiesTypes) => {
     for (const entityItem of entities) {
         const parentHierarchy = findEntityParentHierarchy(entityItem.key, entities);
         const entityHierarchy = [entityItem, ...parentHierarchy];
-        const entityType = entitiesTypes.find(({key}) => key === entityItem.entitiesTypeKey);
+        const entityType = entitiesTypes.find(({ key }) => key === entityItem.entitiesTypeKey);
         const properties = []
         for (const prop of entityType.properties) {
-            const val = inheritProperty(prop.key, entityHierarchy);
+            const val = inheritProperty(prop.key, entityHierarchy, entitiesTypes);
             if (val !== undefined) {
                 properties.push({ key: prop.key, val });
             }
