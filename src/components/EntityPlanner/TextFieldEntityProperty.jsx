@@ -3,7 +3,7 @@ import {
     TextField
 } from '@material-ui/core';
 
-export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, changedValue, setChangedValue }) => {
+export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, changedValue, setChangedValue, parentEntities }) => {
     const isLat = propertyKey.endsWith('_lat');
     const isLng = propertyKey.endsWith('_lng');
     const key = (isLat || isLng) ? propertyKey.substring(0, propertyKey.length - 4) : propertyKey;
@@ -11,19 +11,36 @@ export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, c
     const entityItemProp = entityItem.properties.find(p => p.key === key);
     const label = isLat ? 'Latitude' : (isLng ? 'Longitude' : entityTypeProp.label);
 
-    let savedValue = '';
-    if (isLat || isLng) {
-        if (entityItemProp && entityItemProp.val) {
-            const coords = entityItemProp.val.coordinates;
-            if (coords && coords.length >= 2) {
-                savedValue = coords[isLat ? 0 : 1] + '';
+    const obtainSavedValue = () => {
+        if (isLat || isLng) {
+            if (entityItemProp && entityItemProp.val) {
+                const coords = entityItemProp.val.coordinates;
+                if (coords && coords.length >= 2) {
+                    return coords[isLat ? 0 : 1] + '';
+                }
+            }
+            return '';
+        }
+
+        for (const e of [entityItem, ...parentEntities]) {
+            const entityItemProp = (e.properties || []).find(p => p.key === key);
+            if (entityItemProp && entityItemProp.val !== undefined && entityItemProp.val !== null) {
+                return entityItemProp.val + '';
             }
         }
-    } else if (entityItemProp && entityItemProp.val !== undefined && entityItemProp.val !== null) {
-        savedValue = entityItemProp.val + '';
-    } else if (entityTypeProp.defaultValue !== null && entityTypeProp.defaultValue !== undefined) {
-        savedValue = entityTypeProp.defaultValue + '';
+        
+        for (const e of [entityItem, ...parentEntities]) {
+            const entityTypeProp = entityType.properties.find(p => p.key === key);
+            if (entityTypeProp.defaultValue !== null && entityTypeProp.defaultValue !== undefined) {
+                return entityTypeProp.defaultValue + '';
+            }
+        }
+
+        return '';
     }
+
+    const savedValue = obtainSavedValue();
+    
     return (
         <TextField
             key={key}

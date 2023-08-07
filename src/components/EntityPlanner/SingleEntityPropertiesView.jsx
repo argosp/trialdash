@@ -86,6 +86,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                                 propertyKey={key}
                                 changedValue={changedValues[key]}
                                 setChangedValue={newVal => setChangedValues({ ...changedValues, [key]: newVal })}
+                                parentEntities={parentEntity ? [parentEntity] : []} // TODO: recurse into parents
                             />
                         </Grid>
                     ))
