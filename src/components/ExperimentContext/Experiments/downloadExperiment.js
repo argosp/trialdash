@@ -47,7 +47,64 @@ const getImageFromLog = async (comment) => {
     })
 }
 
-const inheritProps = (trial, entitiesTypes) => {
+const findEntityParent = (containedKey, entities) => {
+    for (const e of entities) {
+        if (e && e.containsEntities && e.containsEntities.includes(containedKey)) {
+            return e;
+        }
+    }
+    return undefined;
+}
+
+const findEntityParentHierarchy = (containedKey, entities) => {
+    const parents = [];
+    let curr = findEntityParent(containedKey, entities);
+    while (curr) {
+        parents.push(curr);
+        curr = findEntityParent(curr.key, entities);
+    }
+    return parents;
+}
+
+const inheritProperty = (propKey, entityHierarchy) => {
+    for (const e of entityHierarchy) {
+        const entityItemProp = (e.properties || []).find(p => p.key === propKey);
+        if (entityItemProp) {
+            const val = entityItemProp.val;
+            if (val !== undefined && val !== null && val.trim() !== '') {
+                return val + '';
+            }
+        }
+    }
+
+    // for (const e of [entityItem, ...parentHierarchy]) {
+    //     const entityTypeProp = entityType.properties.find(p => p.key === propKey);
+    //     if (entityTypeProp) {
+    //         const val = entityTypeProp.defaultValue;
+    //         if (val !== undefined && val !== null && val.trim() !== '') {
+    //             return val + '';
+    //         }
+    //     }
+    // }
+
+    return undefined;
+}
+
+const inheritPropsTrial = (trial, entitiesTypes) => {
+    const { entities } = trial;
+    for (const entityItem of entities) {
+        const parentHierarchy = findEntityParentHierarchy(entityItem.key, entities);
+        const entityHierarchy = [entityItem, ...parentHierarchy];
+        const entityType = entitiesTypes.find(({key}) => key === entityItem.entitiesTypeKey);
+        const properties = []
+        for (const prop of entityType.properties) {
+            const val = inheritProperty(prop.key, entityHierarchy);
+            if (val !== undefined) {
+                properties.push({ key: prop.key, val });
+            }
+        }
+        entityItem.properties = properties;
+    }
     return trial;
 }
 
@@ -67,7 +124,7 @@ export const downloadExperiment = async (experiment, client) => {
     const logImages = await Promise.all(allData.logs.map(async log => await getImageFromLog(log.comment)))
 
     const { entityTypes } = allData;
-    allData.trials = allData.trials.map(trial => inheritProps(trial, entityTypes));
+    allData.trials = allData.trials.map(trial => inheritPropsTrial(trial, entityTypes));
 
     const json = JSON.stringify({ version: '2.0.0.', ...allData, experiment: expToDownload });
 

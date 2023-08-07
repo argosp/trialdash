@@ -47,14 +47,12 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
     }
 
     const findEntityParentHierarchy = (containedKey) => {
-        console.log('findEntityParentHierarchy:', containedKey);
         const parents = [];
         let curr = findEntityParent(containedKey);
         while (curr) {
             parents.push(curr);
             curr = findEntityParent(curr.key);
         }
-        console.log('findEntityParentHierarchy:', containedKey, '->', parents);
         return parents;
     }
 
@@ -64,7 +62,6 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
         setEntityProperties(parentEntityObj.key, [], newContainsEntities);
     }
 
-    console.log(entityItem.name);
     const parentHierarchy = findEntityParentHierarchy(entityItem.key);
     const parentEntity = parentHierarchy[0];
 
