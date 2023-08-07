@@ -1,6 +1,5 @@
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import React from 'react';
-import Experiments from '../components/ExperimentContext/Experiments';
 import Login from '../components/Login';
 import TrialSets from '../components/TrialContext/TrialSets';
 import ExperimentForm from '../components/ExperimentContext/ExperimentForm';
@@ -27,6 +26,7 @@ import {
   ENTITIES_TYPE_MUTATION,
   LOGS_DASH
 } from '../constants/base';
+import Experiments from '../components/ExperimentContext/Experiments/Experiments';
 
 const AppRoutes = () => (
   <BrowserRouter>
