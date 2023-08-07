@@ -1,12 +1,21 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Marker, Popup } from "react-leaflet";
 import { divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 import '../../assets/fontawesome/css/all.css';
 import { SingleEntityPropertiesView } from './SingleEntityPropertiesView';
+import { usePopupSwitch } from './PopupSwitchContext';
 
 export const EntityMarker = ({ entityItem, entityType, devLocation, isSelected, isTypeSelected, shouldShowName, onClick, children }) => {
     const ref = useRef(null);
+
+    const { isPopupSwitchedTo } = usePopupSwitch();
+
+    useEffect(() => {
+        if (isPopupSwitchedTo(entityItem.key)) {
+            ref.current.openPopup();
+        }
+    })
 
     return (
         <Marker

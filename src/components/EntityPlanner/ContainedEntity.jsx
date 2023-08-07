@@ -1,11 +1,13 @@
 import React from 'react';
 import { ButtonTooltip } from './ButtonTooltip';
 import { useEntities } from './EntitiesContext';
-import { Clear } from '@material-ui/icons';
+import { Clear, VisibilityOutlined } from '@material-ui/icons';
 import { Paper, Box, Typography } from '@material-ui/core';
+import { usePopupSwitch } from './PopupSwitchContext';
 
 export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
     const { setEntityProperties, entities } = useEntities();
+    const { switchToPopup } = usePopupSwitch();
 
     const search = (() => {
         for (const entityType of entities) {
@@ -23,22 +25,27 @@ export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
         setEntityProperties(parentEntityItem.key, [], newContainsEntities);
     }
 
+    const showEntity = () => {
+        switchToPopup(childEntityItemKey);
+    }
+
     return (
         <Paper key={childEntityItemKey} style={{
             marginTop: 5,
             marginBottom: 5,
             marginRight: 0,
             marginLeft: 0,
-            // paddingTop: 2,
-            // paddingBottom: 2,
             paddingRight: 10,
             paddingLeft: 10,
             display: "flex",
         }}>
-            {/* <Paper style={{ marginRight: 2 }}> */}
             <Typography
                 variant='body1'
-                style={{ margin: 0, display: 'inline-block' }}
+                style={{
+                    margin: 0,
+                    marginRight: '10px',
+                    display: 'inline-block'
+                }}
             >
                 {!search ? 'unknown ' + childEntityItemKey : (
                     <>
@@ -46,24 +53,21 @@ export const ContainedEntity = ({ parentEntityItem, childEntityItemKey }) => {
                     </>
                 )}
             </Typography>
-            {/* </Paper> */}
-            {/* <Paper style={{ marginRight: 2 }}>
-                <Typography
-                    variant='body1'
-                    style={{ margin: 0, display: 'inline-block' }}
-                >
-                    {!search ? 'unknown ' + childEntityItemKey : (
-                        <>
-                            {search.entityType.name}
-                        </>
-                    )}
-                </Typography>
-            </Paper> */}
+            <ButtonTooltip
+                key='show'
+                color='default'
+                disabled={false}
+                tooltip={'Show this contained entity'}
+                onClick={showEntity}
+                style={{ marginLeft: "auto" }}
+            >
+                <VisibilityOutlined />
+            </ButtonTooltip>
             <ButtonTooltip
                 key='remove'
                 color='default'
                 disabled={false}
-                tooltip={'Disconnect contained entity from parent'}
+                tooltip={'Disconnect this contained entity from parent'}
                 onClick={disconnectEntity}
                 style={{ marginLeft: "auto" }}
             >

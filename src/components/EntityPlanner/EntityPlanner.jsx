@@ -15,6 +15,7 @@ import entitiesQuery from '../EntityContext/Entities/utils/entityQuery';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { WorkingContext } from '../AppLayout';
 import { ErrorBoundary } from "react-error-boundary";
+import { PopupSwitchProvider } from './PopupSwitchContext';
 
 const EntityPlanner = ({
     client,
@@ -78,25 +79,27 @@ const EntityPlanner = ({
                 trial={trial}
                 allEntities={state.allEntities}
             >
-                <SelectionProvider>
-                    <ShapeProvider>
-                        <EntityEditor
-                            experimentDataMaps={state.experimentDataMaps}
-                            cloneEntitiesDialog={
-                                <CloneEntitiesDialog
-                                    title={"Clone trial"}
-                                    ref={cloneEntitiesRef}
-                                    onConfirm={submitTrial}
-                                    entitiesTypes={state.entitiesTypes}
-                                    trialEntities={trialEntitiesGrouped}
-                                    currentTrial={trial}
-                                    client={client}
-                                    match={match}
-                                />
-                            }
-                        />
-                    </ShapeProvider>
-                </SelectionProvider>
+                <PopupSwitchProvider>
+                    <SelectionProvider>
+                        <ShapeProvider>
+                            <EntityEditor
+                                experimentDataMaps={state.experimentDataMaps}
+                                cloneEntitiesDialog={
+                                    <CloneEntitiesDialog
+                                        title={"Clone trial"}
+                                        ref={cloneEntitiesRef}
+                                        onConfirm={submitTrial}
+                                        entitiesTypes={state.entitiesTypes}
+                                        trialEntities={trialEntitiesGrouped}
+                                        currentTrial={trial}
+                                        client={client}
+                                        match={match}
+                                    />
+                                }
+                            />
+                        </ShapeProvider>
+                    </SelectionProvider>
+                </PopupSwitchProvider>
             </EntitiesProvider>
         </ErrorBoundary>
     );
