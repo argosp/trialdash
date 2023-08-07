@@ -79,9 +79,9 @@ const inheritProperty = (propKey, entityHierarchy, entitiesTypes) => {
         const entityType = entitiesTypes.find(({ key }) => key === entityItem.entitiesTypeKey);
         const entityTypeProp = entityType.properties.find(p => p.key === propKey);
         entityTypeHierarchy.push({ entityItem, entityItemProp, entityType, entityTypeProp });
-        // if (!entityTypeProp.inheritable) {
-        //     break;
-        // }        
+        if (!entityTypeProp.inheritable) {
+            break;
+        }
     }
 
     for (const { entityItem, entityItemProp, entityType, entityTypeProp } of entityTypeHierarchy) {
