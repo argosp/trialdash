@@ -96,22 +96,18 @@ const inheritProperty = (propKey, entityHierarchy, entitiesTypes) => {
     return undefined;
 }
 
-const inheritPropsTrial = (trial, entitiesTypes) => {
-    const { entities } = trial;
-    for (const entityItem of entities) {
-        const parentHierarchy = findEntityParentHierarchy(entityItem.key, entities);
-        const entityHierarchy = [entityItem, ...parentHierarchy];
-        const entityType = entitiesTypes.find(({ key }) => key === entityItem.entitiesTypeKey);
-        const properties = []
-        for (const prop of entityType.properties) {
-            const val = inheritProperty(prop.key, entityHierarchy, entitiesTypes);
-            if (val !== undefined) {
-                properties.push({ key: prop.key, val });
-            }
+export const inheritPropsEntity = (entityItem, entities, entitiesTypes) => {
+    const parentHierarchy = findEntityParentHierarchy(entityItem.key, entities);
+    const entityHierarchy = [entityItem, ...parentHierarchy];
+    const entityType = entitiesTypes.find(({ key }) => key === entityItem.entitiesTypeKey);
+    const properties = []
+    for (const prop of entityType.properties) {
+        const val = inheritProperty(prop.key, entityHierarchy, entitiesTypes);
+        if (val !== undefined) {
+            properties.push({ key: prop.key, val });
         }
-        entityItem.properties = properties;
     }
-    return trial;
+    return properties;
 }
 
 export const downloadExperiment = async (experiment, client) => {
@@ -129,8 +125,11 @@ export const downloadExperiment = async (experiment, client) => {
     expToDownload.maps = await Promise.all(expToDownload.maps.map(async map => await getImageFromMap(map)))
     const logImages = await Promise.all(allData.logs.map(async log => await getImageFromLog(log.comment)))
 
-    const { entityTypes } = allData;
-    allData.trials = allData.trials.map(trial => inheritPropsTrial(trial, entityTypes));
+    for (const trial of allData.trials) {
+        for (const entityItem of trial.entities) {
+            entityItem.properties = inheritPropsEntity(entityItem, trial.entities, allData.entityTypes);
+        }
+    }
 
     const json = JSON.stringify({ version: '2.0.0.', ...allData, experiment: expToDownload });
 
