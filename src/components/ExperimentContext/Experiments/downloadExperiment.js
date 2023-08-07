@@ -47,33 +47,47 @@ const getImageFromLog = async (comment) => {
     })
 }
 
+const inheritProps = (trial, entitiesTypes) => {
+    return trial;
+}
+
 export const downloadExperiment = async (experiment, client) => {
-    const expToDownload = { ...experiment }
-    client.query({
+    const expToDownload = { ...experiment };
+    const data = await client.query({
         query: experimentAllDataQuery(experiment.project.id),
-    }).then(async (data) => {
-        if (data && data.data.getAllExperimentData) {
-            expToDownload.maps = await Promise.all(expToDownload.maps.map(async map => await getImageFromMap(map)))
-            const logImages = await Promise.all(data.data.getAllExperimentData.logs.map(async log => await getImageFromLog(log.comment)))
-            const zip = JSZip();
-            zip.file("data.json", JSON.stringify({ version: '2.0.0.', ...data.data.getAllExperimentData, experiment: expToDownload }));
-            expToDownload.maps.forEach(img => {
-                zip.file(`images/${img.imageName}`, img.imageUrl, {
-                    binary: true
-                });
-            });
-            logImages.forEach(array => {
-                array.forEach(img => {
-                    zip.file(`images/${img.imageName}`, img.imageUrl, {
-                        binary: true
-                    });
-                });
-            })
+    });
 
-            zip.generateAsync({ type: "blob" }).then(function (blob) {
-                saveAs(blob, `experiment_${experiment.name}.zip`);
-            });
-        }
+    if (!data || !data.data.getAllExperimentData) {
+        return;
+    }
 
+    const allData = data.data.getAllExperimentData;
+
+    expToDownload.maps = await Promise.all(expToDownload.maps.map(async map => await getImageFromMap(map)))
+    const logImages = await Promise.all(allData.logs.map(async log => await getImageFromLog(log.comment)))
+
+    const { entityTypes } = allData;
+    allData.trials = allData.trials.map(trial => inheritProps(trial, entityTypes));
+
+    const json = JSON.stringify({ version: '2.0.0.', ...allData, experiment: expToDownload });
+
+    const zip = JSZip();
+    zip.file("data.json", json);
+    expToDownload.maps.forEach(img => {
+        zip.file(`images/${img.imageName}`, img.imageUrl, {
+            binary: true
+        });
+    });
+
+    logImages.forEach(array => {
+        array.forEach(img => {
+            zip.file(`images/${img.imageName}`, img.imageUrl, {
+                binary: true
+            });
+        });
+    })
+
+    zip.generateAsync({ type: "blob" }).then(function (blob) {
+        saveAs(blob, `experiment_${experiment.name}.zip`);
     });
 }
