@@ -45,6 +45,13 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
         }
         return undefined;
     }
+
+    const disconnectEntityParent = (parentEntityObj, newContainedEntityKey) => {
+        const containsEntities = [parentEntityObj.containsEntities || []].flatMap(x => x);
+        const newContainsEntities = containsEntities.filter(ce => ce !== newContainedEntityKey);
+        setEntityProperties(parentEntityObj.key, [], newContainsEntities);
+    }
+
     const parentEntity = findEntityParent(entityItem.key);
 
     return (
@@ -109,7 +116,12 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                 tooltip={'Add contained entity'}
                 onClick={() => {
                     if (selection.length) {
-                        setEntityProperties(entityItem.key, [], [...containsEntities, popTopSelection()]);
+                        const newContained = popTopSelection();
+                        const newContainedParent = findEntityParent(newContained);
+                        if (newContainedParent) {
+                            disconnectEntityParent(newContainedParent, newContained)
+                        }
+                        setEntityProperties(entityItem.key, [], [...containsEntities, newContained]);
                     }
                 }}
             >
@@ -123,12 +135,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                     <br />
                     <ContainedEntity
                         childEntityItemKey={parentEntity.key}
-                        // parentEntityItem={entityItem}
-                        disconnectEntity={() => {
-                            const containsEntities = [parentEntity.containsEntities || []].flatMap(x => x);
-                            const newContainsEntities = containsEntities.filter(ce => ce !== entityItem.key);
-                            setEntityProperties(parentEntity.key, [], newContainsEntities);
-                        }}
+                        disconnectEntity={() => disconnectEntityParent(parentEntity, entityItem.key)}
                     />
                 </>
             }
@@ -139,11 +146,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                     {containsEntities.map(e => (
                         <ContainedEntity
                             childEntityItemKey={e}
-                            disconnectEntity={() => {
-                                const containsEntities = [entityItem.containsEntities || []].flatMap(x => x);
-                                const newContainsEntities = containsEntities.filter(ce => ce !== e);
-                                setEntityProperties(entityItem.key, [], newContainsEntities);
-                            }}
+                            disconnectEntity={() => disconnectEntityParent(entityItem, e)}
                         />
                     ))}
                 </>
