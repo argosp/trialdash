@@ -121,7 +121,21 @@ async function downloadTrial(args) {
 
 }
 
+async function downloadEntities({ client, match, trial }) {
+  const { data } = await client.query({
+    query: fullTrialQuery(match.params.id, trial.key)
+  });
+  if (data.trial && data.trial.fullDetailedEntities && data.trial.fullDetailedEntities.length) {
+    const csvStringEntities = await fetchEntitiesData(data.trial);
+    download(csvStringEntities, `trial_${data.trial.name}_entities`)
+  } else {
+    alert('Problem fetching entities');
+  }
+
+}
+
 export {
   downloadTrial,
-  downloadTrials
+  downloadTrials,
+  downloadEntities
 }

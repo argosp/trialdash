@@ -201,9 +201,9 @@ const Trials = (props) => {
             backButtonHandler={() => history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}`)}
             rightDescription={trialSet ? trialSet.name : ''}
             addButtonHandler={() => window.location.href = `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/add-trial`}
-            withDownloadButton
-            downloadButtonText="Download trials"
-            downloadButtonHandler={() => downloadTrials(client, match, trialSet, displayCloneData)}
+            // withDownloadButton
+            // downloadButtonText="Download trials"
+            // downloadButtonHandler={() => downloadTrials(client, match, trialSet, displayCloneData)}
           />
           <ContentTable
             contentType={TRIALS}

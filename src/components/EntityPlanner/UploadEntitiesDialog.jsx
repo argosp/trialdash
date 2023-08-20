@@ -1,23 +1,24 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
-    Grid,
-    IconButton,
-    Box,
-    Paper,
-    Button,
-    Tooltip,
-    Dialog,
-    DialogTitle,
-    Typography,
-    RadioGroup,
+    Box, Button, RadioGroup,
     Radio,
     FormControlLabel
 } from '@material-ui/core';
-import CloseIcon from "@material-ui/icons/Close";
 import { ButtonWithDialog } from './ButtonWithDialog';
+import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
+import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
 
-export const UploadEntitiesDialog = ({ }) => {
+export const UploadEntitiesDialog = ({ client, match, trial }) => {
     const [value, setValue] = useState('CSV');
+
+    const uploadInfo = () => {
+        uploadEntities(e, trial, client, match)
+    }
+
+    const downloadInfo = () => {
+        downloadEntities({ client, match, trial });
+    }
+
     return (
         <ButtonWithDialog
             title={'Upload & Download'}
@@ -34,14 +35,14 @@ export const UploadEntitiesDialog = ({ }) => {
                 </RadioGroup>
                 <br />
                 <Button variant={'outlined'} color={'primary'}
-                // onClick={() => setOpen(true)}
+                    onClick={uploadInfo}
                 >
                     Upload
                 </Button>
                 <br />
                 <br />
                 <Button variant={'outlined'} color={'primary'}
-                // onClick={() => setOpen(true)}
+                    onClick={downloadInfo}
                 >
                     Download
                 </Button>

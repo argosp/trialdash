@@ -60,7 +60,7 @@ export const TrialRow = ({
                 className={classes.actionsCell}
                 style={{ display: 'table-cell' }}
             >
-                <CustomTooltip
+                {/* <CustomTooltip
                     title="Download"
                     ariaLabel="download"
                     onClick={() => downloadTrial({
@@ -101,7 +101,7 @@ export const TrialRow = ({
                             hidden
                         />
                     </>
-                </CustomTooltip>
+                </CustomTooltip> */}
                 <CustomTooltip
                     title="Entities"
                     ariaLabel="entities"

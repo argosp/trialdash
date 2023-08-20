@@ -96,6 +96,9 @@ const EntityPlanner = ({
                                         match={match}
                                     />
                                 }
+                                client={client}
+                                match={match}
+                                trial={trial}
                             />
                         </ShapeProvider>
                     </SelectionProvider>

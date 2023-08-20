@@ -38,6 +38,9 @@ import { UploadEntitiesDialog } from './UploadEntitiesDialog.jsx';
 export const EntityEditor = ({
     experimentDataMaps,
     cloneEntitiesDialog,
+    client,
+    match,
+    trial,
 }) => {
     const { shape, shapeData } = useShape();
 
@@ -263,7 +266,9 @@ export const EntityEditor = ({
                         </Grid>
                         <Grid item>
                             <UploadEntitiesDialog
-            
+                                client={client}
+                                match={match}
+                                trial={trial}
                             />
                         </Grid>
                         <Grid item>
