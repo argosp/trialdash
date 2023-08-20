@@ -32,6 +32,7 @@ import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextF
 import { ButtonTooltip } from './ButtonTooltip.jsx';
 import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 import { MapRightClicker } from './MapRightClicker.jsx';
+import { EntityMarkersShown } from './EntityMarkersShown.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -130,29 +131,12 @@ export const EntityEditor = ({
                 showGrid={showGrid}
             >
                 <MapRightClicker selection={selection} positionTopOfStack={positionTopOfStack} />
-                {
-                    shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
-                        <EntityMarker
-                            key={entityItem.key}
-                            entityItem={entityItem}
-                            entityType={entityType}
-                            devLocation={location}
-                            isSelected={selection.includes(entityItem.key)}
-                            isTypeSelected={shownEntityTypes.includes(entityType.name)}
-                            shouldShowName={showName}
-                            onClick={() => toggleIsSelected(entityItem.key)}
-                        >
-                            <ButtonTooltip tooltip="Remove location" onClick={e => setEntityLocations([entityItem.key], layerChosen)}>
-                                <LocationOff />
-                            </ButtonTooltip>
-                            <ButtonTooltip tooltip={selection.includes(entityItem.key) ? "Remove from list" : "Add to list"}
-                                onClick={e => toggleIsSelected(entityItem.key)}
-                            >
-                                {selection.includes(entityItem.key) ? <PlaylistRemove /> : <PlaylistAdd />}
-                            </ButtonTooltip>
-                        </EntityMarker>
-                    ))
-                }
+
+                <EntityMarkersShown
+                    shownEntityItems={shownEntityItems}
+                    shownEntityTypes={shownEntityTypes}
+                    shouldShowName={showName}
+                />
 
                 <MarkedShape
                     markedPoints={markedPoints}
