@@ -38,6 +38,15 @@ function getCsvData(array) {
   )
 }
 
+function makeCsvData(array) {
+  return [
+    // get csv headers
+    Object.keys(array[0]),
+    // get csv data
+    ...getCsvData(array)
+  ].join("\n");
+}
+
 function fetchTrialsData(client, match, trialSet, displayCloneData) {
   const trials = client.readQuery({
     query: trialsQuery(match.params.id, match.params.trialSetKey)
@@ -52,12 +61,7 @@ function fetchTrialsData(client, match, trialSet, displayCloneData) {
     status: t.status
   }))
 
-  return [
-    // get csv headers
-    Object.keys(fixedTrials[0]),
-    // get csv data
-    ...getCsvData(fixedTrials)
-  ].join("\n");
+  return makeCsvData(fixedTrials);
 }
 
 function fetchTrialData(trial, trials, trialSet, displayCloneData) {
@@ -72,12 +76,7 @@ function fetchTrialData(trial, trials, trialSet, displayCloneData) {
     status: trial.status
   }
 
-  return [
-    // get csv headers
-    Object.keys(fixedTrial),
-    // get csv data
-    ...getCsvData([fixedTrial])
-  ].join("\n");
+  return makeCsvData([fixedTrial]);
 }
 
 function fetchEntitiesData(trial) {
@@ -90,12 +89,7 @@ function fetchEntitiesData(trial) {
     ...getEntityProperties(e)
   }))
 
-  return [
-    // get csv headers
-    Object.keys(entities[0]),
-    // get csv data
-    ...getCsvData(entities)
-  ].join("\n");
+  return makeCsvData(entities);
 }
 
 
