@@ -33,6 +33,7 @@ import { ButtonTooltip } from './ButtonTooltip.jsx';
 import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 import { MapRightClicker } from './MapRightClicker.jsx';
 import { EntityMarkersShown } from './EntityMarkersShown.jsx';
+import { UploadEntitiesDialog } from './UploadEntitiesDialog.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -252,13 +253,18 @@ export const EntityEditor = ({
                         }
                         <Grid item>
                             <Paper>
-                                <Button variant={'contained'} color={'primary'}
+                                <Button variant={'outlined'} color={'primary'}
                                     onClick={() => cloneEntitiesDialog.ref.current.openDialog()}
                                 >
                                     Clone Entities
                                 </Button>
                             </Paper>
                             {cloneEntitiesDialog}
+                        </Grid>
+                        <Grid item>
+                            <UploadEntitiesDialog
+            
+                            />
                         </Grid>
                         <Grid item>
                             <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
