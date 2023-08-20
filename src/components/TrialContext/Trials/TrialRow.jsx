@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { AttachFile, UploadIcon, GridIcon, PenIcon, DownloadIcon } from '../../../constants/icons';
+import { GridIcon, PenIcon, DownloadIcon } from '../../../constants/icons';
 import CustomTooltip from '../../CustomTooltip';
 import StatusBadge from '../../StatusBadge';
 import StyledTableCell from '../../StyledTableCell';
@@ -10,6 +10,7 @@ import { displayCloneData } from './trialUtils';
 import { DeleteTrialIconButton } from './DeleteTrialIconButton';
 import { CloneTrialIconButton } from './CloneTrialIconButton';
 import { COLORS_STATUSES } from '../../../constants/base';
+import { UploadTrialIconButton } from './UploadTrialIconButton';
 
 export const TrialRow = ({
     trial,
@@ -68,34 +69,10 @@ export const TrialRow = ({
                 >
                     <DownloadIcon />
                 </CustomTooltip>
-                <CustomTooltip
-                    title="Upload csv props update"
-                    ariaLabel="Upload csv update"
-                    component="label"
-                >
-                    <>
-                        <UploadIcon />
-                        <input
-                            type="file"
-                            onChange={updateTrialFromCsv}
-                            hidden
-                        />
-                    </>
-                </CustomTooltip>
-                <CustomTooltip
-                    title="Upload csv entities update"
-                    ariaLabel="Upload csv update"
-                    component="label"
-                >
-                    <>
-                        <AttachFile />
-                        <input
-                            type="file"
-                            onChange={(e) => updateEntitiesTrialFromCsv(e, trial)}
-                            hidden
-                        /></>
-
-                </CustomTooltip>
+                <UploadTrialIconButton
+                    updateTrialFromCsv={updateTrialFromCsv}
+                    updateEntitiesTrialFromCsv={updateEntitiesTrialFromCsv}
+                />
                 <CustomTooltip
                     title="Entities"
                     ariaLabel="entities"
