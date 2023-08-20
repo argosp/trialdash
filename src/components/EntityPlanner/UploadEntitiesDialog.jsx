@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     Box, Button, RadioGroup,
     Radio,
@@ -10,8 +10,9 @@ import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
 
 export const UploadEntitiesDialog = ({ client, match, trial }) => {
     const [value, setValue] = useState('CSV');
+    const ref = useRef();
 
-    const uploadInfo = () => {
+    const uploadInfo = (e) => {
         uploadEntities(e, trial, client, match)
     }
 
@@ -35,9 +36,15 @@ export const UploadEntitiesDialog = ({ client, match, trial }) => {
                 </RadioGroup>
                 <br />
                 <Button variant={'outlined'} color={'primary'}
-                    onClick={uploadInfo}
+                    onClick={() => ref.current.click()}
                 >
                     Upload
+                    <input
+                        type="file"
+                        ref={ref}
+                        onChange={(e) => uploadInfo(e)}
+                        hidden
+                    />
                 </Button>
                 <br />
                 <br />
