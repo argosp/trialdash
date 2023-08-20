@@ -22,7 +22,8 @@ export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, c
             return '';
         }
 
-        for (const e of [entityItem, ...parentHierarchy]) {
+        const hierarchy = [entityItem, ...(parentHierarchy || [])];
+        for (const e of hierarchy) {
             const entityItemProp = (e.properties || []).find(p => p.key === key);
             if (entityItemProp) {
                 const val = entityItemProp.val;
@@ -32,7 +33,7 @@ export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, c
             }
         }
 
-        for (const e of [entityItem, ...parentHierarchy]) {
+        for (const e of hierarchy) {
             const entityTypeProp = entityType.properties.find(p => p.key === key);
             if (entityTypeProp) {
                 const val = entityTypeProp.defaultValue;
