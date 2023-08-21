@@ -105,43 +105,34 @@ async function fetchEntityTypesData(client, match) {
 
 }
 
-function uploadEntities(e, trial, client, match) {
-  return new Promise((resolve, reject) => {
-    const file = e.target.files[0]
-    const fileReader = new FileReader();
-    fileReader.onload = async (event) => {
-      const text = event.target.result;
-      const json = csvJSON(text);
-      if (json && json[0].entitiesTypeName) {
-        const entityTypes = await fetchEntityTypesData(client, match)
-        const entityProps = json.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {})
-        const entities = trial.entities.map(entity => {
-          const properties = entityTypes[entity.entitiesTypeKey].properties.reduce((prev, curr) => {
-            const propInCsv = entityProps[entity.key][curr.label]
-            if (propInCsv) {
-              return [...prev, { key: curr.key, val: propInCsv.replace(/'/g, "\"") }]
-            }
-            return prev;
-          }, [])
-          return { ...entity, properties }
-        })
-        const updatedTrial = {
-          ...trial,
-          experimentId: match.params.id,
-          entities,
-          changedEntities: entities,
-          action: "update"
-        }
-        await submitTrial(updatedTrial, client, match)
-        return resolve(true)
-      } else {
-        return reject(true)
-      }
+async function uploadEntities(text, trial, client, match) {
+  const json = csvJSON(text);
+  if (!json || !json[0].entitiesTypeName) {
+    throw 'bad entities text: ' + text;
+  }
 
-    };
-    fileReader.readAsText(file);
+  const entityTypes = await fetchEntityTypesData(client, match)
+  const entityProps = json.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {})
+  const entities = trial.entities.map(entity => {
+    const properties = entityTypes[entity.entitiesTypeKey].properties.reduce((prev, curr) => {
+      const propInCsv = entityProps[entity.key][curr.label]
+      if (propInCsv) {
+        return [...prev, { key: curr.key, val: propInCsv.replace(/'/g, "\"") }]
+      }
+      return prev;
+    }, [])
+    return { ...entity, properties }
   })
+  const updatedTrial = {
+    ...trial,
+    experimentId: match.params.id,
+    entities,
+    changedEntities: entities,
+    action: "update"
+  }
+  await submitTrial(updatedTrial, client, match)
 }
+
 export {
   uploadTrial,
   uploadEntities
