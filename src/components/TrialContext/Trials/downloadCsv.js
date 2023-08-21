@@ -119,7 +119,6 @@ async function downloadEntities({ client, match, trial, withKeys = false }) {
     const csvStringEntities = makeCsvData(entities);
     download(csvStringEntities, `trial_${data.trial.name}_entities`)
   }
-
 }
 
 export {

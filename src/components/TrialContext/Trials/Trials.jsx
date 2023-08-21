@@ -46,27 +46,27 @@ const Trials = (props) => {
     })()
   }, [match.params.id]);
 
-  const updateTrialFromCsv = async (e) => {
-    try {
-      setWorking(true);
-      await uploadTrial(e, state.trialSet, props.client, props.match)
-      setState({ ...state, update: true })
-    } catch (err) {
-      alert('uploading fail, please check the file')
-    }
-    setWorking(false);
-  }
+  // const updateTrialFromCsv = async (e) => {
+  //   try {
+  //     setWorking(true);
+  //     await uploadTrial(e, state.trialSet, props.client, props.match)
+  //     setState({ ...state, update: true })
+  //   } catch (err) {
+  //     alert('uploading fail, please check the file')
+  //   }
+  //   setWorking(false);
+  // }
 
-  const updateEntitiesTrialFromCsv = async (e, trial) => {
-    try {
-      setWorking(true);
-      await uploadEntities(e, trial, props.client, props.match)
-      setState({ ...state, update: true })
-    } catch (err) {
-      alert('uploading fail, please check the file')
-    }
-    setWorking(false);
-  }
+  // const updateEntitiesTrialFromCsv = async (e, trial) => {
+  //   try {
+  //     setWorking(true);
+  //     await uploadEntities(e, trial, props.client, props.match)
+  //     setState({ ...state, update: true })
+  //   } catch (err) {
+  //     alert('uploading fail, please check the file')
+  //   }
+  //   setWorking(false);
+  // }
 
   const generateTableColumns = (trialSet) => {
     const columns = ['trial name', 'clone', 'entities', ''];
@@ -220,8 +220,8 @@ const Trials = (props) => {
                   client={client}
                   match={match}
                   activateEditMode={activateEditMode}
-                  updateTrialFromCsv={updateTrialFromCsv}
-                  updateEntitiesTrialFromCsv={updateEntitiesTrialFromCsv}
+                  // updateTrialFromCsv={updateTrialFromCsv}
+                  // updateEntitiesTrialFromCsv={updateEntitiesTrialFromCsv}
                   deleteTrial={deleteTrial}
                   cloneTrial={cloneTrial}
                 />

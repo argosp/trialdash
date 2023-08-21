@@ -26,8 +26,8 @@ export const TrialRow = ({
     client,
     match,
     activateEditMode,
-    updateTrialFromCsv,
-    updateEntitiesTrialFromCsv,
+    // updateTrialFromCsv,
+    // updateEntitiesTrialFromCsv,
     deleteTrial,
     cloneTrial,
 }) => {
