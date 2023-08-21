@@ -16,35 +16,23 @@ function getProperties(trial, trialSet) {
 }
 
 function getEntityProperties(entity) {
-  return entity.properties.reduce((prev, prop) => {
-    return {
-      ...prev,
-      [prop.label]: prop.val
-    }
-  }, {})
-}
-
-function getCsvData(array) {
-  let value
-  return array.map(item =>
-    Object.keys(item).map(key => {
-      value = item[key];
-      if (typeof value == 'string') {
-        value = value.replace(/"/g, "'");
-        value = `"${value}"`;
-      }
-      return value
-    })
-  )
+  return Object.fromEntries(entity.properties.map(({ val, label }) => [label, val]));
 }
 
 function makeCsvData(array) {
-  return [
-    // get csv headers
-    Object.keys(array[0]),
-    // get csv data
-    ...getCsvData(array)
-  ].join("\n");
+  const headers = Object.keys(array[0]);
+  const data = array.map(item => {
+    return Object.values(item).map(value => {
+      if (typeof value == 'string') {
+        return `"${value.replace(/"/g, "'")}"`;
+      } else if (value === undefined || value === null) {
+        return '';
+      }
+      return value;
+    });
+  });
+  const csv = [headers, ...data];
+  return csv.join("\n");
 }
 
 function fetchTrialsData(client, match, trialSet, displayCloneData) {
@@ -85,11 +73,11 @@ function fetchEntitiesData(trial, withKeys = false) {
     const props = getEntityProperties(e);
     const { name, key, entitiesTypeName, entitiesTypekey } = e;
     if (withKeys) {
-      return {name, key, entitiesTypeName, entitiesTypekey, ...props};
+      return { name, key, entitiesTypeName, entitiesTypekey, ...props };
     } else {
-      return {name, entitiesTypeName, ...props};
+      return { name, entitiesTypeName, ...props };
     }
-  })
+  });
 
   return makeCsvData(entities);
 }
