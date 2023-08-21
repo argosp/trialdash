@@ -79,15 +79,17 @@ function fetchTrialData(trial, trials, trialSet, displayCloneData) {
   return makeCsvData([fixedTrial]);
 }
 
-function fetchEntitiesData(trial) {
+function fetchEntitiesData(trial, withKeys = false) {
 
-  const entities = trial.fullDetailedEntities.map(e => ({
-    name: e.name,
-    key: e.key,
-    entitiesTypeName: e.entitiesTypeName,
-    entitiesTypekey: e.entitiesTypeKey,
-    ...getEntityProperties(e)
-  }))
+  const entities = trial.fullDetailedEntities.map(e => {
+    const props = getEntityProperties(e);
+    const { name, key, entitiesTypeName, entitiesTypekey } = e;
+    if (withKeys) {
+      return {name, key, entitiesTypeName, entitiesTypekey, ...props};
+    } else {
+      return {name, entitiesTypeName, ...props};
+    }
+  })
 
   return makeCsvData(entities);
 }
@@ -121,12 +123,12 @@ async function downloadTrial(args) {
 
 }
 
-async function downloadEntities({ client, match, trial }) {
+async function downloadEntities({ client, match, trial, withKeys = false }) {
   const { data } = await client.query({
     query: fullTrialQuery(match.params.id, trial.key)
   });
   if (data.trial && data.trial.fullDetailedEntities && data.trial.fullDetailedEntities.length) {
-    const csvStringEntities = await fetchEntitiesData(data.trial);
+    const csvStringEntities = await fetchEntitiesData(data.trial, withKeys);
     download(csvStringEntities, `trial_${data.trial.name}_entities`)
   } else {
     alert('Problem fetching entities');
