@@ -11,16 +11,25 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import SimpleButton from '../SimpleButton';
 
-export const ButtonWithDialog = ({ title, titleButton, children, postContent }) => {
+export const ButtonWithDialog = ({ title, titleButton, iconButton, children, postContent }) => {
     const [open, setOpen] = useState(false);
     return (
         <>
             <Paper>
-                <Button variant={'outlined'} color={'primary'}
-                    onClick={() => setOpen(true)}
-                >
-                    {titleButton && titleButton !== '' ? titleButton : title}
-                </Button>
+                {iconButton
+                    ? <IconButton
+                        onClick={() => setOpen(true)}
+                    >
+                        {iconButton}
+                    </IconButton>
+                    : <Button
+                        variant={'outlined'} 
+                        color={'primary'}
+                        onClick={() => setOpen(true)}
+                    >
+                        {titleButton && titleButton !== '' ? titleButton : title}
+                    </Button>
+                }
             </Paper>
             <Dialog
                 open={open}

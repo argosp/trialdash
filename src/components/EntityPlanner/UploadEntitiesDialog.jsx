@@ -1,9 +1,12 @@
 import React, { useRef, useState } from 'react';
 import {
-    Box, Button, RadioGroup,
+    Box,
+    Button,
+    RadioGroup,
     Radio,
     FormControlLabel
 } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
 import { ButtonWithDialog } from './ButtonWithDialog';
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
 import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
@@ -23,7 +26,7 @@ export const UploadEntitiesDialog = ({ client, match, trial }) => {
     return (
         <ButtonWithDialog
             title={'Upload & Download'}
-            titleButton={'Upload'}
+            iconButton={<SaveIcon />}
         >
             <Box textAlign='center'>
                 <RadioGroup
