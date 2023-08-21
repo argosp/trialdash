@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import {
     Box,
     Button,
@@ -16,21 +16,35 @@ import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from "@material-ui/icons/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
 import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
+import { WorkingContext } from '../AppLayout';
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
+    const { setWorking } = useContext(WorkingContext);
     const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
     const ref = useRef();
 
     const uploadInfo = async (e) => {
-        const text = await e.target.files[0].text();
-        uploadEntities(text, trial, client, match, entities)
+        setWorking(true);
+        try {
+            const text = await e.target.files[0].text();
+            await uploadEntities(text, trial, client, match, entities)
+        } catch (e) {
+            console.log(e)
+        }
         setOpen(false);
+        setWorking(false);
     }
 
-    const downloadInfo = () => {
-        downloadEntities({ client, match, trial });
+    const downloadInfo = async () => {
+        setWorking(true);
+        try {
+            await downloadEntities({ client, match, trial });
+        } catch (e) {
+            console.log(e)
+        }
         setOpen(false);
+        setWorking(false);
     }
 
     return (
@@ -86,7 +100,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                         <br />
                         <br />
                         <Button variant={'outlined'} color={'primary'}
-                            onClick={downloadInfo}
+                            onClick={() => downloadInfo()}
                         >
                             Download
                         </Button>

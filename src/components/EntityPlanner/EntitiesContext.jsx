@@ -78,10 +78,12 @@ export const EntitiesProvider = ({
                 }
             }
             sortNameKeyInplace(entitiesTypeList);
+            console.log('flatten:', entitiesTypeList);
             return entitiesTypeList;
         }
 
-        setEntities(flattenEntityTypes());
+        const newEntities = flattenEntityTypes();
+        setEntities(newEntities);
     }, [entitiesTypes, trialEntities, allEntities, allProperties]);
 
     const handleChangeEntities = async (newEntities) => {
