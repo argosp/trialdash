@@ -68,7 +68,6 @@ function fetchTrialData(trial, trials, trialSet, displayCloneData) {
 }
 
 function fetchEntitiesData(trial, withKeys = false) {
-
   const entities = trial.fullDetailedEntities.map(e => {
     const props = getEntityProperties(e);
     const { name, key, entitiesTypeName, entitiesTypekey } = e;
@@ -78,8 +77,7 @@ function fetchEntitiesData(trial, withKeys = false) {
       return { name, entitiesTypeName, ...props };
     }
   });
-
-  return makeCsvData(entities);
+  return entities;
 }
 
 
@@ -105,7 +103,8 @@ async function downloadTrial(args) {
   const csvStringTrial = await fetchTrialData(trial, args.trials, args.trialSet, args.displayCloneData);
   download(csvStringTrial, `trial_${trial.name}`)
   if (trial.fullDetailedEntities && trial.fullDetailedEntities.length) {
-    const csvStringEntities = await fetchEntitiesData(trial, args.trials, args.trialSet, args.displayCloneData);
+    const entities = await fetchEntitiesData(trial, args.trials, args.trialSet, args.displayCloneData);
+    const csvStringEntities = makeCsvData(entities);
     download(csvStringEntities, `trial_${trial.name}_entities`)
   }
 
@@ -116,10 +115,9 @@ async function downloadEntities({ client, match, trial, withKeys = false }) {
     query: fullTrialQuery(match.params.id, trial.key)
   });
   if (data.trial && data.trial.fullDetailedEntities && data.trial.fullDetailedEntities.length) {
-    const csvStringEntities = await fetchEntitiesData(data.trial, withKeys);
+    const entities = await fetchEntitiesData(data.trial, withKeys);
+    const csvStringEntities = makeCsvData(entities);
     download(csvStringEntities, `trial_${data.trial.name}_entities`)
-  } else {
-    alert('Problem fetching entities');
   }
 
 }
