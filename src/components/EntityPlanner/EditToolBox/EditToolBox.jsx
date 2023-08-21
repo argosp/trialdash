@@ -47,6 +47,7 @@ export const EditToolBox = ({
     handleSetOne,
     handleSetMany,
     markedPoints,
+    setMarkedPoints,
     showEditBox,
     setShowEditBox,
 }) => {
@@ -60,8 +61,13 @@ export const EditToolBox = ({
     } = useShape();
 
     const onClickIcon = (id) => {
-        setShowEditBox(id === shape ? !showEditBox : true);
-        setShape(id);
+        if (id === shape) {
+            setShowEditBox(!showEditBox);
+        } else {
+            setShowEditBox(true);
+            setMarkedPoints([]);
+            setShape(id);
+        }
     };
 
     return (

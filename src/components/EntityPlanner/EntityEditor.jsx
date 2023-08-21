@@ -198,6 +198,7 @@ export const EntityEditor = ({
                         handleSetOne={handleMapClick}
                         handleSetMany={handlePutEntities}
                         markedPoints={markedPoints}
+                        setMarkedPoints={setMarkedPoints}
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
                     />
