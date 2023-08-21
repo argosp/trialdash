@@ -269,6 +269,7 @@ export const EntityEditor = ({
                                 client={client}
                                 match={match}
                                 trial={trial}
+                                entities={entities}
                             />
                         </Grid>
                         <Grid item>

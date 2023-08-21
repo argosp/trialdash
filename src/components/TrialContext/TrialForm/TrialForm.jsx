@@ -49,6 +49,14 @@ class TrialForm extends React.Component {
   };
 
   initTrial() {
+    const entities = [];
+    if (this.props.trial && this.props.trial.entities) {
+      for (const e of this.props.trial.entities) {
+        if (e) {
+          entities.push({ ...e, properties: [...e.properties] });
+        }
+      }
+    };
     return {
       key: this.props.trial ? this.props.trial.key : uuid(),
       trialSetKey: this.props.match.params.trialSetKey,
@@ -57,7 +65,7 @@ class TrialForm extends React.Component {
       status: this.props.trial && this.props.trial.status ? this.props.trial.status : 'design',
       numberOfEntities: this.props.trial ? this.props.trial.numberOfEntities : 0,
       properties: this.props.trial && this.props.trial.properties ? [...this.props.trial.properties] : [],
-      entities: this.props.trial && this.props.trial.entities ? [...this.props.trial.entities.map(e => { return ({ ...e, properties: [...e.properties] }) })] : [],
+      entities,
       deployedEntities: this.props.trial && this.props.trial.deployedEntities ? [...this.props.trial.deployedEntities] : [],
     }
   }
@@ -310,7 +318,7 @@ class TrialForm extends React.Component {
     this.setState({ confirmStatusOpen: false });
   }
   cancelHandler = () => {
-    this.setState({trial: this.initTrial(),changedEntities: [], changed: false, triggerUpdate: this.state.triggerUpdate + 1})
+    this.setState({ trial: this.initTrial(), changedEntities: [], changed: false, triggerUpdate: this.state.triggerUpdate + 1 })
   }
   render() {
     const { classes, theme } = this.props;

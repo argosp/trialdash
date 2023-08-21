@@ -105,24 +105,36 @@ async function fetchEntityTypesData(client, match) {
 
 }
 
-async function uploadEntities(text, trial, client, match) {
+async function uploadEntities(text, trial, client, match, allEntities) {
   const json = csvJSON(text);
   if (!json || !json[0].entitiesTypeName) {
     throw 'bad entities text: ' + text;
   }
 
-  const entityTypes = await fetchEntityTypesData(client, match)
-  const entityProps = json.reduce((prev, curr) => ({ ...prev, [curr.key]: curr }), {})
-  const entities = trial.entities.map(entity => {
-    const properties = entityTypes[entity.entitiesTypeKey].properties.reduce((prev, curr) => {
-      const propInCsv = entityProps[entity.key][curr.label]
-      if (propInCsv) {
-        return [...prev, { key: curr.key, val: propInCsv.replace(/'/g, "\"") }]
+  const entities = [];
+  for (const { name, entitiesTypeName, ...props } of json) {
+    const entityType = allEntities.find(et => et.name === entitiesTypeName);
+    const entityItem = entityType && entityType.items.find(ei => ei.name === name);
+    if (!entityType || !entityItem) {
+      console.log(`entity ${name} of type ${entitiesTypeName} is unknown`);
+      continue;
+    }
+    const entityTrial = trial.entities.find(e => e.key === entityItem.key);
+    if (!entityTrial) {
+      console.log(`entity ${name} of type ${entitiesTypeName} is not on trial`);
+      continue;
+    }
+    const properties = [];
+    for (const [propName, propValue] of Object.entries(props)) {
+      const propType = entityType.properties.find(({ label }) => label === propName);
+      if (propType) {
+        properties.push({ key: propType.key, val: propValue.replace(/'/g, "\"") });
       }
-      return prev;
-    }, [])
-    return { ...entity, properties }
-  })
+    }
+    entities.push({ ...entityTrial, properties });
+  }
+
+  console.log(entities)
   const updatedTrial = {
     ...trial,
     experimentId: match.params.id,

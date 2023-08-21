@@ -17,14 +17,14 @@ import CloseIcon from "@material-ui/icons/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
 import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
 
-export const UploadEntitiesDialog = ({ client, match, trial }) => {
+export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
     const ref = useRef();
 
     const uploadInfo = async (e) => {
         const text = await e.target.files[0].text();
-        uploadEntities(text, trial, client, match)
+        uploadEntities(text, trial, client, match, entities)
         setOpen(false);
     }
 
