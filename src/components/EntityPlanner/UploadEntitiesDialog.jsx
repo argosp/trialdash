@@ -11,6 +11,7 @@ import {
     DialogTitle,
     DialogContent,
     Typography,
+    Tooltip,
 } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from "@material-ui/icons/Close";
@@ -49,13 +50,13 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
 
     return (
         <>
-            <Paper>
+            <Tooltip title='Upload & Download Entities' placement="right">
                 <IconButton
                     onClick={() => setOpen(true)}
                 >
                     <SaveIcon />
                 </IconButton>
-            </Paper>
+            </Tooltip>
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}
@@ -66,7 +67,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                     disableTypography
                 >
                     <Typography variant="h6">
-                        Upload & Download
+                        Upload & Download Entities
                     </Typography>
                     <IconButton
                         size='small'

@@ -34,6 +34,7 @@ import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 import { MapRightClicker } from './MapRightClicker.jsx';
 import { EntityMarkersShown } from './EntityMarkersShown.jsx';
 import { UploadEntitiesDialog } from './UploadEntitiesDialog.jsx';
+import { CloneIcon } from '../../constants/icons.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -201,7 +202,20 @@ export const EntityEditor = ({
                         setMarkedPoints={setMarkedPoints}
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
-                    />
+                    >
+                        <UploadEntitiesDialog
+                            client={client}
+                            match={match}
+                            trial={trial}
+                            entities={entities}
+                        />
+                        <Tooltip title='Clone Entities' placement="right">
+                            <IconButton onClick={() => cloneEntitiesDialog.ref.current.openDialog()}>
+                                <CloneIcon />
+                            </IconButton>
+                        </Tooltip>
+                        {cloneEntitiesDialog}
+                    </EditToolBox>
                 </Control>
 
                 <Control position="bottomleft">
@@ -255,24 +269,6 @@ export const EntityEditor = ({
                                 </Grid>
                             </Grid>
                         }
-                        <Grid item>
-                            <Paper>
-                                <Button variant={'outlined'} color={'primary'}
-                                    onClick={() => cloneEntitiesDialog.ref.current.openDialog()}
-                                >
-                                    Clone Entities
-                                </Button>
-                            </Paper>
-                            {cloneEntitiesDialog}
-                        </Grid>
-                        <Grid item>
-                            <UploadEntitiesDialog
-                                client={client}
-                                match={match}
-                                trial={trial}
-                                entities={entities}
-                            />
-                        </Grid>
                         <Grid item>
                             <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
                         </Grid>

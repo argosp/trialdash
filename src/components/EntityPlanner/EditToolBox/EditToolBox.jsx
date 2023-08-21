@@ -50,6 +50,7 @@ export const EditToolBox = ({
     setMarkedPoints,
     showEditBox,
     setShowEditBox,
+    children,
 }) => {
     const classes = useStyles();
     const {
@@ -129,6 +130,8 @@ export const EditToolBox = ({
                 component={<Rectangle onSubmit={handleSetMany} />}
                 title={RECTANGLE_TITLE}
             />
+            {(!children || children.length === 0) ? null : <Divider variant="middle" light />}
+            {children}
         </Box>
     );
 }
