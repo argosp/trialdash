@@ -34,7 +34,8 @@ import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 import { MapRightClicker } from './MapRightClicker.jsx';
 import { EntityMarkersShown } from './EntityMarkersShown.jsx';
 import { UploadEntitiesDialog } from './UploadEntitiesDialog.jsx';
-import { CloneIcon } from '../../constants/icons.jsx';
+import { CloneIcon, GridIcon } from '../../constants/icons.jsx';
+import TextFormatIcon from '@material-ui/icons/TextFormat';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -203,6 +204,22 @@ export const EntityEditor = ({
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
                     >
+                        <Tooltip title='Show Entities Names' placement="right">
+                            <IconButton
+                                color={showName ? 'primary' : ''}
+                                onClick={() => setShowName(!showName)}
+                            >
+                                <TextFormatIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Show Edit Table' placement="right">
+                            <IconButton
+                                color={showEditTable ? 'primary' : ''}
+                                onClick={() => setShowEditTable(!showEditTable)}
+                            >
+                                <GridIcon />
+                            </IconButton>
+                        </Tooltip>
                         <UploadEntitiesDialog
                             client={client}
                             match={match}
@@ -220,26 +237,6 @@ export const EntityEditor = ({
 
                 <Control position="bottomleft">
                     <Grid container spacing={1} direction="column" justifyContent="flex-start" alignItems="flex-start">
-                        <Grid item>
-                            <Paper>
-                                <Button
-                                    variant={showName ? 'contained' : 'outlined'}
-                                    color={'primary'}
-                                    onClick={() => setShowName(!showName)}
-                                >
-                                    Names
-                                </Button>
-                            </Paper>
-                        </Grid>
-                        <Grid item>
-                            <Paper>
-                                <Button
-                                    variant={showEditTable ? 'contained' : 'outlined'}
-                                    color={'primary'}
-                                    onClick={() => setShowEditTable(!showEditTable)}
-                                >Table</Button>
-                            </Paper>
-                        </Grid>
                         {layerChosen === 'OSMMap'
                             ? null
                             :
