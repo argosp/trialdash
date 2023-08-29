@@ -8,11 +8,13 @@ import {
     Tooltip,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import CloseIcon from "@material-ui/icons/Close";
 import {
     POINT_SHAPE
 } from './utils/constants';
+import { Button } from './ToolsBar/Button';
 
-export const EditTool = ({ icon, id, component, title, shape, classes, markedPoints, onClickIcon, showEditBox }) => {
+export const EditTool = ({ icon, id, component, title, shape, classes, markedPoints, onClickIcon, showEditBox, onSubmit, submitText }) => {
     const iconStyle = shape === id ? classes.activeButton : null;
     const iconButtonStyle = shape === id ? classes.notActiveButton : null;
     return (
@@ -44,29 +46,42 @@ export const EditTool = ({ icon, id, component, title, shape, classes, markedPoi
                     <Grid container className={classes.toolBoxContainer}
                         style={{
                             minWidth: 300,
-                            minHeight: `calc(100% + 20px)`
+                            minHeight: `100%`
                         }}
                     >
+                        <Grid item>
+                            {React.cloneElement(component, {
+                                classes,
+                                markedPoints,
+                                title
+                            })}
+                        </Grid>
                         <Grid item style={{
                             display: 'flex',
                             justifyContent: 'flex-start',
                             alignItems: 'center',
+                            marginTop: '10px'
                         }}>
-                            <IconButton onClick={() => onClickIcon(id)}>
-                                <ChevronLeftIcon />
+                            <IconButton
+                                // size='small'
+                                onClick={() => onClickIcon(id)}
+                            >
+                                <CloseIcon />
                             </IconButton>
                             <Typography component="span">
                                 <Box sx={{ fontWeight: '700' }}>
                                     {title}
                                 </Box>
                             </Typography>
+                            {!onSubmit ? null :
+                                <Button className="button"
+                                    text={submitText ? submitText : "distribute"}
+                                    onClick={onSubmit}
+                                    style={{ right: '0px', marginLeft: '5px' }}
+                                />
+                            }
                         </Grid>
-                        <Grid item>
-                            {React.cloneElement(component, {
-                                classes,
-                                markedPoints,
-                            })}
-                        </Grid>
+
                     </Grid>
                 </Box>
             )}

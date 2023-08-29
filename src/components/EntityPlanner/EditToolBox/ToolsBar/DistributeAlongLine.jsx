@@ -3,7 +3,7 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import { Button } from './Button';
 import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
 
-const DistributeAlongLine = ({ classes, onSubmit, markedPoints }) => {
+const DistributeAlongLine = ({ classes, onSubmit, markedPoints, title }) => {
   const points = Array.from({ ...markedPoints, length: Math.max(2, markedPoints.length) });
   const positions = points.map((p, i) => {
     const x = p ? processingDecimalDigits(p[0]) : '';
@@ -39,7 +39,7 @@ const DistributeAlongLine = ({ classes, onSubmit, markedPoints }) => {
           </Grid>
         </Grid>
       ))}
-      <Button className="button" text="distribute" onClick={onSubmit} />
+      {/* <Button className="button" text="distribute" onClick={onSubmit} /> */}
     </Grid>
   );
 };

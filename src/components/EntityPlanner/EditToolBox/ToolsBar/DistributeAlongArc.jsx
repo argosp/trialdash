@@ -44,7 +44,7 @@ const DistributeAlongArc = ({ classes, onSubmit, markedPoints }) => {
           </Grid>
         </Grid>
       ))}
-      <Button className="button" text="distribute" onClick={onSubmit} />
+      {/* <Button className="button" text="distribute" onClick={onSubmit} /> */}
     </Grid>
   );
 };

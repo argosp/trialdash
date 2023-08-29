@@ -2,8 +2,15 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
 import { Button } from './Button';
+import {
+  Divider,
+  IconButton,
+  Box,
+  Tooltip,
+} from '@material-ui/core';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
-const Rectangle = ({ classes, onSubmit, markedPoints }) => {
+const Rectangle = ({ classes, markedPoints }) => {
   const positions = [{ x: '', y: '' }];
   if (markedPoints.length > 0) {
     markedPoints.forEach((markedPoint, index) => {
@@ -41,7 +48,8 @@ const Rectangle = ({ classes, onSubmit, markedPoints }) => {
           </Grid>
         </Grid>
       ))}
-      <Button className="button" text="distribute" onClick={onSubmit} />
+
+      {/* <Button className="button" text="distribute" onClick={onSubmit} /> */}
     </Grid>
   );
 };

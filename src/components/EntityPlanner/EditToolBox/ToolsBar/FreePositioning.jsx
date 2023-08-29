@@ -29,7 +29,7 @@ const FreePositioning = ({ classes, onSubmit, buttonText }) => {
           InputLabelProps={{ shrink: true }}
         />
       </Grid>
-      <Button text={buttonText} onClick={() => onSubmit(pos)} />
+      {/* <Button text={buttonText} onClick={() => onSubmit(pos)} /> */}
     </Grid>
   );
 };
