@@ -27,7 +27,9 @@ export const MapCoordinates = ({ showAsLatLong = true }) => {
 
     return (
         <Paper style={{ padding: '0.5em' }}>
-            {str}
+            <span>
+                {str}
+            </span>
         </Paper>
     )
 }

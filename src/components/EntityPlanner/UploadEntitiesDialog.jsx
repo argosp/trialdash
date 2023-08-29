@@ -50,7 +50,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
 
     return (
         <>
-            <Tooltip title='Upload & Download Entities' placement="right">
+            <Tooltip title='Upload & Download Entities' placement="top">
                 <IconButton
                     onClick={() => setOpen(true)}
                 >

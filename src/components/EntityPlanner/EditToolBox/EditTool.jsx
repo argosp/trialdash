@@ -21,7 +21,7 @@ export const EditTool = ({ icon, id, component, title, shape, classes, markedPoi
             key={title}
             className={iconStyle}
         >
-            <Tooltip title={title} placement="right">
+            <Tooltip title={title} placement="top">
                 <IconButton key={id}
                     onClick={() => onClickIcon(id)}
                     className={iconButtonStyle}

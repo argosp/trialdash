@@ -204,7 +204,7 @@ export const EntityEditor = ({
                         showEditBox={showEditBox}
                         setShowEditBox={setShowEditBox}
                     >
-                        <Tooltip title='Show Entities Names' placement="right">
+                        <Tooltip title='Show Entities Names' placement="top">
                             <IconButton
                                 color={showName ? 'primary' : ''}
                                 onClick={() => setShowName(!showName)}
@@ -212,7 +212,7 @@ export const EntityEditor = ({
                                 <TextFormatIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title='Show Edit Table' placement="right">
+                        <Tooltip title='Show Edit Table' placement="top">
                             <IconButton
                                 color={showEditTable ? 'primary' : ''}
                                 onClick={() => setShowEditTable(!showEditTable)}
@@ -226,20 +226,19 @@ export const EntityEditor = ({
                             trial={trial}
                             entities={entities}
                         />
-                        <Tooltip title='Clone Entities' placement="right">
+                        <Tooltip title='Clone Entities' placement="top">
                             <IconButton onClick={() => cloneEntitiesDialog.ref.current.openDialog()}>
                                 <CloneIcon />
                             </IconButton>
                         </Tooltip>
                         {cloneEntitiesDialog}
+                        <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
                     </EditToolBox>
                 </Control>
 
-                <Control position="bottomleft">
-                    <Grid container spacing={1} direction="column" justifyContent="flex-start" alignItems="flex-start">
-                        {layerChosen === 'OSMMap'
-                            ? null
-                            :
+                {layerChosen === 'OSMMap' ? null :
+                    <Control position="bottomleft">
+                        <Grid container spacing={1} direction="column" justifyContent="flex-start" alignItems="flex-start">
                             <Grid item>
                                 <Grid container spacing={0}>
                                     <Grid item>
@@ -265,12 +264,9 @@ export const EntityEditor = ({
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        }
-                        <Grid item>
-                            <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
                         </Grid>
-                    </Grid>
-                </Control>
+                    </Control>
+                }
 
             </EntityMap>
         </Box>

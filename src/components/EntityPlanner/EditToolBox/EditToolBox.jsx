@@ -105,7 +105,7 @@ export const EditToolBox = ({
                 }
                 title={POINT_TITLE}
             />
-            <Divider variant="middle" light />
+            {/* <Divider orientation="vertical" /> */}
             <EditTool classes={classes} shape={shape} onClickIcon={onClickIcon} markedPoints={markedPoints} showEditBox={showEditBox}
                 id={CURVE_SHAPE}
                 icon={<CurveIcon />}
@@ -130,7 +130,9 @@ export const EditToolBox = ({
                 component={<Rectangle onSubmit={handleSetMany} />}
                 title={RECTANGLE_TITLE}
             />
-            {(!children || children.length === 0) ? null : <Divider variant="middle" light />}
+            {/* {(!children || children.length === 0) ? null :
+                <Divider orientation="vertical" />
+            } */}
             {children}
         </Box>
     );

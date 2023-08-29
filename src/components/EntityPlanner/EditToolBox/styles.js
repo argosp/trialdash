@@ -1,7 +1,7 @@
 export const styles = (theme) => ({
   root: {
     height: '100%',
-    width: 650,
+    // width: 650,
     backgroundColor: '#fefefe',
     // position: 'absolute',
     top: 0,
@@ -10,9 +10,9 @@ export const styles = (theme) => ({
   },
   editToolBox: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     outline: '1px solid #E0E0E0',
-    width: 50,
+    // width: 50,
   },
   tool: {
     backgroundColor: theme.palette.white.main,
