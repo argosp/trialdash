@@ -33,8 +33,8 @@ export const EditTool = ({ icon, id, component, title, shape, classes, markedPoi
                 <Box
                     sx={{
                         position: 'absolute',
-                        bottom: 0,
-                        left: '100%',
+                        bottom: 'calc(100% + 10px)',
+                        left: 0,
                         zIndex: 1000
                     }}
                 >
