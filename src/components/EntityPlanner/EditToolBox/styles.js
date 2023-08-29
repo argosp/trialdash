@@ -61,6 +61,6 @@ export const styles = (theme) => ({
   },
   activeButton: {
     background: '#F5F5F5',
-    borderLeft: '2px solid #27AE60',
+    borderBottom: '2px solid #27AE60',
   },
 });
