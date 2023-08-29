@@ -125,7 +125,22 @@ async function uploadEntities(text, trial, client, match, allEntities) {
       continue;
     }
     const properties = [];
+
+    const { MapName, Longitude, Latitude } = props;
+    let hasLocation = false;
+    if (MapName && Longitude && Latitude) {
+      const propType = entityType.properties.find(({ type }) => type === 'location');
+      if (propType) {
+        const val = JSON.stringify({ name: MapName, coordinates: [Latitude, Longitude] });
+        properties.push({ key: propType.key, val })
+        hasLocation = true;
+      }
+    }
+
     for (const [propName, propValue] of Object.entries(props)) {
+      if (hasLocation && ['MapName', 'Longitude', 'Latitude'].includes(propName)) {
+        continue;
+      }
       const propType = entityType.properties.find(({ label }) => label === propName);
       if (propType) {
         properties.push({ key: propType.key, val: propValue.replace(/'/g, "\"") });
