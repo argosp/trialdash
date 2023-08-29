@@ -298,7 +298,7 @@ class Entities extends React.Component {
         });
     }
     this.setState({ update: true, selected: [] });
-    this.context.setWorking(true);
+    this.context.setWorking(false);
   }
 
   updateEntitiesTypeNumberOfEntities = (n, cache) => {
