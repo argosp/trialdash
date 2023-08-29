@@ -165,7 +165,7 @@ const CustomInput = ({
   endAdornment,
   onClick
 }) => (
-  <div>
+  <>
     {renderSwitch({
       label,
       bottomDescription,
@@ -186,7 +186,7 @@ const CustomInput = ({
       endAdornment,
       onClick
     })}
-  </div>
+  </>
 );
 
 export default withStyles(styles)(CustomInput);
