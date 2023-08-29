@@ -105,6 +105,8 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             bounds={posbounds}
             zoomControl={false}
             minZoom={-6}
+            maxNativeZoom={24}
+            maxZoom={24}
             contextmenu={true}
         >
             <MapEventer

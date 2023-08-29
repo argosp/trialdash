@@ -78,7 +78,6 @@ export const EntitiesProvider = ({
                 }
             }
             sortNameKeyInplace(entitiesTypeList);
-            console.log('flatten:', entitiesTypeList);
             return entitiesTypeList;
         }
 
