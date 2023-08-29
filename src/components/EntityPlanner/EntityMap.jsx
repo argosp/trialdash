@@ -121,7 +121,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
                 layerChosen={layerChosen}
                 showGrid={showGrid}
             />
-            <ZoomControl position='topright' />
+            <ZoomControl position='bottomright' />
             {children}
         </MapContainer>
     );

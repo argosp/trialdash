@@ -182,7 +182,7 @@ export const EntityEditor = ({
                     </Grid>
                 </Control>
 
-                <Control position="bottomright" >
+                <Control position="topright" >
                     <EntityList
                         style={{
                             overflow: 'auto',
