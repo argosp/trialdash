@@ -15,10 +15,6 @@ function getProperties(trial, trialSet) {
 
 }
 
-function getEntityProperties(entity) {
-  return Object.fromEntries(entity.properties.map(({ val, label }) => [label, val]));
-}
-
 function makeCsvData(array) {
   const headers = Object.keys(array[0]);
   const data = array.map(item => {
@@ -69,13 +65,33 @@ function fetchTrialData(trial, trials, trialSet, displayCloneData) {
 
 function fetchEntitiesData(trial, withKeys = false) {
   const entities = trial.fullDetailedEntities.map(e => {
-    const props = getEntityProperties(e);
-    const { name, key, entitiesTypeName, entitiesTypekey } = e;
+    const { name, key, entitiesTypeName, entitiesTypekey, properties } = e;
+    let ret = {};
     if (withKeys) {
-      return { name, key, entitiesTypeName, entitiesTypekey, ...props };
+      ret = { name, key, entitiesTypeName, entitiesTypekey };
     } else {
-      return { name, entitiesTypeName, ...props };
+      ret = { name, entitiesTypeName };
     }
+    for (let { label, val, type } of properties) {
+      if (type === 'location') {
+        try {
+          const json = JSON.parse(val);
+          if (json.name && json.coordinates && json.coordinates.length === 2) {
+            ret['MapName'] = json.name;
+            ret['Latitude'] = json.coordinates[0];
+            ret['Longitude'] = json.coordinates[1];
+          } else {
+            ret[label] = val;
+          }
+        } catch (err) {
+          console.log(err);
+          ret[label] = val;
+        }
+      } else {
+        ret[label] = val;
+      }
+    }
+    return ret;
   });
   return entities;
 }
