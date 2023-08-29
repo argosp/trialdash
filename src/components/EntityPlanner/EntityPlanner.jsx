@@ -63,10 +63,11 @@ const EntityPlanner = ({
     return (
         <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
             <div role="alert">
-                {/* <p>Something went wrong:</p> */}
-                <pre style={{ color: "red" }}>{error.message}<br />{error.componentStack}</pre>
+                <pre style={{ color: "red" }}>
+                    Error: {error.message}<br />
+                    {error.stack.split('\n').map(l => '\t' + l.split(RegExp(/[@\/]/))[0] + '\n').slice(0, 5)}
+                </pre>
                 <button onClick={resetErrorBoundary} >Retry</button>
-                <pre>{JSON.stringify(trialEntities, null, 2)}</pre>
             </div>
         )}>
             <EntitiesProvider
