@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from "react";
+import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef, useContext } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -22,6 +22,7 @@ import trialsQuery from "../TrialContext/utils/trialQuery";
 import DuplicateEntitiesDialog from './DuplicateEntitiesDialog';
 import { getCurrentEntitsNameByStatus, getEntitiesByEntitiesTypeKey, getEntitiesTypeArrayFromSelectedTrial } from '../../assets/Utils';
 import { styles } from "./styles";
+import { WorkingContext } from "../AppLayout";
 const StyledListItem = withStyles({
   root: {
     "&.Mui-selected": {
@@ -38,6 +39,7 @@ function CloneEntitiesDialog({
   client,
   match,
 }, ref) {
+  const { setRefreshMessage } = useContext(WorkingContext);
   const [updateTrial, setUpdateTrial] = React.useState(currentTrial);
   const [open, setOpen] = useState(false)
   const [trialSets, setTrialSets] = React.useState();
@@ -287,6 +289,7 @@ function CloneEntitiesDialog({
           onClick={() => {
             setOpen(false)
             cloneEntitiesFromSelectedTrial()
+            setRefreshMessage();
           }}
           text="CLONE"
         />

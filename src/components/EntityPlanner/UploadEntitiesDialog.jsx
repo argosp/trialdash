@@ -20,7 +20,7 @@ import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
 import { WorkingContext } from '../AppLayout';
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
-    const { setWorking, setInfoMessage } = useContext(WorkingContext);
+    const { setWorking, setRefreshMessage } = useContext(WorkingContext);
     const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
     const ref = useRef();
@@ -35,7 +35,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         }
         setOpen(false);
         setWorking(false);
-        setInfoMessage('Please refresh to apply changes');
+        setRefreshMessage();
     }
 
     const downloadInfo = async () => {
