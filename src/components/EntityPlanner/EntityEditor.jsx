@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Grid,
     IconButton,
@@ -36,6 +36,7 @@ import { EntityMarkersShown } from './EntityMarkersShown.jsx';
 import { UploadEntitiesDialog } from './UploadEntitiesDialog.jsx';
 import { CloneIcon, GridIcon } from '../../constants/icons.jsx';
 import TextFormatIcon from '@material-ui/icons/TextFormat';
+import { RefocusShownEntities } from './RefocusShownEntities.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -138,6 +139,10 @@ export const EntityEditor = ({
             >
                 <MapRightClicker selection={selection} positionTopOfStack={positionTopOfStack} />
 
+                <RefocusShownEntities
+                    shownEntityItems={shownEntityItems}
+                />
+                
                 <EntityMarkersShown
                     shownEntityItems={shownEntityItems}
                     shownEntityTypes={shownEntityTypes}
