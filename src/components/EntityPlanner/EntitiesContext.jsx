@@ -104,10 +104,15 @@ export const EntitiesProvider = ({
             };
         });
         // console.log('calling updateLocation', changes);
-        await updateLocation(...changes);
-        console.log('update entities took ', Date.now() - start, 'ms');
-
-        setEntities(newEntities);
+        try {
+            await updateLocation(...changes);
+            console.log('update entities took ', Date.now() - start, 'ms');
+            setEntities(newEntities);
+        } catch (e) {
+            console.log(e);
+            setWorking(false);
+            throw e;
+        }
         setWorking(false);
     };
 
