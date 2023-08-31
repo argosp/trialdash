@@ -142,7 +142,7 @@ export const EntityEditor = ({
                 <RefocusShownEntities
                     shownEntityItems={shownEntityItems}
                 />
-                
+
                 <EntityMarkersShown
                     shownEntityItems={shownEntityItems}
                     shownEntityTypes={shownEntityTypes}
@@ -237,41 +237,28 @@ export const EntityEditor = ({
                             </IconButton>
                         </Tooltip>
                         {cloneEntitiesDialog}
+                        {/* </Control> */}
+
+                        {layerChosen === 'OSMMap' ? null :
+                            <>
+                                <Button
+                                    variant={showGrid.show ? 'contained' : 'outlined'}
+                                    color={'primary'}
+                                    onClick={() => setShowGrid({ ...showGrid, show: !showGrid.show })}
+                                >
+                                    Grid
+                                </Button>
+                                <NumberTextField
+                                    width={'70px'}
+                                    label='Meters'
+                                    value={showGrid.meters}
+                                    onChange={(v) => setShowGrid({ ...showGrid, meters: v })}
+                                />
+                            </>
+                        }
                         <MapCoordinates showAsLatLong={layerChosen === 'OSMMap'} />
                     </EditToolBox>
                 </Control>
-
-                {layerChosen === 'OSMMap' ? null :
-                    <Control position="bottomleft">
-                        <Grid container spacing={1} direction="column" justifyContent="flex-start" alignItems="flex-start">
-                            <Grid item>
-                                <Grid container spacing={0}>
-                                    <Grid item>
-                                        <Paper>
-                                            <Button
-                                                variant={showGrid.show ? 'contained' : 'outlined'}
-                                                color={'primary'}
-                                                onClick={() => setShowGrid({ ...showGrid, show: !showGrid.show })}
-                                            >
-                                                Grid
-                                            </Button>
-                                        </Paper>
-                                    </Grid>
-                                    <Grid item>
-                                        <Paper>
-                                            <NumberTextField
-                                                width={'70px'}
-                                                label='Meters'
-                                                value={showGrid.meters}
-                                                onChange={(v) => setShowGrid({ ...showGrid, meters: v })}
-                                            />
-                                        </Paper>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Control>
-                }
 
             </EntityMap>
         </Box>

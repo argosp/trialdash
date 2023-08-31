@@ -14,10 +14,19 @@ export const RefocusShownEntities = ({ shownEntityItems }) => {
         if (!hasPrev && hasCurr) {
             const lats = locatedEntities.map(({ location }) => location[0]);
             const lngs = locatedEntities.map(({ location }) => location[1]);
+
             const left = Math.min(...lngs);
-            const right = Math.max(...lngs);
+            let right = Math.max(...lngs);
+            if (left === right) {
+                right += 0.00001;
+            }
+
             const lower = Math.min(...lats);
-            const upper = Math.max(...lats);
+            let upper = Math.max(...lats);
+            if (upper === lower) {
+                upper += 0.00001;
+            }
+
             const bounds = [[upper, left], [lower, right]];
             mapObj.fitBounds(bounds);
         }
