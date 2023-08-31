@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, Snackbar } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { styles } from './styles';
@@ -11,19 +11,30 @@ export const WorkingContext = createContext();
 
 const AppLayout = ({ classes, children }) => {
   const [working, setWorking] = useState(false);
+  const [snackMessage, setSnackMessage] = useState();
+  const setInfoMessage = (msg) => setSnackMessage({ severity: 'info', msg });
+  const setErrorMessage = (msg) => setSnackMessage({ severity: 'error', msg });
   return (
     <>
       {working
-        ? <LinearProgress style={{zIndex: 1000}} />
+        ? <LinearProgress style={{ zIndex: 1000 }} />
         : null
       }
-      <WorkingContext.Provider value={{ working, setWorking }}>
+      <WorkingContext.Provider value={{ working, setWorking, setInfoMessage, setErrorMessage }}>
         <Header />
         <div className={classes.contentWrapper}>
           {children}
         </div>
+        <Snackbar
+          open={snackMessage}
+          onClose={() => setSnackMessage()}
+          message={snackMessage && snackMessage.msg}
+          autoHideDuration={3000}
+          severity={snackMessage && snackMessage.kind}
+        />
       </WorkingContext.Provider>
     </>
+    
     // <LoadingOverlay
     //   active={working}
     //   spinner
