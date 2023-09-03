@@ -3,7 +3,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import React from 'react';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';

@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 import React from 'react';
 import update from 'immutability-helper';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import uuid from 'uuid/v4';
 import moment from 'moment';
 import Typography from '@mui/material/Typography';

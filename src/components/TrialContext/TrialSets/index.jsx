@@ -1,7 +1,7 @@
 import React from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import uuid from 'uuid/v4';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';

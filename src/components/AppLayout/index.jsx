@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import { LinearProgress, Snackbar, IconButton, Button } from '@mui/material';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';

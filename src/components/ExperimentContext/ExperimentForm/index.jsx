@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import uuid from 'uuid/v4';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Grid, Typography } from '@mui/material';

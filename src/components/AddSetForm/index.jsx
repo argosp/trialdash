@@ -2,7 +2,7 @@
 import React from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Grid from '@mui/material/Grid';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import classnames from 'classnames';

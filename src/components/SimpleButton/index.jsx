@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import Button from '@mui/material/Button';
 import classnames from 'classnames';
 import { styles } from './styles';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import Grid from '@mui/material/Grid';
 import Switch from '@mui/material/Switch';
 import classnames from 'classnames';

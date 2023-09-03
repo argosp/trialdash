@@ -1,7 +1,7 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import classnames from 'classnames';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Typography, Box, Switch } from '@mui/material';
 import { Button } from './Button';
 
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 
 import classnames from 'classnames';
 

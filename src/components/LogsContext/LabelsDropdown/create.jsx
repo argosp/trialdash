@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { withStyles, Grid, IconButton, Divider, TextField } from '@mui/material';
+import { withStyles } from '@mui/styles';
+import { Grid, IconButton, Divider, TextField } from '@mui/material';
 import SimpleButton from '../../SimpleButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { compose } from 'recompose';

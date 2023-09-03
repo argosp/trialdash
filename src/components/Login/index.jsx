@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/LockOutlined';
-import withStyles from '@mui/material/styles/withStyles';
+import { withStyles } from '@mui/styles';
 import gql from 'graphql-tag';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';

@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { compose } from 'recompose';
 import SimpleButton from '../SimpleButton';
 import { styles } from './styles';

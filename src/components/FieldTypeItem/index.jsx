@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import Grid from '@mui/material/Grid';
 import classnames from 'classnames';
 import CustomInput from '../CustomInput';

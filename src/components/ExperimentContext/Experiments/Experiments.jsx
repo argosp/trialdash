@@ -1,7 +1,7 @@
 import React from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import uuid from 'uuid/v4';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import moment from 'moment';
 import Dotdotdot from 'react-dotdotdot';
 import JSZip from "jszip";

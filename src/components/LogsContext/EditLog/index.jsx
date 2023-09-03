@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
-import { withStyles, Typography, Divider, Grid } from '@mui/material';
+import { withStyles } from '@mui/styles';
+import { Typography, Divider, Grid } from '@mui/material';
 import { styles } from './styles';
 import logQuery from '../utils/logQuery';
 import ContentHeader from '../../ContentHeader'

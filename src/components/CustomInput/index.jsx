@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';

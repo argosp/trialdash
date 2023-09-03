@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { withStyles, Grid, Checkbox, ListItemSecondaryAction, IconButton, List, ListItem, ListItemText, Divider, ListItemIcon } from '@mui/material';
+import { withStyles } from '@mui/styles';
+import { Grid, Checkbox, ListItemSecondaryAction, IconButton, List, ListItem, ListItemText, Divider, ListItemIcon } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';

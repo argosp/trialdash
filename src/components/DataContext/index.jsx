@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query, Subscription } from 'react-apollo';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import { styles } from './styles';
 import dataQuery from './utils/dataQuery';
 import DataForm from './DataForm';

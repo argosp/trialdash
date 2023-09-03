@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, withRouter, matchPath } from 'react-router-dom';
-import { Grid, withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
+import { Grid } from '@mui/material';
 import classnames from 'classnames';
 import Divider from '@mui/material/Divider';
 import Menu from '@mui/material/Menu';

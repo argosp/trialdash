@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import React from 'react';
 import classnames from 'classnames';
-import { withStyles } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import { styles } from './styles';
 import SimpleButton from '../SimpleButton';

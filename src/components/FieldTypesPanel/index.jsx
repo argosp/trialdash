@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import Grid from '@mui/material/Grid';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import classnames from 'classnames';

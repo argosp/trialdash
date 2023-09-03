@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { withStyles } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 import Grid from '@mui/material/Grid';
 import { styles } from './styles';
 import SimpleButton from '../SimpleButton';
