@@ -1,6 +1,6 @@
 export const styles = theme => ({
   header: {
-    marginBottom: 20,
+    marginBottom: 0,
     borderBottom: `1px solid ${theme.palette.white.dark}`,
   },
   property: {

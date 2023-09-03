@@ -118,7 +118,7 @@ export const EntityEditor = ({
     return (
         <Box
             style={{
-                height: 'calc(100vh - 180px)',
+                height: 'calc(100vh - 130px)',
                 // height: '100vh',
                 margin: 0,
                 left: 0,

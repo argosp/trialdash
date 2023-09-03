@@ -8,7 +8,7 @@ export const TabPanel = ({ children, value, index, ...other }) => (
         hidden={value !== index}
         id={`trial-tabpanel-${index}`}
         aria-labelledby={`trial-tab-${index}`}
-        style={{ marginBottom: '100px' }}
+        style={{ marginBottom: '0px' }}
         {...other}
     >
         <Box>{children}</Box>
