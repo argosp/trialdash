@@ -4,7 +4,7 @@ export const styles = theme => ({
     backgroundColor: theme.palette.white.main,
   },
   rootWithoutExperiments: {
-    padding: '20px 0 15px 40px',
+    padding: '0 0 15px 0',
   },
   logoWrapper: {
     marginTop: 4,
