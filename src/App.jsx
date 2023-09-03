@@ -8,12 +8,12 @@ import './App.css';
 import theme from './theme';
 import AppRoutes from './AppRoutes';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 const App = () => (
   <ApolloProvider client={client}>
     <ThemeProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterMoment}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
         <div className="App">
           <AppRoutes />

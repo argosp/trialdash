@@ -130,7 +130,7 @@ const renderSwitch = ({ label, bottomDescription, id, classes, withBorder, place
             }}
             InputProps={{
               ...inputProps,
-              disableUnderline: true,
+              disableunderline: 'true',
               classes: {
                 root: withBorder ? classes.inputWithBorder : classes.input,
                 formControl: classes.formControl,

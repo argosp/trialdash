@@ -17,6 +17,7 @@ import { BasketIcon, PenIcon } from '../../../constants/icons';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
 import addUpdateLog from '../utils/logMutation';
+import dayjs from 'dayjs';
 
 function LabelRow({ label }) {
   return (
@@ -146,7 +147,7 @@ function Logs({ match, client, classes, history }) {
           </FormControl>
           <DatePicker
             label="Created since"
-            value={selectedDate}
+            value={dayjs(selectedDate)}
             onChange={handleDateChange}
             clearable={true}
           />

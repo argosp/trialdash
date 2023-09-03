@@ -19,6 +19,7 @@ import { MapsEditTable } from './mapsEditTable';
 import experimentsQuery from '../utils/experimentsQuery';
 import { EXPERIMENT_MUTATION, EXPERIMENTS_WITH_DATA } from '../../../constants/base';
 import { updateCache } from '../../../apolloGraphql';
+import dayjs from 'dayjs';
 
 class ExperimentForm extends React.Component {
 
@@ -40,8 +41,6 @@ class ExperimentForm extends React.Component {
   }
   state = {
     formObject: this.initFormObject(),
-    isStartDatePickerOpen: false,
-    isEndDatePickerOpen: false,
     confirmOpen: false
   };
 
@@ -153,8 +152,6 @@ class ExperimentForm extends React.Component {
     const { classes, client } = this.props;
     const {
       formObject,
-      isStartDatePickerOpen,
-      isEndDatePickerOpen,
       confirmOpen,
     } = this.state;
 
@@ -195,25 +192,19 @@ class ExperimentForm extends React.Component {
               <Grid container spacing={2} className={classes.dates}>
                 <Grid item xs={5} ref={this.startDatePickerRef}>
                   <DatePicker
-                    onClose={() => this.setIsDatePickerOpen('isStartDatePickerOpen', false)}
                     disableToolbar
                     variant="inline"
                     format="D/M/YYYY"
                     id="start-date-picker"
                     label="Start date"
-                    value={formObject.begin}
+                    value={dayjs(formObject.begin)}
                     onChange={date => this.changeFormObject(date, 'begin')}
-                    open={isStartDatePickerOpen}
                     PopoverProps={{
                       anchorEl: this.startDatePickerRef.current,
                     }}
                     TextFieldComponent={props => (
                       <CustomInput
                         {...props}
-                        onClick={() => this.setIsDatePickerOpen(
-                          'isStartDatePickerOpen',
-                          true,
-                        )}
                         inputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -221,10 +212,6 @@ class ExperimentForm extends React.Component {
                                 className={classes.dateTooltip}
                                 title="Select date"
                                 ariaLabel="select date"
-                                onClick={() => this.setIsDatePickerOpen(
-                                  'isStartDatePickerOpen',
-                                  true,
-                                )}
                               >
                                 <DateIcon />
                               </CustomTooltip>
@@ -237,27 +224,20 @@ class ExperimentForm extends React.Component {
                 </Grid>
                 <Grid item xs={5} ref={this.endDatePickerRef}>
                   <DatePicker
-                    onClose={() => this.setIsDatePickerOpen('isEndDatePickerOpen', false)}
-                    minDate={formObject.begin} // the end date can't be earlier than the start date
+                    minDate={dayjs(formObject.begin)} // the end date can't be earlier than the start date
                     disableToolbar
                     variant="inline"
                     format="D/M/YYYY"
                     id="end-date-picker"
                     label="End date"
-                    value={formObject.end}
+                    value={dayjs(formObject.end)}
                     onChange={date => this.changeFormObject(date, 'end')}
-                    open={isEndDatePickerOpen}
                     PopoverProps={{
                       anchorEl: this.endDatePickerRef.current,
                     }}
                     TextFieldComponent={props => (
                       <CustomInput
                         {...props}
-                        onClick={() => this.setIsDatePickerOpen(
-                          'isEndDatePickerOpen',
-                          true,
-                        )}
-
                         inputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -265,11 +245,6 @@ class ExperimentForm extends React.Component {
                                 className={classes.dateTooltip}
                                 title="Select date"
                                 ariaLabel="select date"
-                                onClick={() => this.setIsDatePickerOpen(
-                                  'isEndDatePickerOpen',
-                                  true,
-                                )
-                                }
                               >
                                 <DateIcon />
                               </CustomTooltip>

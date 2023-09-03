@@ -13,6 +13,7 @@ import getDate from '../utils/getDate';
 import Labels from '../LabelsDropdown';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
 
@@ -120,7 +121,7 @@ function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
                 autoOk
                 onOpen={() => setIsOpen(true)}
                 onClose={() => setIsOpen(false)}
-                value={logValues.startDate}
+                value={dayjs(logValues.startDate)}
                 onChange={handleDateChange}
               />
             </ListItem>
