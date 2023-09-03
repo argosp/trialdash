@@ -9,7 +9,7 @@ import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import { styles } from './styles';
 import { switcher } from '../EditFieldTypePanel/SwitchSection/styles';
 import CustomLocation from '../CustomLocation';
