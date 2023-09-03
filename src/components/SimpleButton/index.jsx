@@ -22,7 +22,7 @@ const SimpleButton = ({
     variant={variant}
     fullWidth={fullWidth}
     component={component}
-    color={colorVariant}
+    // color={colorVariant}
     disabled={disabled}
     className={
       size === 'small'
