@@ -1,6 +1,6 @@
 export const styles = theme => ({
   root: {
-    padding: '20px 0 0 40px',
+    padding: '0 0 0 0',
     backgroundColor: theme.palette.white.main,
   },
   rootWithoutExperiments: {
