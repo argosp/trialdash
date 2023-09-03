@@ -14,10 +14,7 @@ import ContentTable from '../../ContentTable';
 import TrialForm from '../TrialForm/TrialForm';
 import trialMutation from '../TrialForm/utils/trialMutation';
 import { updateCache } from '../../../apolloGraphql';
-import { downloadTrials } from './downloadCsv';
-import { uploadEntities, uploadTrial } from './uploadCsv';
 import { TrialRow } from './TrialRow';
-import { displayCloneData } from './trialUtils';
 import { WorkingContext } from '../../AppLayout/AppLayout.jsx';
 
 const Trials = (props) => {
