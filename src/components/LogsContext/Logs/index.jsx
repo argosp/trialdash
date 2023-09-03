@@ -10,7 +10,7 @@ import labelsQuery from '../utils/labelsQuery';
 import SimpleButton from '../../SimpleButton';
 import { LOGS_DASH } from '../../../constants/base';
 import getDate from '../utils/getDate';
-import { DatePicker } from "@material-ui/pickers";
+import { DatePicker } from "@mui/x-date-pickers";
 import ContentHeader from '../../ContentHeader';
 import { BasketIcon, PenIcon } from '../../../constants/icons';
 import { updateCache } from '../../../apolloGraphql';

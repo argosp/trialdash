@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@mui/material';
 import uuid from 'uuid/v4';
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import { Grid, Typography } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import moment from 'moment';

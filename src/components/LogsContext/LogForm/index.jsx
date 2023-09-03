@@ -11,7 +11,7 @@ import FileUpload from './fileUpload';
 import getDate from '../utils/getDate';
 import Labels from '../LabelsDropdown';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 
 function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {
 
