@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { WorkingContext } from '../AppLayout';
+import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import { changeEntityLocation } from './EntityUtils';
 import updateTrialContainsEntities from '../TrialContext/TrialForm/utils/trialMutationUpdateContainsEntities.js';

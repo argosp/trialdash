@@ -24,7 +24,7 @@ import { styles } from './styles';
 import Footer from '../../Footer';
 import entitiesTypesQuery from '../utils/entityTypeQuery';
 import entitiesQuery from '../Entities/utils/entityQuery';
-import { WorkingContext } from '../../AppLayout';
+import { WorkingContext } from '../../AppLayout/AppLayout.jsx';
 
 class EntityForm extends React.Component {
   state = {

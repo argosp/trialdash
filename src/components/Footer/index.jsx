@@ -3,7 +3,7 @@ import { withStyles } from '@mui/styles';
 import Grid from '@mui/material/Grid';
 import { styles } from './styles';
 import SimpleButton from '../SimpleButton';
-import { WorkingContext } from '../AppLayout';
+import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 
 const Footer = ({
   saveButtonHandler,

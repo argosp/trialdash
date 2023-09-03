@@ -22,7 +22,8 @@ import trialsQuery from "../TrialContext/utils/trialQuery";
 import DuplicateEntitiesDialog from './DuplicateEntitiesDialog';
 import { getCurrentEntitsNameByStatus, getEntitiesByEntitiesTypeKey, getEntitiesTypeArrayFromSelectedTrial } from '../../assets/Utils';
 import { styles } from "./styles";
-import { WorkingContext } from "../AppLayout";
+import { WorkingContext } from "../AppLayout/AppLayout.jsx";
+
 const StyledListItem = withStyles({
   root: {
     "&.Mui-selected": {

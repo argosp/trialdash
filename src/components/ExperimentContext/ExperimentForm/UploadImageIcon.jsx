@@ -1,6 +1,6 @@
 import React, { useRef, useContext } from "react";
 import gql from 'graphql-tag';
-import { WorkingContext } from "../../AppLayout";
+import { WorkingContext } from "../../AppLayout/AppLayout.jsx";
 import {
     IconButton,
     Icon,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import AppLayout from '../AppLayout';
+import AppLayout from '../AppLayout/AppLayout.jsx';
 
 class AuthPage extends React.Component {
   state = {

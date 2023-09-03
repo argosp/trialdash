@@ -18,7 +18,7 @@ import { downloadTrials } from './downloadCsv';
 import { uploadEntities, uploadTrial } from './uploadCsv';
 import { TrialRow } from './TrialRow';
 import { displayCloneData } from './trialUtils';
-import { WorkingContext } from '../../AppLayout';
+import { WorkingContext } from '../../AppLayout/AppLayout.jsx';
 
 const Trials = (props) => {
   const { history, match, client, classes, theme } = props;

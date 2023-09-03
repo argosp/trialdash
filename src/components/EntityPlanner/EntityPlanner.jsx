@@ -13,7 +13,7 @@ import { groupBy } from 'lodash';
 import entitiesTypesQuery from '../EntityContext/utils/entityTypeQuery';
 import entitiesQuery from '../EntityContext/Entities/utils/entityQuery';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
-import { WorkingContext } from '../AppLayout';
+import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 import { ErrorBoundary } from "react-error-boundary";
 import { PopupSwitchProvider } from './PopupSwitchContext';
 

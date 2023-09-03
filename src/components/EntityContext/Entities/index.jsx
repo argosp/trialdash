@@ -30,7 +30,7 @@ import entityMutationUpdate from '../EntityForm/utils/entityMutationUpdate';
 import CloneMultiplePanel from '../../CloneMultiplePanel';
 import { updateCache } from '../../../apolloGraphql';
 import ConfirmDialog from '../../ConfirmDialog';
-import { WorkingContext } from '../../AppLayout';
+import { WorkingContext } from '../../AppLayout/AppLayout.jsx';
 
 class Entities extends React.Component {
   state = {

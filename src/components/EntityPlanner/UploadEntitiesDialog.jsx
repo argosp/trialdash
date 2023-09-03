@@ -17,7 +17,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from "@mui/icons-material/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
 import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
-import { WorkingContext } from '../AppLayout';
+import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setWorking, setRefreshMessage } = useContext(WorkingContext);
