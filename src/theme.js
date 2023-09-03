@@ -1,4 +1,4 @@
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 import Inter from './assets/fonts/Inter-Regular.woff';
 
 const interFont = {

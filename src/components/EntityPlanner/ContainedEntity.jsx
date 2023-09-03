@@ -1,8 +1,8 @@
 import React from 'react';
 import { ButtonTooltip } from './ButtonTooltip';
 import { useEntities } from './EntitiesContext';
-import { Clear, VisibilityOutlined } from '@material-ui/icons';
-import { Paper, Box, Typography } from '@material-ui/core';
+import { Clear, VisibilityOutlined } from '@mui/icons-material';
+import { Paper, Box, Typography } from '@mui/material';
 import { usePopupSwitch } from './PopupSwitchContext';
 
 export const ContainedEntity = ({ childEntityItemKey, disconnectEntity }) => {

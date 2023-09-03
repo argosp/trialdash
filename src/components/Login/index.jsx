@@ -11,9 +11,9 @@ import {
   InputLabel,
   Paper,
   Typography,
-} from '@material-ui/core';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import withStyles from '@material-ui/core/styles/withStyles';
+} from '@mui/material';
+import LockIcon from '@mui/icons-material/LockOutlined';
+import withStyles from '@mui/material/styles/withStyles';
 import gql from 'graphql-tag';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';

@@ -1,7 +1,7 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Switch from '@material-ui/core/Switch';
+import { withStyles } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Switch from '@mui/material/Switch';
 import classnames from 'classnames';
 import { styles, switcher } from './styles';
 

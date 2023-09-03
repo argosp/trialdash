@@ -1,7 +1,7 @@
 import React from 'react';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
+import SvgIcon from '@mui/material/SvgIcon';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 export const DownloadIcon = props => (
   <SvgIcon viewBox="0 0 16 16" {...props}>

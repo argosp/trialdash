@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/material';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';

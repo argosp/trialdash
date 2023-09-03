@@ -9,6 +9,7 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.7",
     "@mui/material": "^5.14.7",
+    "@mui/styles": "^5.14.7",
     "apollo-cache-inmemory": "1.5.1",
     "apollo-client": "2.5.1",
     "apollo-link": "1.2.11",

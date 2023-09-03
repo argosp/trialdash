@@ -6,11 +6,11 @@ import {
     Paper,
     Button,
     Tooltip,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     LocationOff,
     PlaylistAdd
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
@@ -35,7 +35,7 @@ import { MapRightClicker } from './MapRightClicker.jsx';
 import { EntityMarkersShown } from './EntityMarkersShown.jsx';
 import { UploadEntitiesDialog } from './UploadEntitiesDialog.jsx';
 import { CloneIcon, GridIcon } from '../../constants/icons.jsx';
-import TextFormatIcon from '@material-ui/icons/TextFormat';
+import TextFormatIcon from '@mui/icons-material/TextFormat';
 import { RefocusShownEntities } from './RefocusShownEntities.jsx';
 
 export const EntityEditor = ({

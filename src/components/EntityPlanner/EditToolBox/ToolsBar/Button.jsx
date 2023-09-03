@@ -1,4 +1,4 @@
-import { Button as MuiButton } from '@material-ui/core';
+import { Button as MuiButton } from '@mui/material';
 import React from 'react';
 
 export const Button = ({ text, ...rest }) => {

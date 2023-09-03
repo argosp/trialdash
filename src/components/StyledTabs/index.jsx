@@ -1,7 +1,7 @@
-import { withStyles } from '@material-ui/core';
-import Tabs from '@material-ui/core/Tabs';
+import { withStyles } from '@mui/material';
+import Tabs from '@mui/material/Tabs';
 import React from 'react';
-import Tab from '@material-ui/core/Tab';
+import Tab from '@mui/material/Tab';
 import { tabsStyles, styles } from './styles';
 
 const StyledTabs = withStyles(tabsStyles)(props => (

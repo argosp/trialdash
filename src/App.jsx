@@ -1,8 +1,8 @@
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 // eslint-disable-next-line
-import { ThemeProvider } from '@material-ui/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { client } from './apolloGraphql';
 import MomentUtils from '@date-io/moment';
 import './App.css';

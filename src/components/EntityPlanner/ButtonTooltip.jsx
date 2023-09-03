@@ -2,7 +2,7 @@ import React from 'react';
 import {
     IconButton,
     Tooltip,
-} from '@material-ui/core';
+} from '@mui/material';
 import { DomEvent } from 'leaflet';
 
 export const ButtonTooltip = ({ onClick, tooltip, disabled, children, ...restProps }) => {

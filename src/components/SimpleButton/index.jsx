@@ -1,6 +1,6 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { withStyles } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 import classnames from 'classnames';
 import { styles } from './styles';
 

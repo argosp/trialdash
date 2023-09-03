@@ -1,14 +1,14 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import classnames from 'classnames';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/material';
 import { isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
-import Checkbox from '@material-ui/core/Checkbox';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 import {

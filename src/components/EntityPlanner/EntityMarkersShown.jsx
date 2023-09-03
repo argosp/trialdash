@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     LocationOff,
     PlaylistAdd
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
 import { ButtonTooltip } from "./ButtonTooltip"
 import { EntityMarker } from "./EntityMarker"

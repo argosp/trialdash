@@ -4,7 +4,7 @@ import {
     TableContainer,
     TableBody,
     Paper,
-} from '@material-ui/core'
+} from '@mui/material'
 import { EntityRow } from './EntityRow';
 import { useSelection } from './SelectionContext.jsx';
 import { EntityLocationButton } from './EntityLocationButton.jsx';

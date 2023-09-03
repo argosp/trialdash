@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
-import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, Chip, Typography, IconButton } from '@material-ui/core';
+import { withStyles, Paper, Grid, TextField, List, ListItem, ListItemText, Chip, Typography, IconButton } from '@mui/material';
 import { styles } from './styles';
 import addUpdateLog from '../utils/logMutation';
 import SimpleButton from '../../SimpleButton';
@@ -10,7 +10,7 @@ import SimpleButton from '../../SimpleButton';
 import FileUpload from './fileUpload';
 import getDate from '../utils/getDate';
 import Labels from '../LabelsDropdown';
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { DatePicker } from '@material-ui/pickers';
 
 function LogForm({ classes, client, match, submitBtnTxt, log = {} }) {

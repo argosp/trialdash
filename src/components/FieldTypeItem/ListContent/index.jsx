@@ -1,15 +1,15 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import Radio from '@material-ui/core/Radio';
+import { withStyles } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Checkbox from '@mui/material/Checkbox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import Radio from '@mui/material/Radio';
 import {
   FIELD_TYPE_ITEM_CHECKBOX_TYPE,
   FIELD_TYPES_ICONS,

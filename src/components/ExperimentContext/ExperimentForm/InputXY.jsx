@@ -1,7 +1,7 @@
 import React from "react";
 import {
     Grid,
-} from '@material-ui/core';
+} from '@mui/material';
 import { NumberTextField } from "./NumberTextField";
 
 const roundDec = (num) => {

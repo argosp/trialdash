@@ -4,7 +4,7 @@ import {
 } from "react-leaflet";
 import {
     Paper
-} from "@material-ui/core";
+} from "@mui/material";
 
 export const MapCoordinates = ({ showAsLatLong = true }) => {
     const [latlng, setLatlng] = useState({ lat: 0, lng: 0 });

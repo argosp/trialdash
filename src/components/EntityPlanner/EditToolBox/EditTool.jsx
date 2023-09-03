@@ -6,9 +6,9 @@ import {
     Grid,
     Box,
     Tooltip,
-} from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import CloseIcon from "@material-ui/icons/Close";
+} from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import CloseIcon from "@mui/icons-material/Close";
 import {
     POINT_SHAPE
 } from './utils/constants';

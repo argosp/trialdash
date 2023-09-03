@@ -1,14 +1,14 @@
 /* eslint-disable prefer-destructuring */
 import React from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/material';
 import update from 'immutability-helper';
 import uuid from 'uuid/v4';
 import moment from 'moment';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Grid from '@material-ui/core/Grid';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
+import InputAdornment from '@mui/material/InputAdornment';
+import Grid from '@mui/material/Grid';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
 import classnames from 'classnames';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import { Grid, TextField, Typography } from '@material-ui/core';
+import { Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
 import { Button } from './Button';
@@ -7,8 +7,8 @@ import {
   IconButton,
   Box,
   Tooltip,
-} from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+} from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const Rectangle = ({ classes, markedPoints }) => {
   const positions = [{ x: '', y: '' }];

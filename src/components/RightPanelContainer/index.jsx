@@ -1,7 +1,7 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import CloseIcon from '@material-ui/icons/Close';
+import { withStyles } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import CloseIcon from '@mui/icons-material/Close';
 import { styles } from './styles';
 
 const RightPanelContainer = ({ classes, title, children, isPanelOpen, onClose, className }) => (

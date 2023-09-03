@@ -9,7 +9,7 @@ import {
   Checkbox,
   TextField,
   Grid,
-} from "@material-ui/core";
+} from "@mui/material";
 import { MapsEditDetails } from "./mapsEditDetails";
 import config from '../../../config';
 import { UploadImageIcon } from "./UploadImageIcon";

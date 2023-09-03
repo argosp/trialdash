@@ -1,7 +1,7 @@
 import React from 'react';
-import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
-import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
-import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import uuid from 'uuid/v4';
 import { DateIcon, NumberIcon, SelectListIcon, TextAreaIcon, TextIcon } from './icons';
 

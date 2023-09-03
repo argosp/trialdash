@@ -1,12 +1,12 @@
 import React, { Fragment, useState } from 'react';
 import {
     Grid, Typography
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     Check,
     Close,
     MergeType,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { PenIcon } from '../../constants/icons';
 import { useEntities } from './EntitiesContext.jsx';
 import { ButtonTooltip } from './ButtonTooltip.jsx';
