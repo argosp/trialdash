@@ -1,24 +1,24 @@
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 // eslint-disable-next-line
-import { ThemeProvider } from '@material-ui/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { client } from './apolloGraphql';
-import MomentUtils from '@date-io/moment';
 import './App.css';
 import theme from './theme';
 import AppRoutes from './AppRoutes';
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 
 const App = () => (
   <ApolloProvider client={client}>
     <ThemeProvider theme={theme}>
-    <MuiPickersUtilsProvider utils={MomentUtils}>
-      <CssBaseline />
-      <div className="App">
-        <AppRoutes />
-      </div>
-      </MuiPickersUtilsProvider>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <CssBaseline />
+        <div className="App">
+          <AppRoutes />
+        </div>
+      </LocalizationProvider>
     </ThemeProvider>
   </ApolloProvider>
 );

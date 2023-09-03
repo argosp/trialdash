@@ -1,6 +1,6 @@
 import React from 'react';
-import { IconButton, Tooltip } from '@material-ui/core';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import { IconButton, Tooltip } from '@mui/material';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { ContextMenu } from './ContextMenu';
 
 export const EntityLocationButton = ({ entityLocation, isEntityOnLayer, entityLayerName, onDisableLocation, menuItems }) => {

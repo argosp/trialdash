@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   Switch,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import { MarkedPoint } from "../../EntityPlanner/MarkedPoint";
 import { latLng } from "leaflet";
 import { MapWithImage } from "./MapWithImage";

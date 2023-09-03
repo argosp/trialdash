@@ -9,7 +9,7 @@ import {
   TableBody,
   IconButton,
   Icon,
-} from '@material-ui/core';
+} from '@mui/material';
 import { mapDefaultBounds, MapsEditRow } from "./mapsEditRow";
 import { ErrorBoundary } from "react-error-boundary";
 

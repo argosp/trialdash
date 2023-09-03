@@ -1,9 +1,9 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/styles';
 import uuid from 'uuid/v4';
-import { DatePicker } from '@material-ui/pickers';
-import { Grid, Typography } from '@material-ui/core';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Grid, Typography } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import moment from 'moment';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';

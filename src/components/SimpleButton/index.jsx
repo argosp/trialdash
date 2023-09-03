@@ -1,6 +1,6 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { withStyles } from '@mui/styles';
+import Button from '@mui/material/Button';
 import classnames from 'classnames';
 import { styles } from './styles';
 
@@ -22,7 +22,7 @@ const SimpleButton = ({
     variant={variant}
     fullWidth={fullWidth}
     component={component}
-    color={colorVariant}
+    // color={colorVariant}
     disabled={disabled}
     className={
       size === 'small'

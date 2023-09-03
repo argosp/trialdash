@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { EntityTypeRow } from './EntityTypeRow.jsx';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@material-ui/core'
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@mui/material'
 
 export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, entityItems, showTableOfType, setShowTableOfType }) => {
 

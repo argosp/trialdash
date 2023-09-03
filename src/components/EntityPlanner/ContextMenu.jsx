@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem } from '@mui/material';
 
 export const ContextMenu = ({ menuItems, child }) => {
     const [menuAnchorElement, setMenuAnchorElement] = React.useState(null);

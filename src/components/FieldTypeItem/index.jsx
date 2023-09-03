@@ -1,6 +1,6 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@mui/styles';
+import Grid from '@mui/material/Grid';
 import classnames from 'classnames';
 import CustomInput from '../CustomInput';
 import { styles } from './styles';

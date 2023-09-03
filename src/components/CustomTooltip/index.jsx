@@ -1,8 +1,8 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import classnames from 'classnames';
-import { withStyles } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@mui/styles';
+import IconButton from '@mui/material/IconButton';
 import { styles } from './styles';
 
 class CustomTooltip extends React.Component {

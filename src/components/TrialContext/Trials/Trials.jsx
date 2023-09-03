@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/styles';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import { compose } from 'recompose';

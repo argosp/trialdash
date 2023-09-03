@@ -12,9 +12,9 @@ import {
     DialogContent,
     Typography,
     Tooltip,
-} from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
-import CloseIcon from "@material-ui/icons/Close";
+} from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from "@mui/icons-material/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
 import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
 import { WorkingContext } from '../AppLayout';

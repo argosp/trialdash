@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, TextField, Typography } from '@material-ui/core';
+import { Grid, TextField, Typography } from '@mui/material';
 import { Button } from './Button';
 import processingDecimalDigits from '../../utils/processingDecimalDigits.js';
 

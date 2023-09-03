@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import {
     TableRow,
     TableCell, IconButton
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     Check,
     Close,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { useEntities } from './EntitiesContext';
 import { TextFieldEntityProperty, entitySaveForTextFields } from './TextFieldEntityProperty';
 import { ContextMenu } from './ContextMenu';

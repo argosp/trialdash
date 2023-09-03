@@ -1,11 +1,11 @@
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import Grid from '@material-ui/core/Grid';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
+import Grid from '@mui/material/Grid';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import React from 'react';
 import classnames from 'classnames';
-import { withStyles } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
+import { withStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
 import { styles } from './styles';
 import SimpleButton from '../SimpleButton';
 

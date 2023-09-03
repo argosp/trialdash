@@ -1,13 +1,13 @@
 /* eslint-disable prefer-destructuring */
 import React from 'react';
 import update from 'immutability-helper';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/styles';
 import uuid from 'uuid/v4';
 import moment from 'moment';
-import Typography from '@material-ui/core/Typography';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+import Typography from '@mui/material/Typography';
+import InputAdornment from '@mui/material/InputAdornment';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { withRouter } from 'react-router-dom';

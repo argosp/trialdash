@@ -1,11 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
     Divider,
     Box,
-} from '@material-ui/core';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import PlaceIcon from '@material-ui/icons/Place';
+} from '@mui/material';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import PlaceIcon from '@mui/icons-material/Place';
 
 import classnames from 'classnames';
 import { styles } from './styles';

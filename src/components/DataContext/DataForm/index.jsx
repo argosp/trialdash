@@ -1,8 +1,8 @@
 import React from 'react';
-import { withTheme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
+import { withTheme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
 // import Graph from '../../../apolloGraphql';
 // import dataMutation from './utils/dataMutation';
 import classes from './styles';

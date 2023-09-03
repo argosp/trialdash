@@ -1,7 +1,7 @@
 import React from "react";
 import {
     TextField
-} from '@material-ui/core';
+} from '@mui/material';
 import { DebounceInput } from 'react-debounce-input';
 
 export const NumberTextField = ({ value, onChange, label, width }) => {

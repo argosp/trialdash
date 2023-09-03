@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { withStyles, Popover, ListItemSecondaryAction, IconButton } from '@material-ui/core';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { withStyles } from '@mui/styles';
+import { Popover, ListItemSecondaryAction, IconButton } from '@mui/material';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { styles } from './styles';

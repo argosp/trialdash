@@ -1,11 +1,11 @@
 import React, { createContext, useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { LinearProgress, Snackbar, IconButton, Button } from '@material-ui/core';
+import { withStyles } from '@mui/styles';
+import { LinearProgress, Snackbar, IconButton, Button } from '@mui/material';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { styles } from './styles';
 import Header from '../Header';
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 // import LoadingOverlay from 'react-loading-overlay';
 
 export const WorkingContext = createContext();

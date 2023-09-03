@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CustomTooltip from '../../CustomTooltip';
 import uuid from 'uuid/v4';
 import { CloneIcon } from '../../../constants/icons';
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem } from '@mui/material';
 import { COLORS_STATUSES } from '../../../constants/base';
 
 export const CloneTrialIconButton = ({

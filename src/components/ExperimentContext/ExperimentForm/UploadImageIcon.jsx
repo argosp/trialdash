@@ -4,7 +4,7 @@ import { WorkingContext } from "../../AppLayout";
 import {
     IconButton,
     Icon,
-} from "@material-ui/core";
+} from "@mui/material";
 
 const UPLOAD_FILE = gql`
   mutation($file: Upload!) {

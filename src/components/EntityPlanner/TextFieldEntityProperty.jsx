@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     TextField
-} from '@material-ui/core';
+} from '@mui/material';
 
 export const TextFieldEntityProperty = ({ entityItem, entityType, propertyKey, changedValue, setChangedValue, parentHierarchy }) => {
     const isLat = propertyKey.endsWith('_lat');

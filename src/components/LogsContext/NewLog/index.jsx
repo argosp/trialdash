@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/styles';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
 

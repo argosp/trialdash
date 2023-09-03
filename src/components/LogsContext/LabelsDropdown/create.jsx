@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { withStyles, Grid, IconButton, Divider, TextField } from '@material-ui/core';
+import { withStyles } from '@mui/styles';
+import { Grid, IconButton, Divider, TextField } from '@mui/material';
 import SimpleButton from '../../SimpleButton';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import { compose } from 'recompose';
 import { withApollo } from 'react-apollo';
 import { styles } from './styles';

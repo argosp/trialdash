@@ -3,7 +3,7 @@ import { BasketIcon } from "../../../constants/icons";
 import {
   Grid,
   IconButton,
-} from '@material-ui/core';
+} from '@mui/material';
 import { MapWithImage } from "./MapWithImage";
 import { AnchorPointsDiagonal } from "./AnchorPointsDiagonal.jsx";
 import { NumberTextField } from "./NumberTextField.jsx";

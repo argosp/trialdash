@@ -1,12 +1,12 @@
 /* eslint-disable arrow-body-style */
 import React from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import { withStyles } from '@mui/styles';
 import uuid from 'uuid/v4';
 import { isEmpty } from 'lodash';
 import classnames from 'classnames';
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';

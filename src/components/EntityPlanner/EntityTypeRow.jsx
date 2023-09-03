@@ -1,7 +1,7 @@
 import React from 'react'
-import IconButton from '@material-ui/core/IconButton'
-import { VisibilityOffOutlined, VisibilityOutlined, ArrowForwardIos, Clear } from '@material-ui/icons'
-import { TableCell, TableRow } from '@material-ui/core'
+import IconButton from '@mui/material/IconButton'
+import { VisibilityOffOutlined, VisibilityOutlined, ArrowForwardIos, Clear } from '@mui/icons-material'
+import { TableCell, TableRow } from '@mui/material'
 import { DomEvent } from 'leaflet';
 
 export const EntityTypeRow = ({ entity, isVisible, setIsVisible, numberPositioned, numberNotPositioned, setIsOpenArrow, isOpenArrow }) => {
