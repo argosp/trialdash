@@ -48,7 +48,10 @@ function makeGeoJsonData(entities) {
       type: 'Feature',
       geometry: {
         type: 'Point',
-        coordinates: [e.Latitude, e.Longitude]
+        coordinates: [
+          e.Longitude,
+          e.Latitude,
+        ]
       },
       properties
     }
