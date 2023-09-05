@@ -1,29 +1,21 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
     Box,
-    Button,
-    RadioGroup,
-    Radio,
-    FormControlLabel,
-    IconButton,
-    Paper,
-    Dialog,
+    Button, IconButton, Dialog,
     DialogTitle,
-    DialogContent,
-    Typography,
-    Tooltip,
+    DialogContent, Tooltip
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from "@mui/icons-material/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
 import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
 import { WorkingContext } from '../AppLayout/AppLayout.jsx';
+import { ButtonWithFileInput } from '../ButtonWithFileInput';
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setWorking, setRefreshMessage } = useContext(WorkingContext);
     // const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
-    const ref = useRef();
 
     const uploadInfo = async (e) => {
         setWorking(true);
@@ -78,17 +70,17 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                 </DialogTitle>
                 <DialogContent dividers>
                     <Box textAlign='center'>
-                        <Button variant={'outlined'} color={'primary'}
-                            onClick={() => ref.current.click()}
+                        <ButtonWithFileInput variant={'outlined'} color={'primary'}
+                            onChange={(e) => uploadInfo(e)}
                         >
                             Upload CSV
-                            <input
-                                type="file"
-                                ref={ref}
-                                onChange={(e) => uploadInfo(e)}
-                                hidden
-                            />
-                        </Button>
+                        </ButtonWithFileInput>
+                        &nbsp;
+                        <ButtonWithFileInput variant={'outlined'} color={'primary'}
+                            onChange={(e) => uploadInfo(e)}
+                        >
+                            Upload GeoJson
+                        </ButtonWithFileInput>
                         <br />
                         <br />
                         <Button variant={'outlined'} color={'primary'}
