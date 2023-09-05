@@ -21,7 +21,7 @@ import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setWorking, setRefreshMessage } = useContext(WorkingContext);
-    const [fileFormat, setFileFormat] = useState('CSV');
+    // const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
     const ref = useRef();
 
@@ -38,10 +38,10 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         setRefreshMessage();
     }
 
-    const downloadInfo = async () => {
+    const downloadInfo = async (fileFormat) => {
         setWorking(true);
         try {
-            await downloadEntities({ client, match, trial });
+            await downloadEntities({ client, match, trial, fileFormat });
         } catch (e) {
             console.log(e)
         }
@@ -65,11 +65,10 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                 <DialogTitle
                     id="customized-dialog-title"
                     style={{ display: "flex", justifyContent: "space-between" }}
-                    disableTypography
                 >
-                    <Typography variant="h6">
+                    <span>
                         Upload & Download Entities
-                    </Typography>
+                    </span>
                     <IconButton
                         size='small'
                         onClick={() => setOpen(false)}
@@ -79,19 +78,10 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                 </DialogTitle>
                 <DialogContent dividers>
                     <Box textAlign='center'>
-                        <RadioGroup
-                            row
-                            value={fileFormat}
-                            onChange={e => setFileFormat(e.value)}
-                        >
-                            <FormControlLabel value="CSV" control={<Radio />} label="CSV" />
-                            <FormControlLabel value="GeoJson" control={<Radio />} label="GeoJson" disabled />
-                        </RadioGroup>
-                        <br />
                         <Button variant={'outlined'} color={'primary'}
                             onClick={() => ref.current.click()}
                         >
-                            Upload
+                            Upload CSV
                             <input
                                 type="file"
                                 ref={ref}
@@ -102,10 +92,27 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                         <br />
                         <br />
                         <Button variant={'outlined'} color={'primary'}
-                            onClick={() => downloadInfo()}
+                            onClick={() => downloadInfo('csv')}
                         >
-                            Download
+                            Download CSV
                         </Button>
+                        &nbsp;
+                        <Button variant={'outlined'} color={'primary'}
+                            onClick={() => downloadInfo('geojson')}
+
+                        >
+                            Download GeoJson
+                        </Button>
+                        {/* <br /> */}
+                        {/* <RadioGroup
+                            // row
+                            value={fileFormat}
+                            onChange={e => setFileFormat(e.target.value)}
+                        >
+                            <FormControlLabel value="CSV" control={<Radio />} label="CSV" />
+                            <FormControlLabel value="GeoJson" control={<Radio />} label="GeoJson" />
+                        </RadioGroup>
+                        <br /> */}
                     </Box>
                 </DialogContent>
             </Dialog>

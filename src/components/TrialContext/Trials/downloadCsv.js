@@ -31,6 +31,24 @@ function makeCsvData(array) {
   return csv.join("\n");
 }
 
+function makeGeoJsonData(entities) {
+  const located = entities.filter(e => e.Latitude && e.Longitude);
+  const features = located.map(e => {
+    return {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [e.Latitude, e.Longitude]
+      },
+      properties: e.properties
+    }
+  });
+  return JSON.stringify({
+    type: 'FeatureCollection',
+    features
+  }, null, 2);
+}
+
 function fetchTrialsData(client, match, trialSet, displayCloneData) {
   const trials = client.readQuery({
     query: trialsQuery(match.params.id, match.params.trialSetKey)
@@ -102,14 +120,14 @@ function download(csvString, fileName) {
   const csvUrl = URL.createObjectURL(csvData);
   const a = document.createElement('a');
   a.href = csvUrl;
-  a.download = `${fileName}.csv`;
+  a.download = fileName;
   a.click();
   URL.revokeObjectURL(csvUrl);
 }
 
 async function downloadTrials(client, match, trialSet, displayCloneData) {
   const csvString = await fetchTrialsData(client, match, trialSet, displayCloneData);
-  download(csvString, 'trials')
+  download(csvString, 'trials.csv')
 }
 async function downloadTrial(args) {
   const { data } = await args.client.query({
@@ -117,23 +135,28 @@ async function downloadTrial(args) {
   });
   const { trial } = data
   const csvStringTrial = await fetchTrialData(trial, args.trials, args.trialSet, args.displayCloneData);
-  download(csvStringTrial, `trial_${trial.name}`)
+  download(csvStringTrial, `trial_${trial.name}.csv`)
   if (trial.fullDetailedEntities && trial.fullDetailedEntities.length) {
     const entities = await fetchEntitiesData(trial, args.trials, args.trialSet, args.displayCloneData);
     const csvStringEntities = makeCsvData(entities);
-    download(csvStringEntities, `trial_${trial.name}_entities`)
+    download(csvStringEntities, `trial_${trial.name}_entities.csv`)
   }
 
 }
 
-async function downloadEntities({ client, match, trial, withKeys = false }) {
+async function downloadEntities({ client, match, trial, fileFormat = "csv" }) {
   const { data } = await client.query({
     query: fullTrialQuery(match.params.id, trial.key)
   });
   if (data.trial && data.trial.fullDetailedEntities && data.trial.fullDetailedEntities.length) {
-    const entities = await fetchEntitiesData(data.trial, withKeys);
-    const csvStringEntities = makeCsvData(entities);
-    download(csvStringEntities, `trial_${data.trial.name}_entities`)
+    const entities = await fetchEntitiesData(data.trial, false);
+    if (fileFormat.toLowerCase() === "csv") {
+      const str = makeCsvData(entities);
+      download(str, `trial_${data.trial.name}_entities.csv`)
+    } else if (fileFormat.toLowerCase() === "geojson") {
+      const str = makeGeoJsonData(entities);
+      download(str, `trial_${data.trial.name}_entities.geojson`)
+    }
   }
 }
 
