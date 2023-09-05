@@ -22,11 +22,10 @@ import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
 import { UserData } from './UserData';
 import { UserDataMenu } from './UserDataMenu';
+import { ExperimentsMenu } from './ExperimentsMenu';
 
 class Header extends React.Component {
   state = {
-    anchorExperimentsMenu: null,
-    isExperimentHovering: false,
     isLoading: true,
   };
 
@@ -44,17 +43,6 @@ class Header extends React.Component {
       .then(() => this.setState({ isLoading: false }));
   }
 
-  handleExperimentsMenuClick = (event) => {
-    this.setState({
-      anchorExperimentsMenu: event.currentTarget,
-      isExperimentHovering: false,
-    });
-  };
-
-  handleMenuClose = (anchor) => {
-    this.setState({ [anchor]: null });
-  };
-
   handleTabChange = (event, tabId, experimentId) => {
     const { client, history } = this.props;
 
@@ -62,42 +50,9 @@ class Header extends React.Component {
     history.push(`/experiments/${experimentId}/${TABS[tabId]}`);
   };
 
-  selectExperiment = (experimentId) => {
-    const { history, client } = this.props;
-    history.push(`/experiments/${experimentId}/${TRIAL_SETS_DASH}`);
-    client.writeData({ data: { headerTabId: 0 } }); // 0 is the Trials tab
-    this.handleMenuClose('anchorExperimentsMenu');
-  };
-
-  handleExperimentMouseEnter = () => {
-    this.setState({ isExperimentHovering: true });
-  };
-
-  handleExperimentMouseLeave = () => {
-    this.setState({ isExperimentHovering: false });
-  };
-
-  renderCurrentExperimentName = (currentExperiment) => {
-    const { isExperimentHovering } = this.state;
-
-    if (
-      currentExperiment.name
-      && currentExperiment.project.id
-      && isExperimentHovering
-    ) {
-      return `${currentExperiment.name} (ID: ${currentExperiment.project.id})`;
-    }
-
-    if (currentExperiment.name && !isExperimentHovering) {
-      return `${currentExperiment.name}`;
-    }
-
-    return 'Select an Experiment';
-  };
-
   render() {
     const { classes, client } = this.props;
-    const { anchorExperimentsMenu, isLoading } = this.state;
+    const { isLoading } = this.state;
     const pathObj = matchPath(this.props.location.pathname, {
       path: '/experiments/:id',
       exact: false,
@@ -136,55 +91,15 @@ class Header extends React.Component {
             orientation="vertical"
             className={classnames(classes.divider, classes.leftDivider)}
           />
-          {withExperiments ? (
-            <>
-              <Button
-                aria-controls="experiments-menu"
-                aria-haspopup="true"
-                onClick={this.handleExperimentsMenuClick}
-                disableRipple
-                className={classnames(
-                  classes.expandButton,
-                  classes.expandExperimentButton,
-                )}
-                onMouseEnter={this.handleExperimentMouseEnter}
-                onMouseLeave={this.handleExperimentMouseLeave}
-              >
-                {!isEmpty(currentExperiment)
-                  && this.renderCurrentExperimentName(currentExperiment)}
-                <ExpandMoreIcon />
-              </Button>
-              {!isEmpty(experiments)
-                && (
-                  <Menu
-                    id="experiments-menu"
-                    open={Boolean(anchorExperimentsMenu)}
-                    onClose={() => this.handleMenuClose('anchorExperimentsMenu')}
-                    anchorEl={anchorExperimentsMenu}
-                    getContentAnchorEl={null}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'left',
-                    }}
-                  >
-                    {!isEmpty(experiments)
-                      && experiments.map(experiment => (
-                        <MenuItem
-                          key={experiment.project.id}
-                          onClick={() => this.selectExperiment(experiment.project.id)
-                          }
-                        >
-                          {experiment.name}
-                        </MenuItem>
-                      ))}
-                  </Menu>
-                )}
-            </>
-          ) : null}
+          {withExperiments &&
+            <ExperimentsMenu
+              classes={classes}
+              experiments={experiments}
+              history={this.props.history}
+              client={client}
+              currentExperiment={currentExperiment}
+            />
+          }
         </Grid>
         <Grid item container xs={7} justifyContent="flex-end">
           {withExperiments ? (
