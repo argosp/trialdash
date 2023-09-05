@@ -16,11 +16,17 @@ export const ExperimentsMenu = ({ history, client, classes, experiments, current
             && currentExperiment.project.id
             && menu.isHovering
         ) {
-            return `${currentExperiment.name} (ID: ${currentExperiment.project.id})`;
+            return (
+                <div style={{ textAlign: 'left' }}>
+                    {currentExperiment.name}
+                    &nbsp;&nbsp;
+                    <span style={{ fontSize: 'x-small' }}>ID: {currentExperiment.project.id}</span>
+                </div>
+            );
         }
 
         if (currentExperiment.name && !menu.isHovering) {
-            return `${currentExperiment.name}`;
+            return currentExperiment.name;
         }
 
         return 'Select an Experiment';
