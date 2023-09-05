@@ -34,13 +34,23 @@ function makeCsvData(array) {
 function makeGeoJsonData(entities) {
   const located = entities.filter(e => e.Latitude && e.Longitude);
   const features = located.map(e => {
+    const properties = {
+      name: e.name,
+      entitiesTypeName: e.entitiesTypeName,
+      MapName: e.MapName
+    };
+    for (const [key, value] of Object.entries(e)) {
+      if (!properties[key] && !['Latitude', 'Longitude'].includes(key) && value !== undefined && value !== null) {
+        properties[key] = value;
+      }
+    }
     return {
       type: 'Feature',
       geometry: {
         type: 'Point',
         coordinates: [e.Latitude, e.Longitude]
       },
-      properties: e.properties
+      properties
     }
   });
   return JSON.stringify({
