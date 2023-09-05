@@ -105,12 +105,28 @@ async function fetchEntityTypesData(client, match) {
 
 }
 
-async function uploadEntities(text, trial, client, match, allEntities) {
-  const json = csvJSON(text);
-  if (!json || !json[0].entitiesTypeName) {
-    throw 'bad entities text: ' + text;
+async function uploadEntities(text, trial, client, match, allEntities, fileFormat) {
+  if (fileFormat.toLowerCase() === 'csv') {
+    const json = csvJSON(text);
+    console.log(json);
+    if (!json || !json[0].entitiesTypeName) {
+      throw 'bad entities text: ' + text;
+    }
+    await uploadEntitiesFromJSON(json, trial, client, match, allEntities);
+  } else if (fileFormat.toLowerCase() === 'geojson') {
+    const geojson = JSON.parse(text);
+    console.log(geojson);
+    const json = geojson.features.map(f => {
+      const [Latitude, Longitude] = f.geometry.coordinates;
+      return { ...f.properties, Latitude, Longitude };
+    });
+    await uploadEntitiesFromJSON(json, trial, client, match, allEntities);
+  } else {
+    throw 'unknown file format: ' + fileFormat;
   }
+}
 
+async function uploadEntitiesFromJSON(json, trial, client, match, allEntities) {
   const entities = [];
   for (const { name, entitiesTypeName, ...props } of json) {
     const entityType = allEntities.find(et => et.name === entitiesTypeName);

@@ -13,21 +13,22 @@ import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 import { ButtonWithFileInput } from '../ButtonWithFileInput';
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
-    const { setWorking, setRefreshMessage } = useContext(WorkingContext);
+    const { setWorking, setRefreshMessage, setErrorMessage } = useContext(WorkingContext);
     // const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
 
-    const uploadInfo = async (e) => {
+    const uploadInfo = async (e, fileFormat) => {
         setWorking(true);
         try {
             const text = await e.target.files[0].text();
-            await uploadEntities(text, trial, client, match, entities)
+            await uploadEntities(text, trial, client, match, entities, fileFormat)
+            setRefreshMessage();
         } catch (e) {
+            setErrorMessage('Uploading error: ' + e);
             console.log(e)
         }
         setOpen(false);
         setWorking(false);
-        setRefreshMessage();
     }
 
     const downloadInfo = async (fileFormat) => {
@@ -71,13 +72,13 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                 <DialogContent dividers>
                     <Box textAlign='center'>
                         <ButtonWithFileInput variant={'outlined'} color={'primary'}
-                            onChange={(e) => uploadInfo(e)}
+                            onChange={(e) => uploadInfo(e, 'csv')}
                         >
                             Upload CSV
                         </ButtonWithFileInput>
                         &nbsp;
                         <ButtonWithFileInput variant={'outlined'} color={'primary'}
-                            onChange={(e) => uploadInfo(e)}
+                            onChange={(e) => uploadInfo(e, 'geojson')}
                         >
                             Upload GeoJson
                         </ButtonWithFileInput>

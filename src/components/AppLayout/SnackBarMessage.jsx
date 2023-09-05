@@ -1,9 +1,15 @@
+import { forwardRef } from 'react';
 import {
     Snackbar,
     IconButton,
-    Button
+    Button,
 } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export const SnackBarMessage = ({ snackMessage, setSnackMessage }) => {
     let severity = 'info';
@@ -18,15 +24,19 @@ export const SnackBarMessage = ({ snackMessage, setSnackMessage }) => {
     }
     return (
         <Snackbar
-            autoHideDuration={3000}
+            autoHideDuration={4000}
             open={snackMessage}
             onClose={() => setSnackMessage()}
-            message={message}
-            severity={severity}
             action={
-                <>
+                <Alert
+                    variant="filled"
+                    severity={severity}
+                    sx={{ width: '100%' }}
+                    size='small'
+                >
+                    {message}
                     {!isRefresh ? null :
-                        <Button color="primary" size="small"
+                        <Button color="secondary" size="small"
                             onClick={() => {
                                 window.location.reload();
                             }}
@@ -39,7 +49,7 @@ export const SnackBarMessage = ({ snackMessage, setSnackMessage }) => {
                     >
                         <CloseIcon fontSize="small" />
                     </IconButton>
-                </>
+                </Alert>
             }
         />
     )
