@@ -1,20 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Grid,
     IconButton,
-    Box,
-    Paper,
-    Button,
-    Tooltip,
+    Box, Button,
+    Tooltip
 } from '@mui/material';
-import {
-    LocationOff,
-    PlaylistAdd
-} from "@mui/icons-material";
 import { useEntities } from './EntitiesContext.jsx';
 import { EntityList } from './EntityList';
 import { EntityMap } from './EntityMap';
-import { EntityMarker } from './EntityMarker';
 import { MarkedShape } from './MarkedShape';
 import { useShape } from './ShapeContext.jsx';
 import { useSelection } from './SelectionContext.jsx';
@@ -22,14 +15,9 @@ import { TypeChooser } from './TypeChooser';
 import Control from '../Maps/lib/react-leaflet-custom-control.jsx';
 import { EditToolBox } from './EditToolBox/EditToolBox.jsx';
 import {
-    FREEPOSITIONING_SHAPE,
-    CHOOSE_SHAPE,
-    POINT_SHAPE
+    FREEPOSITIONING_SHAPE, POINT_SHAPE
 } from './EditToolBox/utils/constants.js';
-import { ReactComponent as PlaylistRemove } from './Icons/PlaylistRemove.svg';
-import { ToggleTextOnMap } from '../Maps/ToggleTextOnMap.jsx';
 import { NumberTextField } from '../ExperimentContext/ExperimentForm/NumberTextField.jsx';
-import { ButtonTooltip } from './ButtonTooltip.jsx';
 import { MapCoordinates } from '../Maps/MapCoordinates.jsx';
 import { MapRightClicker } from './MapRightClicker.jsx';
 import { EntityMarkersShown } from './EntityMarkersShown.jsx';
