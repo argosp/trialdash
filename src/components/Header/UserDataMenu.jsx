@@ -4,18 +4,18 @@ import { UserData } from "./UserData"
 import { useState } from 'react';
 
 export const UserDataMenu = ({ classes, history }) => {
-    const [anchorProfileMenu, setAnchorProfileMenu] = useState();
+    const [anchorEl, setAnchorEl] = useState();
     return (
         <div className={classes.profileWrapper}>
             <UserData
                 classes={classes}
-                handleProfileMenuClick={(event) => setAnchorProfileMenu(event.currentTarget)}
+                handleProfileMenuClick={(event) => setAnchorEl(event.currentTarget)}
             />
             <Menu
                 id="profile-menu"
-                open={Boolean(anchorProfileMenu)}
-                onClose={() => setAnchorProfileMenu(null)}
-                anchorEl={anchorProfileMenu}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+                anchorEl={anchorEl}
                 getContentAnchorEl={null}
                 anchorOrigin={{
                     vertical: 'bottom',
