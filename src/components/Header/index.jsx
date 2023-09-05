@@ -21,11 +21,11 @@ import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
 import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
 import { UserData } from './UserData';
+import { UserDataMenu } from './UserDataMenu';
 
 class Header extends React.Component {
   state = {
     anchorExperimentsMenu: null,
-    anchorProfileMenu: null,
     isExperimentHovering: false,
     isLoading: true,
   };
@@ -43,12 +43,6 @@ class Header extends React.Component {
       .query({ query: experimentsQuery })
       .then(() => this.setState({ isLoading: false }));
   }
-
-  handleProfileMenuClick = (event) => {
-    this.setState({
-      anchorProfileMenu: event.currentTarget,
-    });
-  };
 
   handleExperimentsMenuClick = (event) => {
     this.setState({
@@ -101,14 +95,9 @@ class Header extends React.Component {
     return 'Select an Experiment';
   };
 
-  logout = () => {
-    localStorage.clear();
-    this.props.history.push('/login');
-  };
-
   render() {
     const { classes, client } = this.props;
-    const { anchorExperimentsMenu, anchorProfileMenu, isLoading } = this.state;
+    const { anchorExperimentsMenu, isLoading } = this.state;
     const pathObj = matchPath(this.props.location.pathname, {
       path: '/experiments/:id',
       exact: false,
@@ -228,29 +217,10 @@ class Header extends React.Component {
               />
             </>
           ) : null}
-          <div className={classes.profileWrapper}>
-            <UserData
-              classes={classes}
-              handleProfileMenuClick={this.handleProfileMenuClick}
-            />
-            <Menu
-              id="profile-menu"
-              open={Boolean(anchorProfileMenu)}
-              onClose={() => this.handleMenuClose('anchorProfileMenu')}
-              anchorEl={anchorProfileMenu}
-              getContentAnchorEl={null}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-            >
-              <MenuItem onClick={() => this.logout()}>Log out</MenuItem>
-            </Menu>
-          </div>
+          <UserDataMenu
+            classes={classes}
+            history={this.props.history}
+          />
         </Grid>
       </Grid>
     );
