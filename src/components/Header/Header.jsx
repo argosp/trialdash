@@ -1,26 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, withRouter, matchPath } from 'react-router-dom';
 import { withStyles } from '@mui/styles';
 import { Grid } from '@mui/material';
 import classnames from 'classnames';
 import Divider from '@mui/material/Divider';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
 import Box from '@mui/material/Box';
 import uuid from 'uuid/v4';
 import { compose } from 'recompose';
-import { isEmpty } from 'lodash';
 import gql from 'graphql-tag';
 import { Query, withApollo } from 'react-apollo';
 import { styles } from './styles';
 import StyledTabs from '../StyledTabs';
 import experimentsQuery from '../ExperimentContext/utils/experimentsQuery';
-import { TRIAL_SETS_DASH } from '../../constants/base';
 import { TABS } from '../../constants/routes';
-import { UserData } from './UserData';
 import { UserDataMenu } from './UserDataMenu';
 import { ExperimentsMenu } from './ExperimentsMenu';
 
