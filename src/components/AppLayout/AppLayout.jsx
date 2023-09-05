@@ -4,8 +4,8 @@ import { LinearProgress } from '@mui/material';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { styles } from './styles';
-import Header from '../Header';
 import { SnackBarMessage } from './SnackBarMessage';
+import Header from '../Header/Header';
 
 export const WorkingContext = createContext();
 
