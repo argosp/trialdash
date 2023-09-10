@@ -97,7 +97,7 @@ export const EntitiesProvider = ({
 
     const setEntityLocations = async (entityItemKeys, layerChosen, newLocations = [undefined]) => {
         setWorking(true);
-        // const start = Date.now();
+        const start = Date.now();
 
         const changes = [];
         for (const [index, entityItemKey] of entityItemKeys.entries()) {
@@ -106,7 +106,7 @@ export const EntitiesProvider = ({
                 const locationPropKey = getTypeLocationProp(entityType);
                 if (locationPropKey) {
                     const coordinates = newLocations[Math.min(index, newLocations.length - 1)];
-                    changes2.push({
+                    changes.push({
                         key: entityItemKey,
                         type: "entity",
                         entitiesTypeKey: entityType.key,
