@@ -34,7 +34,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
 
     const containsEntities = [entityItem.containsEntities || []].flatMap(x => x);
 
-    // TODO: move to useEntities and maybe optimize by precalc
+    // TODO: switch to use the EntitiesContext function
     const findEntityParent = (containedKey) => {
         for (const et of entities) {
             for (const ei of et.items) {
@@ -46,6 +46,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
         return undefined;
     }
 
+    // TODO: switch to use the EntitiesContext function
     const findEntityParentHierarchy = (containedKey) => {
         const parents = [];
         let curr = findEntityParent(containedKey);

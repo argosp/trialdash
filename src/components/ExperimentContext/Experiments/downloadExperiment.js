@@ -47,6 +47,7 @@ const getImageFromLog = async (comment) => {
     })
 }
 
+// TODO: switch to use the EntitiesContext function
 const findEntityParent = (containedKey, entities) => {
     for (const e of entities) {
         if (e && e.containsEntities && e.containsEntities.includes(containedKey)) {
@@ -56,6 +57,7 @@ const findEntityParent = (containedKey, entities) => {
     return undefined;
 }
 
+// TODO: switch to use the EntitiesContext function
 const findEntityParentHierarchy = (containedKey, entities) => {
     const parents = [];
     let curr = findEntityParent(containedKey, entities);

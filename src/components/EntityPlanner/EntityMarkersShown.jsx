@@ -26,7 +26,7 @@ export const EntityMarkersShown = ({ shownEntityItems, shownEntityTypes, shouldS
     return (
         <>
             {
-                shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location }) => (
+                shownEntityItems.filter(x => x.isOnLayer).map(({ entityItem, entityType, location, layerChosen }) => (
                     <EntityMarker
                         key={entityItem.key}
                         entityItem={entityItem}

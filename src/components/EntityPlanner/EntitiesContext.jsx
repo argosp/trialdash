@@ -124,7 +124,7 @@ export const EntitiesProvider = ({
         try {
             await updateLocation(...changes);
             console.log('update entities took ', Date.now() - start, 'ms');
-            setEntities(newEntities);
+            // setEntities(newEntities);
         } catch (e) {
             console.log(e);
             setWorking(false);
@@ -162,15 +162,52 @@ export const EntitiesProvider = ({
         setWorking(false);
     }
 
+    const findEntityParent = (childEntityItem) => {
+        const containedKey = childEntityItem.key;
+        for (const entityType of entities) {
+            for (const entityItem of entityType.items) {
+                if (entityItem.containsEntities && entityItem.containsEntities.includes(containedKey)) {
+                    return { entityItem, entityType };
+                }
+            }
+        }
+        return { entityItem: undefined, entityType: undefined };
+    }
+
+    // const findEntityParentHierarchy = (containedKey) => {
+    //     const parents = [];
+    //     let curr = findEntityParent(containedKey);
+    //     while (curr) {
+    //         parents.push(curr);
+    //         curr = findEntityParent(curr.key);
+    //     }
+    //     return parents;
+    // }
+
+    const getLocation = (entityItem, entityType) => {
+        console.log('getLocation');
+        while (entityItem && entityType) {
+            console.log(entityItem, entityType);
+            const locationProp = getEntityLocationProp(entityItem, entityType);
+            const location = (locationProp && locationProp.val) ? locationProp.val.coordinates : undefined;
+            if (location) {
+                return { location, locationProp };
+            }
+            ({ entityItem, entityType } = findEntityParent(entityItem));
+        }
+        return { location: undefined, locationProp: undefined };
+    }
+
     const getEntityItems = (filterEntityType, layerChosen) => {
         const filteredByType = entities.filter(e => filterEntityType.includes(e.name));
-        const items = filteredByType.flatMap(entityType => entityType.items.map(entityItem => {
-            const prop = getEntityLocationProp(entityItem, entityType);
-            const location = (prop && prop.val) ? prop.val.coordinates : undefined;
-            const isOnLayer = location && prop.val.name === layerChosen;
-            const layerName = location ? prop.val.name : null;
-            return { entityItem, entityType, location, isOnLayer, layerName };
-        }));
+        const items = filteredByType.flatMap(entityType => {
+            return entityType.items.map(entityItem => {
+                const { location, locationProp } = getLocation(entityItem, entityType);
+                const isOnLayer = location && locationProp.val.name === layerChosen;
+                const layerName = location ? locationProp.val.name : null;
+                return { entityItem, entityType, location, isOnLayer, layerName };
+            });
+        });
         return items;
     }
 
@@ -179,6 +216,7 @@ export const EntitiesProvider = ({
         setEntityLocations,
         getEntityItems,
         setEntityProperties,
+        findEntityParent,
     }
 
     return (
