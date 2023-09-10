@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { EntityTypeRow } from './EntityTypeRow.jsx';
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@mui/material'
 
-export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, entityItems, showTableOfType, setShowTableOfType }) => {
+export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, entityItems, showTableOfType, setShowTableOfType, history, match }) => {
 
     useEffect(() => {
         if (shownEntityTypes.length === 0 && entities.length > 0) {
@@ -43,6 +43,8 @@ export const TypeChooser = ({ shownEntityTypes, setShownEntityTypes, entities, e
                                     numberNotPositioned={notPositioned.length}
                                     isOpenArrow={showTableOfType === entity.name}
                                     setIsOpenArrow={(yes) => setShowTableOfType(yes ? entity.name : '')}
+                                    history={history}
+                                    match={match}
                                 ></EntityTypeRow>
                             )
                         })}

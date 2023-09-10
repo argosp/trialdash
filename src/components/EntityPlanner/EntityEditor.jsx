@@ -32,6 +32,7 @@ export const EntityEditor = ({
     client,
     match,
     trial,
+    history,
 }) => {
     const { shape, shapeData } = useShape();
 
@@ -158,6 +159,8 @@ export const EntityEditor = ({
                                 showTableOfType={showTableOfType}
                                 setShowTableOfType={setShowTableOfType}
                                 onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
+                                history={history}
+                                match={match}
                             />
                         </Grid>
                         <Grid item>

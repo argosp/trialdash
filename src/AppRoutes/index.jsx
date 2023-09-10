@@ -24,7 +24,8 @@ import {
   TRIALS,
   TRIAL_SET_MUTATION,
   ENTITIES_TYPE_MUTATION,
-  LOGS_DASH
+  LOGS_DASH,
+  EDIT_ENTITY_TYPE_DASH
 } from '../constants/base';
 import Experiments from '../components/ExperimentContext/Experiments/Experiments';
 
@@ -104,6 +105,17 @@ const AppRoutes = () => (
           path={`/experiments/:id/${ENTITIES_TYPES_DASH}`}
           component={EntitiesTypes}
           exact
+        />
+        <Route
+          path={`/experiments/:id/${ENTITIES_TYPES_DASH}/:entitiesTypeKey/${EDIT_ENTITY_TYPE_DASH}`}
+          // component={AddSetForm}
+          exact
+          render={props => (
+            <EntitiesTypes
+              {...props}
+              editModeEntityType={props.match.params.entitiesTypeKey}
+            />
+          )}
         />
         {/* <Route path={`/experiments/:id/${ASSETS}`} component={Assets} exact /> */}
         <Route

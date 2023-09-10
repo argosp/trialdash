@@ -453,6 +453,7 @@ class TrialForm extends React.Component {
               updateLocation={this.updateLocation}
               submitTrial={this.submitTrial}
               showFooter={this.showFooter}
+              history={this.props.history}
             />
           }
         </TabPanel>

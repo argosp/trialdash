@@ -21,6 +21,7 @@ const EntityPlanner = ({
     client,
     match,
     trial,
+    history,
     updateLocation,
     submitTrial,
     showFooter,
@@ -100,6 +101,7 @@ const EntityPlanner = ({
                                 client={client}
                                 match={match}
                                 trial={trial}
+                                history={history}
                             />
                         </ShapeProvider>
                     </SelectionProvider>

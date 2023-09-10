@@ -6,6 +6,8 @@ export const TRIAL_SET_MUTATION = 'addUpdateTrialSet';
 export const UPDATE_CONTAINS_ENTITIES_MUTATION = 'updateTrialContainsEntities';
 
 export const ENTITIES_TYPES_DASH = 'entities-types';
+export const EDIT_ENTITY_TYPE_DASH = 'edit-entity-type';
+
 export const ENTITIES_TYPES = 'entitiesTypes';
 export const ENTITIES = 'entities';
 export const ENTITY_MUTATION = 'addUpdateEntity';

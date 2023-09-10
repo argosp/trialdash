@@ -37,6 +37,12 @@ class EntitiesTypes extends React.Component {
       const { history, match, classes } = this.props;
       const { confirmOpen } = this.state;
 
+      // hack to be able to open one entity type directly from url
+      const {editModeEntityType} = this.props;
+      if (editModeEntityType === entitiesType.key) {
+        this.activateEditMode(entitiesType)
+      }
+
       return (
         <React.Fragment key={entitiesType.key}>
           <StyledTableCell className={classes.tableCell} align="left" onClick={() => history.push(`/experiments/${match.params.id}/${ENTITIES_TYPES_DASH}/${entitiesType.key}/${ENTITIES}`)}>{entitiesType.name}</StyledTableCell>

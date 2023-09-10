@@ -12,7 +12,6 @@ export const RefocusShownEntities = ({ shownEntityItems }) => {
         const hasPrev = prevShown && prevShown.length > 0;
         const hasCurr = locatedEntities && locatedEntities.length > 0;
         if (!hasPrev && hasCurr) {
-            console.log(locatedEntities);
             const lats = locatedEntities.map(({ location }) => location[0]);
             const lngs = locatedEntities.map(({ location }) => location[1]);
 
