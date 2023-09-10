@@ -84,56 +84,43 @@ export const EntitiesProvider = ({
         setEntities(newEntities);
     }, [entitiesTypes, trialEntities, allEntities, allProperties]);
 
+    const findEntityItem = (entityItemKey) => {
+        for (const entityType of entities) {
+            for (const entityItem of (entityType.items || [])) {
+                if (entityItem.key === entityItemKey) {
+                    return { entityItem, entityType };
+                }
+            }
+        }
+        return { entityItem: undefined, entityType: undefined };
+    }
+
     const setEntityLocations = async (entityItemKeys, layerChosen, newLocations = [undefined]) => {
         setWorking(true);
+        // const start = Date.now();
 
-        let newEntities = JSON.parse(JSON.stringify(entities));
-        // TODO: this can be optimized
-        for (const [i, k] of entityItemKeys.entries()) {
-            const coordinates = newLocations[Math.min(i, newLocations.length - 1)];
-            let found = false;
-            for (let t = 0; !found && t < newEntities.length; ++t) {
-                const typeEntities = newEntities[t];
-                const locationPropKey = getTypeLocationProp(typeEntities);
-                for (let j = 0; !found && j < typeEntities.items.length; ++j) {
-                    const entity = typeEntities.items[j];
-                    if (entity.key === k) {
-                        const newLocationProp = { key: locationPropKey, val: { name: layerChosen, coordinates } };
-                        const propsWithoutLoc = entity.properties.filter(({ key }) => key !== locationPropKey);
-                        entity.properties = [newLocationProp, ...propsWithoutLoc];
-                        found = true;
-                    }
+        const changes = [];
+        for (const [index, entityItemKey] of entityItemKeys.entries()) {
+            const { entityItem, entityType } = findEntityItem(entityItemKey);
+            if (entityItem) {
+                const locationPropKey = getTypeLocationProp(entityType);
+                if (locationPropKey) {
+                    const coordinates = newLocations[Math.min(index, newLocations.length - 1)];
+                    changes2.push({
+                        key: entityItemKey,
+                        type: "entity",
+                        entitiesTypeKey: entityType.key,
+                        properties: [{
+                            key: locationPropKey,
+                            val: JSON.stringify({ name: layerChosen, coordinates })
+                        }]
+                    });
                 }
             }
         }
 
-        const changedEntities = [];
-        newEntities.forEach(newDevType => {
-            const oldDevType = entities.find(ty => ty.key === newDevType.key);
-            if (oldDevType && oldDevType.items && newDevType.items) {
-                newDevType.items.forEach(newDev => {
-                    const oldDev = oldDevType.items.find(d => d.key === newDev.key);
-                    if (oldDev && JSON.stringify(oldDev) !== JSON.stringify(newDev)) {
-                        changedEntities.push({ dev: newDev, type: newDevType });
-                    }
-                })
-            }
-        });
-
-        const start = Date.now();
-        const changes = changedEntities.map(({ dev: newDev, type: newDevType }) => {
-            const locationProp = getEntityLocationProp(newDev, newDevType);
-            return {
-                key: newDev.key,
-                type: "entity",
-                entitiesTypeKey: newDevType.key,
-                properties: [{
-                    key: locationProp.key,
-                    val: JSON.stringify(locationProp.val)
-                }]
-            };
-        });
         // console.log('calling updateLocation', changes);
+
         try {
             await updateLocation(...changes);
             console.log('update entities took ', Date.now() - start, 'ms');
