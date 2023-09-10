@@ -19,11 +19,6 @@ export const getEntityLocation = (entity, entitiesType, locationKind) => {
     return undefined;
 }
 
-export const changeEntityLocation = (entity, entitiesType, newLocation, locationKind) => {
-    const locationPropKey = getTypeLocationProp(entitiesType);
-    changeEntityLocationWithProp(entity, locationPropKey, newLocation, locationKind);
-}
-
 export const changeEntityLocationWithProp = (entity, locationPropKey, newLocation, locationKind) => {
     const pos = entity.properties.findIndex(pr => pr.key === locationPropKey);
     if (pos !== -1) {
@@ -41,24 +36,4 @@ export const sortEntities = (entitiesTypes) => {
         devType.items.sort((a, b) => (a.name + ";" + a.key).localeCompare(b.name + ";" + b.key));
     });
     return entitiesTypes;
-}
-
-export const findEntitiesChanged = (oldEntityTypes, newEntityTypes) => {
-    const start = Date.now();
-
-    let ret = [];
-    newEntityTypes.forEach(newDevType => {
-        const oldDevType = oldEntityTypes.find(ty => ty.key === newDevType.key);
-        if (oldDevType && oldDevType.items && newDevType.items) {
-            newDevType.items.forEach(newDev => {
-                const oldDev = oldDevType.items.find(d => d.key === newDev.key);
-                if (oldDev && JSON.stringify(oldDev) !== JSON.stringify(newDev)) {
-                    ret.push({ dev: newDev, type: newDevType });
-                }
-            })
-        }
-    });
-
-    console.log('findEntitiesChanged took ', Date.now() - start, 'ms');
-    return ret;
 }

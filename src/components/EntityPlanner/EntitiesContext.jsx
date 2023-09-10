@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { WorkingContext } from '../AppLayout/AppLayout.jsx';
-import { changeEntityLocationWithProp, findEntitiesChanged, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
-import { changeEntityLocation } from './EntityUtils';
+import { changeEntityLocationWithProp, getEntityLocationProp, getTypeLocationProp } from './EntityUtils';
 import updateTrialContainsEntities from '../TrialContext/TrialForm/utils/trialMutationUpdateContainsEntities.js';
 
 export const EntitiesContext = createContext(null);
@@ -85,11 +84,42 @@ export const EntitiesProvider = ({
         setEntities(newEntities);
     }, [entitiesTypes, trialEntities, allEntities, allProperties]);
 
-    const handleChangeEntities = async (newEntities) => {
+    const setEntityLocations = async (entityItemKeys, layerChosen, newLocations = [undefined]) => {
         setWorking(true);
-        const changedEntities = findEntitiesChanged(entities, newEntities);
 
-        // Calling updateLocation one change at a time, otherwise it crushes.
+        let newEntities = JSON.parse(JSON.stringify(entities));
+        // TODO: this can be optimized
+        for (const [i, k] of entityItemKeys.entries()) {
+            const coordinates = newLocations[Math.min(i, newLocations.length - 1)];
+            let found = false;
+            for (let t = 0; !found && t < newEntities.length; ++t) {
+                const typeEntities = newEntities[t];
+                const locationPropKey = getTypeLocationProp(typeEntities);
+                for (let j = 0; !found && j < typeEntities.items.length; ++j) {
+                    const entity = typeEntities.items[j];
+                    if (entity.key === k) {
+                        const newLocationProp = { key: locationPropKey, val: { name: layerChosen, coordinates } };
+                        const propsWithoutLoc = entity.properties.filter(({ key }) => key !== locationPropKey);
+                        entity.properties = [newLocationProp, ...propsWithoutLoc];
+                        found = true;
+                    }
+                }
+            }
+        }
+
+        const changedEntities = [];
+        newEntities.forEach(newDevType => {
+            const oldDevType = entities.find(ty => ty.key === newDevType.key);
+            if (oldDevType && oldDevType.items && newDevType.items) {
+                newDevType.items.forEach(newDev => {
+                    const oldDev = oldDevType.items.find(d => d.key === newDev.key);
+                    if (oldDev && JSON.stringify(oldDev) !== JSON.stringify(newDev)) {
+                        changedEntities.push({ dev: newDev, type: newDevType });
+                    }
+                })
+            }
+        });
+
         const start = Date.now();
         const changes = changedEntities.map(({ dev: newDev, type: newDevType }) => {
             const locationProp = getEntityLocationProp(newDev, newDevType);
@@ -114,29 +144,6 @@ export const EntitiesProvider = ({
             throw e;
         }
         setWorking(false);
-    };
-
-    const changeLocations = (entityItemKeys, layerChosen, newLocations = [undefined]) => {
-        let tempEntities = JSON.parse(JSON.stringify(entities));
-        // TODO: this can be optimized
-        for (const [i, k] of entityItemKeys.entries()) {
-            const loc = newLocations[Math.min(i, newLocations.length - 1)];
-            let found = false;
-            for (let t = 0; !found && t < tempEntities.length; ++t) {
-                const typeEntities = tempEntities[t];
-                for (let j = 0; !found && j < typeEntities.items.length; ++j) {
-                    if (typeEntities.items[j].key === k) {
-                        changeEntityLocation(typeEntities.items[j], typeEntities, loc, layerChosen);
-                        found = true;
-                    }
-                }
-            }
-        }
-        return tempEntities;
-    };
-
-    const setEntityLocations = (entityItemKeys, layerChosen, newLocations = [undefined]) => {
-        handleChangeEntities(changeLocations(entityItemKeys, layerChosen, newLocations));
     }
 
     const setEntityProperties = async (entityItemKey, propertiesChanged, containsEntitiesKeys = undefined) => {
