@@ -19,7 +19,6 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
     const { selection, popTopSelection } = useSelection();
     const [isEditLocation, setIsEditLocation] = useState(false);
     const [changedValues, setChangedValues] = useState({});
-    const [locationConnected, setLocationConnected] = useState(false);
 
     const propertyKeys = entityType.properties
         .filter(({ type }) => isEditLocation ? true : type !== 'location')
@@ -71,6 +70,10 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
             <Typography variant='h6'>
                 {entityItem.name}
             </Typography>
+            <Typography variant='p'>
+                {entityType.name}
+            </Typography>
+            <br />
             {
                 isEditLocation
                     ? null
@@ -151,8 +154,6 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                     <ContainedEntity
                         childEntityItemKey={parentEntity.key}
                         disconnectEntity={() => disconnectEntityParent(parentEntity, entityItem.key)}
-                        locationConnected={locationConnected}
-                        setLocationConnected={setLocationConnected}
                     />
                 </Fragment>
             }
@@ -164,8 +165,6 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                         <ContainedEntity
                             childEntityItemKey={e}
                             disconnectEntity={() => disconnectEntityParent(entityItem, e)}
-                            locationConnected={locationConnected}
-                            setLocationConnected={setLocationConnected}
                         />
                     ))}
                 </Fragment>

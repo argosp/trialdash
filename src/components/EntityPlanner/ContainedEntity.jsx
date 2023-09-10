@@ -3,8 +3,6 @@ import { ButtonTooltip } from './ButtonTooltip';
 import { useEntities } from './EntitiesContext';
 import {
     Clear,
-    LocationOff,
-    LocationOn,
     NearMe
 } from '@mui/icons-material';
 import {
@@ -16,8 +14,6 @@ import { usePopupSwitch } from './PopupSwitchContext';
 export const ContainedEntity = ({
     childEntityItemKey,
     disconnectEntity,
-    locationConnected,
-    setLocationConnected = () => { }
 }) => {
     const { setEntityProperties, entities } = useEntities();
     const { switchToPopup } = usePopupSwitch();
@@ -69,22 +65,6 @@ export const ContainedEntity = ({
                 style={{ marginLeft: "auto" }}
             >
                 <NearMe />
-            </ButtonTooltip>
-            <ButtonTooltip
-                key='locationConnected'
-                color={locationConnected ? 'primary' : 'default'}
-                disabled={true}
-                tooltip={locationConnected
-                    ? <span>Location is connected<br />click to disconnect</span>
-                    : <span>Location is not connected<br />click to connect</span>
-                }
-                onClick={() => setLocationConnected(!locationConnected)}
-                style={{ marginLeft: "auto" }}
-            >
-                {locationConnected
-                    ? <LocationOn />
-                    : <LocationOff />
-                }
             </ButtonTooltip>
             <ButtonTooltip
                 key='remove'
