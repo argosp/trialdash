@@ -24,14 +24,17 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
         for (const layerChosen of layersOnEntities) {
             const entitiesOnLayer = entitiesWithLocation.filter(({ location }) => location.val.name === layerChosen);
-            const entityItemKeys = entitiesOnLayer.map(({entityItem}) => entityItem.key);
-            const newLocations = entitiesOnLayer.map(({location}) => location.val.coordinates);
+            const entityItemKeys = entitiesOnLayer.map(({ entityItem }) => entityItem.key);
+            const newLocations = entitiesOnLayer.map(({ location }) => location.val.coordinates);
             await setEntityLocations(entityItemKeys, layerChosen, newLocations);
+        }
+        for (const e of entitiesFromFile) {
+            await setEntityProperties(e.entityItem.key, e.properties);
         }
     }
 
     const uploadInfo = async (e, fileFormat) => {
-        setWorking(true);
+        // setWorking(true);
         try {
             const text = await e.target.files[0].text();
             const entitiesFromFile = extractEntitiesFromFile(text, fileFormat, trial, entities);
@@ -44,7 +47,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
             console.log(e)
         }
         setOpen(false);
-        setWorking(false);
+        // setWorking(false);
     }
 
     const downloadInfo = async (fileFormat) => {
