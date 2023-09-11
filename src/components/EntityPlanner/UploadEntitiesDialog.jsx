@@ -8,20 +8,36 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from "@mui/icons-material/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
-import { uploadEntities } from '../TrialContext/Trials/uploadCsv';
+import { extractEntitiesFromFile } from '../TrialContext/Trials/uploadCsv';
 import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 import { ButtonWithFileInput } from '../ButtonWithFileInput';
+import { useEntities } from './EntitiesContext';
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setWorking, setRefreshMessage, setErrorMessage } = useContext(WorkingContext);
+    const { setEntityLocations, setEntityProperties } = useEntities();
     // const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
+
+    const setEntitiesFromFile = async (entitiesFromFile) => {
+        const entitiesWithLocation = entitiesFromFile.filter(({ location }) => location);
+        const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
+        for (const layerChosen of layersOnEntities) {
+            const entitiesOnLayer = entitiesWithLocation.filter(({ location }) => location.val.name === layerChosen);
+            const entityItemKeys = entitiesOnLayer.map(({entityItem}) => entityItem.key);
+            const newLocations = entitiesOnLayer.map(({location}) => location.val.coordinates);
+            await setEntityLocations(entityItemKeys, layerChosen, newLocations);
+        }
+    }
 
     const uploadInfo = async (e, fileFormat) => {
         setWorking(true);
         try {
             const text = await e.target.files[0].text();
-            await uploadEntities(text, trial, client, match, entities, fileFormat)
+            const entitiesFromFile = extractEntitiesFromFile(text, fileFormat, trial, entities);
+            console.log('entitiesFromFile:', entitiesFromFile);
+            await setEntitiesFromFile(entitiesFromFile);
+            // await uploadEntities(text, trial, client, match, entities, fileFormat)
             setRefreshMessage();
         } catch (e) {
             setErrorMessage('Uploading error: ' + e);
