@@ -70,7 +70,13 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
         <>
             {itemsGrouped.map((itemsOfType, i) => {
                 return (
-                    <TableContainer component={Paper} key={i}>
+                    <TableContainer
+                        component={Paper}
+                        key={i}
+                        style={{
+                            maxHeight: '60%',
+                        }}
+                    >
                         <Table size="small">
                             {/* <TableHead>
                                 {!showProperties ? null :
