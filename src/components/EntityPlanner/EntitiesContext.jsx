@@ -185,9 +185,7 @@ export const EntitiesProvider = ({
     // }
 
     const getLocation = (entityItem, entityType) => {
-        console.log('getLocation');
         while (entityItem && entityType) {
-            console.log(entityItem, entityType);
             const locationProp = getEntityLocationProp(entityItem, entityType);
             const location = (locationProp && locationProp.val) ? locationProp.val.coordinates : undefined;
             if (location) {

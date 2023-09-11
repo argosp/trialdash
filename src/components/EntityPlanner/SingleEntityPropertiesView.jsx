@@ -153,6 +153,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                     parent:
                     <br />
                     <ContainedEntity
+                        key={'P' + entityItem.key}
                         childEntityItemKey={parentEntity.key}
                         disconnectEntity={() => disconnectEntityParent(parentEntity, entityItem.key)}
                     />
@@ -164,6 +165,7 @@ export const SingleEntityPropertiesView = ({ entityType, entityItem, devLocation
                     contained:
                     {containsEntities.map(e => (
                         <ContainedEntity
+                            key={'E' + e.key}
                             childEntityItemKey={e}
                             disconnectEntity={() => disconnectEntityParent(entityItem, e)}
                         />
