@@ -26,7 +26,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         for (const layerChosen of layersOnEntities) {
             const entitiesOnLayer = entitiesWithLocation.filter(({ location }) => location.val.name === layerChosen);
             const entityItemKeys = entitiesOnLayer.map(({ entityItem }) => entityItem.key);
-            const newLocations = entitiesOnLayer.map(({ location }) => location.val.coordinates);
+            const newLocations = entitiesOnLayer.map(({ location }) => location.val.coordinates.map(parseFloat));
             await setEntityLocations(entityItemKeys, layerChosen, newLocations);
         }
         for (const e of entitiesFromFile) {

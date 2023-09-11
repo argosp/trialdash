@@ -17,6 +17,9 @@ function csvJSON(csv) {
   var headers = lines[0].split(commaRegex).map(h => h.replace(quotesRegex, "$1"));
 
   for (var i = 1; i < lines.length; i++) {
+    if (lines[i].trim().length === 0) {
+      continue;
+    }
 
     var obj = {};
     var currentline = lines[i].split(commaRegex);
