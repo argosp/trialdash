@@ -20,6 +20,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const [open, setOpen] = useState(false);
 
     const setEntitiesFromFile = async (entitiesFromFile) => {
+        // this is a slow but working way to set locations and props, better use another function from TrialContext/Trials/uploadCsv.js
         const entitiesWithLocation = entitiesFromFile.filter(({ location }) => location);
         const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
         for (const layerChosen of layersOnEntities) {
