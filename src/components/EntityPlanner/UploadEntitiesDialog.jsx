@@ -18,20 +18,26 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setEntityLocations, setEntityProperties } = useEntities();
     // const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
+    const [uploadStatus, setUploadStatus] = useState();
 
     const setEntitiesFromFile = async (entitiesFromFile) => {
         // this is a slow but working way to set locations and props, better use another function from TrialContext/Trials/uploadCsv.js
         const entitiesWithLocation = entitiesFromFile.filter(({ location }) => location);
         const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
+        let i = 1;
         for (const layerChosen of layersOnEntities) {
+            setUploadStatus(`setting locations on ${layerChosen} which is ${i++}/${layersOnEntities.length}`);
             const entitiesOnLayer = entitiesWithLocation.filter(({ location }) => location.val.name === layerChosen);
             const entityItemKeys = entitiesOnLayer.map(({ entityItem }) => entityItem.key);
             const newLocations = entitiesOnLayer.map(({ location }) => location.val.coordinates.map(parseFloat));
             await setEntityLocations(entityItemKeys, layerChosen, newLocations);
         }
+        i = 1;
         for (const e of entitiesFromFile) {
+            setUploadStatus(`setting properties on ${e.entityItem.name} of ${e.entityType.name} which is ${i++}/${entitiesFromFile.length}\n(${e.entityItem.key})`);
             await setEntityProperties(e.entityItem.key, e.properties);
         }
+        setUploadStatus();
     }
 
     const uploadInfo = async (e, fileFormat) => {
@@ -126,6 +132,18 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                             <FormControlLabel value="GeoJson" control={<Radio />} label="GeoJson" />
                         </RadioGroup>
                         <br /> */}
+                        {(uploadStatus && uploadStatus.length)
+                            ? <span>
+                                <br />
+                                {uploadStatus.split('\n').map(x => (
+                                    <>
+                                        <br />
+                                        {x}
+                                    </>
+                                ))}
+                            </span>
+                            : null
+                        }
                     </Box>
                 </DialogContent>
             </Dialog>
