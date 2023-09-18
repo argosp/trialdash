@@ -13,48 +13,77 @@ import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 import { ButtonWithFileInput } from '../ButtonWithFileInput';
 import { useEntities } from './EntitiesContext';
 
+const ArrayToBRs = ({ array }) => {
+    return (
+        <>
+            {(array || []).map((x, i) => i === 0
+                ? x
+                : <>
+                    <br />
+                    {x}
+                </>)}
+        </>
+    )
+}
+
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setWorking, setRefreshMessage, setErrorMessage } = useContext(WorkingContext);
     const { setEntityLocations, setEntityProperties } = useEntities();
     // const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
     const [uploadStatus, setUploadStatus] = useState();
+    const [uploadErrors, setUploadErrors] = useState();
+    const [showRefresh, setShowRefresh] = useState();
 
     const setEntitiesFromFile = async (entitiesFromFile) => {
+        let errors = [];
         // this is a slow but working way to set locations and props, better use another function from TrialContext/Trials/uploadCsv.js
         const entitiesWithLocation = entitiesFromFile.filter(({ location }) => location);
         const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
         let i = 1;
         for (const layerChosen of layersOnEntities) {
-            setUploadStatus(`setting locations on ${layerChosen} which is ${i++}/${layersOnEntities.length}`);
+            setUploadStatus([`setting locations on ${layerChosen} which is ${i++}/${layersOnEntities.length}`]);
             const entitiesOnLayer = entitiesWithLocation.filter(({ location }) => location.val.name === layerChosen);
             const entityItemKeys = entitiesOnLayer.map(({ entityItem }) => entityItem.key);
             const newLocations = entitiesOnLayer.map(({ location }) => location.val.coordinates.map(parseFloat));
-            await setEntityLocations(entityItemKeys, layerChosen, newLocations);
+            try {
+                await setEntityLocations(entityItemKeys, layerChosen, newLocations);
+            } catch (e) {
+                console.log(e)
+                errors = [...errors, `error on setting locations for ${layerChosen}: ${e}`];
+                setUploadErrors(errors);
+            }
         }
         i = 1;
         for (const e of entitiesFromFile) {
-            setUploadStatus(`setting properties on ${e.entityItem.name} of ${e.entityType.name} which is ${i++}/${entitiesFromFile.length}\n(${e.entityItem.key})`);
-            await setEntityProperties(e.entityItem.key, e.properties);
+            const name = `${e.entityItem.name} of ${e.entityType.name}`;
+            setUploadStatus([`setting properties on ${name} which is ${i++}/${entitiesFromFile.length}`, `(${e.entityItem.key})`]);
+            try {
+                await setEntityProperties(e.entityItem.key, e.properties);
+            } catch (e) {
+                console.log(e)
+                errors = [...errors, `error on setting properties for ${name}: ${e}`];
+                setUploadErrors(errors);
+            }
         }
-        setUploadStatus();
+        return errors;
     }
 
     const uploadInfo = async (e, fileFormat) => {
         // setWorking(true);
+        setShowRefresh(false);
+        setUploadErrors();
         try {
             const text = await e.target.files[0].text();
             const entitiesFromFile = extractEntitiesFromFile(text, fileFormat, trial, entities);
             console.log('entitiesFromFile:', entitiesFromFile);
             await setEntitiesFromFile(entitiesFromFile);
-            // await uploadEntities(text, trial, client, match, entities, fileFormat)
-            setRefreshMessage();
+            setUploadStatus();
+            setShowRefresh(true);
         } catch (e) {
-            setErrorMessage('Uploading error: ' + e);
             console.log(e)
+            setUploadErrors(`Uploading error: ${e}`);
         }
-        setOpen(false);
-        // setWorking(false);
     }
 
     const downloadInfo = async (fileFormat) => {
@@ -68,6 +97,13 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         setWorking(false);
     }
 
+    const handleClose = () => {
+        setShowRefresh(false);
+        setUploadStatus();
+        setUploadErrors();
+        setOpen(false);
+    }
+
     return (
         <>
             <Tooltip title='Upload & Download Entities' placement="top">
@@ -79,7 +115,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
             </Tooltip>
             <Dialog
                 open={open}
-                onClose={() => setOpen(false)}
+                onClose={() => handleClose()}
             >
                 <DialogTitle
                     id="customized-dialog-title"
@@ -90,7 +126,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                     </span>
                     <IconButton
                         size='small'
-                        onClick={() => setOpen(false)}
+                        onClick={() => handleClose()}
                     >
                         <CloseIcon />
                     </IconButton>
@@ -122,31 +158,32 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                         >
                             Download GeoJson
                         </Button>
-                        {/* <br /> */}
-                        {/* <RadioGroup
-                            // row
-                            value={fileFormat}
-                            onChange={e => setFileFormat(e.target.value)}
-                        >
-                            <FormControlLabel value="CSV" control={<Radio />} label="CSV" />
-                            <FormControlLabel value="GeoJson" control={<Radio />} label="GeoJson" />
-                        </RadioGroup>
-                        <br /> */}
-                        {(uploadStatus && uploadStatus.length)
-                            ? <span>
-                                <br />
-                                {uploadStatus.split('\n').map(x => (
-                                    <>
-                                        <br />
-                                        {x}
-                                    </>
-                                ))}
-                            </span>
-                            : null
-                        }
+                        <br />
+                        {(uploadStatus || []).map(x => (
+                            <p>
+                                {x}
+                            </p>))}
+                        {!showRefresh ? null : (
+                            <>
+                                <p>
+                                    Please refresh to apply changes &nbsp;
+                                    <Button variant={'outlined'} color={'primary'}
+                                        onClick={() => {
+                                            window.location.reload();
+                                        }}
+                                    >
+                                        Refresh now
+                                    </Button>
+                                </p>
+                            </>
+                        )}
+                        {(uploadErrors || []).map(x => (
+                            <p style={{ color: 'red', fontSize: 'x-small' }}>
+                                {x}
+                            </p>))}
                     </Box>
                 </DialogContent>
-            </Dialog>
+            </Dialog >
         </>
     )
 }

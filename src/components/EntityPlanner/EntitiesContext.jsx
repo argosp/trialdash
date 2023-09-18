@@ -141,7 +141,7 @@ export const EntitiesProvider = ({
         }
         const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey === key);
         if (!entityOnTrial) {
-            console.log('problem with entity', entityOnTrial);
+            throw 'problem with entity ' + entityItemKey;
         } else {
             entityOnTrial.properties = [...(entityOnTrial.properties || [])];
             for (const changedProp of propertiesChanged) {
