@@ -17,6 +17,8 @@ export const MapTileLayer = () => {
             key='map'
             attribution={mapAttrib}
             url={mapTileUrl}
+            maxNativeZoom={18}
+            maxZoom={30}
         />
     )
 }
