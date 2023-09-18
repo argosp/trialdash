@@ -54,6 +54,7 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
             }
         };
     }
+    console.log(mapObj.getZoom())
 
     return null;
 };
@@ -105,7 +106,7 @@ export const EntityMap = ({ onClick, experimentDataMaps, children, layerChosen, 
             bounds={posbounds}
             zoomControl={false}
             minZoom={-6}
-            maxNativeZoom={24}
+            maxNativeZoom={18}
             maxZoom={24}
             contextmenu={true}
         >
