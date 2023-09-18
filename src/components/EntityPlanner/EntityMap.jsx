@@ -54,7 +54,6 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
             }
         };
     }
-    console.log(mapObj.getZoom())
 
     return null;
 };
