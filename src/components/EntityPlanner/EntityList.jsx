@@ -74,7 +74,7 @@ export const EntityList = ({ entityItems, removeEntitiesLocations, layerChosen, 
                         component={Paper}
                         key={i}
                         style={{
-                            maxHeight: '60%',
+                            maxHeight: '60vh',
                         }}
                     >
                         <Table size="small">
