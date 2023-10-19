@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Grid,
 } from '@mui/material'
@@ -16,6 +16,15 @@ export const TypesInfoBox = ({
     history,
     match,
 }) => {
+    const [searchItemName, setSearchItemName] = useState('');
+    const itemsList = shownEntityItems.filter(({ entityItem, entityType }) => {
+        if (entityType.name !== showTableOfType) {
+            return false;
+        } else if (searchItemName !== '' && !entityItem.name.includes(searchItemName)) {
+            return false;
+        }
+        return true;
+    });
     return (
         <Grid container direction='row'>
             <Grid item>
@@ -33,14 +42,17 @@ export const TypesInfoBox = ({
             </Grid>
             <Grid item>
                 {showTableOfType &&
-                    <input type='text'></input>
+                    <input type='text'
+                        value={searchItemName}
+                        onChange={e => setSearchItemName((e.target.value + '').trim())}
+                    ></input>
                 }
                 <EntityList
                     style={{
                         overflow: 'auto',
                         display: 'block'
                     }}
-                    entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
+                    entityItems={itemsList}
                     removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
                     layerChosen={layerChosen}
                     showProperties={false}
