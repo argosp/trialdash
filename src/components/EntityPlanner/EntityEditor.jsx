@@ -25,6 +25,7 @@ import { UploadEntitiesDialog } from './UploadEntitiesDialog.jsx';
 import { CloneIcon, GridIcon } from '../../constants/icons.jsx';
 import TextFormatIcon from '@mui/icons-material/TextFormat';
 import { RefocusShownEntities } from './RefocusShownEntities.jsx';
+import { TypesInfoBox } from './TypesInfoBox.jsx';
 
 export const EntityEditor = ({
     experimentDataMaps,
@@ -146,36 +147,21 @@ export const EntityEditor = ({
                 />
 
                 <Control position="topleft" >
-                    <Grid container direction='row'>
-                        <Grid item>
-                            <TypeChooser
-                                shownEntityTypes={shownEntityTypes}
-                                setShownEntityTypes={newTypes => {
-                                    setSelection([]);
-                                    setShownEntityTypes(newTypes);
-                                }}
-                                entities={entities}
-                                entityItems={shownEntityItems}
-                                showTableOfType={showTableOfType}
-                                setShowTableOfType={setShowTableOfType}
-                                onClickType={(t) => setShowTableOfType(t === showTableOfType ? '' : t)}
-                                history={history}
-                                match={match}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <EntityList
-                                style={{
-                                    overflow: 'auto',
-                                    display: 'block'
-                                }}
-                                entityItems={shownEntityItems.filter(({ entityType }) => entityType.name === showTableOfType)}
-                                removeEntitiesLocations={(keys) => setEntityLocations(keys, layerChosen)}
-                                layerChosen={layerChosen}
-                                showProperties={false}
-                            />
-                        </Grid>
-                    </Grid>
+                    <TypesInfoBox
+                        shownEntityItems={shownEntityItems}
+                        shownEntityTypes={shownEntityTypes}
+                        setShownEntityTypes={newTypes => {
+                            setSelection([]);
+                            setShownEntityTypes(newTypes);
+                        }}
+                        showTableOfType={showTableOfType}
+                        setShowTableOfType={setShowTableOfType}
+                        entities={entities}
+                        layerChosen={layerChosen}
+                        history={history}
+                        match={match}
+                    >
+                    </TypesInfoBox>
                 </Control>
 
                 <Control position="topright" >

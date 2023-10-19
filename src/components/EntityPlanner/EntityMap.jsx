@@ -27,6 +27,12 @@ const MapEventer = ({ onClick, onBoxZoomEnd, onBaseLayerChange, onMoveEnd
                 onClick(e);
             }
         },
+        // scrollBy: (e) => {
+        //     console.log('s', e)
+        //     if (e.originalEvent.srcElement === mapObj._container) {
+        //         DomEvent.stop(e);
+        //     }
+        // },
         // mousemove: (e) => {
         //     console.log(e.latlng)
         // },
