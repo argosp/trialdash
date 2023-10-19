@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import {
     Grid,
-} from '@mui/material'
+    TextField,
+    Paper,
+    InputAdornment,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { EntityList } from "./EntityList";
 import { TypeChooser } from "./TypeChooser";
 
@@ -42,10 +46,20 @@ export const TypesInfoBox = ({
             </Grid>
             <Grid item>
                 {showTableOfType &&
-                    <input type='text'
-                        value={searchItemName}
-                        onChange={e => setSearchItemName((e.target.value + '').trim())}
-                    ></input>
+                    <Paper>
+                        <TextField
+                            size='small'
+                            value={searchItemName}
+                            onChange={e => setSearchItemName((e.target.value + '').trim())}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Paper>
                 }
                 <EntityList
                     style={{
