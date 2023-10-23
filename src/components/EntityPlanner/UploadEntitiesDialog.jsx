@@ -8,7 +8,7 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from "@mui/icons-material/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
-import { extractEntitiesFromFile } from '../TrialContext/Trials/uploadCsv';
+import { extractEntitiesFromFile, fileTextToEntitiesJson } from '../TrialContext/Trials/uploadCsv';
 import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 import { ButtonWithFileInput } from '../ButtonWithFileInput';
 import { useEntities } from './EntitiesContext';
@@ -34,6 +34,45 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const [uploadStatus, setUploadStatus] = useState();
     const [uploadErrors, setUploadErrors] = useState();
     const [showRefresh, setShowRefresh] = useState();
+
+    function jsonToEntities(json, trial, allEntities) {
+        const entities = [];
+        for (const { name, entitiesTypeName, ...props } of json) {
+            const entityType = allEntities.find(et => et.name === entitiesTypeName);
+            const entityItem = entityType && entityType.items.find(ei => ei.name === name);
+            if (!entityType || !entityItem) {
+                console.log(`entity ${name} of type ${entitiesTypeName} is unknown`);
+                continue;
+            }
+            const properties = [];
+
+            const { MapName, Longitude, Latitude } = props;
+            let location = undefined;
+            if (MapName && Longitude && Latitude) {
+                const locationProp = entityType.properties.find(({ type }) => type === 'location');
+                if (locationProp) {
+                    const val = { name: MapName, coordinates: [Latitude, Longitude] };
+                    location = { prop: locationProp, val };
+                }
+            }
+
+            for (const [propName, propValue] of Object.entries(props)) {
+                if (location && ['MapName', 'Longitude', 'Latitude'].includes(propName)) {
+                    continue;
+                }
+                const propType = entityType.properties.find(({ label }) => label === propName);
+                if (propType) {
+                    properties.push({ key: propType.key, val: propValue.replace(/'/g, "\"") });
+                }
+            }
+
+            const entityTrial = trial.entities.find(e => e.key === entityItem.key) || {};
+            entities.push({ ...entityTrial, properties, entityItem, entityType, location });
+        }
+
+        console.log(entities)
+        return entities;
+    }
 
     const setEntitiesFromFile = async (entitiesFromFile) => {
         let errors = [];
@@ -75,7 +114,8 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         setUploadErrors();
         try {
             const text = await e.target.files[0].text();
-            const entitiesFromFile = extractEntitiesFromFile(text, fileFormat, trial, entities);
+            const json = fileTextToEntitiesJson(text, fileFormat);
+            const entitiesFromFile = jsonToEntities(json, trial, entities);
             console.log('entitiesFromFile:', entitiesFromFile);
             await setEntitiesFromFile(entitiesFromFile);
             setUploadStatus();
@@ -133,39 +173,39 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                 </DialogTitle>
                 <DialogContent dividers>
                     <Box textAlign='center'>
-                        <ButtonWithFileInput variant={'outlined'} color={'primary'}
+                        <ButtonWithFileInput variant={'outlined'} color={'primary'} key={1}
                             onChange={(e) => uploadInfo(e, 'csv')}
                         >
                             Upload CSV
                         </ButtonWithFileInput>
                         &nbsp;
-                        <ButtonWithFileInput variant={'outlined'} color={'primary'}
+                        <ButtonWithFileInput variant={'outlined'} color={'primary'} key={2}
                             onChange={(e) => uploadInfo(e, 'geojson')}
                         >
                             Upload GeoJson
                         </ButtonWithFileInput>
                         <br />
                         <br />
-                        <Button variant={'outlined'} color={'primary'}
+                        <Button variant={'outlined'} color={'primary'} key={3}
                             onClick={() => downloadInfo('csv')}
                         >
                             Download CSV
                         </Button>
                         &nbsp;
-                        <Button variant={'outlined'} color={'primary'}
+                        <Button variant={'outlined'} color={'primary'} key={4}
                             onClick={() => downloadInfo('geojson')}
 
                         >
                             Download GeoJson
                         </Button>
                         <br />
-                        {(uploadStatus || []).map(x => (
-                            <p>
+                        {(uploadStatus || []).map((x, i) => (
+                            <p key={'p' + i}>
                                 {x}
                             </p>))}
                         {!showRefresh ? null : (
                             <>
-                                <p>
+                                <p key={'r'}>
                                     Please refresh to apply changes &nbsp;
                                     <Button variant={'outlined'} color={'primary'}
                                         onClick={() => {
@@ -178,7 +218,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                             </>
                         )}
                         {(uploadErrors || []).map(x => (
-                            <p style={{ color: 'red', fontSize: 'x-small' }}>
+                            <p style={{ color: 'red', fontSize: 'x-small' }} key={'err'}>
                                 {x}
                             </p>))}
                     </Box>

@@ -185,45 +185,6 @@ async function fetchEntityTypesData(client, match) {
 //   await submitTrial(updatedTrial, client, match)
 // }
 
-function jsonToEntities(json, trial, allEntities) {
-  const entities = [];
-  for (const { name, entitiesTypeName, ...props } of json) {
-    const entityType = allEntities.find(et => et.name === entitiesTypeName);
-    const entityItem = entityType && entityType.items.find(ei => ei.name === name);
-    if (!entityType || !entityItem) {
-      console.log(`entity ${name} of type ${entitiesTypeName} is unknown`);
-      continue;
-    }
-    const properties = [];
-
-    const { MapName, Longitude, Latitude } = props;
-    let location = undefined;
-    if (MapName && Longitude && Latitude) {
-      const locationProp = entityType.properties.find(({ type }) => type === 'location');
-      if (locationProp) {
-        const val = { name: MapName, coordinates: [Latitude, Longitude] };
-        location = { prop: locationProp, val };
-      }
-    }
-
-    for (const [propName, propValue] of Object.entries(props)) {
-      if (location && ['MapName', 'Longitude', 'Latitude'].includes(propName)) {
-        continue;
-      }
-      const propType = entityType.properties.find(({ label }) => label === propName);
-      if (propType) {
-        properties.push({ key: propType.key, val: propValue.replace(/'/g, "\"") });
-      }
-    }
-
-    const entityTrial = trial.entities.find(e => e.key === entityItem.key) || {};
-    entities.push({ ...entityTrial, properties, entityItem, entityType, location });
-  }
-
-  console.log(entities)
-  return entities;
-}
-
 function fileTextToEntitiesJson(fileText, fileFormat) {
   if (fileFormat.toLowerCase() === 'csv') {
     const json = csvJSON(fileText);
@@ -257,4 +218,5 @@ export {
   uploadTrial,
   // uploadEntities,
   extractEntitiesFromFile,
+  fileTextToEntitiesJson,
 }
