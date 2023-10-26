@@ -1,14 +1,17 @@
 import React, { useContext, useReducer, useState } from 'react';
 import {
     Box,
-    Button, IconButton, Dialog,
+    Button,
+    IconButton,
+    Dialog,
     DialogTitle,
-    DialogContent, Tooltip
+    DialogContent,
+    Tooltip,
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from "@mui/icons-material/Close";
 import { downloadEntities } from '../TrialContext/Trials/downloadCsv';
-import { extractEntitiesFromFile, fileTextToEntitiesJson } from '../TrialContext/Trials/uploadCsv';
+import { fileTextToEntitiesJson } from '../TrialContext/Trials/uploadCsv';
 import { WorkingContext } from '../AppLayout/AppLayout.jsx';
 import { ButtonWithFileInput } from '../ButtonWithFileInput';
 import { useEntities } from './EntitiesContext';
@@ -151,7 +154,6 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         setOpen(false);
     }
 
-    console.log(status)
     return (
         <>
             <Tooltip title='Upload & Download Entities' placement="top">
@@ -167,7 +169,10 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
             >
                 <DialogTitle
                     id="customized-dialog-title"
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                    }}
                 >
                     <span>
                         Upload & Download Entities
