@@ -35,10 +35,12 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const [uploadErrors, setUploadErrors] = useState();
     const [showRefresh, setShowRefresh] = useState();
 
-    function jsonToEntities(json, trial, allEntities) {
-        const entities = [];
+    const setEntitiesFromFile = async (json) => {
+        let errors = [];
+
+        const entitiesFromFile = [];
         for (const { name, entitiesTypeName, ...props } of json) {
-            const entityType = allEntities.find(et => et.name === entitiesTypeName);
+            const entityType = entities.find(et => et.name === entitiesTypeName);
             const entityItem = entityType && entityType.items.find(ei => ei.name === name);
             if (!entityType || !entityItem) {
                 console.log(`entity ${name} of type ${entitiesTypeName} is unknown`);
@@ -67,15 +69,11 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
             }
 
             const entityTrial = trial.entities.find(e => e.key === entityItem.key) || {};
-            entities.push({ ...entityTrial, properties, entityItem, entityType, location });
+            entitiesFromFile.push({ ...entityTrial, properties, entityItem, entityType, location });
         }
 
-        console.log(entities)
-        return entities;
-    }
+        console.log('entitiesFromFile', entitiesFromFile);
 
-    const setEntitiesFromFile = async (entitiesFromFile) => {
-        let errors = [];
         // this is a slow but working way to set locations and props, better use another function from TrialContext/Trials/uploadCsv.js
         const entitiesWithLocation = entitiesFromFile.filter(({ location }) => location);
         const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
@@ -115,14 +113,15 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         try {
             const text = await e.target.files[0].text();
             const json = fileTextToEntitiesJson(text, fileFormat);
-            const entitiesFromFile = jsonToEntities(json, trial, entities);
-            console.log('entitiesFromFile:', entitiesFromFile);
-            await setEntitiesFromFile(entitiesFromFile);
+            console.log(json);
+            // const entitiesFromFile = jsonToEntities(json, trial, entities);
+            // console.log('entitiesFromFile:', entitiesFromFile);
+            await setEntitiesFromFile(json);
             setUploadStatus();
             setShowRefresh(true);
         } catch (e) {
             console.log(e)
-            setUploadErrors(`Uploading error: ${e}`);
+            setUploadErrors([`Uploading error: ${e}`]);
         }
     }
 
@@ -144,6 +143,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         setOpen(false);
     }
 
+    console.log('uploadErrors', uploadErrors)
     return (
         <>
             <Tooltip title='Upload & Download Entities' placement="top">
