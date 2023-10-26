@@ -82,9 +82,6 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
 
     const setEntitiesFromFile = async (json) => {
         console.log(json);
-        // let errors = [];
-
-        // const entitiesFromFile = [];
 
         const layersToLocationItems = {};
 
@@ -111,10 +108,11 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
             }
         }
 
+        const layersToLoc = Object.entries(layersToLocationItems);
         i = 1;
-        for (const [MapName, items] of Object.entries(layersToLocationItems)) {
+        for (const [MapName, items] of layersToLoc) {
             try {
-                dispatch({ update: [`setting ${layersToLocationItems[MapName]} locations on ${MapName} which is ${i++}/${layersToLocationItems.length}`] });
+                dispatch({ update: [`setting ${items.length} locations on ${MapName} which is ${i++}/${layersToLoc.length}`] });
                 const entityItemKeys = items.map(({ entityItem }) => entityItem.key);
                 const newLocations = items.map(({ coordinates }) => coordinates);
                 await setEntityLocations(entityItemKeys, MapName, newLocations);
