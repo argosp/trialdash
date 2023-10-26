@@ -31,7 +31,7 @@ const ArrayToBRs = ({ array }) => {
 
 export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setWorking, setRefreshMessage, setErrorMessage } = useContext(WorkingContext);
-    const { setEntityLocations, setEntityProperties } = useEntities();
+    const { setEntityLocations, setEntitiesProperties } = useEntities();
     const [open, setOpen] = useState(false);
     const [status, dispatch] = useReducer((prevStatus, action) => {
         if (action.error) {
@@ -87,6 +87,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         console.log(json);
 
         const layersToLocationItems = {};
+        const entitiesChanged = [];
 
         let i = 1;
         for (const { name, entitiesTypeName, ...props } of json) {
@@ -96,19 +97,21 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                 continue;
             }
 
-            try {
-                const properties = nonLocationFromProps(props, entityType);
-                dispatch({ update: [`setting ${properties.length} properties on ${entityItem.name} of ${entityType.name} which is ${i++}/${json.length}`, `(${entityItem.key})`] });
-                await setEntityProperties(entityItem.key, properties);
-            } catch (e) {
-                dispatch({ error: `error on setting properties for ${entityItem.name} of ${entityType.name}: ${e}` });
-            }
+            const propertiesChanged = nonLocationFromProps(props, entityType);
+            entitiesChanged.push({ entityItemKey: entityItem.key, propertiesChanged });
 
             const { MapName, coordinates } = locationFromProps(props, entityType);
             if (MapName) {
                 layersToLocationItems[MapName] ||= [];
                 layersToLocationItems[MapName].push({ entityItem, coordinates });
             }
+        }
+
+        try {
+            dispatch({ update: [`setting properties on ${entitiesChanged.length} entities`] });
+            await setEntitiesProperties(entitiesChanged);
+        } catch (e) {
+            dispatch({ error: `error on setting properties for ${entityItem.name} of ${entityType.name}: ${e}` });
         }
 
         const layersToLoc = Object.entries(layersToLocationItems);
