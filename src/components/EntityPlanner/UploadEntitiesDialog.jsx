@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useReducer, useState } from 'react';
 import {
     Box,
     Button, IconButton, Dialog,
@@ -31,19 +31,46 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
     const { setEntityLocations, setEntityProperties } = useEntities();
     // const [fileFormat, setFileFormat] = useState('CSV');
     const [open, setOpen] = useState(false);
-    const [uploadStatus, setUploadStatus] = useState();
-    const [uploadErrors, setUploadErrors] = useState();
-    const [showRefresh, setShowRefresh] = useState();
+    const [status, dispatch] = useReducer((prevStatus, action) => {
+        if (action.error) {
+            console.log('error', action.error);
+            const uploadErrors = [...(prevStatus.uploadErrors || []), action.error];
+            return { ...prevStatus, uploadErrors };
+        } else if (action.update) {
+            return { ...prevStatus, uploadStatus: action.update };
+        } else if (action.refresh) {
+            return { ...prevStatus, showRefresh: action.refresh };
+        } else if (action.clear) {
+            return {};
+        }
+    }, {});
+    // const [status, setStatus] = useState({});
+
+    const findEntity = (entityItemName, entitiesTypeName) => {
+        const entityType = entities.find(et => et.name === entitiesTypeName);
+        const entityItem = entityType && entityType.items.find(ei => ei.name === entityItemName);
+        return { entityType, entityItem };
+    }
+
+    // const 
+    //     const { MapName, Longitude, Latitude } = props;
+    //     const properties = [];
+    //     for (const [propName, propValue] of Object.entries(props)) {
+    //         if (['MapName', 'Longitude', 'Latitude'].includes(propName)) {
+    //             continue;
+    //         }
+    //     }
+    // }
 
     const setEntitiesFromFile = async (json) => {
+        console.log(json);
         let errors = [];
 
         const entitiesFromFile = [];
         for (const { name, entitiesTypeName, ...props } of json) {
-            const entityType = entities.find(et => et.name === entitiesTypeName);
-            const entityItem = entityType && entityType.items.find(ei => ei.name === name);
+            const { entityType, entityItem } = findEntity(name, entitiesTypeName);
             if (!entityType || !entityItem) {
-                console.log(`entity ${name} of type ${entitiesTypeName} is unknown`);
+                dispatch({ error: `entity ${name} of type ${entitiesTypeName} is unknown` });
                 continue;
             }
             const properties = [];
@@ -72,35 +99,29 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
             entitiesFromFile.push({ ...entityTrial, properties, entityItem, entityType, location });
         }
 
-        console.log('entitiesFromFile', entitiesFromFile);
-
         // this is a slow but working way to set locations and props, better use another function from TrialContext/Trials/uploadCsv.js
         const entitiesWithLocation = entitiesFromFile.filter(({ location }) => location);
         const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
         let i = 1;
         for (const layerChosen of layersOnEntities) {
-            setUploadStatus([`setting locations on ${layerChosen} which is ${i++}/${layersOnEntities.length}`]);
+            dispatch({ update: [`setting locations on ${layerChosen} which is ${i++}/${layersOnEntities.length}`] });
             const entitiesOnLayer = entitiesWithLocation.filter(({ location }) => location.val.name === layerChosen);
             const entityItemKeys = entitiesOnLayer.map(({ entityItem }) => entityItem.key);
             const newLocations = entitiesOnLayer.map(({ location }) => location.val.coordinates.map(parseFloat));
             try {
                 await setEntityLocations(entityItemKeys, layerChosen, newLocations);
             } catch (e) {
-                console.log(e)
-                errors = [...errors, `error on setting locations for ${layerChosen}: ${e}`];
-                setUploadErrors(errors);
+                dispatch({ error: `error on setting locations for ${layerChosen}: ${e}` });
             }
         }
         i = 1;
         for (const e of entitiesFromFile) {
             const name = `${e.entityItem.name} of ${e.entityType.name}`;
-            setUploadStatus([`setting properties on ${name} which is ${i++}/${entitiesFromFile.length}`, `(${e.entityItem.key})`]);
+            dispatch({ update: [`setting properties on ${name} which is ${i++}/${entitiesFromFile.length}`, `(${e.entityItem.key})`] });
             try {
                 await setEntityProperties(e.entityItem.key, e.properties);
             } catch (e) {
-                console.log(e)
-                errors = [...errors, `error on setting properties for ${name}: ${e}`];
-                setUploadErrors(errors);
+                dispatch({ error: `error on setting properties for ${name}: ${e}` });
             }
         }
         return errors;
@@ -108,20 +129,14 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
 
     const uploadInfo = async (e, fileFormat) => {
         // setWorking(true);
-        setShowRefresh(false);
-        setUploadErrors();
+        dispatch({ clear: 1 });
         try {
             const text = await e.target.files[0].text();
             const json = fileTextToEntitiesJson(text, fileFormat);
-            console.log(json);
-            // const entitiesFromFile = jsonToEntities(json, trial, entities);
-            // console.log('entitiesFromFile:', entitiesFromFile);
             await setEntitiesFromFile(json);
-            setUploadStatus();
-            setShowRefresh(true);
+            dispatch({ refresh: 1 });
         } catch (e) {
-            console.log(e)
-            setUploadErrors([`Uploading error: ${e}`]);
+            dispatch({ error: `Uploading error: ${e}` });
         }
     }
 
@@ -130,20 +145,17 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         try {
             await downloadEntities({ client, match, trial, fileFormat });
         } catch (e) {
-            console.log(e)
+            dispatch({ error: `Download error: ${e}` });
         }
         setOpen(false);
         setWorking(false);
     }
 
     const handleClose = () => {
-        setShowRefresh(false);
-        setUploadStatus();
-        setUploadErrors();
+        dispatch({ clear: 1 });
         setOpen(false);
     }
 
-    console.log('uploadErrors', uploadErrors)
     return (
         <>
             <Tooltip title='Upload & Download Entities' placement="top">
@@ -199,11 +211,11 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                             Download GeoJson
                         </Button>
                         <br />
-                        {(uploadStatus || []).map((x, i) => (
+                        {(status.uploadStatus || []).map((x, i) => (
                             <p key={'p' + i}>
                                 {x}
                             </p>))}
-                        {!showRefresh ? null : (
+                        {!status.showRefresh ? null : (
                             <>
                                 <p key={'r'}>
                                     Please refresh to apply changes &nbsp;
@@ -217,7 +229,7 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                                 </p>
                             </>
                         )}
-                        {(uploadErrors || []).map(x => (
+                        {(status.uploadErrors || []).map(x => (
                             <p style={{ color: 'red', fontSize: 'x-small' }} key={'err'}>
                                 {x}
                             </p>))}
