@@ -139,12 +139,13 @@ export const EntitiesProvider = ({
 
     const setEntitiesProperties = async (entityItemKeyPropsChangedContainsKeys) => {
         setWorking(true);
+        
+        const start = Date.now();
+        const updatedTrial = {
+            ...trial
+        }
 
         for (const { entityItemKey, propertiesChanged, containsEntitiesKeys } of entityItemKeyPropsChangedContainsKeys) {
-            const start = Date.now();
-            const updatedTrial = {
-                ...trial
-            }
             const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey === key);
             if (!entityOnTrial) {
                 throw 'problem with entity ' + entityItemKey;
@@ -162,10 +163,12 @@ export const EntitiesProvider = ({
                 if (containsEntitiesKeys) {
                     entityOnTrial.containsEntities = containsEntitiesKeys;
                 }
-                await submitTrial(updatedTrial);
-                console.log('setEntityProperties took ', Date.now() - start, 'ms');
             }
         }
+
+        await submitTrial(updatedTrial);
+        console.log('setEntityProperties took ', Date.now() - start, 'ms');
+        
         setWorking(false);
     }
 
