@@ -50,13 +50,17 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
         return { entityType, entityItem };
     }
 
-    const locationFromProps = (props) => {
+    const locationFromProps = (props, entityType) => {
         const { MapName, Longitude, Latitude } = props;
-        const location = { name: MapName, coordinates: [Latitude, Longitude] };
         if (MapName && Longitude && Latitude) {
-            return location;
+            const lng = parseFloat(Longitude);
+            const lat = parseFloat(Latitude);
+            const locationProp = entityType.properties.find(({ type }) => type === 'location');
+            if (locationProp && isFinite(lng) && isFinite(lat)) {
+                return { MapName, coordinates: [lat, lng] };
+            }
         }
-        return undefined;
+        return {};
     }
 
     const nonLocationFromProps = (props, entityType) => {
@@ -82,6 +86,8 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
 
         // const entitiesFromFile = [];
 
+        const layersToLocationItems = {};
+
         let i = 1;
         for (const { name, entitiesTypeName, ...props } of json) {
             const { entityType, entityItem } = findEntity(name, entitiesTypeName);
@@ -90,68 +96,32 @@ export const UploadEntitiesDialog = ({ client, match, trial, entities }) => {
                 continue;
             }
 
-            const properties = nonLocationFromProps(props, entityType);
-            dispatch({ update: [`setting properties on ${entityItem.name} of ${entityType.name} which is ${i++}/${json.length}`, `(${entityItem.key})`] });
             try {
+                const properties = nonLocationFromProps(props, entityType);
+                dispatch({ update: [`setting ${properties.length} properties on ${entityItem.name} of ${entityType.name} which is ${i++}/${json.length}`, `(${entityItem.key})`] });
                 await setEntityProperties(entityItem.key, properties);
             } catch (e) {
                 dispatch({ error: `error on setting properties for ${entityItem.name} of ${entityType.name}: ${e}` });
             }
+
+            const { MapName, coordinates } = locationFromProps(props, entityType);
+            if (MapName) {
+                layersToLocationItems[MapName] ||= [];
+                layersToLocationItems[MapName].push({ entityItem, coordinates });
+            }
         }
 
-        // for (const { name, entitiesTypeName, ...props } of json) {
-        //     const properties = [];
-
-        //     const { MapName, Longitude, Latitude } = props;
-        //     let location = undefined;
-        //     if (MapName && Longitude && Latitude) {
-        //         const locationProp = entityType.properties.find(({ type }) => type === 'location');
-        //         if (locationProp) {
-        //             const val = { name: MapName, coordinates: [Latitude, Longitude] };
-        //             location = { prop: locationProp, val };
-        //         }
-        //     }
-
-        //     for (const [propName, propValue] of Object.entries(props)) {
-        //         if (location && ['MapName', 'Longitude', 'Latitude'].includes(propName)) {
-        //             continue;
-        //         }
-        //         const propType = entityType.properties.find(({ label }) => label === propName);
-        //         if (propType) {
-        //             properties.push({ key: propType.key, val: propValue.replace(/'/g, "\"") });
-        //         }
-        //     }
-
-        //     const entityTrial = trial.entities.find(e => e.key === entityItem.key) || {};
-        //     entitiesFromFile.push({ ...entityTrial, properties, entityItem, entityType, location });
-        // }
-
-        // // this is a slow but working way to set locations and props, better use another function from TrialContext/Trials/uploadCsv.js
-        // const entitiesWithLocation = entitiesFromFile.filter(({ location }) => location);
-        // const layersOnEntities = [...new Set(entitiesWithLocation.map(({ location }) => location.val.name))];
-        // let i = 1;
-        // for (const layerChosen of layersOnEntities) {
-        //     dispatch({ update: [`setting locations on ${layerChosen} which is ${i++}/${layersOnEntities.length}`] });
-        //     const entitiesOnLayer = entitiesWithLocation.filter(({ location }) => location.val.name === layerChosen);
-        //     const entityItemKeys = entitiesOnLayer.map(({ entityItem }) => entityItem.key);
-        //     const newLocations = entitiesOnLayer.map(({ location }) => location.val.coordinates.map(parseFloat));
-        //     try {
-        //         await setEntityLocations(entityItemKeys, layerChosen, newLocations);
-        //     } catch (e) {
-        //         dispatch({ error: `error on setting locations for ${layerChosen}: ${e}` });
-        //     }
-        // }
-        // i = 1;
-        // for (const e of entitiesFromFile) {
-        //     const name = `${e.entityItem.name} of ${e.entityType.name}`;
-        //     dispatch({ update: [`setting properties on ${name} which is ${i++}/${entitiesFromFile.length}`, `(${e.entityItem.key})`] });
-        //     try {
-        //         await setEntityProperties(e.entityItem.key, e.properties);
-        //     } catch (e) {
-        //         dispatch({ error: `error on setting properties for ${name}: ${e}` });
-        //     }
-        // }
-        // return errors;
+        i = 1;
+        for (const [MapName, items] of Object.entries(layersToLocationItems)) {
+            try {
+                dispatch({ update: [`setting ${layersToLocationItems[MapName]} locations on ${MapName} which is ${i++}/${layersToLocationItems.length}`] });
+                const entityItemKeys = items.map(({ entityItem }) => entityItem.key);
+                const newLocations = items.map(({ coordinates }) => coordinates);
+                await setEntityLocations(entityItemKeys, MapName, newLocations);
+            } catch (e) {
+                dispatch({ error: `error on setting locations for ${MapName}: ${e}` });
+            }
+        }
     }
 
     const uploadInfo = async (e, fileFormat) => {
