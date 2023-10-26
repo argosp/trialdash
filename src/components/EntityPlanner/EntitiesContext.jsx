@@ -133,6 +133,7 @@ export const EntitiesProvider = ({
         setWorking(false);
     }
 
+    /** @deprecated TODO: use setEntitiesProperties directly */
     const setEntityProperties = async (entityItemKey, propertiesChanged, containsEntitiesKeys = undefined) => {
         await setEntitiesProperties([{ entityItemKey, propertiesChanged, containsEntitiesKeys }]);
     }
