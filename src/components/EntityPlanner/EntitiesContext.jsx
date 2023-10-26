@@ -134,30 +134,37 @@ export const EntitiesProvider = ({
     }
 
     const setEntityProperties = async (entityItemKey, propertiesChanged, containsEntitiesKeys = undefined) => {
+        await setEntitiesProperties([{ entityItemKey, propertiesChanged, containsEntitiesKeys }]);
+    }
+
+    const setEntitiesProperties = async (entityItemKeyPropsChangedContainsKeys) => {
         setWorking(true);
-        const start = Date.now();
-        const updatedTrial = {
-            ...trial
-        }
-        const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey === key);
-        if (!entityOnTrial) {
-            throw 'problem with entity ' + entityItemKey;
-        } else {
-            entityOnTrial.properties = [...(entityOnTrial.properties || [])];
-            for (const changedProp of propertiesChanged) {
-                const newProp = { ...changedProp };
-                const foundProp = entityOnTrial.properties.findIndex(prop => prop.key === changedProp.key);
-                if (foundProp === -1) {
-                    entityOnTrial.properties.push(newProp);
-                } else {
-                    entityOnTrial.properties.splice(foundProp, 1, newProp);
+
+        for (const { entityItemKey, propertiesChanged, containsEntitiesKeys } of entityItemKeyPropsChangedContainsKeys) {
+            const start = Date.now();
+            const updatedTrial = {
+                ...trial
+            }
+            const entityOnTrial = updatedTrial.entities.find(({ key }) => entityItemKey === key);
+            if (!entityOnTrial) {
+                throw 'problem with entity ' + entityItemKey;
+            } else {
+                entityOnTrial.properties = [...(entityOnTrial.properties || [])];
+                for (const changedProp of propertiesChanged) {
+                    const newProp = { ...changedProp };
+                    const foundProp = entityOnTrial.properties.findIndex(prop => prop.key === changedProp.key);
+                    if (foundProp === -1) {
+                        entityOnTrial.properties.push(newProp);
+                    } else {
+                        entityOnTrial.properties.splice(foundProp, 1, newProp);
+                    }
                 }
+                if (containsEntitiesKeys) {
+                    entityOnTrial.containsEntities = containsEntitiesKeys;
+                }
+                await submitTrial(updatedTrial);
+                console.log('setEntityProperties took ', Date.now() - start, 'ms');
             }
-            if (containsEntitiesKeys) {
-                entityOnTrial.containsEntities = containsEntitiesKeys;
-            }
-            await submitTrial(updatedTrial);
-            console.log('setEntityProperties took ', Date.now() - start, 'ms');
         }
         setWorking(false);
     }
@@ -214,6 +221,7 @@ export const EntitiesProvider = ({
         setEntityLocations,
         getEntityItems,
         setEntityProperties,
+        setEntitiesProperties,
         findEntityParent,
     }
 

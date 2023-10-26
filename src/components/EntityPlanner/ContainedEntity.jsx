@@ -15,7 +15,7 @@ export const ContainedEntity = ({
     childEntityItemKey,
     disconnectEntity,
 }) => {
-    const { setEntityProperties, entities } = useEntities();
+    const { entities } = useEntities();
     const { switchToPopup } = usePopupSwitch();
 
     const search = (() => {
