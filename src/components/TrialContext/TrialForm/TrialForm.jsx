@@ -280,10 +280,6 @@ class TrialForm extends React.Component {
     this.setState({ trial });
   };
 
-  showFooter = (showFooter) => {
-    this.setState({ showFooter });
-  }
-
   setEditableStatus = (editableStatus) => {
     this.setState({ editableStatus });
   }
@@ -415,7 +411,7 @@ class TrialForm extends React.Component {
               trial={trial}
               updateLocation={this.updateLocation}
               submitTrial={this.submitTrial}
-              showFooter={this.showFooter}
+              showFooter={(val) => this.setState({ val })}
               history={this.props.history}
             />
           }
