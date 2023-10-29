@@ -5,6 +5,7 @@ import {
     MenuItem
 } from '@mui/material';
 import classnames from 'classnames';
+import { COLORS_STATUSES } from '../../../constants/base';
 
 export const TrialStatusMenu = ({ setEditableStatus, classes, anchorMenu, handleMenuClose, onInputChange }) => {
     return (
@@ -26,7 +27,7 @@ export const TrialStatusMenu = ({ setEditableStatus, classes, anchorMenu, handle
                 horizontal: 'left',
             }}
         >
-            {['design', 'deploy', 'execution', 'complete'].map((i) => <MenuItem
+            {Object.keys(COLORS_STATUSES).map((i) => <MenuItem
                 key={uuid()}
                 classes={{ root: classes.menuItem }}
                 onClick={e => onInputChange({ target: { value: i } }, 'status')}
