@@ -36,6 +36,7 @@ import trialMutationUpdate from './utils/trialMutationUpdate';
 import ConfirmDialog from '../../ConfirmDialog';
 import { TabPanel } from '../TabPanel';
 import EntityPlanner from '../../EntityPlanner/EntityPlanner';
+import { TrialPropertiesEditor } from './TrialPropertiesEditor';
 
 class TrialForm extends React.Component {
   state = {
@@ -412,39 +413,16 @@ class TrialForm extends React.Component {
           </Menu>
         </div>
         <TabPanel value={tabValue} index={0}>
-          <CustomInput
-            id="trial-name"
-            className={classes.property}
-            onChange={e => this.onInputChange(e, 'name')}
-            label="Name"
-            bottomDescription="a short description"
-            value={trial.name}
+          <TrialPropertiesEditor
+            classes={classes}
+            onInputChange={this.onInputChange}
+            trial={trial}
+            trialSet={trialSet}
+            onPropertyChange={this.onPropertyChange}
+            getValue={this.getValue}
+            getInvalid={this.getInvalid}
+            setCurrent={this.setCurrent}
           />
-          {trialSet.properties
-            ? trialSet.properties.map(property => (
-              <CustomInput
-                id={`trial-property-${property.key}`}
-                className={classes.property}
-                key={property.key}
-                onChange={e => this.onPropertyChange(e, property.key)}
-                label={property.label}
-                bottomDescription={property.description}
-                value={this.getValue(property.key, property.defaultValue)}
-                values={property.value}
-                multiple={property.multipleValues}
-                type={property.type}
-                invalid={this.getInvalid(property.key)}
-                endAdornment={(['date', 'time', 'datetime-local'].indexOf(property.type) !== -1) ?
-                  <InputAdornment position="end">
-                    <Button onClick={() => this.setCurrent(property)}>
-                      Fill current
-                    </Button>
-                  </InputAdornment> :
-                  null
-                }
-              />
-            ))
-            : null}
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           {tabValue === 1 &&
