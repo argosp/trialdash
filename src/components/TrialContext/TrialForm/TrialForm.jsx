@@ -378,15 +378,13 @@ class TrialForm extends React.Component {
           />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          {tabValue === 1 &&
-            <EntityPlanner
-              trial={trial}
-              updateLocation={this.updateLocation}
-              submitTrial={this.submitTrial}
-              showFooter={(val) => this.setState({ val })}
-              history={this.props.history}
-            />
-          }
+          <EntityPlanner
+            trial={trial}
+            updateLocation={this.updateLocation}
+            submitTrial={this.submitTrial}
+            showFooter={(val) => this.setState({ val })}
+            history={this.props.history}
+          />
         </TabPanel>
         {(tabValue === 0 || showFooter) && <Footer
           cancelButtonHandler={this.cancelHandler}

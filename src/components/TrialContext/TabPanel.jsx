@@ -11,7 +11,10 @@ export const TabPanel = ({ children, value, index, ...other }) => (
         style={{ marginBottom: '0px' }}
         {...other}
     >
-        <Box>{children}</Box>
+        {value === index
+            ? <Box>{children}</Box>
+            : null
+        }
     </Typography>
 );
 
