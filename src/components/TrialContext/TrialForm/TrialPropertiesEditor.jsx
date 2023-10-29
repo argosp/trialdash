@@ -2,7 +2,7 @@ import CustomInput from "../../CustomInput"
 import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
 
-export const TrialPropertiesEditor = ({ classes, onInputChange, trial, trialSet, onPropertyChange, getValue }) => {
+export const TrialPropertiesEditor = ({ classes, trial, trialSet, onInputChange, onPropertyChange, getValue }) => {
     const setCurrent = (property) => {
         if (property.type === 'time') onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
         if (property.type === 'date') onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key)

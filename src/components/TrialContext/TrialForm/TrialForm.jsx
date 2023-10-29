@@ -3,12 +3,11 @@ import React from 'react';
 import { withStyles } from '@mui/styles';
 import update from 'immutability-helper';
 import uuid from 'uuid/v4';
-import moment from 'moment';
-import InputAdornment from '@mui/material/InputAdornment';
-import Grid from '@mui/material/Grid';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
+import {
+  Grid,
+  Menu,
+  MenuItem
+} from '@mui/material';
 import classnames from 'classnames';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -16,7 +15,6 @@ import { withApollo } from 'react-apollo';
 import trialMutation from './utils/trialMutation';
 import { styles } from './styles';
 import ContentHeader from '../../ContentHeader';
-import CustomInput from '../../CustomInput';
 import Footer from '../../Footer';
 import {
   TRIAL_SETS_DASH,
@@ -404,9 +402,9 @@ class TrialForm extends React.Component {
         <TabPanel value={tabValue} index={0}>
           <TrialPropertiesEditor
             classes={classes}
-            onInputChange={this.onInputChange}
             trial={trial}
             trialSet={trialSet}
+            onInputChange={this.onInputChange}
             onPropertyChange={this.onPropertyChange}
             getValue={this.getValue}
           />
