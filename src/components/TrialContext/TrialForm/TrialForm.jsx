@@ -242,12 +242,6 @@ class TrialForm extends React.Component {
     return (p !== -1 ? properties[p].val : defaultValue);
   }
 
-  getInvalid = (key) => {
-    const properties = this.state.trial.properties;
-    const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
-    return (p !== -1 ? properties[p].invalid : false);
-  }
-
   updateLocation = async (...entities) => {
     const updatedTrial = {};
     const { match, client } = this.props;
@@ -307,11 +301,6 @@ class TrialForm extends React.Component {
     this.setEditableStatus(false)
   };
 
-  setCurrent = (property) => {
-    if (property.type === 'time') this.onPropertyChange({ target: { value: moment().format('HH:mm') } }, property.key)
-    if (property.type === 'date') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DD') } }, property.key)
-    if (property.type === 'datetime-local') this.onPropertyChange({ target: { value: moment().format('YYYY-MM-DDTHH:mm') } }, property.key)
-  }
   setConfirmOpen = (open) => {
     this.setState({ confirmOpen: open });
   }
@@ -420,8 +409,6 @@ class TrialForm extends React.Component {
             trialSet={trialSet}
             onPropertyChange={this.onPropertyChange}
             getValue={this.getValue}
-            getInvalid={this.getInvalid}
-            setCurrent={this.setCurrent}
           />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
