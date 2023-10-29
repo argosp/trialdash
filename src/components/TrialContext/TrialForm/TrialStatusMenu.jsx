@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4';
 import {
     Grid,
     Menu,
@@ -28,7 +27,7 @@ export const TrialStatusMenu = ({ setEditableStatus, classes, anchorMenu, handle
             }}
         >
             {Object.keys(COLORS_STATUSES).map((i) => <MenuItem
-                key={uuid()}
+                key={i}
                 classes={{ root: classes.menuItem }}
                 onClick={e => onInputChange({ target: { value: i } }, 'status')}
             >

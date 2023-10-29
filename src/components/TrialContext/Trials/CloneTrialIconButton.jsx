@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import CustomTooltip from '../../CustomTooltip';
-import uuid from 'uuid/v4';
 import { CloneIcon } from '../../../constants/icons';
 import { Menu, MenuItem } from '@mui/material';
 import { COLORS_STATUSES } from '../../../constants/base';
@@ -37,10 +36,10 @@ export const CloneTrialIconButton = ({
                     horizontal: 'left',
                 }}
             >
-                {Object.keys(COLORS_STATUSES).map((destType) => {
+                {Object.keys(COLORS_STATUSES).map((destType, i) => {
                     return (
                         <MenuItem
-                            key={uuid()}
+                            key={i}
                             classes={{ root: classes.menuItem }}
                             onClick={async () => {
                                 await cloneTrial(destType, trial);
