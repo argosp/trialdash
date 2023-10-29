@@ -318,55 +318,53 @@ class TrialForm extends React.Component {
 
     return (
       <>
-        <div>
-          <ContentHeader
-            backButtonHandler={this.closeForm}
-            topDescription={trialSet.name}
-            withBackButton
-            rightDescription={(
-              trial.status && <StatusBadge
-                onClick={this.handleMenuClick}
-                onMouseEnter={() => this.setEditableStatus(true)}
-                onMouseLeave={() => this.setEditableStatus(false)}
-                className={classes.statusBadge}
-                title={
-                  <Grid
-                    container
-                    wrap="nowrap"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    alignContent="space-between"
-                  >
-                    <span>{trial.status}</span>
-                    {editableStatus && <PenIcon className={classes.penIcon} />}
-                  </Grid>
-                }
-                color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
-              />
-            )}
+        <ContentHeader
+          backButtonHandler={this.closeForm}
+          topDescription={trialSet.name}
+          withBackButton
+          rightDescription={(
+            trial.status && <StatusBadge
+              onClick={this.handleMenuClick}
+              onMouseEnter={() => this.setEditableStatus(true)}
+              onMouseLeave={() => this.setEditableStatus(false)}
+              className={classes.statusBadge}
+              title={
+                <Grid
+                  container
+                  wrap="nowrap"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  alignContent="space-between"
+                >
+                  <span>{trial.status}</span>
+                  {editableStatus && <PenIcon className={classes.penIcon} />}
+                </Grid>
+              }
+              color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
+            />
+          )}
 
-            title={trial.name || 'trial name goes here'}
-            className={classes.header}
-            rightComponent={(
-              <StyledTabs
-                tabs={[
-                  { key: trial.key + '_G', label: 'General', id: 'trial-tab-0' },
-                  { key: trial.key + '_D', label: 'Entities', id: 'trial-tab-1' },
-                ]}
-                value={tabValue}
-                onChange={this.changeTab}
-                ariaLabel="trial tabs"
-              />
-            )}
-          />
-          <TrialStatusMenu
-            setEditableStatus={this.setEditableStatus}
-            classes={classes}
-            anchorMenu={anchorMenu}
-            handleMenuClose={this.handleMenuClose}
-            onInputChange={this.onInputChange}
-          />
-        </div>
+          title={trial.name || 'trial name goes here'}
+          className={classes.header}
+          rightComponent={(
+            <StyledTabs
+              tabs={[
+                { key: trial.key + '_G', label: 'General', id: 'trial-tab-0' },
+                { key: trial.key + '_D', label: 'Entities', id: 'trial-tab-1' },
+              ]}
+              value={tabValue}
+              onChange={this.changeTab}
+              ariaLabel="trial tabs"
+            />
+          )}
+        />
+        <TrialStatusMenu
+          setEditableStatus={this.setEditableStatus}
+          classes={classes}
+          anchorMenu={anchorMenu}
+          handleMenuClose={this.handleMenuClose}
+          onInputChange={this.onInputChange}
+        />
         <TabPanel value={tabValue} index={0}>
           <TrialPropertiesEditor
             classes={classes}
