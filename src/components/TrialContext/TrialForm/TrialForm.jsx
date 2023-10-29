@@ -4,11 +4,8 @@ import { withStyles } from '@mui/styles';
 import update from 'immutability-helper';
 import uuid from 'uuid/v4';
 import {
-  Grid,
-  Menu,
-  MenuItem
+  Grid
 } from '@mui/material';
-import classnames from 'classnames';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
@@ -35,6 +32,7 @@ import ConfirmDialog from '../../ConfirmDialog';
 import { TabPanel } from '../TabPanel';
 import EntityPlanner from '../../EntityPlanner/EntityPlanner';
 import { TrialPropertiesEditor } from './TrialPropertiesEditor';
+import { TrialStatusMenu } from './TrialStatusMenu';
 
 class TrialForm extends React.Component {
   state = {
@@ -361,39 +359,13 @@ class TrialForm extends React.Component {
               />
             )}
           />
-          <Menu
-            onMouseEnter={() => this.setEditableStatus(true)}
-            onMouseLeave={() => this.setEditableStatus(false)}
-            id="statuses-menu"
-            classes={{ paper: classes.menu }}
-            open={Boolean(anchorMenu)}
-            onClose={() => this.handleMenuClose('anchorMenu')}
-            anchorEl={anchorMenu}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            {['design', 'deploy', 'execution', 'complete'].map((i) => <MenuItem
-              key={uuid()}
-              classes={{ root: classes.menuItem }}
-              onClick={e => this.onInputChange({ target: { value: i } }, 'status')}
-            >
-              <Grid
-                container
-                wrap="nowrap"
-                alignItems="center"
-              >
-                <div className={(classnames(classes.rect, classes[i]))}></div>
-                {i}
-              </Grid>
-            </MenuItem>)}
-          </Menu>
+          <TrialStatusMenu
+            setEditableStatus={this.setEditableStatus}
+            classes={classes}
+            anchorMenu={anchorMenu}
+            handleMenuClose={this.handleMenuClose}
+            onInputChange={this.onInputChange}
+          />
         </div>
         <TabPanel value={tabValue} index={0}>
           <TrialPropertiesEditor
