@@ -121,12 +121,20 @@ class TrialForm extends React.Component {
     const { value } = e.target;
 
     if (inputName === 'status' && value !== this.state.trial.status) {
-      this.setState({ anchorMenu: null, confirmStatusOpen: true, newStatus: value });
+      this.setState({
+        trialStatus: {
+          ...this.state.trialStatus,
+          anchorMenu: null,
+        },
+        confirmStatusOpen: true,
+        newStatus: value
+      });
     } else {
-
       this.setState(state => ({
-        editableStatus: false,
-        anchorMenu: null,
+        trialStatus: {
+          editableStatus: false,
+          anchorMenu: null,
+        },
         changed: true,
         trial: {
           ...state.trial,
@@ -268,14 +276,6 @@ class TrialForm extends React.Component {
     this.setState({ trial });
   };
 
-  setEditableStatus = (editableStatus) => {
-    this.setState({ editableStatus });
-  }
-
-  handleMenuClose = () => {
-    this.setState({ anchorMenu: null, editableStatus: false });
-  };
-
   setConfirmOpen = (open) => {
     this.setState({ confirmOpen: open });
   }
@@ -291,8 +291,6 @@ class TrialForm extends React.Component {
       tabValue,
       trialSet,
       trial,
-      editableStatus,
-      anchorMenu,
       showFooter,
       confirmOpen,
       confirmStatusOpen,
@@ -309,17 +307,14 @@ class TrialForm extends React.Component {
           className={classes.header}
 
           rightDescription={(
-            trial.status && <TrialStatusMenu
-              setEditableStatus={this.setEditableStatus}
-              // classes={classes}
-              anchorMenu={anchorMenu}
-              handleMenuClose={this.handleMenuClose}
-              onInputChange={this.onInputChange}
-              setAnchorMenu={(a) => this.setState({ anchorMenu: a })}
-              trial={trial}
-              editableStatus={editableStatus}
-              // theme={theme}
-            />
+            trial.status && (
+              <TrialStatusMenu
+                trialStatus={this.state.trialStatus || {}}
+                setTrialStatus={v => this.setState({ trialStatus: v })}
+                onInputChange={this.onInputChange}
+                trial={trial}
+              />
+            )
           )}
           rightComponent={(
             <StyledTabs

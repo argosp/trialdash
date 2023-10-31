@@ -16,20 +16,17 @@ export const TrialStatusMenu = compose(
 )(({
     theme,
     classes,
-    setEditableStatus,
-    anchorMenu,
-    setAnchorMenu,
-    handleMenuClose,
+    trialStatus,
+    setTrialStatus,
     onInputChange,
     trial,
-    editableStatus
 }) => {
     return (
         <>
             <StatusBadge
-                onClick={(e) => setAnchorMenu(e.currentTarget)}
-                onMouseEnter={() => setEditableStatus(true)}
-                onMouseLeave={() => setEditableStatus(false)}
+                onClick={(e) => setTrialStatus({ ...trialStatus, anchorMenu: e.currentTarget })}
+                onMouseEnter={(e) => setTrialStatus({ ...trialStatus, editableStatus: true })}
+                onMouseLeave={(e) => setTrialStatus({ ...trialStatus, editableStatus: false })}
                 className={classes.statusBadge}
                 title={
                     <Grid
@@ -40,19 +37,19 @@ export const TrialStatusMenu = compose(
                         alignContent="space-between"
                     >
                         <span>{trial.status}</span>
-                        {editableStatus && <PenIcon className={classes.penIcon} />}
+                        {trialStatus.editableStatus && <PenIcon className={classes.penIcon} />}
                     </Grid>
                 }
                 color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
             />
             <Menu
-                onMouseEnter={() => setEditableStatus(true)}
-                onMouseLeave={() => setEditableStatus(false)}
+                onMouseEnter={(e) => setTrialStatus({ ...trialStatus, editableStatus: true })}
+                onMouseLeave={(e) => setTrialStatus({ ...trialStatus, editableStatus: false })}
                 id="statuses-menu"
                 classes={{ paper: classes.menu }}
-                open={Boolean(anchorMenu)}
-                onClose={() => handleMenuClose()}
-                anchorEl={anchorMenu}
+                open={Boolean(trialStatus.anchorMenu)}
+                onClose={() => setTrialStatus({ anchorMenu: null, editableStatus: false })}
+                anchorEl={trialStatus.anchorMenu}
                 getContentAnchorEl={null}
                 anchorOrigin={{
                     vertical: 'bottom',
@@ -63,20 +60,22 @@ export const TrialStatusMenu = compose(
                     horizontal: 'left',
                 }}
             >
-                {Object.keys(COLORS_STATUSES).map((i) => <MenuItem
-                    key={i}
-                    classes={{ root: classes.menuItem }}
-                    onClick={e => onInputChange({ target: { value: i } }, 'status')}
-                >
-                    <Grid
-                        container
-                        wrap="nowrap"
-                        alignItems="center"
+                {Object.keys(COLORS_STATUSES).map((i) => (
+                    <MenuItem
+                        key={i}
+                        classes={{ root: classes.menuItem }}
+                        onClick={e => onInputChange({ target: { value: i } }, 'status')}
                     >
-                        <div className={(classnames(classes.rect, classes[i]))}></div>
-                        {i}
-                    </Grid>
-                </MenuItem>)}
+                        <Grid
+                            container
+                            wrap="nowrap"
+                            alignItems="center"
+                        >
+                            <div className={(classnames(classes.rect, classes[i]))}></div>
+                            {i}
+                        </Grid>
+                    </MenuItem>
+                ))}
             </Menu>
         </>
     );
