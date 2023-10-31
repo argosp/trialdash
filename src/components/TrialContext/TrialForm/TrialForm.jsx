@@ -365,11 +365,7 @@ const TrialForm = (props) => {
         title={'You are going to change trial status'}
         open={confirmStatusOpen || false}
         confirmText="Save changes and change status"
-        onConfirm={() => {
-          setState({ ...state, changed: false }, () => {
-            submitTrial(trial, newStatus);
-          });
-        }}
+        onConfirm={() => submitTrial(trial, newStatus)}
         cancelText="I don't want to change status"
         onCancel={cancelChangeStatus}
         cancelColor="#474747"
