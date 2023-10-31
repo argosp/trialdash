@@ -115,30 +115,15 @@ const TrialForm = (props) => {
   const onInputChange = (e, inputName) => {
     const { value } = e.target;
 
-    // if (inputName === 'status' && value !== state.trial.status) {
-    //   setState({
-    //     ...state,
-    //     trialStatus: {
-    //       ...state.trialStatus,
-    //       anchorMenu: null,
-    //       confirmStatusOpen: true,
-    //       newStatus: value
-    //     },
-    //   });
-    // } else {
     setState({
       ...state,
-      trialStatus: {
-        editableStatus: false,
-        anchorMenu: null,
-      },
+      trialStatus: {},
       changed: true,
       trial: {
         ...state.trial,
         [inputName]: value,
       },
     });
-    // }
   };
 
   const closeForm = () => {
@@ -222,10 +207,7 @@ const TrialForm = (props) => {
     setState({
       ...state,
       changed: false,
-      trialStatus: {
-        ...state.trialStatus,
-        confirmStatusOpen: false
-      }
+      trialStatus: {}
     });
   };
 
