@@ -115,30 +115,30 @@ const TrialForm = (props) => {
   const onInputChange = (e, inputName) => {
     const { value } = e.target;
 
-    if (inputName === 'status' && value !== state.trial.status) {
-      setState({
-        ...state,
-        trialStatus: {
-          ...state.trialStatus,
-          anchorMenu: null,
-        },
-        confirmStatusOpen: true,
-        newStatus: value
-      });
-    } else {
-      setState({
-        ...state,
-        trialStatus: {
-          editableStatus: false,
-          anchorMenu: null,
-        },
-        changed: true,
-        trial: {
-          ...state.trial,
-          [inputName]: value,
-        },
-      });
-    }
+    // if (inputName === 'status' && value !== state.trial.status) {
+    //   setState({
+    //     ...state,
+    //     trialStatus: {
+    //       ...state.trialStatus,
+    //       anchorMenu: null,
+    //       confirmStatusOpen: true,
+    //       newStatus: value
+    //     },
+    //   });
+    // } else {
+    setState({
+      ...state,
+      trialStatus: {
+        editableStatus: false,
+        anchorMenu: null,
+      },
+      changed: true,
+      trial: {
+        ...state.trial,
+        [inputName]: value,
+      },
+    });
+    // }
   };
 
   const closeForm = () => {
@@ -219,7 +219,14 @@ const TrialForm = (props) => {
       },
     });
 
-    setState({ ...state, changed: false, confirmStatusOpen: false });
+    setState({
+      ...state,
+      changed: false,
+      trialStatus: {
+        ...state.trialStatus,
+        confirmStatusOpen: false
+      }
+    });
   };
 
   const getValue = (key, defaultValue) => {
@@ -271,9 +278,6 @@ const TrialForm = (props) => {
   const setConfirmOpen = (open) => {
     setState({ ...state, confirmOpen: open });
   }
-  const cancelChangeStatus = () => {
-    setState({ ...state, confirmStatusOpen: false });
-  }
   const cancelHandler = () => {
     setState({ ...state, trial: initTrial(), changedEntities: [], changed: false, triggerUpdate: state.triggerUpdate + 1 })
   }
@@ -285,8 +289,6 @@ const TrialForm = (props) => {
     trial,
     showFooter,
     confirmOpen,
-    confirmStatusOpen,
-    newStatus,
   } = state;
 
   return (
@@ -303,8 +305,8 @@ const TrialForm = (props) => {
             <TrialStatusMenu
               trialStatus={state.trialStatus || {}}
               setTrialStatus={trialStatus => setState({ ...state, trialStatus })}
-              onInputChange={onInputChange}
               trial={trial}
+              submitTrial={submitTrial}
             />
           )
         )}
@@ -360,17 +362,6 @@ const TrialForm = (props) => {
         cancelColor="#474747"
       >
         Information won't be saved
-      </ConfirmDialog>
-      <ConfirmDialog
-        title={'You are going to change trial status'}
-        open={confirmStatusOpen}
-        confirmText="Save changes and change status"
-        onConfirm={() => submitTrial(trial, newStatus)}
-        cancelText="I don't want to change status"
-        onCancel={cancelChangeStatus}
-        cancelColor="#474747"
-      >
-        You have to save your changes before
       </ConfirmDialog>
     </>
   );

@@ -10,6 +10,7 @@ import { PenIcon } from '../../../constants/icons';
 import { compose } from 'recompose';
 import { withStyles } from '@mui/styles';
 import { styles } from './styles';
+import ConfirmDialog from '../../ConfirmDialog';
 
 export const TrialStatusMenu = compose(
     withStyles(styles, { withTheme: true }),
@@ -18,11 +19,16 @@ export const TrialStatusMenu = compose(
     classes,
     trialStatus,
     setTrialStatus,
-    onInputChange,
     trial,
+    submitTrial,
 }) => {
 
-    const { anchorMenu, editableStatus } = trialStatus;
+    const {
+        anchorMenu,
+        editableStatus,
+        confirmStatusOpen,
+        newStatus,
+    } = trialStatus;
     const setState = (partialTrialStatus) => {
         setTrialStatus({ ...trialStatus, ...partialTrialStatus });
     }
@@ -70,7 +76,16 @@ export const TrialStatusMenu = compose(
                     <MenuItem
                         key={i}
                         classes={{ root: classes.menuItem }}
-                        onClick={e => onInputChange({ target: { value: i } }, 'status')}
+                        onClick={e => {
+                            if (i !== trial.status) {
+                                setState({
+                                    editableStatus: false,
+                                    anchorMenu: null,
+                                    confirmStatusOpen: true,
+                                    newStatus: i
+                                });
+                            }
+                        }}
                     >
                         <Grid
                             container
@@ -83,6 +98,17 @@ export const TrialStatusMenu = compose(
                     </MenuItem>
                 ))}
             </Menu>
+            <ConfirmDialog
+                title={'You are going to change trial status'}
+                open={confirmStatusOpen}
+                confirmText="Save changes and change status"
+                onConfirm={() => submitTrial(trial, newStatus)}
+                cancelText="I don't want to change status"
+                onCancel={() => setState({ confirmStatusOpen: false })}
+                cancelColor="#474747"
+            >
+                You have to save your changes before
+            </ConfirmDialog>
         </>
     );
 })
