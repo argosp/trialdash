@@ -27,7 +27,7 @@ class ConfirmDialog extends React.Component {
       const { text } = this.state;
       return (
         <Dialog
-          open={open}
+          open={open || false} // dialog doesn't like undefined
           onClose={() => setOpen(false)}
           aria-labelledby="customized-dialog-title"
         >

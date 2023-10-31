@@ -363,7 +363,7 @@ const TrialForm = (props) => {
       </ConfirmDialog>
       <ConfirmDialog
         title={'You are going to change trial status'}
-        open={confirmStatusOpen || false}
+        open={confirmStatusOpen}
         confirmText="Save changes and change status"
         onConfirm={() => submitTrial(trial, newStatus)}
         cancelText="I don't want to change status"
