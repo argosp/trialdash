@@ -1,5 +1,5 @@
 /* eslint-disable prefer-destructuring */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { withStyles } from '@mui/styles';
 import update from 'immutability-helper';
 import uuid from 'uuid/v4';
@@ -28,41 +28,42 @@ import EntityPlanner from '../../EntityPlanner/EntityPlanner';
 import { TrialPropertiesEditor } from './TrialPropertiesEditor';
 import { TrialStatusMenu } from './TrialStatusMenu';
 
-class TrialForm extends React.Component {
-  state = {
-    trial: this.initTrial(),
-    trialSet: {},
-    tabValue: this.props.tabValue || 0,
-    showFooter: true,
-    changedEntities: [],
-    triggerUpdate: 0,
-    confirmOpen: false
-  };
+const TrialForm = (props) => {
 
-  initTrial() {
+  const initTrial = () => {
     const entities = [];
-    if (this.props.trial && this.props.trial.entities) {
-      for (const e of this.props.trial.entities) {
+    if (props.trial && props.trial.entities) {
+      for (const e of props.trial.entities) {
         if (e) {
           entities.push({ ...e, properties: [...e.properties] });
         }
       }
     };
     return {
-      key: this.props.trial ? this.props.trial.key : uuid(),
-      trialSetKey: this.props.match.params.trialSetKey,
-      experimentId: this.props.match.params.id,
-      name: this.props.trial ? this.props.trial.name : '',
-      status: this.props.trial && this.props.trial.status ? this.props.trial.status : 'design',
-      numberOfEntities: this.props.trial ? this.props.trial.numberOfEntities : 0,
-      properties: this.props.trial && this.props.trial.properties ? [...this.props.trial.properties] : [],
+      key: props.trial ? props.trial.key : uuid(),
+      trialSetKey: props.match.params.trialSetKey,
+      experimentId: props.match.params.id,
+      name: props.trial ? props.trial.name : '',
+      status: props.trial && props.trial.status ? props.trial.status : 'design',
+      numberOfEntities: props.trial ? props.trial.numberOfEntities : 0,
+      properties: props.trial && props.trial.properties ? [...props.trial.properties] : [],
       entities,
-      deployedEntities: this.props.trial && this.props.trial.deployedEntities ? [...this.props.trial.deployedEntities] : [],
+      deployedEntities: props.trial && props.trial.deployedEntities ? [...props.trial.deployedEntities] : [],
     }
   }
 
-  componentDidMount() {
-    const { client, match, trial } = this.props;
+  const [state, setState] = useState({
+    trial: initTrial(),
+    trialSet: {},
+    tabValue: props.tabValue || 0,
+    showFooter: true,
+    changedEntities: [],
+    triggerUpdate: 0,
+    confirmOpen: false
+  });
+
+  useEffect(() => {
+    const { client, match, trial } = props;
     client.query({ query: trialSetsQuery(match.params.id) }).then((data) => {
       const trialSet = data.data.trialSets.find(
         item => item.key === match.params.trialSetKey,
@@ -76,29 +77,31 @@ class TrialForm extends React.Component {
         properties = [...trial.properties] || [];
       }
 
-      this.setState(state => ({
+      setState({
+        ...state,
         trial: {
           ...state.trial,
           properties,
         },
         trialSet,
-      }));
+      });
     });
-  }
+  }, []);
 
-  onPropertyChange = (e, propertyKey) => {
+  const onPropertyChange = (e, propertyKey) => {
     if (!e.target) return;
     let { value } = e.target;
     if (e.target.type === 'checkbox') value = e.target.checked.toString();
-    let indexOfProperty = this.state.trial.properties.findIndex(
+    let indexOfProperty = state.trial.properties.findIndex(
       property => property.key === propertyKey,
     );
 
     if (indexOfProperty === -1) {
-      this.state.trial.properties.push({ val: value, key: propertyKey });
-      indexOfProperty = this.state.trial.properties.length - 1;
+      state.trial.properties.push({ val: value, key: propertyKey });
+      indexOfProperty = state.trial.properties.length - 1;
     }
-    this.setState(state => ({
+    setState({
+      ...state,
       changed: true,
       trial: {
         ...state.trial,
@@ -106,27 +109,29 @@ class TrialForm extends React.Component {
           [indexOfProperty]: { val: { $set: value }, key: { $set: propertyKey } },
         }),
       },
-    }));
+    });
   };
 
-  updateChangedEntities = (changedEntities, entityObj) => {
+  const updateChangedEntities = (changedEntities, entityObj) => {
     if (changedEntities.findIndex(e => e.key === entityObj.key) === -1)
-      this.setState({ changedEntities: [...this.state.changedEntities, entityObj] })
+      setState({ ...state, changedEntities: [...state.changedEntities, entityObj] })
   }
-  onInputChange = (e, inputName) => {
+  const onInputChange = (e, inputName) => {
     const { value } = e.target;
 
-    if (inputName === 'status' && value !== this.state.trial.status) {
-      this.setState({
+    if (inputName === 'status' && value !== state.trial.status) {
+      setState({
+        ...state,
         trialStatus: {
-          ...this.state.trialStatus,
+          ...state.trialStatus,
           anchorMenu: null,
         },
         confirmStatusOpen: true,
         newStatus: value
       });
     } else {
-      this.setState(state => ({
+      setState({
+        ...state,
         trialStatus: {
           editableStatus: false,
           anchorMenu: null,
@@ -136,17 +141,17 @@ class TrialForm extends React.Component {
           ...state.trial,
           [inputName]: value,
         },
-      }));
+      });
     }
   };
 
-  closeForm = (deleted) => {
-    const { changed } = this.state;
+  const closeForm = (deleted) => {
+    const { changed } = state;
     if (deleted !== true && changed) {
-      this.setState({ confirmOpen: true });
+      setState({ ...state, confirmOpen: true });
       return;
     }
-    const { match, history, returnFunc } = this.props;
+    const { match, history, returnFunc } = props;
 
     if (returnFunc) returnFunc(deleted);
     else {
@@ -156,9 +161,9 @@ class TrialForm extends React.Component {
     }
   };
 
-  updateAfterSubmit = (n, cache, trial) => {
-    const { match } = this.props;
-    const { trialSet } = this.state;
+  const updateAfterSubmit = (n, cache, trial) => {
+    const { match } = props;
+    const { trialSet } = state;
     trialSet.numberOfTrials = n[trialSet.key];
     updateCache(
       cache,
@@ -168,16 +173,16 @@ class TrialForm extends React.Component {
       TRIAL_SET_MUTATION,
       true,
     );
-    trial.experimentId = this.props.match.params.id;
-    //this.setState({ trial });
-    this.props.updateTrial(trial)
+    trial.experimentId = props.match.params.id;
+    //setState({ ...state, trial });
+    props.updateTrial(trial)
   }
 
-  fillProperties = (trialSet, updatedTrial) => {
+  const fillProperties = (trialSet, updatedTrial) => {
     for (const p of trialSet.properties || []) {
       let property = updatedTrial.properties.find(ntp => ntp.key === p.key);
       if (!property) {
-        const val = this.getValue(p.key, p.defaultValue);
+        const val = getValue(p.key, p.defaultValue);
         property = { key: p.key, val };
         updatedTrial.properties.push(property);
       }
@@ -191,16 +196,16 @@ class TrialForm extends React.Component {
     return invalid;
   }
 
-  submitTrial = async (newTrial, deleted, newStatus) => {
+  const submitTrial = async (newTrial, deleted, newStatus) => {
     const updatedTrial = newTrial;
-    const { match, client, returnFunc } = this.props;
-    const { trialSet, changedEntities } = this.state;
+    const { match, client, returnFunc } = props;
+    const { trialSet, changedEntities } = state;
     if (deleted) updatedTrial.state = 'Deleted';
     if (newStatus) updatedTrial.status = newStatus;
 
-    const invalid = this.fillProperties(trialSet, updatedTrial);
+    const invalid = fillProperties(trialSet, updatedTrial);
     if (invalid) {
-      this.setState({ tabValue: 0 });
+      setState({ ...state, tabValue: 0 });
       return;
     }
 
@@ -218,25 +223,25 @@ class TrialForm extends React.Component {
           TRIAL_MUTATION,
           returnFunc,
           'trialSetKey',
-          this.updateAfterSubmit
+          updateAfterSubmit
         );
       },
     });
 
-    this.setState({ changed: false, confirmStatusOpen: false });
-    if (deleted) this.closeForm(deleted);
+    setState({ ...state, changed: false, confirmStatusOpen: false });
+    if (deleted) closeForm(deleted);
   };
 
-  getValue = (key, defaultValue) => {
-    const properties = this.state.trial.properties;
+  const getValue = (key, defaultValue) => {
+    const properties = state.trial.properties;
     const p = ((properties && properties.length) ? properties.findIndex(pr => pr.key === key) : -1);
     return (p !== -1 ? properties[p].val : defaultValue);
   }
 
-  updateLocation = async (...entities) => {
+  const updateLocation = async (...entities) => {
     const updatedTrial = {};
-    const { match, client } = this.props;
-    const { trial } = this.state;
+    const { match, client } = props;
+    const { trial } = state;
     updatedTrial.key = trial.key;
     updatedTrial.experimentId = trial.experimentId;
     updatedTrial.trialSetKey = trial.trialSetKey;
@@ -270,120 +275,119 @@ class TrialForm extends React.Component {
       });
       if (isNew) trial[entitiesField].push(entity);
     });
-    this.setState({ trial });
+    setState({ ...state, trial });
   };
 
-  setConfirmOpen = (open) => {
-    this.setState({ confirmOpen: open });
+  const setConfirmOpen = (open) => {
+    setState({ ...state, confirmOpen: open });
   }
-  cancelChangeStatus = () => {
-    this.setState({ confirmStatusOpen: false });
+  const cancelChangeStatus = () => {
+    setState({ ...state, confirmStatusOpen: false });
   }
-  cancelHandler = () => {
-    this.setState({ trial: this.initTrial(), changedEntities: [], changed: false, triggerUpdate: this.state.triggerUpdate + 1 })
+  const cancelHandler = () => {
+    setState({ ...state, trial: initTrial(), changedEntities: [], changed: false, triggerUpdate: state.triggerUpdate + 1 })
   }
-  render() {
-    const { classes, theme } = this.props;
-    const {
-      tabValue,
-      trialSet,
-      trial,
-      showFooter,
-      confirmOpen,
-      confirmStatusOpen,
-      newStatus,
-    } = this.state;
 
-    return (
-      <>
-        <ContentHeader
-          backButtonHandler={this.closeForm}
-          topDescription={trialSet.name}
-          withBackButton
-          title={trial.name || 'trial name goes here'}
-          className={classes.header}
+  const { classes, theme } = props;
+  const {
+    tabValue,
+    trialSet,
+    trial,
+    showFooter,
+    confirmOpen,
+    confirmStatusOpen,
+    newStatus,
+  } = state;
 
-          rightDescription={(
-            trial.status && (
-              <TrialStatusMenu
-                trialStatus={this.state.trialStatus || {}}
-                setTrialStatus={trialStatus => this.setState({ trialStatus })}
-                onInputChange={this.onInputChange}
-                trial={trial}
-              />
-            )
-          )}
-          rightComponent={(
-            <StyledTabs
-              tabs={[
-                { key: trial.key + '_G', label: 'General', id: 'trial-tab-0' },
-                { key: trial.key + '_D', label: 'Entities', id: 'trial-tab-1' },
-              ]}
-              value={tabValue}
-              onChange={(e, tabValue) => this.setState({ tabValue })}
-              ariaLabel="trial tabs"
+  return (
+    <>
+      <ContentHeader
+        backButtonHandler={closeForm}
+        topDescription={trialSet.name}
+        withBackButton
+        title={trial.name || 'trial name goes here'}
+        className={classes.header}
+
+        rightDescription={(
+          trial.status && (
+            <TrialStatusMenu
+              trialStatus={state.trialStatus || {}}
+              setTrialStatus={trialStatus => setState({ ...state, trialStatus })}
+              onInputChange={onInputChange}
+              trial={trial}
             />
-          )}
+          )
+        )}
+        rightComponent={(
+          <StyledTabs
+            tabs={[
+              { key: trial.key + '_G', label: 'General', id: 'trial-tab-0' },
+              { key: trial.key + '_D', label: 'Entities', id: 'trial-tab-1' },
+            ]}
+            value={tabValue}
+            onChange={(e, tabValue) => setState({ ...state, tabValue })}
+            ariaLabel="trial tabs"
+          />
+        )}
+      />
+      <TabPanel value={tabValue} index={0}>
+        <TrialPropertiesEditor
+          classes={classes}
+          trial={trial}
+          trialSet={trialSet}
+          onInputChange={onInputChange}
+          onPropertyChange={onPropertyChange}
+          getValue={getValue}
         />
-        <TabPanel value={tabValue} index={0}>
-          <TrialPropertiesEditor
-            classes={classes}
-            trial={trial}
-            trialSet={trialSet}
-            onInputChange={this.onInputChange}
-            onPropertyChange={this.onPropertyChange}
-            getValue={this.getValue}
-          />
-        </TabPanel>
-        <TabPanel value={tabValue} index={1}>
-          <EntityPlanner
-            trial={trial}
-            updateLocation={this.updateLocation}
-            submitTrial={this.submitTrial}
-            showFooter={(val) => this.setState({ val })}
-            history={this.props.history}
-          />
-        </TabPanel>
-        {(tabValue === 0 || showFooter) && <Footer
-          cancelButtonHandler={this.cancelHandler}
-          saveButtonDisabled={!this.state.changed}
-          saveButtonHandler={() => this.submitTrial(trial)}
-          cancelButtonDisabled={!this.state.changed}
-        />}
-        <ConfirmDialog
-          title={'There are unsaved changes. Do you want to leave without saving the changes?'}
-          open={confirmOpen}
-          setOpen={() => this.setConfirmOpen(false)}
-          confirmText="Yes, I want to leave"
-          onConfirm={() => {
-            this.setState({ changed: false }, () => {
-              this.closeForm()
-            });
-          }}
-          cancelText="No, I want to stay"
-          onCancel={() => this.setState({ confirmOpen: false })}
-          cancelColor="#474747"
-        >
-          Information won't be saved
-        </ConfirmDialog>
-        <ConfirmDialog
-          title={'You are going to change trial status'}
-          open={confirmStatusOpen || false}
-          confirmText="Save changes and change status"
-          onConfirm={() => {
-            this.setState({ changed: false }, () => {
-              this.submitTrial(trial, false, newStatus);
-            });
-          }}
-          cancelText="I don't want to change status"
-          onCancel={this.cancelChangeStatus}
-          cancelColor="#474747"
-        >
-          You have to save your changes before
-        </ConfirmDialog>
-      </>
-    );
-  }
+      </TabPanel>
+      <TabPanel value={tabValue} index={1}>
+        <EntityPlanner
+          trial={trial}
+          updateLocation={updateLocation}
+          submitTrial={submitTrial}
+          showFooter={(val) => setState({ ...state, val })}
+          history={props.history}
+        />
+      </TabPanel>
+      {(tabValue === 0 || showFooter) && <Footer
+        cancelButtonHandler={cancelHandler}
+        saveButtonDisabled={!state.changed}
+        saveButtonHandler={() => submitTrial(trial)}
+        cancelButtonDisabled={!state.changed}
+      />}
+      <ConfirmDialog
+        title={'There are unsaved changes. Do you want to leave without saving the changes?'}
+        open={confirmOpen}
+        setOpen={() => setConfirmOpen(false)}
+        confirmText="Yes, I want to leave"
+        onConfirm={() => {
+          setState({ ...state, changed: false }, () => {
+            closeForm()
+          });
+        }}
+        cancelText="No, I want to stay"
+        onCancel={() => setState({ ...state, confirmOpen: false })}
+        cancelColor="#474747"
+      >
+        Information won't be saved
+      </ConfirmDialog>
+      <ConfirmDialog
+        title={'You are going to change trial status'}
+        open={confirmStatusOpen || false}
+        confirmText="Save changes and change status"
+        onConfirm={() => {
+          setState({ ...state, changed: false }, () => {
+            submitTrial(trial, false, newStatus);
+          });
+        }}
+        cancelText="I don't want to change status"
+        onCancel={cancelChangeStatus}
+        cancelColor="#474747"
+      >
+        You have to save your changes before
+      </ConfirmDialog>
+    </>
+  );
 }
 
 export default compose(
