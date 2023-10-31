@@ -7,8 +7,23 @@ import classnames from 'classnames';
 import { COLORS_STATUSES } from '../../../constants/base';
 import StatusBadge from '../../StatusBadge';
 import { PenIcon } from '../../../constants/icons';
+import { compose } from 'recompose';
+import { withStyles } from '@mui/styles';
+import { styles } from './styles';
 
-export const TrialStatusMenu = ({ theme, setEditableStatus, classes, anchorMenu, setAnchorMenu, handleMenuClose, onInputChange, trial, editableStatus }) => {
+export const TrialStatusMenu = compose(
+    withStyles(styles, { withTheme: true }),
+)(({
+    theme,
+    classes,
+    setEditableStatus,
+    anchorMenu,
+    setAnchorMenu,
+    handleMenuClose,
+    onInputChange,
+    trial,
+    editableStatus
+}) => {
     return (
         <>
             <StatusBadge
@@ -65,4 +80,4 @@ export const TrialStatusMenu = ({ theme, setEditableStatus, classes, anchorMenu,
             </Menu>
         </>
     );
-}
+})

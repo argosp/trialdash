@@ -311,14 +311,14 @@ class TrialForm extends React.Component {
           rightDescription={(
             trial.status && <TrialStatusMenu
               setEditableStatus={this.setEditableStatus}
-              classes={classes}
+              // classes={classes}
               anchorMenu={anchorMenu}
               handleMenuClose={this.handleMenuClose}
               onInputChange={this.onInputChange}
               setAnchorMenu={(a) => this.setState({ anchorMenu: a })}
               trial={trial}
               editableStatus={editableStatus}
-              theme={theme}
+              // theme={theme}
             />
           )}
           rightComponent={(
