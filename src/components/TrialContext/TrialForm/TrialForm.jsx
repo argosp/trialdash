@@ -178,26 +178,20 @@ class TrialForm extends React.Component {
   }
 
   fillProperties = (trialSet, updatedTrial) => {
-    let invalid = false;
-    let property;
-    if (trialSet.properties) {
-      trialSet.properties.forEach((p) => {
-        property = updatedTrial.properties.find(ntp => ntp.key === p.key);
-        if (!property) {
-          property = {
-            key: p.key,
-            val: this.getValue(p.key, p.defaultValue)
-          };
-          updatedTrial.properties.push(property);
-        }
-        if (p.required && !property.val) {
-          invalid = true;
-          property.invalid = true;
-        } else {
-          delete property.invalid;
-        }
-      });
+    for (const p of trialSet.properties || []) {
+      const property = updatedTrial.properties.find(ntp => ntp.key === p.key);
+      if (!property) {
+        const val = this.getValue(p.key, p.defaultValue);
+        property = { key: p.key, val };
+        updatedTrial.properties.push(property);
+      }
+      if (p.required && !property.val) {
+        property.invalid = true;
+      } else {
+        delete property.invalid;
+      }
     }
+    const invalid = updatedTrial.properties.some(prop => prop.invalid);
     return invalid;
   }
 
