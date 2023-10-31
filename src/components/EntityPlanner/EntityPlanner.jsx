@@ -90,7 +90,7 @@ const EntityPlanner = ({
                                     <CloneEntitiesDialog
                                         title={"Clone trial"}
                                         ref={cloneEntitiesRef}
-                                        onConfirm={submitTrial}
+                                        onConfirm={updatedTrial => submitTrial(updatedTrial)}
                                         entitiesTypes={state.entitiesTypes}
                                         trialEntities={trialEntitiesGrouped}
                                         currentTrial={trial}

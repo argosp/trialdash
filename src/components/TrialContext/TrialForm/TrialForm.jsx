@@ -141,19 +141,15 @@ const TrialForm = (props) => {
     }
   };
 
-  const closeForm = (deleted) => {
+  const closeForm = () => {
     const { changed } = state;
-    if (deleted !== true && changed) {
-      setState({ ...state, confirmOpen: true });
-      return;
-    }
     const { match, history, returnFunc } = props;
-
-    if (returnFunc) returnFunc(deleted);
-    else {
-      history.push(
-        `/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/${TRIALS}`,
-      );
+    if (changed) {
+      setState({ ...state, confirmOpen: true });
+    } else if (returnFunc) {
+      returnFunc(false);
+    } else {
+      history.push(`/experiments/${match.params.id}/${TRIAL_SETS_DASH}/${match.params.trialSetKey}/${TRIALS}`);
     }
   };
 
@@ -192,11 +188,10 @@ const TrialForm = (props) => {
     return invalid;
   }
 
-  const submitTrial = async (newTrial, deleted, newStatus) => {
+  const submitTrial = async (newTrial, newStatus) => {
     const updatedTrial = newTrial;
     const { match, client, returnFunc } = props;
     const { trialSet, changedEntities } = state;
-    if (deleted) updatedTrial.state = 'Deleted';
     if (newStatus) updatedTrial.status = newStatus;
 
     const invalid = fillProperties(trialSet, updatedTrial);
@@ -225,7 +220,6 @@ const TrialForm = (props) => {
     });
 
     setState({ ...state, changed: false, confirmStatusOpen: false });
-    if (deleted) closeForm(deleted);
   };
 
   const getValue = (key, defaultValue) => {
@@ -373,7 +367,7 @@ const TrialForm = (props) => {
         confirmText="Save changes and change status"
         onConfirm={() => {
           setState({ ...state, changed: false }, () => {
-            submitTrial(trial, false, newStatus);
+            submitTrial(trial, newStatus);
           });
         }}
         cancelText="I don't want to change status"
