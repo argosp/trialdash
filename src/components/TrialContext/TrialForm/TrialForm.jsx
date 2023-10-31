@@ -177,14 +177,9 @@ class TrialForm extends React.Component {
     this.props.updateTrial(trial)
   }
 
-  submitTrial = async (newTrial, deleted, newStatus) => {
-    const updatedTrial = newTrial;
-    const { match, client, returnFunc } = this.props;
-    const { trialSet, changedEntities } = this.state;
-    if (deleted) updatedTrial.state = 'Deleted';
-    if (newStatus) updatedTrial.status = newStatus;
+  fillProperties = (trialSet, updatedTrial) => {
+    let invalid = false;
     let property;
-    let invalid;
     if (trialSet.properties) {
       trialSet.properties.forEach((p) => {
         property = updatedTrial.properties.find(ntp => ntp.key === p.key);
@@ -202,11 +197,23 @@ class TrialForm extends React.Component {
           delete property.invalid;
         }
       });
-      if (invalid) {
-        this.setState({ tabValue: 0 });
-        return;
-      }
     }
+    return invalid;
+  }
+
+  submitTrial = async (newTrial, deleted, newStatus) => {
+    const updatedTrial = newTrial;
+    const { match, client, returnFunc } = this.props;
+    const { trialSet, changedEntities } = this.state;
+    if (deleted) updatedTrial.state = 'Deleted';
+    if (newStatus) updatedTrial.status = newStatus;
+
+    const invalid = this.fillProperties(trialSet, updatedTrial);
+    if (invalid) {
+      this.setState({ tabValue: 0 });
+      return;
+    }
+
     await client.mutate({
       mutation: trialMutation(updatedTrial, changedEntities),
       update: (cache, mutationResult) => {
