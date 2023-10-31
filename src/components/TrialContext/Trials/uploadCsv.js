@@ -215,7 +215,7 @@ function extractEntitiesFromFile(fileText, fileFormat, trial, allEntities) {
 }
 
 export {
-  uploadTrial,
+  // uploadTrial,
   // uploadEntities,
   extractEntitiesFromFile,
   fileTextToEntitiesJson,
