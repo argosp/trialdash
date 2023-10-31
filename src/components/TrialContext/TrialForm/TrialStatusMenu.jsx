@@ -21,12 +21,18 @@ export const TrialStatusMenu = compose(
     onInputChange,
     trial,
 }) => {
+
+    const { anchorMenu, editableStatus } = trialStatus;
+    const setState = (partialTrialStatus) => {
+        setTrialStatus({ ...trialStatus, ...partialTrialStatus });
+    }
+
     return (
         <>
             <StatusBadge
-                onClick={(e) => setTrialStatus({ ...trialStatus, anchorMenu: e.currentTarget })}
-                onMouseEnter={(e) => setTrialStatus({ ...trialStatus, editableStatus: true })}
-                onMouseLeave={(e) => setTrialStatus({ ...trialStatus, editableStatus: false })}
+                onClick={(e) => setState({ anchorMenu: e.currentTarget })}
+                onMouseEnter={(e) => setState({ editableStatus: true })}
+                onMouseLeave={(e) => setState({ editableStatus: false })}
                 className={classes.statusBadge}
                 title={
                     <Grid
@@ -37,19 +43,19 @@ export const TrialStatusMenu = compose(
                         alignContent="space-between"
                     >
                         <span>{trial.status}</span>
-                        {trialStatus.editableStatus && <PenIcon className={classes.penIcon} />}
+                        {editableStatus && <PenIcon className={classes.penIcon} />}
                     </Grid>
                 }
                 color={theme.palette[COLORS_STATUSES[trial.status].color][COLORS_STATUSES[trial.status].level]}
             />
             <Menu
-                onMouseEnter={(e) => setTrialStatus({ ...trialStatus, editableStatus: true })}
-                onMouseLeave={(e) => setTrialStatus({ ...trialStatus, editableStatus: false })}
+                onMouseEnter={(e) => setState({ editableStatus: true })}
+                onMouseLeave={(e) => setState({ editableStatus: false })}
                 id="statuses-menu"
                 classes={{ paper: classes.menu }}
-                open={Boolean(trialStatus.anchorMenu)}
-                onClose={() => setTrialStatus({ anchorMenu: null, editableStatus: false })}
-                anchorEl={trialStatus.anchorMenu}
+                open={Boolean(anchorMenu)}
+                onClose={() => setState({ anchorMenu: null, editableStatus: false })}
+                anchorEl={anchorMenu}
                 getContentAnchorEl={null}
                 anchorOrigin={{
                     vertical: 'bottom',
