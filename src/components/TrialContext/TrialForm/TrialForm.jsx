@@ -112,10 +112,6 @@ const TrialForm = (props) => {
     });
   };
 
-  const updateChangedEntities = (changedEntities, entityObj) => {
-    if (changedEntities.findIndex(e => e.key === entityObj.key) === -1)
-      setState({ ...state, changedEntities: [...state.changedEntities, entityObj] })
-  }
   const onInputChange = (e, inputName) => {
     const { value } = e.target;
 
