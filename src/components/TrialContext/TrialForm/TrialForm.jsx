@@ -86,10 +86,6 @@ class TrialForm extends React.Component {
     });
   }
 
-  changeTab = (event, tabValue) => {
-    this.setState({ tabValue });
-  };
-
   onPropertyChange = (e, propertyKey) => {
     if (!e.target) return;
     let { value } = e.target;
@@ -179,7 +175,7 @@ class TrialForm extends React.Component {
 
   fillProperties = (trialSet, updatedTrial) => {
     for (const p of trialSet.properties || []) {
-      const property = updatedTrial.properties.find(ntp => ntp.key === p.key);
+      let property = updatedTrial.properties.find(ntp => ntp.key === p.key);
       if (!property) {
         const val = this.getValue(p.key, p.defaultValue);
         property = { key: p.key, val };
@@ -311,7 +307,7 @@ class TrialForm extends React.Component {
             trial.status && (
               <TrialStatusMenu
                 trialStatus={this.state.trialStatus || {}}
-                setTrialStatus={v => this.setState({ trialStatus: v })}
+                setTrialStatus={trialStatus => this.setState({ trialStatus })}
                 onInputChange={this.onInputChange}
                 trial={trial}
               />
@@ -324,7 +320,7 @@ class TrialForm extends React.Component {
                 { key: trial.key + '_D', label: 'Entities', id: 'trial-tab-1' },
               ]}
               value={tabValue}
-              onChange={this.changeTab}
+              onChange={(e, tabValue) => this.setState({ tabValue })}
               ariaLabel="trial tabs"
             />
           )}
