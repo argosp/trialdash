@@ -1,0 +1,18 @@
+name: trigger gitlab job
+on:
+  push:
+    branches: [ master ] 
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: trigger Job
+      uses: digital-blueprint/gitlab-pipeline-trigger-action@v1
+      with:
+        host: ${{ vars.PROJECT_GIT_LAB_URL }} 
+        trigger_token: ${{ secrets.DEPLOY_TRIGGER_TOKEN_GITLAB }}
+        access_token: ${{ secrets.DEPLOY_ACCESS_TOKEN_GITLAB }}
+        id: ${{ vars.PROJECT_GIT_LAB_ID }}
+        ref: 'master'
+        variables: '{"priject":"argos","submodule":"trialdash"}'
