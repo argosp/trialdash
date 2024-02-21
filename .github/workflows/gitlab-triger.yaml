@@ -15,4 +15,4 @@ jobs:
         access_token: ${{ secrets.DEPLOY_ACCESS_TOKEN_GITLAB }}
         id: ${{ vars.PROJECT_GIT_LAB_ID }}
         ref: 'master'
-        variables: '{"priject":"argos","submodule":"trialdash"}'
+        variables: '{"project":"argos","submodule":"trialdash"}'
