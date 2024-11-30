@@ -1,4 +1,4 @@
-FROM node:16.16.0
+FROM node:16.20
 ENV APP_DIR /usr/src/app/
 WORKDIR $APP_DIR
 COPY package.json $APP_DIR
