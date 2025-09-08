@@ -44,7 +44,7 @@
     "react-leaflet": "4.2.1",
     "react-router-dom": "5.1.2",
     "recompose": "0.30.0",
-    "serve": "11.3.2",
+    "serve": "14.2.5",
     "subscriptions-transport-ws": "0.9.16",
     "uuid": "3.3.3"
   },
