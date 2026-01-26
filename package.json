@@ -30,7 +30,7 @@
     "jszip": "3.10.0",
     "leaflet": "1.9.3",
     "leaflet-contextmenu": "1.4.0",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "moment": "^2.29.4",
     "nodemon": "1.18.10",
     "npm": "8.12.2",
